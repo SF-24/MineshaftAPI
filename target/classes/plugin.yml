@@ -1,0 +1,33 @@
+name: MineshaftApi
+version: '1.0-SNAPSHOT'
+main: com.mineshaft.mineshaftapi.MineshaftApi
+api-version: 1.20
+prefix: MineshaftApi
+authors: [ SebastianFrynas ]
+description: A Minecraft plugin focusing on Rpg and Multiplayer elements
+website: https://github.com/SF-24
+commands:
+  heal:
+    permission: mineshaft.debug.heal
+    description: Heals the user
+  menu:
+    description: Opens the in game menu
+    permission: mineshaft.player.menu
+  balance:
+    description: Modify your currency amount
+    permission: mineshaft.debug.balance
+    aliases:
+      - bal
+      - coins
+  getitem:
+    description: Get an item of your choise
+    permission: mineshaft.debug.give
+permissions:
+  mineshaft.player:
+    default: true
+  mineshaft.debug:
+    default: op
+    description: Allows access to debug features
+  mineshaft.op:
+    permission: default.op
+    description: Default operator permission

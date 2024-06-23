@@ -12,7 +12,7 @@ public enum ItemFields {
     rarity(VariableTypeEnum.ITEM_RARITY, ItemRarity.EXOTIC.name().toLowerCase(Locale.ROOT)),
     item_category(VariableTypeEnum.ITEM_CATEGORY, ItemCategory.WEAPON_MELEE.name().toLowerCase(Locale.ROOT)),
     material(VariableTypeEnum.MATERIAL, Material.GOLDEN_SWORD.name()),
-    id(VariableTypeEnum.UUID, UUID.randomUUID());
+    id(VariableTypeEnum.UUID, UUID.randomUUID().toString());
 
     private final VariableTypeEnum variableType;
     private final Object defaultValue;

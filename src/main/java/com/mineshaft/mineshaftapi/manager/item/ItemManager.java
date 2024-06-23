@@ -36,8 +36,10 @@ public class ItemManager {
     }
 
     public void initialiseItem(String fileName) {
-        File fileYaml = new File(path, fileName + ".yml");
+        File fileYaml = new File(path, fileName);
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+
+        String name = fileName.substring(0, fileName.lastIndexOf('.'));
 
         if(!yamlConfiguration.contains("id")) {
             yamlConfiguration.createSection("id");
@@ -48,8 +50,8 @@ public class ItemManager {
                 e.printStackTrace();
             }
         }
-        items.put(UUID.fromString(yamlConfiguration.getString("id")), fileName);
-        Logger.logInfo("Initialised item '" + fileName + "' with UUID '" + yamlConfiguration.getString("id") + "'");
+        items.put(UUID.fromString(yamlConfiguration.getString("id")), name);
+        Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
     }
 
     public void getItemName(UUID uuid) {

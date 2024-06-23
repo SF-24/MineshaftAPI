@@ -20,7 +20,7 @@ commands:
       - bal
       - coins
   getitem:
-    description: Get an item of your choise
+    description: Give yourself an item of your choice
     permission: mineshaft.debug.give
 permissions:
   mineshaft.player:

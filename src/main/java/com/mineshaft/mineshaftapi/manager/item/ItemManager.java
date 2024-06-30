@@ -1,17 +1,20 @@
 package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemFields;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
 import com.mineshaft.mineshaftapi.text.Logger;
+import de.tr7zw.nbtapi.NBT;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class ItemManager {
 
@@ -54,17 +57,108 @@ public class ItemManager {
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
     }
 
-    public void getItemName(UUID uuid) {
-
+    public String getItemName(UUID uuid) {
+        return items.get(uuid);
     }
 
-    public ItemStack getItem(String fileName) {
+    public UUID getItemIdFromItem(ItemStack item) {
+        NBT.get(item, nbt -> {
+            String uuid = nbt.getString("uuid");
+            return uuid;
+        });
         return null;
     }
 
+    public String getItemNameFromItem(ItemStack item) {
+        UUID uuid = getItemIdFromItem(item);
+        if(uuid != null) {
+            return getItemName(uuid);
+        }
+        return null;
+    }
+
+    public ItemStack getItem(String itemName) {
+        File fileYaml = new File(path, itemName+".yml");
+
+        // return null if file does not exist
+        if(!fileYaml.exists()) return null;
+
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+
+        // Whether the item has a parent item
+        boolean hasParent=false;
+
+        String uuid = yamlConfiguration.getString("id");
+
+        ItemStack item = new ItemStack(Material.BARRIER);
+
+        if(yamlConfiguration.contains("parent")) {
+            String parentName = yamlConfiguration.getString("parent");
+            if(parentName!=null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
+                item = getItem(parentName);
+                hasParent=true;
+            }
+        }
+
+        if(yamlConfiguration.contains("material")) {
+            try {
+                item = new ItemStack(Material.valueOf(yamlConfiguration.getString("material")));
+            } catch (Exception e) {
+                if(!hasParent) {
+                    Logger.logError("ERROR! Could not load item '" + itemName + "' invalid material");
+                    return null;
+                }
+                Logger.logWarning("ERROR! Could not load material for item: '" + itemName + "'. Invalid material. Using parent item material instead");
+            }
+        }
+
+        // ItemMeta variable
+        ItemMeta meta = item.getItemMeta();
+
+        // Rarity
+        ItemRarity rarity = ItemRarity.STANDARD;
+
+        // Temporarily unused - will be used for stuff like AH sorting, item abilities, etc.
+        ItemCategory category = ItemCategory.ITEM_GENERIC;
+
+        // Item display name
+        String name = "Custom Item";
+
+        for(String field : yamlConfiguration.getKeys(false)) {
+            switch (field) {
+                case "rarity":rarity = ItemRarity.valueOf(yamlConfiguration.getString("rarity"));
+                case "item_category": category = ItemCategory.valueOf(ItemFields.item_category.name().toLowerCase(Locale.ROOT));
+                case "custom_model_data": meta.setCustomModelData(yamlConfiguration.getInt("custom_model_data"));
+                case "name": name=yamlConfiguration.getString("name");
+                default:
+            }
+        }
+
+        meta.setDisplayName(rarity.getColourCode() + name);
+
+        // GENERATE LORE:
+        ArrayList<String> lore = new ArrayList<>();
+
+        if(rarity!=ItemRarity.STANDARD) {
+            lore.add(rarity.getColourCode() + rarity.getName() + " Item");
+        }
+
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        // Apply NBT tag with item
+        NBT.modify(item, nbt -> {
+            nbt.setString("uuid", uuid);
+            // More are available! Ask your IDE, or see Javadoc for suggestions!
+        });
+
+        return item;
+    }
+
+    // Generate the default item
     public static void createDemoItem() {
         String path = MineshaftApi.getInstance().getItemPath();
-        File fileYaml = new File(path, "demo-item" + ".yml");
+        File fileYaml = new File(path, "example-item" + ".yml");
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 
@@ -79,7 +173,6 @@ public class ItemManager {
                 if (!yamlDir.exists()) {
                     yamlDir.mkdir();
                 }
-
                 fileYaml.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -87,8 +180,9 @@ public class ItemManager {
 
             for(ItemFields itemFields : ItemFields.values()) {
                 yamlConfiguration.createSection(itemFields.name().toLowerCase(Locale.ROOT));
-                yamlConfiguration.set(itemFields.name().toLowerCase(Locale.ROOT), itemFields.getDefaultValue());
-
+                if (!itemFields.getVariableType().equals(VariableTypeEnum.LIST)) {
+                    yamlConfiguration.set(itemFields.name().toLowerCase(Locale.ROOT), itemFields.getDefaultValue());
+                }
             }
 
             // Save demo item

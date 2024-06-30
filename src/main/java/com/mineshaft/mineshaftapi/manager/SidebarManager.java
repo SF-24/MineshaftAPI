@@ -19,6 +19,7 @@ public class SidebarManager {
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         obj.setDisplayName(ChatColor.YELLOW.toString() + ChatColor.BOLD + "SKYBLOCK");
 
+        String coinsLang = "Credits";
 
         int coins = JsonPlayerBridge.getCoins(player);
         String location = "Village";
@@ -36,7 +37,7 @@ public class SidebarManager {
         Team currentDate = board.registerNewTeam("current_date");
 
         coinsTeam.addEntry(ChatColor.GOLD.toString());
-        coinsTeam.setPrefix(ChatColor.WHITE + " Purse: " + ChatColor.GOLD);
+        coinsTeam.setPrefix(ChatColor.WHITE + " Credits: " + ChatColor.GREEN);
         coinsTeam.setSuffix(String.valueOf(coins));
 
         locationTeam.addEntry(ChatColor.DARK_PURPLE.toString());
@@ -78,8 +79,6 @@ public class SidebarManager {
         for(int i=lines-1; lines>=0; lines--) {
             Score score = obj.getScore(sidebar.get(i));
             score.setScore(s);
-            player.sendMessage(sidebar.get(i));
-            player.sendMessage(String.valueOf(i));
             s++;
         }
 

@@ -18,7 +18,7 @@ import java.util.*;
 
 public class ItemManager {
 
-    HashMap<UUID, String> items;
+    HashMap<UUID, String> items = new HashMap<>();
 
     String path = MineshaftApi.getInstance().getItemPath();
 

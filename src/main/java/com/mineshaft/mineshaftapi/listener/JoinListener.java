@@ -1,5 +1,6 @@
 package com.mineshaft.mineshaftapi.listener;
 
+import com.mineshaft.mineshaftapi.manager.SidebarManager;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,5 +15,7 @@ public class JoinListener implements Listener {
 
         // Make a new json player manager
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+
+        SidebarManager.displayScoreboard(player);
     }
 }

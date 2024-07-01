@@ -4,6 +4,7 @@ com\mineshaft\mineshaftapi\command\HealCommand.class
 com\mineshaft\mineshaftapi\listener\JoinListener.class
 com\mineshaft\mineshaftapi\command\GetItemCommand.class
 com\mineshaft\mineshaftapi\manager\json\JsonPlayerManager.class
+com\mineshaft\mineshaftapi\text\NumericFormatter.class
 com\mineshaft\mineshaftapi\manager\PlayerManager$1.class
 com\mineshaft\mineshaftapi\manager\VariableTypeEnum.class
 com\mineshaft\mineshaftapi\manager\item\fields\ItemCategory.class

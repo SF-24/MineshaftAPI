@@ -6,7 +6,7 @@ prefix: MineshaftApi
 authors: [ SebastianFrynas ]
 description: A Minecraft plugin focusing on Rpg and Multiplayer elements
 website: https://github.com/SF-24
-depend: [NBTAPI]
+depend: [ ]
 softdepend: [ MythicMobs, Vault, BetonQuest ]
 commands:
   heal:

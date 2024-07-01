@@ -1,6 +1,7 @@
 package com.mineshaft.mineshaftapi.manager;
 
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.text.NumericFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,14 +16,14 @@ public class SidebarManager {
     public static void displayScoreboard(Player player) {
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
-        Objective obj = board.registerNewObjective("skyblock","dummy");
+        Objective obj = board.registerNewObjective("mineshaft","dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(ChatColor.YELLOW.toString() + ChatColor.BOLD + "SKYBLOCK");
+        obj.setDisplayName(ChatColor.YELLOW.toString() + ChatColor.BOLD + "MINESHAFT");
 
         String coinsLang = "Credits";
 
         int coins = JsonPlayerBridge.getCoins(player);
-        String location = "Village";
+        String location = "Bespin";
 
         String objective = null;
         if(objective==null) objective = "";
@@ -37,23 +38,26 @@ public class SidebarManager {
         Team currentDate = board.registerNewTeam("current_date");
 
         coinsTeam.addEntry(ChatColor.GOLD.toString());
-        coinsTeam.setPrefix(ChatColor.WHITE + " Credits: " + ChatColor.GREEN);
-        coinsTeam.setSuffix(String.valueOf(coins));
+        coinsTeam.setPrefix(ChatColor.WHITE.toString() + " " + coinsLang + ": ");
+        coinsTeam.setSuffix(ChatColor.GREEN+NumericFormatter.formatNumberAdvanced(coins));
 
         locationTeam.addEntry(ChatColor.DARK_PURPLE.toString());
-        locationTeam.setPrefix(ChatColor.WHITE + " ⏣ " + ChatColor.AQUA);
-        locationTeam.setSuffix(location);
+        locationTeam.setPrefix(ChatColor.WHITE + " ⏣ ");
+        locationTeam.setSuffix(ChatColor.AQUA + location);
 
         objectiveTeam.addEntry(ChatColor.BLUE.toString());
-        objectiveTeam.setPrefix(ChatColor.YELLOW + " ");
-        objectiveTeam.setSuffix(objective);
+        objectiveTeam.setPrefix(" ");
+        objectiveTeam.setSuffix(ChatColor.YELLOW + objective);
 
         ArrayList<String> sidebar = new ArrayList<>();
 
         // Scoreboard
         sidebar.add( ChatColor.GRAY + dateToString + ChatColor.DARK_GRAY + " mini69420A");
         sidebar.add("");
-        sidebar.add(ChatColor.WHITE + " Early spring 1st");
+
+
+
+        sidebar.add(ChatColor.WHITE + " Early summer 1st");
         sidebar.add(ChatColor.YELLOW + " ☀ " + ChatColor.GRAY + "9:30am");
 
         // Location entry
@@ -63,7 +67,7 @@ public class SidebarManager {
         // Purse -> coin display
         sidebar.add(ChatColor.GOLD.toString());
 
-        if(objective!=null && !objective.equals("")) {
+        if(!objective.equals("")) {
             sidebar.add("  ");
             sidebar.add(ChatColor.WHITE + " Current quest");
             sidebar.add(ChatColor.BLUE.toString());
@@ -76,27 +80,28 @@ public class SidebarManager {
         int lines = sidebar.size();
 
         int s = 0;
-        for(int i=lines-1; lines>=0; lines--) {
+        for(int i=lines-1; i>=0; i--) {
             Score score = obj.getScore(sidebar.get(i));
             score.setScore(s);
+            //player.sendMessage(sidebar.get(i));
+            //player.sendMessage(s + " | " + i);
             s++;
         }
-
-
 
         player.setScoreboard(board);
     }
 
     public static void updateCoins(Player player) {
-        setTeamSuffix(player, "coins", String.valueOf(JsonPlayerBridge.getCoins(player)));
+        setTeamSuffix(player, "coins", ChatColor.GREEN + NumericFormatter.formatNumberAdvanced(JsonPlayerBridge.getCoins(player)));
     }
 
     public static void updateLocation(Player player, String location) {
-        setTeamSuffix(player, "location", location);
+        setTeamSuffix(player, "location", ChatColor.AQUA + location);
     }
 
     public static void updateObjective(Player player, String objective) {
-        setTeamSuffix(player, "objective", objective);
+        setTeamSuffix(player, "objective", ChatColor.YELLOW + objective);
+        displayScoreboard(player);
     }
 
     public static void setTeamSuffix(Player player, String team, String value) {

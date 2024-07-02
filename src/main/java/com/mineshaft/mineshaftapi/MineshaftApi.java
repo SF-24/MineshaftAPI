@@ -4,6 +4,8 @@ import com.mineshaft.mineshaftapi.command.GetItemCommand;
 import com.mineshaft.mineshaftapi.command.HealCommand;
 import com.mineshaft.mineshaftapi.command.MenuCommand;
 import com.mineshaft.mineshaftapi.command.MonetaryBalanceCommand;
+import com.mineshaft.mineshaftapi.dependency.DependencyInit;
+import com.mineshaft.mineshaftapi.dependency.MineshaftPlaceholderExpansion;
 import com.mineshaft.mineshaftapi.listener.JoinListener;
 import com.mineshaft.mineshaftapi.manager.PlayerManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
@@ -18,6 +20,7 @@ import java.io.File;
 public final class MineshaftApi extends JavaPlugin {
 
     ItemManager itemManager;
+    DependencyInit dependencyInit = new DependencyInit();
 
     @Override
     public void onEnable() {
@@ -35,8 +38,12 @@ public final class MineshaftApi extends JavaPlugin {
         getCommand("balance").setExecutor(new MonetaryBalanceCommand());
         getCommand("getitem").setExecutor(new GetItemCommand());
 
+        // Initialise custom items
         itemManager=new ItemManager();
         itemManager.initialiseItems();
+
+        // Initialise plugin dependencies
+        dependencyInit.initialiseDependencies();
     }
 
     @Override
@@ -47,7 +54,6 @@ public final class MineshaftApi extends JavaPlugin {
             case ENGLISH:
                 Logger.logInfo("Plugin mineshaft API has been disabled");
         }
-
         PlayerManager.KickPlayers();
     }
 

@@ -27,6 +27,7 @@ import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemFields;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.text.Logger;
 import com.mineshaft.mineshaftapi.text.NumericFormatter;
 import com.mineshaft.mineshaftapi.text.TextFormatter;
@@ -37,8 +38,13 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,6 +158,7 @@ public class ItemManager {
         // Temporarily unused - will be used for stuff like AH sorting, item abilities, etc.
         ItemCategory category = ItemCategory.ITEM_GENERIC;
 
+
         // Item display name
         String displayName = "Custom Item";
 
@@ -159,7 +166,13 @@ public class ItemManager {
         double defence = 0;
         double speed = 0;
 
+        int durability = 0;
+
         String statsString = "stats";
+
+        boolean hide_attributes = false;
+
+        ItemSubcategory subcategory = ItemSubcategory.DEFAULT;
 
         for(String field : yamlConfiguration.getKeys(false)) {
             switch (field) {
@@ -181,6 +194,16 @@ public class ItemManager {
                 case "modifiers":
                     statsString="modifiers";
                     break;
+                case "durability":
+                    durability = yamlConfiguration.getInt("durability");
+                case "stack_size":
+                    meta.setMaxStackSize(yamlConfiguration.getInt("stack_size"));
+                case "enchantment_glint":
+                    meta.setEnchantmentGlintOverride(yamlConfiguration.getBoolean("enchantment_glint"));
+                case "hide_attributes":
+                    hide_attributes = yamlConfiguration.getBoolean("hide_attributes");
+                case "subcategory":
+                    subcategory=ItemSubcategory.valueOf(yamlConfiguration.getString("subcategory"));
                 default:
             }
         }
@@ -191,8 +214,37 @@ public class ItemManager {
         ArrayList<String> lore = new ArrayList<>();
 
         if(rarity!=ItemRarity.STANDARD) {
-            lore.add(rarity.getColourCode() + ChatColor.ITALIC.toString() + rarity.getName() + " Item");
+            String itemDisplay = "Item";
+
+            if(category.equals(ItemCategory.WEAPON_MELEE) || category.equals(ItemCategory.WEAPON_RANGED)) {
+                itemDisplay="Weapon";
+            } else if(category.equals(ItemCategory.ARMOUR_CHESTPLATE)) {
+                itemDisplay="Chestplate";
+            } else if(category.equals(ItemCategory.ARMOUR_LEGGINGS)) {
+                itemDisplay="Leggings";
+            } else if(category.equals(ItemCategory.ARMOUR_BOOTS)) {
+                itemDisplay="Boots";
+            } else if(category.equals(ItemCategory.ARMOUR_HELMET)) {
+                itemDisplay="Helmet";
+            } else if(category.equals(ItemCategory.TOOL_AXE)) {
+                itemDisplay="Axe";
+            } else if(category.equals(ItemCategory.TOOL_PICKAXE)) {
+                itemDisplay="Pickaxe";
+            } else if(category.equals(ItemCategory.TOOL_SHOVEL)) {
+                itemDisplay="Shovel";
+            } else if(category.equals(ItemCategory.TOOL_HOE)) {
+                itemDisplay="Hoe";
+            } else if(category.equals(ItemCategory.ITEM_CONSUMABLE)) {
+                itemDisplay="Consumable";
+            }
+
+            if(!subcategory.equals(ItemSubcategory.DEFAULT)) {
+                itemDisplay = TextFormatter.capitaliseString(subcategory.name());
+            }
+
+            lore.add(rarity.getColourCode() + ChatColor.ITALIC.toString() + rarity.getName() + " " + itemDisplay);
             lore.add("");
+
         }
 
         // Load file stats, append to lore and add them to the item
@@ -236,11 +288,56 @@ public class ItemManager {
                 break;
             case ITEM_CONSUMABLE:
                 slot=null;
-                break;
-            case ITEM_GENERIC:
-                slot=null;
+                FoodComponent component = new ItemStack(Material.APPLE).getItemMeta().getFood();
+
+                String path = "food.";
+
+                for(String field : yamlConfiguration.getConfigurationSection("food").getKeys(false)) {
+                    switch (field) {
+                        case "saturation":
+                            component.setSaturation((float) yamlConfiguration.getDouble(path+"saturation"));
+                        case "nutrition":
+                            component.setNutrition(yamlConfiguration.getInt(path+"nutrition"));
+                        case "always_edible":
+                            component.setCanAlwaysEat(yamlConfiguration.getBoolean(path+"always_edible"));
+                        case "eat_seconds":
+                            component.setEatSeconds((float) yamlConfiguration.getDouble(path+"eat_seconds"));
+                        case "potion_effects":
+                            for (String effectName : yamlConfiguration.getConfigurationSection(path+"potion_effects").getKeys(false)) {
+                                String tempPath = path + "potion_effects." + effectName + ".";
+
+                                PotionEffectType potionEffectType = PotionEffectType.getByName(effectName.toUpperCase());
+
+                                int duration = 20*60;
+                                int amplifier = 0;
+                                boolean ambient = false;
+                                boolean particles = false;
+                                boolean icon = true;
+                                for(String parameter : yamlConfiguration.getConfigurationSection(path + "potion_effects." + effectName).getKeys(false)) {
+                                    switch (parameter) {
+                                        case "duration":
+                                            duration = yamlConfiguration.getInt(tempPath+"duration");
+                                        case "amplifier":
+                                            amplifier = yamlConfiguration.getInt(tempPath+"amplifier");
+                                        case "ambient":
+                                            ambient = yamlConfiguration.getBoolean(tempPath+"ambient");
+                                        case "particles":
+                                            particles = yamlConfiguration.getBoolean(tempPath+"particles");
+                                        case "icon":
+                                            icon = yamlConfiguration.getBoolean(tempPath+"icon");
+                                    }
+                                }
+                                component.addEffect(new PotionEffect(potionEffectType, duration, amplifier,ambient, particles,icon), 1);
+                            }
+                    }
+                }
+
+                meta.setFood(component);
                 break;
             case OTHER:
+                slot=null;
+                break;
+            case ITEM_GENERIC:
                 slot=null;
                 break;
         }
@@ -272,9 +369,25 @@ public class ItemManager {
             }
         }
 
+        // Hide attributes
+        if(hide_attributes) {
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        }
+
+        meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
+        meta.addItemFlags(ItemFlag.HIDE_DYE);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+
         meta.setLore(lore);
 
         item.setItemMeta(meta);
+
+        if(durability>0) {
+            Damageable damageableMeta = (Damageable) meta;
+            damageableMeta.setMaxDamage(durability);
+            item.setItemMeta(damageableMeta);
+        }
 
         // Apply NBT tag with item
         NBT.modify(item, nbt -> {

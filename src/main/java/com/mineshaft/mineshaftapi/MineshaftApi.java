@@ -27,6 +27,7 @@ import com.mineshaft.mineshaftapi.command.HealCommand;
 import com.mineshaft.mineshaftapi.command.MenuCommand;
 import com.mineshaft.mineshaftapi.command.MonetaryBalanceCommand;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
+import com.mineshaft.mineshaftapi.dependency.VaultDependency;
 import com.mineshaft.mineshaftapi.listener.JoinListener;
 import com.mineshaft.mineshaftapi.manager.PlayerManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
@@ -99,4 +100,8 @@ public final class MineshaftApi extends JavaPlugin {
     public String getItemPath() {return getPluginDataPath() + File.separator + "Items"; }
 
     public ItemManager getItemManagerInstance() {return itemManager;}
+
+    public boolean hasVaultDependency() { return dependencyInit.hasVault(); }
+
+    public VaultDependency getVault() {return dependencyInit.getVault();}
 }

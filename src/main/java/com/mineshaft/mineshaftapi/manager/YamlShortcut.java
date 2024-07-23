@@ -22,17 +22,8 @@
 
 package com.mineshaft.mineshaftapi.manager;
 
-public enum VariableTypeEnum {
+import org.bukkit.configuration.file.YamlConfiguration;
 
-    STRING,
-    INTEGER,
-    DOUBLE,
-    LIST,
-    MATERIAL,
-    ITEM_RARITY,
-    ITEM_CATEGORY,
-    UUID,
-    BOOLEAN
-
-
+public class YamlShortcut {
+//TODO:
 }

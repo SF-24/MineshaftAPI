@@ -27,11 +27,13 @@ import org.bukkit.entity.Player;
 public class JsonPlayerBridge {
 
     public static int getCoins(Player player) {
+        // if vault is not installed, use built-in currency
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
         return jsonPlayerManager.getCoins();
     }
 
     public static void setCoins(Player player, int coins) {
+        // if vault is not installed, use built-in currency
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
         if(coins<0) coins=0;
         jsonPlayerManager.setCoins(coins);
@@ -41,6 +43,11 @@ public class JsonPlayerBridge {
         int coins = getCoins(player) + amount;
         if(coins<0) coins=0;
         setCoins(player, coins);
+    }
+
+    public static boolean hasCoins(Player player, int amount) {
+        int balance = getCoins(player);
+        return getCoins(player)>=amount;
     }
 
 }

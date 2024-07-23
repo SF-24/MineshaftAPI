@@ -36,7 +36,12 @@ public enum ItemFields {
     material(VariableTypeEnum.MATERIAL, Material.GOLDEN_SWORD.name()),
     id(VariableTypeEnum.UUID, UUID.randomUUID().toString()),
     custom_model_data(VariableTypeEnum.INTEGER, 0),
-    parent(VariableTypeEnum.STRING, "null");
+    parent(VariableTypeEnum.STRING, "null"),
+    durability(VariableTypeEnum.INTEGER, 250),
+    stack_size(VariableTypeEnum.INTEGER, 1),
+    enchantment_glint(VariableTypeEnum.BOOLEAN, false),
+    hide_attributes(VariableTypeEnum.BOOLEAN, true),
+    subcategory(VariableTypeEnum.STRING, ItemSubcategory.SWORD.name().toLowerCase());
 
     private final VariableTypeEnum variableType;
     private final Object defaultValue;

@@ -20,19 +20,38 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager;
+package com.mineshaft.mineshaftapi.manager.item.fields;
 
-public enum VariableTypeEnum {
+public enum ItemSubcategory {
 
-    STRING,
-    INTEGER,
-    DOUBLE,
-    LIST,
-    MATERIAL,
-    ITEM_RARITY,
-    ITEM_CATEGORY,
-    UUID,
-    BOOLEAN
+    SWORD,
+    STAFF,
 
+    LIGHTSABER,
+    VIBROWEAPON,
+    ELECTROSTAFF,
 
-}
+    CROSSBOW,
+    BOW,
+    GUN,
+    BLASTER,
+    RIFLE,
+    LASGUN,
+
+    HELMET,
+    CHESTPLATE,
+    LEGGINGS,
+    BOOTS,
+
+    MEDKIT,
+    CONSUMABLE,
+
+    AXE,
+    PICKAXE,
+    HOE,
+    SHOVEL,
+    DRILL,
+
+    DEFAULT;
+
+    }

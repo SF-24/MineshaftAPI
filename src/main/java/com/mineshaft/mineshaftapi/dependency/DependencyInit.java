@@ -24,9 +24,12 @@ package com.mineshaft.mineshaftapi.dependency;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.text.Logger;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 
 public class DependencyInit {
+
+    VaultDependency vaultDependency = null;
 
     public void initialiseDependencies() {
 
@@ -35,13 +38,23 @@ public class DependencyInit {
             new MineshaftPlaceholderExpansion(MineshaftApi.getInstance()).register();
         } else {
             // Log warning
-            Logger.logWarning("PlaceholderAPI is not installed. While this plugin is not required, some functionality will be disabled");
+            Logger.logWarning("PlaceholderAPI is not installed. While this plugin is not required, however some functionality will be disabled");
         }
-
+        if(hasVault()) {
+            vaultDependency=new VaultDependency();
+        } else {
+            // Log warning
+            Logger.logWarning("Vault is not installed. While this plugin is not required, however some functionality and compatibility features will be disabled");
+        }
     }
 
     public static boolean hasPlaceholderAPI() {
         return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
     }
 
+    public static boolean hasVault() {
+        return Bukkit.getPluginManager().getPlugin("Vault") != null && Bukkit.getPluginManager().isPluginEnabled("Vault");
+    }
+
+    public VaultDependency getVault() {return vaultDependency;}
 }

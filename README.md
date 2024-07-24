@@ -21,7 +21,22 @@ If your `Items` folder is empty, an example file `example-item.yml` will be plac
 
 ### Example
 
-``
+```yaml
+name: Cleaver
+rarity: exotic
+item_category: weapon_melee
+material: GOLDEN_SWORD
+id: 1eeeb42e-250b-4466-8e03-9c6cccae0388
+custom_model_data: 0
+parent: 'null'
+durability: 250
+stack_size: 1
+enchantment_glint: false
+hide_attributes: true
+subcategory: sword
+stats:
+  damage: 5
+```
 
 ### List of parameters
 

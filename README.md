@@ -1,3 +1,4 @@
+
 # MineshaftAPI
 An spigot plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.20.6
 
@@ -16,9 +17,23 @@ If your `Items` folder is empty, an example file `example-item.yml` will be plac
 
 ### Example
 
-
+``
 
 ### List of parameters
+
+### Obtaining custom items
+
+Custom items can be obtained using the `/getitem` command. This command is by default accessible to players with operator permissions.
+
+Usage: `/getitem <item name>`
+
+The item name is replaced by the name of the file the item is saved in (excluding the file extension), not the custom name of the item.
+
+Examples:
+`/getitem example-item` grants the player the item with the name `example-item`.
+This may be saved in the file `example-item.yml` or `example-item.yaml`
+
+`/getitem diamond-sword` grants the player the item with the name `diamond-sword`
 
 ## Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.

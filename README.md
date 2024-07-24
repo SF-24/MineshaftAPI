@@ -47,8 +47,8 @@ Not all parameters are required for the item to work
 | `name` | The custom name for the item | String||
 | `subcategory` | The displayed category of the item |String|Only affects the item description. Use any value you want |
 | `material` | The Minecraft material for the item| Enum | [1.21 Material List](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)|
-| `rarity` | Rarity of the item |Enum|[Rarity List](####Item Rarity List)|
-| `item-category` | Category of the item | Enum|[Category List](####Item Category List)|
+| `rarity` | Rarity of the item |Enum|[Rarity List](#Item Rarity List)|
+| `item-category` | Category of the item | Enum|[Category List](#Item Category List)|
 | `custom_model_data` | Custom Model Data | Integer||
 | `durability` | The amount of times an item may be used before it breaks | Integer||
 | `stack_size` | The maximum stack size of any given item | Integer|Value between 1 and 99|
@@ -94,7 +94,7 @@ See below for a list of custom attributes
 
 **Example**
 *Below is an example of a stat section of am item*
-*For a full example of an item YAML file [click here](###Example)*
+*For a full example of an item YAML file [click here](#Example)*
 ```yaml
 stats:
   damage: 5

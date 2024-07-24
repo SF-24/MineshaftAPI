@@ -124,7 +124,7 @@ stats:
 | `speed` | Health| Increases maximum health when equipped||
 | `defence` | Defence| Reduces damage taken (excluding certain sources like drowning) | Defence scalability will be modified|
 | `speed` | Speed | Will increase movement speed when implemented | Stat is applied to items, however functionality has not yet been implemented |
-
+| `reach` | Reach | Affects mining and entity interaction reach distance | 
 ### Obtaining custom items
 
 Custom items can be obtained using the `/getitem` command. This command is by default accessible to players with operator permissions.

@@ -126,6 +126,60 @@ stats:
 | `speed` | Speed | Will increase movement speed when implemented | Stat is applied to items, however functionality has not yet been implemented |
 | `reach` | Reach | Affects mining and entity interaction reach distance | 
 
+#### Food
+
+The `food` property is used only for consumables. 
+If an item has a food property, it may be eaten by a player.
+
+**Example**
+*Below is an example of a food section of an item*
+*For a full example of an item YAML file [click here](#Example)*
+
+```yaml
+food:
+  nutrition: 5
+  saturation: 0.5
+  always_edible: true
+  eat_seconds: 0.2
+  potion_effects:
+    speed:
+      duration: 200
+      amplifier: 1
+      ambient: true 
+      particles: false
+      icon: true
+```
+
+#### List of food stats
+
+| Value | Stat | Description |Data Type|Notes
+|:---------|-|:-----------|-:|-:|
+| `nutrition`|Nutrition|The amount of health icons healed by the food|Integer
+| `saturation`|Saturation|Saturation healed by the food|Float|
+| `eat_seconds`|Eat seconds|Time in seconds it takes to consume an item|Float|
+| `always_edible`|Always Edible|Whether an item can be eaten when your health bar is full|Boolean|
+| `potion effects`|Potion effects|Potion effects given to the player when the item is consumed|Complex|
+
+#### Potion effects
+```yaml
+potion-effect-name:
+      duration: 200
+      amplifier: 1
+      ambient: true 
+      particles: false
+      icon: true
+```
+
+#### Potion effect parameters
+| Value | Stat | Description |Data Type|Notes
+|:---------|-|:-----------|-:|-:|
+| `potion-effect-name`|Potion effect name|Replace with the potion effect type name|Enum|[1.21 effect list](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html)
+| `duration`|Duration|Duration in ticks of the effect|Integer|
+| `amplifier`|Amplifier|Level of the effect - starting with 0|Integer|
+| `ambient`|Ambient|Whether the displayed particles are ambient|Boolean|
+| `particles`|Show particles|Whether the effect particles are displayed|Boolean|
+| `icon`|Show icon|Whether the effect icon is displayed|Boolean|
+
 ### Obtaining custom items
 
 Custom items can be obtained using the `/getitem` command. This command is by default accessible to players with operator permissions.

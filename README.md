@@ -74,7 +74,7 @@ Not all parameters are required for the item to work
 | `item_generic` | Generic item (no category) |
 | `other` | Other (Unspecified) |
 
-#### Item Category List
+#### Item Rarity List
 
 | Value | Rarity | Text Colour | Description |
 |:---------|:-----------:|:--:|-|

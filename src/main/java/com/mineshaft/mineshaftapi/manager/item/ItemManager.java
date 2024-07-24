@@ -172,7 +172,7 @@ public class ItemManager {
 
         String statsString = "stats";
 
-        boolean hide_attributes = false;
+        boolean hideAttributes = true;
 
         ItemSubcategory subcategory = ItemSubcategory.DEFAULT;
 
@@ -203,7 +203,7 @@ public class ItemManager {
                 case "enchantment_glint":
                     meta.setEnchantmentGlintOverride(yamlConfiguration.getBoolean("enchantment_glint"));
                 case "hide_attributes":
-                    hide_attributes = yamlConfiguration.getBoolean("hide_attributes");
+                    hideAttributes = yamlConfiguration.getBoolean("hide_attributes");
                 case "subcategory":
                     subcategory=ItemSubcategory.valueOf(yamlConfiguration.getString("subcategory"));
                 default:
@@ -372,7 +372,7 @@ public class ItemManager {
         }
 
         // Hide attributes
-        if(hide_attributes) {
+        if(hideAttributes) {
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }
 

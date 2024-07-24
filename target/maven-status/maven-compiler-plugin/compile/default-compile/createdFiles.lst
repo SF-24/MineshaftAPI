@@ -1,4 +1,5 @@
 com\mineshaft\mineshaftapi\manager\ProfileManager.class
+com\mineshaft\mineshaftapi\command\MineshaftCommand.class
 com\mineshaft\mineshaftapi\manager\json\PlayerDataClass.class
 com\mineshaft\mineshaftapi\command\HealCommand.class
 com\mineshaft\mineshaftapi\listener\UIListener.class

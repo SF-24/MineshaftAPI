@@ -2,6 +2,19 @@
 # MineshaftAPI
 An spigot plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.20.6
 
+## Table of Contents
+- [Copyright notice](#Important-Copyright-Information)
+- [Documentation introduction](#Documentation)
+- [Item Creation](#Item-Creation )
+	- [Example](#Example)
+	- [List of parameters](#List-of-parameters)
+		- [Item Category List](#item-category-list)
+		- [Item Rarity List](#item-rarity-list)
+		- [Item stats and attributes](#item-stats-and-attributes)
+		- [List of item attributes](#list-of-item-attributes)
+	- [Obtaining custom items](#obtaining-custom-items)
+- [Plugin reloading](#plugin-reloading)
+
 ## Important Copyright Information
 **This project is under the GPU GPL v3 license**
 Terms of use can be found here: https://www.gnu.org/licenses/gpl-3.0.en.html

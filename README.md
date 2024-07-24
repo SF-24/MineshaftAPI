@@ -161,13 +161,16 @@ food:
 | `potion effects`|Potion effects|Potion effects given to the player when the item is consumed|Complex|
 
 #### Potion effects
+This section controls the potion effect which are applied when the item is consumed
+
 ```yaml
-potion-effect-name:
-      duration: 200
-      amplifier: 1
-      ambient: true 
-      particles: false
-      icon: true
+potion_effects:
+	potion-effect-name:
+	      duration: 200
+	      amplifier: 1
+	      ambient: true 
+	      particles: false
+	      icon: true
 ```
 
 #### Potion effect parameters

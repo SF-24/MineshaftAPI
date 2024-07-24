@@ -169,7 +169,7 @@ This section controls the potion effect which are applied when the item is consu
 
 ```yaml
 potion_effects:
-	potion-effect-name:
+  potion-effect-name:
 	  duration: 200
 	  amplifier: 1
 	  ambient: true 

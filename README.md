@@ -12,6 +12,10 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 		- [Item rarity list](#item-rarity-list)
 		- [Item stats and attributes](#item-stats-and-attributes)
 		- [List of item attributes](#list-of-item-attributes)
+		-  [Food](#food)
+		 - [List of food stats](#list-of-food-stats)
+		 - [Potion effects](#potion-effects)
+		 - [Potion effect parameters](#potion-effects-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
 - [Plugin reloading](#plugin-reloading)
 

@@ -76,14 +76,14 @@ Not all parameters are required for the item to work
 
 #### Item Category List
 
-| Value | Rarity | Description |
-|:---------|:-----------:|:--:|
-| `standard` |~~No Description~~||
-| `common` |<font color="white">Common</font>||
-| `uncommon` |<font color="lime">Uncommon</font>||
-| `rare` |<font color="blue">Rare</font>||
-| `exotic` |<font color="magenta">Exotic</font>||
-| `legendary` |<font color="ORANGE">Legendary</font>||
+| Value | Rarity | Text Colour | Description |
+|:---------|:-----------:|:--:|-|
+| `standard` |~~No Description~~||Standard items with no rarity|
+| `common` |<font color="white">Common</font>|white|
+| `uncommon` |<font color="lime">Uncommon</font>|green|
+| `rare` |<font color="blue">Rare</font>|blue|
+| `exotic` |<font color="magenta">Exotic</font>|magenta/purple|
+| `legendary` |<font color="ORANGE">Legendary</font>|orange/gold|
 
 ### Obtaining custom items
 

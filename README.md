@@ -53,6 +53,18 @@ hide_attributes: true
 subcategory: sword
 stats:
   damage: 5
+food:
+  nutrition: 5
+  saturation: 0.5
+  always_edible: true
+  eat_seconds: 0.2
+  potion_effects:
+    speed:
+      duration: 200
+      amplifier: 1
+      ambient: true 
+      particles: false
+      icon: true
 ```
 
 ### List of parameters

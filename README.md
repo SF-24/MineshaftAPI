@@ -15,7 +15,7 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 		-  [Food](#food)
 		 - [List of food stats](#list-of-food-stats)
 		 - [Potion effects](#potion-effects)
-		 - [Potion effect parameters](#potion-effects-parameters)
+		 - [Potion effect parameters](#potion-effect-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
 - [Plugin reloading](#plugin-reloading)
 

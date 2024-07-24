@@ -43,10 +43,12 @@ public class GetItemCommand implements CommandExecutor {
 
         if(args.length==0) {
             player.sendMessage(ChatColor.RED + "Please specify an item name");
+            sendItemList(player);
             return false;
         }
 
         if(args.length>1) {
+
             player.sendMessage(ChatColor.RED + "Too many parameters");
             return false;
         }

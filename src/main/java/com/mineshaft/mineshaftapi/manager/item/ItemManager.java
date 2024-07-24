@@ -61,6 +61,8 @@ public class ItemManager {
     String path = MineshaftApi.getInstance().getItemPath();
 
     public void initialiseItems() {
+        items=new HashMap<>();
+
         File folder = new File(path);
         if(!folder.exists()) {
             folder.mkdirs();

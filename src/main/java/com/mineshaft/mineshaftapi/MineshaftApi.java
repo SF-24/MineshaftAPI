@@ -22,10 +22,7 @@
 
 package com.mineshaft.mineshaftapi;
 
-import com.mineshaft.mineshaftapi.command.GetItemCommand;
-import com.mineshaft.mineshaftapi.command.HealCommand;
-import com.mineshaft.mineshaftapi.command.MenuCommand;
-import com.mineshaft.mineshaftapi.command.MonetaryBalanceCommand;
+import com.mineshaft.mineshaftapi.command.*;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
 import com.mineshaft.mineshaftapi.listener.JoinListener;
@@ -55,10 +52,11 @@ public final class MineshaftApi extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
 
-        getCommand("heal").setExecutor(new HealCommand());
+        getCommand("mineshaft").setExecutor(new MineshaftCommand());
         getCommand("menu").setExecutor(new MenuCommand());
         getCommand("balance").setExecutor(new MonetaryBalanceCommand());
         getCommand("getitem").setExecutor(new GetItemCommand());
+        getCommand("heal").setExecutor(new HealCommand());
 
         // Initialise custom items
         itemManager=new ItemManager();
@@ -104,4 +102,14 @@ public final class MineshaftApi extends JavaPlugin {
     public boolean hasVaultDependency() { return dependencyInit.hasVault(); }
 
     public VaultDependency getVault() {return dependencyInit.getVault();}
+
+    public static void reloadItems() {
+        MineshaftApi.getInstance().itemManager.initialiseItems();
+    }
+
+    public static void reloadPlugin() {
+        reloadItems();
+    }
+
+
 }

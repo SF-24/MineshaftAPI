@@ -47,14 +47,43 @@ Not all parameters are required for the item to work
 | `name` | The custom name for the item | String||
 | `subcategory` | The displayed category of the item |String|Only affects the item description. Use any value you want |
 | `material` | The Minecraft material for the item| Enum | [1.21 Material List](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)|
-| `rarity` | Rarity of the item |Enum||
-| `item-category` | Category of the item | Enum||
+| `rarity` | Rarity of the item |Enum|[Rarity List](####Item Rarity List)|
+| `item-category` | Category of the item | Enum|[Category List](####Item Category List)|
 | `custom_model_data` | Custom Model Data | Integer||
 | `durability` | The amount of times an item may be used before it breaks | Integer||
 | `stack_size` | The maximum stack size of any given item | Integer|Value between 1 and 99|
 | `hide_attributes` | Whether the default Minecraft attribute description will be hidden | boolean|Default is true. Only set to false for debugging.|
 | `enchantment_glint` | WIP: do not set | boolean||
 | `stats` | List of item attributes | HashMap||
+
+#### Item Category List
+
+| Value | Description |
+|:---------|:-----------:|
+| `weapon_melee` | Melee weapon |
+| `weapon_ranged` | Ranged weapon |
+| `armour_helmet` | Helmet |
+| `armour_chestplate` | Chestplate |
+| `armour_leggings` | Leggings |
+| `armour_boots` | Boots |
+| `tool_axe` | Axe |
+| `tool_pickaxe` | Pickaxe |
+| `tool_shovel` | Shovel |
+| `tool_hoe` | Hoe |
+| `item_consumable` | Consumable item |
+| `item_generic` | Generic item (no category) |
+| `other` | Other (Unspecified) |
+
+#### Item Category List
+
+| Value | Rarity | Description |
+|:---------|:-----------:|:--:|
+| `standard` |~~No Description~~||
+| `common` |<font color="white">Common</font>||
+| `uncommon` |<font color="lime">Uncommon</font>||
+| `rare` |<font color="blue">Rare</font>||
+| `exotic` |<font color="magenta">Exotic</font>||
+| `legendary` |<font color="ORANGE">Legendary</font>||
 
 ### Obtaining custom items
 

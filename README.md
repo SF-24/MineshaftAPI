@@ -59,18 +59,18 @@ Not all parameters are required for the item to work
 #### Item Category List
 
 | Value | Description |
-|:---------|:-----------:|
+|:---------|:-----------|
 | `weapon_melee` | Melee weapon |
 | `weapon_ranged` | Ranged weapon |
-| `armour_helmet` | Helmet |
-| `armour_chestplate` | Chestplate |
-| `armour_leggings` | Leggings |
-| `armour_boots` | Boots |
+| `armour_helmet` | Helmet (Equip in head slot) |
+| `armour_chestplate` | Chestplate (Equip in chest slot) |
+| `armour_leggings` | Leggings (Equip in leg slot) |
+| `armour_boots` | Boots (Equip in foot slot) |
 | `tool_axe` | Axe |
 | `tool_pickaxe` | Pickaxe |
 | `tool_shovel` | Shovel |
 | `tool_hoe` | Hoe |
-| `item_consumable` | Consumable item |
+| `item_consumable` | Consumable item (One time use) |
 | `item_generic` | Generic item (no category) |
 | `other` | Other (Unspecified) |
 

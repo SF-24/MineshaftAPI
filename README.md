@@ -2,6 +2,10 @@
 # MineshaftAPI
 An spigot plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.20.6
 
+## Important Copyright Information
+**This project is under the GPU GPL v3 license**
+Terms of use can be found here: https://www.gnu.org/licenses/gpl-3.0.en.html
+
 ## Documentation
 Currently, the only functionality of this plugin is custom item creation and **Vault** server economy.
 
@@ -20,6 +24,11 @@ If your `Items` folder is empty, an example file `example-item.yml` will be plac
 ``
 
 ### List of parameters
+
+| Parameter    | Description | Usage |
+|--------------|:-----------:|-----------:|
+| `material`   |  1.99 |        739 |
+| Bananas      |  1.89 |          6 |
 
 ### Obtaining custom items
 

@@ -170,11 +170,11 @@ This section controls the potion effect which are applied when the item is consu
 ```yaml
 potion_effects:
   potion-effect-name:
-	  duration: 200
-	  amplifier: 1
-	  ambient: true 
-	  particles: false
-	  icon: true
+    duration: 200
+    amplifier: 1
+    ambient: true 
+    particles: false
+    icon: true
 ```
 
 #### Potion effect parameters

@@ -45,20 +45,16 @@ Not all parameters are required for the item to work
 |:---------|:-----------:|-----------:|--:|
 | `parent` | The name of the parent item. All values unspecified in the file will be set to those of the parent. A parent item may also have its own parent item.| String||
 | `name` | The custom name for the item | String||
+| `subcategory` | The displayed category of the item |String|Only affects the item description. Use any value you want |
 | `material` | The Minecraft material for the item| Enum | [1.21 Material List](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)|
 | `rarity` | Rarity of the item |Enum||
-| `name` | The custom name for the item | String||
 | `item-category` | Category of the item | Enum||
-| `subcategory` | The displayed category of the item |String|Only affects the item description. Use any value you want |
 | `custom_model_data` | Custom Model Data | Integer||
 | `durability` | The amount of times an item may be used before it breaks | Integer||
 | `stack_size` | The maximum stack size of any given item | Integer|Value between 1 and 99|
 | `hide_attributes` | Whether the default Minecraft attribute description will be hidden | boolean|Default is true. Only set to false for debugging.|
 | `enchantment_glint` | WIP: do not set | boolean||
-| `custom_model_data` | Custom Model Data | Integer||
 | `stats` | List of item attributes | HashMap||
-
-
 
 ### Obtaining custom items
 

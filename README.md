@@ -85,6 +85,33 @@ Not all parameters are required for the item to work
 | `exotic` |<font color="magenta">Exotic</font>|magenta/purple|
 | `legendary` |<font color="ORANGE">Legendary</font>|orange/gold|
 
+#### Item stats and attributes
+
+The `stat` property is used to add custom attributes to an item. 
+These attributes are applied to the player when the item is equipped
+
+See below for a list of custom attributes
+
+**Example**
+*Below is an example of a stat section of am item*
+*For a full example of an item YAML file [click here](###Example)*
+```yaml
+stats:
+  damage: 5
+  speed: 10
+  defence: 32
+  health: 17
+```
+
+#### List of item attributes
+
+| Value | Stat | Description | Notes
+|:---------|-|:-----------|-:|
+| `damage` |Attack damage|  Increases damage dealt via ranged and melee | WIP -> extremely glitchy when using ranged weapons |
+| `speed` | Health| Increases maximum health when equipped||
+| `defence` | Defence| Reduces damage taken (excluding certain sources like drowning) | Defence scalability will be modified|
+| `speed` | Speed | Will increase movement speed when implemented | Stat is applied to items, however functionality has not yet been implemented |
+
 ### Obtaining custom items
 
 Custom items can be obtained using the `/getitem` command. This command is by default accessible to players with operator permissions.

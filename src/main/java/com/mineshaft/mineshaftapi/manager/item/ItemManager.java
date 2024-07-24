@@ -174,7 +174,7 @@ public class ItemManager {
 
         boolean hideAttributes = true;
 
-        ItemSubcategory subcategory = ItemSubcategory.DEFAULT;
+        String subcategory = null;
 
         for(String field : yamlConfiguration.getKeys(false)) {
             switch (field) {
@@ -205,7 +205,7 @@ public class ItemManager {
                 case "hide_attributes":
                     hideAttributes = yamlConfiguration.getBoolean("hide_attributes");
                 case "subcategory":
-                    subcategory=ItemSubcategory.valueOf(yamlConfiguration.getString("subcategory"));
+                    subcategory=yamlConfiguration.getString("subcategory");
                 default:
             }
         }
@@ -240,8 +240,8 @@ public class ItemManager {
                 itemDisplay="Consumable";
             }
 
-            if(!subcategory.equals(ItemSubcategory.DEFAULT)) {
-                itemDisplay = TextFormatter.capitaliseString(subcategory.name());
+            if(subcategory != null && !subcategory.equals("")) {
+                itemDisplay = TextFormatter.capitaliseString(subcategory);
             }
 
             lore.add(rarity.getColourCode() + ChatColor.ITALIC.toString() + rarity.getName() + " " + itemDisplay);
@@ -349,6 +349,12 @@ public class ItemManager {
 
             lore.add(getStatString(stat, value));
 
+            // If an item has an attack speed modifier, the attack speed is 4 + the modifier.
+
+            if(stat.equals(ItemStats.ATTACK_SPEED)) {
+                value= -1 * (4-value);
+            }
+
             AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER);
             if(slot!=null) {
                 attributeModifier = new AttributeModifier(UUID.randomUUID(), UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER, slot);
@@ -366,6 +372,19 @@ public class ItemManager {
                     break;
                 case HEALTH:
                     meta.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, attributeModifier);
+                    break;
+                case ATTACK_REACH:
+                    meta.addAttributeModifier(Attribute.PLAYER_ENTITY_INTERACTION_RANGE, attributeModifier);
+                    break;
+                case MINING_REACH:
+                    meta.addAttributeModifier(Attribute.PLAYER_BLOCK_INTERACTION_RANGE, attributeModifier);
+                    break;
+                case REACH:
+                    meta.addAttributeModifier(Attribute.PLAYER_ENTITY_INTERACTION_RANGE, attributeModifier);
+                    meta.addAttributeModifier(Attribute.PLAYER_BLOCK_INTERACTION_RANGE, attributeModifier);
+                    break;
+                case ATTACK_SPEED:
+                    meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, attributeModifier);
                     break;
                 default:
             }

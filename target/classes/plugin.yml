@@ -9,6 +9,9 @@ website: https://github.com/SF-24
 depend: [ ]
 softdepend: [ MythicMobs, Vault, BetonQuest, PlaceholderAPI ]
 commands:
+  mineshaft:
+    permission: mineshaft.op
+    description: Main plugin command. Used to reload the plugin and data
   heal:
     permission: mineshaft.debug.heal
     description: Heals the user

@@ -33,7 +33,13 @@ public enum ItemStats {
     SPEED(ChatColor.WHITE.toString()),
 
     DEFENCE(ChatColor.GREEN.toString()),
-    HEALTH(ChatColor.RED.toString());
+    HEALTH(ChatColor.RED.toString()),
+
+    ATTACK_SPEED(ChatColor.AQUA.toString()),
+
+    ATTACK_REACH(ChatColor.YELLOW.toString()),
+    MINING_REACH(ChatColor.YELLOW.toString()),
+    REACH(ChatColor.YELLOW.toString());
 
     private final String colour;
 

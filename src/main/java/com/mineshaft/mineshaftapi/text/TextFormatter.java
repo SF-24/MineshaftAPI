@@ -22,9 +22,25 @@
 
 package com.mineshaft.mineshaftapi.text;
 
+import org.apache.commons.lang.WordUtils;
+
 public class TextFormatter {
 
     public static String capitaliseString(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
+    }
+
+    public static String capitaliseStringFully(String string) {
+        return WordUtils.capitalizeFully(string);
+    }
+
+    public static String addSpacesToString(String string) {
+        string = string.replace("-"," ");
+        string = string.replace("_"," ");
+        return string;
+    }
+
+    public static String convertStringToName(String string) {
+        return capitaliseStringFully(addSpacesToString(string));
     }
 }

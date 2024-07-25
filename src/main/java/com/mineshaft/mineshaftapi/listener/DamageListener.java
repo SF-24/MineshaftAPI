@@ -44,12 +44,16 @@ public class DamageListener implements Listener {
             defendableDamage.add(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION);
             defendableDamage.add(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK);
 
-            if(defendableDamage.contains(e.getCause())) {
+            if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
+                e.setCancelled(true);
+            }
+
+            if(!e.isCancelled() && defendableDamage.contains(e.getCause())) {
                 Player player = (Player) e.getEntity();
 
                 // Update damage depending on defence stat
                 double defence = PlayerStatManager.getPlayerStat(ItemStats.DEFENCE,player);
-                double damageReduction = defence/(defence+100);
+                double damageReduction = defence/(defence+35);
                 double damage = e.getDamage();
                 damage=damage*(100-damageReduction);
                 e.setDamage(damage);

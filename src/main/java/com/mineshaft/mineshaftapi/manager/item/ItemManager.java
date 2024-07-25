@@ -240,7 +240,7 @@ public class ItemManager {
             }
 
             if(subcategory != null && !subcategory.equals("")) {
-                itemDisplay = TextFormatter.capitaliseString(subcategory);
+                itemDisplay = TextFormatter.convertStringToName(subcategory);
             }
 
             lore.add(rarity.getColourCode() + ChatColor.ITALIC.toString() + rarity.getName() + " " + itemDisplay);
@@ -501,7 +501,7 @@ public class ItemManager {
     }
 
     protected static String getStatString(ItemStats stat, Double value) {
-        return ChatColor.GRAY + TextFormatter.capitaliseString(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + "+" + NumericFormatter.formatNumberAdvanced(value);
+        return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + "+" + NumericFormatter.formatNumberAdvanced(value);
     }
 
     protected static void setItemNbtStat(ItemStack stack, ItemStats stat, double value) {

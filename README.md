@@ -53,19 +53,8 @@ hide_attributes: true
 subcategory: sword
 stats:
   damage: 5
-food:
-  nutrition: 5
-  saturation: 0.5
-  always_edible: true
-  eat_seconds: 0.2
-  potion_effects:
-    speed:
-      duration: 200
-      amplifier: 1
-      ambient: true 
-      particles: false
-      icon: true
 ```
+![An image of the example item](https://raw.githubusercontent.com/SF-24/images/main/example.png?token=GHSAT0AAAAAACVH5VYE6TIIM3WQV535ATUKZVCIRKQ)
 
 ### List of parameters
 Not all parameters are required for the item to work
@@ -77,13 +66,14 @@ Not all parameters are required for the item to work
 | `subcategory` | The displayed category of the item |String|Only affects the item description. Use any value you want |
 | `material` | The Minecraft material for the item| Enum | [1.21 Material List](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)|
 | `rarity` | Rarity of the item |Enum|[Rarity List](#Item-Rarity-List)|
-| `item-category` | Category of the item | Enum|[Category List](#Item-Category-List)|
+| `item_category` | Category of the item | Enum|[Category List](#Item-Category-List)|
 | `custom_model_data` | Custom Model Data | Integer||
 | `durability` | The amount of times an item may be used before it breaks | Integer||
 | `stack_size` | The maximum stack size of any given item | Integer|Value between 1 and 99|
 | `hide_attributes` | Whether the default Minecraft attribute description will be hidden | boolean|Default is true. Only set to false for debugging.|
 | `enchantment_glint` | WIP: do not set | boolean||
 | `stats` | List of item attributes | HashMap||
+|`id`|A unique id assigned by the plugin. This is used for the plugin to recognize the item.|UUID|Do not change or set manually. Two items having the same id will result in **MAJOR** bugs. Changing an item id results in previous items breaking.
 
 #### Item Category List
 
@@ -140,7 +130,10 @@ stats:
 | `speed` | Health| Increases maximum health when equipped||
 | `defence` | Defence| Reduces damage taken (excluding certain sources like drowning) | Defence scalability will be modified|
 | `speed` | Speed | Will increase movement speed when implemented | Stat is applied to items, however functionality has not yet been implemented |
-| `reach` | Reach | Affects mining and entity interaction reach distance | 
+| `reach` | Reach | Affects block and entity interaction reach distance | | `mining_reach` | Block Interaction Reach | Affects block interaction reach distance |
+| `attack_reach` | Entity Interaction Reach | Affects entity interaction reach distance | 
+| `attack_speed` | Attack Speed | The attack speed of an item. | Work in progress. Do not use on armour | 
+
 
 #### Food
 

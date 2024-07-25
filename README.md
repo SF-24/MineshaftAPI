@@ -72,6 +72,7 @@ Not all parameters are required for the item to work
 | `hide_attributes` | Whether the default Minecraft attribute description will be hidden | boolean|Default is true. Only set to false for debugging.|
 | `enchantment_glint` | WIP: do not set | boolean||
 | `stats` | List of item attributes | HashMap||
+|`id`|A unique id assigned by the plugin. This is used for the plugin to recognize the item.|UUID|Do not change or set manually. Two items having the same id will result in **MAJOR** bugs. Changing an item id results in previous items breaking.
 
 #### Item Category List
 

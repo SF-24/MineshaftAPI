@@ -41,7 +41,7 @@ public enum ItemFields {
     stack_size(VariableTypeEnum.INTEGER, 1),
     enchantment_glint(VariableTypeEnum.BOOLEAN, false),
     hide_attributes(VariableTypeEnum.BOOLEAN, true),
-    subcategory(VariableTypeEnum.STRING, ItemSubcategory.SWORD.name().toLowerCase());
+    subcategory(VariableTypeEnum.STRING, "Sword");
 
     private final VariableTypeEnum variableType;
     private final Object defaultValue;

@@ -27,7 +27,6 @@ import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemFields;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.text.Logger;
 import com.mineshaft.mineshaftapi.text.NumericFormatter;
 import com.mineshaft.mineshaftapi.text.TextFormatter;
@@ -85,7 +84,7 @@ public class ItemManager {
 
         if(!yamlConfiguration.contains("id")) {
             yamlConfiguration.createSection("id");
-            yamlConfiguration.set("id", UUID.randomUUID());
+            yamlConfiguration.set("id", UUID.randomUUID().toString());
             try {
                 yamlConfiguration.save(fileYaml);
             } catch (IOException e) {

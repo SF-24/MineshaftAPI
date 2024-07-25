@@ -53,18 +53,6 @@ hide_attributes: true
 subcategory: sword
 stats:
   damage: 5
-food:
-  nutrition: 5
-  saturation: 0.5
-  always_edible: true
-  eat_seconds: 0.2
-  potion_effects:
-    speed:
-      duration: 200
-      amplifier: 1
-      ambient: true 
-      particles: false
-      icon: true
 ```
 
 ### List of parameters
@@ -140,7 +128,10 @@ stats:
 | `speed` | Health| Increases maximum health when equipped||
 | `defence` | Defence| Reduces damage taken (excluding certain sources like drowning) | Defence scalability will be modified|
 | `speed` | Speed | Will increase movement speed when implemented | Stat is applied to items, however functionality has not yet been implemented |
-| `reach` | Reach | Affects mining and entity interaction reach distance | 
+| `reach` | Reach | Affects block and entity interaction reach distance | | `mining_reach` | Block Interaction Reach | Affects block interaction reach distance |
+| `attack_reach` | Entity Interaction Reach | Affects entity interaction reach distance | 
+| `attack_speed` | Attack Speed | The attack speed of an item. | Work in progress. Do not use on armour | 
+
 
 #### Food
 

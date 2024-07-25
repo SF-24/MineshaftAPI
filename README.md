@@ -54,6 +54,7 @@ subcategory: sword
 stats:
   damage: 5
 ```
+![An image of the example item](https://raw.githubusercontent.com/SF-24/images/main/example.png?token=GHSAT0AAAAAACVH5VYE6TIIM3WQV535ATUKZVCIRKQ)
 
 ### List of parameters
 Not all parameters are required for the item to work

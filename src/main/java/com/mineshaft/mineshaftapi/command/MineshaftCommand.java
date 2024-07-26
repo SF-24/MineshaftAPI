@@ -80,21 +80,20 @@ public class MineshaftCommand implements CommandExecutor {
                 sendSyntaxError(sender);
             }
         } else if(args[0].equals("event")||args[0].equals("events")) {
-
-            if(args[1].equals("list") && args.length==2) {
+            if(args.length==2 && args[1].equals("list")) {
                 sendMessageToSender(sender, ChatColor.GOLD + "Showing event list:");
 
-                for(String name : MineshaftApi.getInstance().getEventManagerInstance().getEventList().values()) {
+                for(String name : MineshaftApi.getInstance().getEventManagerInstance().getEventList()) {
                     sendMessageToSender(sender," " + ChatColor.BLUE + name);
                 }
-            } else if(args[1].equals("trigger") && (args.length==2 || args.length==3)) {
+            } else if((args.length==2 || args.length==3) && args[1].equals("trigger")) {
                 if(args.length==2) {
                     sendMessageToSender(sender, ChatColor.RED + "Please specify an event to trigger");
                 } else if(!(sender instanceof org.bukkit.entity.Player)) {
                     sendMessageToSender(sender, ChatColor.RED + "Unfortunately events can only be triggered by players");
                 } else {
 
-                    if(MineshaftApi.getInstance().getEventManagerInstance().getEventList().values().contains(args[2])) {
+                    if(MineshaftApi.getInstance().getEventManagerInstance().getEventList().contains(args[2])) {
                         org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
                         boolean success = MineshaftApi.getInstance().getEventManagerInstance().runEvent(MineshaftApi.getInstance().getEventManagerInstance().getEvent(args[2]), player.getLocation());
                         if(success) {

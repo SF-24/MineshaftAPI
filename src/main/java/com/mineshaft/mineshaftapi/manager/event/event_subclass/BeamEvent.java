@@ -27,7 +27,6 @@ import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Set;
 

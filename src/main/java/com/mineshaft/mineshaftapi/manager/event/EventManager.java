@@ -31,7 +31,6 @@ import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.UniqueEventFields;
 import com.mineshaft.mineshaftapi.util.ColourFormatter;
 import com.mineshaft.mineshaftapi.util.Logger;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -43,16 +42,16 @@ import java.util.*;
 
 public class EventManager {
 
-    HashMap<UUID, String> events = new HashMap<>();
+    ArrayList<String> events = new ArrayList<>();
 
-    public HashMap<UUID, String> getEventList() {
+    public ArrayList<String> getEventList() {
         return events;
     }
 
     String path = MineshaftApi.getInstance().getEventPath();
 
     public void initialiseEvents() {
-        events =new HashMap<>();
+        events =new ArrayList<>();
 
         File folder = new File(path);
         if(!folder.exists()) {
@@ -74,16 +73,7 @@ public class EventManager {
 
         String name = fileName.substring(0, fileName.lastIndexOf('.'));
 
-        if(!yamlConfiguration.contains("id")) {
-            yamlConfiguration.createSection("id");
-            yamlConfiguration.set("id", UUID.randomUUID().toString());
-            try {
-                yamlConfiguration.save(fileYaml);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        events.put(UUID.fromString(yamlConfiguration.getString("id")), name);
+        events.add(name);
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
     }
 
@@ -234,7 +224,12 @@ public class EventManager {
         }
 
         if(eventType.equals(EventType.BEAM)) {
-            BeamEvent beamEvent = (BeamEvent) eventClass;
+            BeamEvent beamEvent = new BeamEvent();
+            beamEvent.setName(eventClass.getName());
+            beamEvent.setEventType(eventClass.getEventType());
+            beamEvent.setOffset(eventClass.getOffset());
+            beamEvent.setTarget(eventClass.getTarget());
+            beamEvent.customParameters=eventClass.getParameters();
 
             for(String key : yamlConfiguration.getKeys(false)) {
                 switch (key) {
@@ -272,7 +267,7 @@ public class EventManager {
 
                         LocalEvent localEvent = null;
                         try {
-                            localEvent = LocalEvent.valueOf(element);
+                            localEvent = LocalEvent.valueOf(element.toUpperCase(Locale.ROOT));
                         } catch (Exception e) {
                             Logger.logError("Could not load local event " + element  + " for yaml event: " + eventName);
                             break;

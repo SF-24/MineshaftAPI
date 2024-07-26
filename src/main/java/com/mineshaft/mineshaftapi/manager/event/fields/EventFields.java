@@ -29,11 +29,11 @@ import org.bukkit.Particle;
 public enum EventFields {
 
     PARENT(VariableTypeEnum.STRING, "null"),
-    EVENT_TYPE(VariableTypeEnum.EVENT_TYPE, EventType.BEAM),
-    COLOUR(VariableTypeEnum.STRING, "000000"),
+    EVENT_TYPE(VariableTypeEnum.EVENT_TYPE, EventType.BEAM.toString()),
+    COLOUR(VariableTypeEnum.STRING, "255255255"),
     FLY_DISTANCE(VariableTypeEnum.INTEGER, 40),
     SPEED(VariableTypeEnum.INTEGER, 5),
-    PARTICLE_TYPE(VariableTypeEnum.COMPLEX_ENUM, Particle.FIREWORK);
+    PARTICLE_TYPE(VariableTypeEnum.COMPLEX_ENUM, Particle.FIREWORK.toString());
 
     private final Object defaultValue;
     private final VariableTypeEnum variableType;

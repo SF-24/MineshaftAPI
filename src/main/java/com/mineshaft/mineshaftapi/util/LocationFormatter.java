@@ -20,31 +20,21 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.text;
+package com.mineshaft.mineshaftapi.util;
 
-import com.mineshaft.mineshaftapi.MineshaftApi;
+import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
-import java.util.logging.Level;
-
-public class Logger {
-
-    public static void log(Level level, String text) {
-        MineshaftApi.getPlugin(MineshaftApi.class).getLogger().log(level, text);
+public class LocationFormatter {
+    public Location applyOffset(Location loc, double x, double y, double z) {
+        return loc.add(x,y,z);
     }
 
-    public static void logInfo(String text) {
-        log(Level.INFO, text);
+    public Location applyOffset(Location loc, Location offset) {
+        return loc.add(offset);
     }
 
-    public static void logWarning(String text) {
-        log(Level.WARNING, text);
-    }
-
-    public static void logConfig(String text) {
-        log(Level.CONFIG, text);
-    }
-
-    public static void logError(String text) {
-        log(Level.SEVERE, text);
+    public Location applyOffset(Location loc, Vector offset) {
+        return loc.add(offset);
     }
 }

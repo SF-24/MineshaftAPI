@@ -31,8 +31,12 @@ public enum VariableTypeEnum {
     MATERIAL,
     ITEM_RARITY,
     ITEM_CATEGORY,
+    EVENT_TYPE,
+    LOCATION,
     UUID,
-    BOOLEAN
+    BOOLEAN,
+    PROJECTILE_TYPE,
+    COMPLEX_ENUM
 
 
 }

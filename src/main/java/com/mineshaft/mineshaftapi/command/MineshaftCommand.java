@@ -40,48 +40,78 @@ public class MineshaftCommand implements CommandExecutor {
             // No arguments
             sendMessageToSender(sender, ChatColor.RED + "Too few arguments!");
             sendSyntaxError(sender);
-        }
-        else if(args.length==1) {
-
-            // 1 Argument
-            if(args[0].equals("reload")) {
+        } else if(args[0].equals("reload")) {
+            if(args.length==1) {
                 MineshaftApi.reloadPlugin();
                 sender.sendMessage(ChatColor.AQUA + "Plugin has been reloaded");
-            } else {
-                sendSyntaxError(sender);
-            }
+            } else if(args.length==2) {
+                switch (args[1]) {
+                    case "all":
+                        // reload plugin
+                        MineshaftApi.reloadPlugin();
+                        sender.sendMessage(ChatColor.AQUA + "Plugin has been reloaded");
+                        break;
+                    case "items":
+                    case "item":
 
-        } else if(args.length==2) {
+                        // reload items only
+                        MineshaftApi.reloadItems();
+                        sender.sendMessage(ChatColor.AQUA + "Custom items have been reloaded");
+                        break;
+                    case "events":
+                    case "event":
 
-            // 2 Arguments
-
-            if(args[0].equals("reload")) {
-                if(args[1].equals("all")) {
-
-                    // reload plugin
-                    MineshaftApi.reloadPlugin();
-                    sender.sendMessage(ChatColor.AQUA + "Plugin has been reloaded");
-
-                } else if(args[1].equals("items")) {
-
-                    // reload items only
-                    MineshaftApi.reloadItems();
-                    sender.sendMessage(ChatColor.AQUA + "Custom items have been reloaded");
-
-                } else if(args[1].equals("config") || args[1].equals("configs")) {
-
-                    // TODO: reload configs
-                    sendMessageToSender(sender, ChatColor.RED + "This functionality is yet to be implemented");
-                } else {
-                    sendSyntaxError(sender);
+                        // reload events only
+                        MineshaftApi.reloadEvents();
+                        sender.sendMessage(ChatColor.AQUA + "Custom items have been reloaded");
+                        break;
+                    case "config":
+                    case "configs":
+                        // TODO: reload configs
+                        sendMessageToSender(sender, ChatColor.RED + "This functionality is yet to be implemented");
+                        break;
+                    default:
+                        // send error message
+                        sendSyntaxError(sender);
+                        break;
                 }
-
             } else {
-
-                // Syntax error
                 sendMessageToSender(sender, ChatColor.RED + "Error in command syntax.");
                 sendSyntaxError(sender);
             }
+        } else if(args[0].equals("event")||args[0].equals("events")) {
+
+            if(args[1].equals("list") && args.length==2) {
+                sendMessageToSender(sender, ChatColor.GOLD + "Showing event list:");
+
+                for(String name : MineshaftApi.getInstance().getEventManagerInstance().getEventList().values()) {
+                    sendMessageToSender(sender," " + ChatColor.BLUE + name);
+                }
+            } else if(args[1].equals("trigger") && (args.length==2 || args.length==3)) {
+                if(args.length==2) {
+                    sendMessageToSender(sender, ChatColor.RED + "Please specify an event to trigger");
+                } else if(!(sender instanceof org.bukkit.entity.Player)) {
+                    sendMessageToSender(sender, ChatColor.RED + "Unfortunately events can only be triggered by players");
+                } else {
+
+                    if(MineshaftApi.getInstance().getEventManagerInstance().getEventList().values().contains(args[2])) {
+                        org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
+                        boolean success = MineshaftApi.getInstance().getEventManagerInstance().runEvent(MineshaftApi.getInstance().getEventManagerInstance().getEvent(args[2]), player.getLocation());
+                        if(success) {
+                            sendMessageToSender(sender, ChatColor.AQUA + "Event successfully executed");
+                        } else {
+                            sendMessageToSender(sender, ChatColor.RED + "Event could not be executed successfully");
+                        }
+                    } else {
+                        sendMessageToSender(sender, ChatColor.RED + "Event does not exist or has not been loaded");
+                    }
+
+                }
+
+            } else {
+                sendSyntaxError(sender);
+            }
+
         } else {
             // To many arguments
             sendMessageToSender(sender,  ChatColor.RED + "Too many arguments!");
@@ -104,5 +134,7 @@ public class MineshaftCommand implements CommandExecutor {
     public void sendSyntaxError(CommandSender sender) {
         sendMessageToSender(sender, ChatColor.RED + "Syntax error. Incorrect usage!");
         sendMessageToSender(sender, ChatColor.WHITE + "Use: /mineshaft reload [all|items|config]");
+        sendMessageToSender(sender, ChatColor.WHITE + "Use: /mineshaft <event|events> list");
+        sendMessageToSender(sender, ChatColor.WHITE + "Use: /mineshaft <event|events> trigger <event>");
     }
 }

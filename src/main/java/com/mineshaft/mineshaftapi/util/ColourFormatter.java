@@ -20,26 +20,17 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.command;
+package com.mineshaft.mineshaftapi.util;
 
-import com.mineshaft.mineshaftapi.util.Logger;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.Color;
 
-public class MenuCommand implements CommandExecutor {
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!(sender instanceof Player)) {
-            Logger.logInfo("Only a player can run this command");
-            return false;
-        }
+public class ColourFormatter {
 
-        Player player = (Player) sender;
-        player.sendMessage(ChatColor.RED + "This functionality is yet to be implemented");
-
-        return false;
+    public static Color getColourFromString(String colour) {
+        int r= Integer.parseInt(colour.substring(0,3));
+        int g = Integer.parseInt(colour.substring(3,6));
+        int b = Integer.parseInt(colour.substring(6,9));
+        return Color.fromRGB(r,g,b);
     }
+
 }

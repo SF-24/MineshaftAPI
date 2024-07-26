@@ -20,39 +20,29 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.text;
+package com.mineshaft.mineshaftapi.manager.event.fields;
 
-import java.text.DecimalFormat;
+import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
+import net.minecraft.core.particles.ParticleType;
+import org.bukkit.Particle;
 
-public class NumericFormatter {
-    public static DecimalFormat getDecimalFormat() {
-        return new DecimalFormat("#,###.00");
+public enum EventFields {
+
+    PARENT(VariableTypeEnum.STRING, "null"),
+    EVENT_TYPE(VariableTypeEnum.EVENT_TYPE, EventType.BEAM),
+    COLOUR(VariableTypeEnum.STRING, "000000"),
+    FLY_DISTANCE(VariableTypeEnum.INTEGER, 40),
+    SPEED(VariableTypeEnum.INTEGER, 5),
+    PARTICLE_TYPE(VariableTypeEnum.COMPLEX_ENUM, Particle.FIREWORK);
+
+    private final Object defaultValue;
+    private final VariableTypeEnum variableType;
+
+    EventFields(VariableTypeEnum variableType, Object defaultValue) {
+        this.variableType = variableType;
+        this.defaultValue = defaultValue;
     }
 
-    public static DecimalFormat getIntegerFormat() {
-        return new DecimalFormat("#,###");
-    }
-
-    public static String formatNumber(double number) {
-        return getDecimalFormat().format(number);
-    }
-
-    public static String formatNumberAdvanced(double number) {
-
-        double updatedNumber = number - (int) number;
-
-        if(updatedNumber==0) {
-            return formatInteger((int) number);
-        }
-        return formatDecimal(number);
-    }
-
-    public static String formatDecimal(double decimal) {
-        return getDecimalFormat().format(decimal);
-    }
-
-    public static String formatInteger(int integer) {
-        return getIntegerFormat().format(integer);
-    }
-
+    public Object getDefaultValue() {return defaultValue;}
+    public VariableTypeEnum getVariableType() {return variableType;}
 }

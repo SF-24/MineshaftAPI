@@ -20,27 +20,31 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.text;
+package com.mineshaft.mineshaftapi.util;
 
-import org.apache.commons.lang.WordUtils;
+import com.mineshaft.mineshaftapi.MineshaftApi;
 
-public class TextFormatter {
+import java.util.logging.Level;
 
-    public static String capitaliseString(String string) {
-        return string.substring(0, 1).toUpperCase() + string.substring(1);
+public class Logger {
+
+    public static void log(Level level, String text) {
+        MineshaftApi.getPlugin(MineshaftApi.class).getLogger().log(level, text);
     }
 
-    public static String capitaliseStringFully(String string) {
-        return WordUtils.capitalizeFully(string);
+    public static void logInfo(String text) {
+        log(Level.INFO, text);
     }
 
-    public static String addSpacesToString(String string) {
-        string = string.replace("-"," ");
-        string = string.replace("_"," ");
-        return string;
+    public static void logWarning(String text) {
+        log(Level.WARNING, text);
     }
 
-    public static String convertStringToName(String string) {
-        return capitaliseStringFully(addSpacesToString(string));
+    public static void logConfig(String text) {
+        log(Level.CONFIG, text);
+    }
+
+    public static void logError(String text) {
+        log(Level.SEVERE, text);
     }
 }

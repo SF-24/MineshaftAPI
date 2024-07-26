@@ -20,26 +20,27 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.command;
+package com.mineshaft.mineshaftapi.manager.event.executor;
 
-import com.mineshaft.mineshaftapi.util.Logger;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import com.mineshaft.mineshaftapi.manager.event.EventExecutor;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
+import com.mineshaft.mineshaftapi.manager.game_objects.LaserRunnable;
+import org.bukkit.Location;
 
-public class MenuCommand implements CommandExecutor {
+public class BeamExecutor extends EventExecutor {
+
+    public BeamExecutor(BeamEvent event, Location loc) {
+        super(event, loc);
+    }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!(sender instanceof Player)) {
-            Logger.logInfo("Only a player can run this command");
-            return false;
+    public void executeEvent() {
+        super.executeEvent();
+
+        if(event instanceof BeamEvent) {
+            BeamEvent beamEvent = (BeamEvent) event;
+            LaserRunnable laserRunnable = new LaserRunnable(beamEvent,loc);
         }
 
-        Player player = (Player) sender;
-        player.sendMessage(ChatColor.RED + "This functionality is yet to be implemented");
-
-        return false;
     }
 }

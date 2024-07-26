@@ -27,7 +27,7 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.ProfileManager;
 import com.mineshaft.mineshaftapi.manager.SidebarManager;
 import com.mineshaft.mineshaftapi.manager.player_skills.PlayerSkills;
-import com.mineshaft.mineshaftapi.text.Logger;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

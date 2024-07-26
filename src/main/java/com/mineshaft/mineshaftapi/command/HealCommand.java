@@ -22,7 +22,7 @@
 
 package com.mineshaft.mineshaftapi.command;
 
-import com.mineshaft.mineshaftapi.text.Logger;
+import com.mineshaft.mineshaftapi.util.Logger;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

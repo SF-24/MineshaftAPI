@@ -20,10 +20,14 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.text;
+package com.mineshaft.mineshaftapi.manager.event.fields;
 
-public enum Language {
+import org.bukkit.entity.EntityType;
 
-    POLISH,
-    ENGLISH
+public enum TriggerType {
+    ENTITY,
+    PLAYER,
+    BLOCK,
+    ANY;
+
 }

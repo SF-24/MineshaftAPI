@@ -27,9 +27,10 @@ import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
 import com.mineshaft.mineshaftapi.listener.JoinListener;
 import com.mineshaft.mineshaftapi.manager.PlayerManager;
+import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
-import com.mineshaft.mineshaftapi.text.Language;
-import com.mineshaft.mineshaftapi.text.Logger;
+import com.mineshaft.mineshaftapi.util.Language;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,6 +40,7 @@ import java.io.File;
 public final class MineshaftApi extends JavaPlugin {
 
     ItemManager itemManager;
+    EventManager eventManager;
     DependencyInit dependencyInit = new DependencyInit();
 
     @Override
@@ -61,6 +63,9 @@ public final class MineshaftApi extends JavaPlugin {
         // Initialise custom items
         itemManager=new ItemManager();
         itemManager.initialiseItems();
+
+        eventManager=new EventManager();
+        eventManager.initialiseEvents();
 
         // Initialise plugin dependencies
         dependencyInit.initialiseDependencies();
@@ -97,7 +102,11 @@ public final class MineshaftApi extends JavaPlugin {
 
     public String getItemPath() {return getPluginDataPath() + File.separator + "Items"; }
 
+    public String getEventPath() {return getPluginDataPath() + File.separator + "Events"; }
+
     public ItemManager getItemManagerInstance() {return itemManager;}
+
+    public EventManager getEventManagerInstance() {return eventManager;}
 
     public boolean hasVaultDependency() { return dependencyInit.hasVault(); }
 
@@ -107,8 +116,13 @@ public final class MineshaftApi extends JavaPlugin {
         MineshaftApi.getInstance().itemManager.initialiseItems();
     }
 
+    public static void reloadEvents() {
+        MineshaftApi.getInstance().eventManager.initialiseEvents();
+    }
+
     public static void reloadPlugin() {
         reloadItems();
+        reloadEvents();
     }
 
 

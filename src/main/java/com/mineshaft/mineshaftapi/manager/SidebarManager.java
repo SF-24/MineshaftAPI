@@ -23,7 +23,7 @@
 package com.mineshaft.mineshaftapi.manager;
 
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
-import com.mineshaft.mineshaftapi.text.NumericFormatter;
+import com.mineshaft.mineshaftapi.util.NumericFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

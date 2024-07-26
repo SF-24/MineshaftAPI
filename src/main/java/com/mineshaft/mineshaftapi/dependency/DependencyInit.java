@@ -23,8 +23,7 @@
 package com.mineshaft.mineshaftapi.dependency;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.text.Logger;
-import net.milkbowl.vault.economy.Economy;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 
 public class DependencyInit {
@@ -54,6 +53,10 @@ public class DependencyInit {
 
     public static boolean hasVault() {
         return Bukkit.getPluginManager().getPlugin("Vault") != null && Bukkit.getPluginManager().isPluginEnabled("Vault");
+    }
+
+    public static boolean hasMythicMobs() {
+        return Bukkit.getPluginManager().getPlugin("MythicMobs") != null && Bukkit.getPluginManager().isPluginEnabled("MythicMobs");
     }
 
     public VaultDependency getVault() {return vaultDependency;}

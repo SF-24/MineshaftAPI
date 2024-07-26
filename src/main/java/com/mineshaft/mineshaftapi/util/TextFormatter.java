@@ -20,26 +20,27 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.command;
+package com.mineshaft.mineshaftapi.util;
 
-import com.mineshaft.mineshaftapi.util.Logger;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.apache.commons.lang.WordUtils;
 
-public class MenuCommand implements CommandExecutor {
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!(sender instanceof Player)) {
-            Logger.logInfo("Only a player can run this command");
-            return false;
-        }
+public class TextFormatter {
 
-        Player player = (Player) sender;
-        player.sendMessage(ChatColor.RED + "This functionality is yet to be implemented");
+    public static String capitaliseString(String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
+    }
 
-        return false;
+    public static String capitaliseStringFully(String string) {
+        return WordUtils.capitalizeFully(string);
+    }
+
+    public static String addSpacesToString(String string) {
+        string = string.replace("-"," ");
+        string = string.replace("_"," ");
+        return string;
+    }
+
+    public static String convertStringToName(String string) {
+        return capitaliseStringFully(addSpacesToString(string));
     }
 }

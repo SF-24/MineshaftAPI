@@ -41,7 +41,7 @@ import java.util.UUID;
 
 public class LaserRunnable extends BukkitRunnable {
 
-    Location loc;
+    Location location;
     Vector dir;
 
     TriggerType target = TriggerType.ENTITY;
@@ -55,11 +55,11 @@ public class LaserRunnable extends BukkitRunnable {
 
     int t = 0;
 
-    private Location tempLocation;
+    private Location loc;
 
     public LaserRunnable(BeamEvent event, Location loc) {
         this.event = event;
-        this.loc=loc.add(event.getOffset());
+        this.location=loc.add(event.getOffset());
         dir=loc.getDirection().normalize();
         speed = event.getSpeed();
         target=event.getTarget();
@@ -71,28 +71,20 @@ public class LaserRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        int speedCount = (int) (speed/20);
+        int speedCount = speed/20;
 
         if(t==0) {
-            tempLocation=loc;
+            loc =location;
         }
 
         for(int i = 0; i<speedCount; i++) {
 
             t += 0.25;
 
-            // now unused code
-            // kept for now
-            if(!flipped) {
-                dist +=0.25;
-            } else {
-                dist-=0.25;
-            }
-
             dist=t;
 
             double x = dir.getX() * dist;
-            double y = dir.getY() * dist + 1.5;
+            double y = dir.getY() * dist /*+ 1.5*/;
             double z = dir.getZ() * dist;
 
             loc.add(x,y,z);
@@ -104,8 +96,8 @@ public class LaserRunnable extends BukkitRunnable {
             // IF SPELL HITS BLOCK
             if (!loc.getBlock().getType().equals(Material.AIR)) {
                 //PLAY FIZZLE SOUND
-                loc.getWorld().spawnParticle(Particle.FLAME,tempLocation,0,0.2,0,0,5);
-                loc.getWorld().playSound(tempLocation, Sound.BLOCK_FIRE_EXTINGUISH, 10.0f, 1.0f);
+                loc.getWorld().spawnParticle(Particle.FLAME, loc,0,0.2,0,0,5);
+                loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_EXTINGUISH, 10.0f, 1.0f);
 
                 // if hits barrier block
             } else if(!loc.getBlock().getType().equals(Material.BARRIER)) {
@@ -186,7 +178,7 @@ public class LaserRunnable extends BukkitRunnable {
                     loc.getWorld().spawnParticle(Particle.DUST, loc, 0, 0.2, 0, 0, 5, new Particle.DustOptions(event.getColour(), event.getSize()), true);
                     loc.getWorld().spawnParticle(Particle.DUST, loc, 0, 0.2, 0, 0, 5, new Particle.DustOptions(event.getColour(), event.getSize()), true);
                 } else {
-                    loc.getWorld().spawnParticle(event.getParticleType(), tempLocation, event.getParticleCount());
+                    loc.getWorld().spawnParticle(event.getParticleType(), loc, event.getParticleCount());
                 }
             }
 

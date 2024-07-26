@@ -23,6 +23,7 @@
 package com.mineshaft.mineshaftapi.command;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.util.Logger;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -95,6 +96,9 @@ public class MineshaftCommand implements CommandExecutor {
 
                     if(MineshaftApi.getInstance().getEventManagerInstance().getEventList().contains(args[2])) {
                         org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
+
+                        Logger.logInfo(MineshaftApi.getInstance().getEventManagerInstance().getEvent(args[2]).toString());
+
                         boolean success = MineshaftApi.getInstance().getEventManagerInstance().runEvent(MineshaftApi.getInstance().getEventManagerInstance().getEvent(args[2]), player.getLocation());
                         if(success) {
                             sendMessageToSender(sender, ChatColor.AQUA + "Event successfully executed");

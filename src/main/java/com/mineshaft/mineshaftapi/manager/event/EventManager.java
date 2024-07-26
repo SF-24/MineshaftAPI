@@ -25,6 +25,7 @@ package com.mineshaft.mineshaftapi.manager.event;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
+import com.mineshaft.mineshaftapi.manager.event.executor.BeamExecutor;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventFields;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
@@ -128,8 +129,8 @@ public class EventManager {
     public boolean runEvent(Event event, Location loc) {
         switch (event.getEventType()) {
             case BEAM:
-
-                break;
+                new BeamExecutor((BeamEvent) event,loc).executeEvent();
+                return true;
             case PLAY_SOUND:
                 if(loc.getWorld()==null) return false;
                 String sound = "";
@@ -145,7 +146,7 @@ public class EventManager {
                     }
                 }
                 loc.getWorld().playSound(loc,sound,volume,pitch);
-                break;
+                return true;
             default:
                 Logger.logWarning("Unexpected value in YAML event!");
         }

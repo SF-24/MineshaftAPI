@@ -40,6 +40,7 @@ public class BeamExecutor extends EventExecutor {
         if(event instanceof BeamEvent) {
             BeamEvent beamEvent = (BeamEvent) event;
             LaserRunnable laserRunnable = new LaserRunnable(beamEvent,loc);
+            laserRunnable.start();
         }
 
     }

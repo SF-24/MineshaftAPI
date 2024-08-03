@@ -25,7 +25,9 @@ package com.mineshaft.mineshaftapi.manager.event.executor;
 import com.mineshaft.mineshaftapi.manager.event.EventExecutor;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.game_objects.LaserRunnable;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 public class BeamExecutor extends EventExecutor {
 
@@ -39,7 +41,20 @@ public class BeamExecutor extends EventExecutor {
 
         if(event instanceof BeamEvent) {
             BeamEvent beamEvent = (BeamEvent) event;
-            LaserRunnable laserRunnable = new LaserRunnable(beamEvent,loc);
+
+            Player player = Bukkit.getServer().getOnlinePlayers().iterator().next();
+            player.sendMessage(((BeamEvent) event).getColour().toString());
+            player.sendMessage( "on hit:" + ((BeamEvent) event).getOnHitPlayer());
+            player.sendMessage("type: " + event.getEventType());
+            player.sendMessage("dist: " + ((BeamEvent) event).getFlyDistance());
+            player.sendMessage("entity hit: " + ((BeamEvent) event).getOnHitEntity());
+            player.sendMessage("particle size: " + ((BeamEvent) event).getSize());
+            player.sendMessage("particle count: " + ((BeamEvent) event).getParticleCount());
+            player.sendMessage("offset: " + event.getOffset());
+            player.sendMessage("speed: " + ((BeamEvent) event).getSpeed());
+            player.sendMessage("particle type: " + ((BeamEvent) event).getParticleType());
+
+            LaserRunnable laserRunnable = new LaserRunnable(beamEvent,super.loc);
             laserRunnable.start();
         }
 

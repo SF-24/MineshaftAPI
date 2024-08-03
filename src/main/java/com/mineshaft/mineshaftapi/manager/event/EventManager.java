@@ -127,6 +127,7 @@ public class EventManager {
     }
 
     public boolean runEvent(Event event, Location loc) {
+        System.out.printf("event execute");
         switch (event.getEventType()) {
             case BEAM:
                 new BeamExecutor((BeamEvent) event,loc).executeEvent();

@@ -26,10 +26,8 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.TriggerType;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import com.mineshaft.mineshaftapi.util.Logger;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -38,6 +36,7 @@ import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class LaserRunnable extends BukkitRunnable {
 
@@ -55,11 +54,12 @@ public class LaserRunnable extends BukkitRunnable {
 
     int t = 0;
 
-    private Location loc;
+    Location loc;
 
     public LaserRunnable(BeamEvent event, Location loc) {
-        this.event = event;
         this.location=loc.add(event.getOffset());
+        Bukkit.getServer().getPlayer("XpKitty").sendMessage(location.getX() + " " + location.getY() + " " + location.getZ());
+        this.event = event;
         dir=loc.getDirection().normalize();
         speed = event.getSpeed();
         target=event.getTarget();
@@ -71,13 +71,31 @@ public class LaserRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
+
+        if(this.loc==null) {
+            Logger.logError("Location (this.loc) is null in class LaserRunnable");
+            this.cancel();
+        }
+
+        System.out.println(loc.toString());
+
         int speedCount = speed/20;
+        if(speed<1) {
+            speedCount=1;
+        }
 
         if(t==0) {
             loc =location;
         }
 
+        Logger.log(Level.WARNING,"speed count: " + speedCount);
+
         for(int i = 0; i<speedCount; i++) {
+
+            System.out.printf("speedcount!");
+
+            Logger.logError("");
+            Logger.logError("t="+t);
 
             t += 0.25;
 
@@ -89,6 +107,9 @@ public class LaserRunnable extends BukkitRunnable {
 
             loc.add(x,y,z);
 
+            Logger.logWarning("-!- " + loc.getX() + " " + loc.getY() + " " + loc.getZ() + " t=" + t);
+
+
             if(loc.getBlock().getType().equals(Material.BARRIER)) {
                 flipped = true;
             }
@@ -98,9 +119,12 @@ public class LaserRunnable extends BukkitRunnable {
                 //PLAY FIZZLE SOUND
                 loc.getWorld().spawnParticle(Particle.FLAME, loc,0,0.2,0,0,5);
                 loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_EXTINGUISH, 10.0f, 1.0f);
+                Logger.logWarning("block hit at loc " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
+                this.cancel();
 
-                // if hits barrier block
-            } else if(!loc.getBlock().getType().equals(Material.BARRIER)) {
+                // if hits barrier block or air
+            } else/* if(!loc.getBlock().getType().equals(Material.BARRIER))*/ {
+                Logger.logWarning("hit at loc " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
 
                 Entity e = null;
                 HashMap<UUID, Double> entities = new HashMap<>();
@@ -136,18 +160,18 @@ public class LaserRunnable extends BukkitRunnable {
                 }
 
                 if(foundEntity && e instanceof LivingEntity) {
-
-                    // IF ENTITY IS NOT CASTER OR WAS CASTER BUT SPELL BOUNCED OF SHIELD
+                    // IF ENTITY IS NOT CASTER OR WAS CASTER BUT SPELL BOUNCED OFF SHIELD
                     if (t>9) {
                         boolean affectsEntity = false;
                         LocalEvent localEvent = null;
 
-                        if(event.getOnHitEntity().iterator().hasNext()) {
+                        if(event.getOnHitEntity().contains(LocalEvent.DAMAGE)) {
                             affectsEntity=true;
-                            localEvent=event.getOnHitEntity().iterator().next();
-                        } else if(event.getOnHitPlayer()!=null&&e instanceof Player) {
+                            localEvent=LocalEvent.DAMAGE;
+                        } else if(event.getOnHitPlayer().contains(LocalEvent.DAMAGE)&&e instanceof Player) {
                             affectsEntity=true;
-                            localEvent=event.getOnHitPlayer().iterator().next();                        }
+                            localEvent=LocalEvent.DAMAGE;
+                        }
 
                         // test if entity has a shield or similar
                         boolean isReflected = false;
@@ -180,11 +204,14 @@ public class LaserRunnable extends BukkitRunnable {
                 } else {
                     loc.getWorld().spawnParticle(event.getParticleType(), loc, event.getParticleCount());
                 }
+            } else {
+                Bukkit.getServer().getPlayer("XpKitty").sendMessage("no particles");
             }
 
             loc.subtract(x, y, z);
 
-            if (t >= flyDistance) {
+            if (t >= flyDistance || t>=100) {
+                Bukkit.getServer().getPlayer("XpKitty").sendMessage("beam destroyed");
                 this.cancel();
             }
         }

@@ -49,20 +49,24 @@ public class LaserRunnable extends BukkitRunnable {
     double dist = 0;
     int flyDistance = 0;
     int speed = 4;
-    BeamEvent event = null;
+    BeamEvent event = new BeamEvent();
     int particle = 10;
+    int speedCount = 4;
 
-    int t = 0;
+    double t = 0;
 
     Location loc;
 
     public LaserRunnable(BeamEvent event, Location loc) {
         this.location=loc.add(event.getOffset());
+        this.loc=location;
         Bukkit.getServer().getPlayer("XpKitty").sendMessage(location.getX() + " " + location.getY() + " " + location.getZ());
         this.event = event;
         dir=loc.getDirection().normalize();
         speed = event.getSpeed();
         target=event.getTarget();
+        this.dist=event.getFlyDistance();
+        this.speedCount=this.speed/20;
     }
 
     public void start() {
@@ -72,20 +76,23 @@ public class LaserRunnable extends BukkitRunnable {
     @Override
     public void run() {
 
+        if(t==0) {
+            Bukkit.getServer().getPlayer("XpKitty").sendMessage("t=0");
+            Bukkit.getServer().getPlayer("XpKitty").sendMessage(loc.toString());
+            Bukkit.getServer().getPlayer("XpKitty").sendMessage("EXECUTING:");
+
+            loc=location;
+        }
+
         if(this.loc==null) {
             Logger.logError("Location (this.loc) is null in class LaserRunnable");
             this.cancel();
         }
 
-        System.out.println(loc.toString());
-
-        int speedCount = speed/20;
         if(speed<1) {
-            speedCount=1;
-        }
-
-        if(t==0) {
-            loc =location;
+            this.speedCount=1;
+        } else if(speed>40) {
+            this.speedCount=40;
         }
 
         Logger.log(Level.WARNING,"speed count: " + speedCount);
@@ -98,7 +105,6 @@ public class LaserRunnable extends BukkitRunnable {
             Logger.logError("t="+t);
 
             t += 0.25;
-
             dist=t;
 
             double x = dir.getX() * dist;
@@ -109,12 +115,12 @@ public class LaserRunnable extends BukkitRunnable {
 
             Logger.logWarning("-!- " + loc.getX() + " " + loc.getY() + " " + loc.getZ() + " t=" + t);
 
-
+            // flip on hit barrier
             if(loc.getBlock().getType().equals(Material.BARRIER)) {
                 flipped = true;
             }
 
-            // IF SPELL HITS BLOCK
+            // IF SPELL HITS BLOCK (not air)
             if (!loc.getBlock().getType().equals(Material.AIR)) {
                 //PLAY FIZZLE SOUND
                 loc.getWorld().spawnParticle(Particle.FLAME, loc,0,0.2,0,0,5);
@@ -183,6 +189,7 @@ public class LaserRunnable extends BukkitRunnable {
 
                             switch (localEvent) {
                                 case DAMAGE:
+                                    ((LivingEntity) e).damage(5f);
                                     break;
                                 case EXPLODE:
                                     break;

@@ -32,7 +32,6 @@ import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.TextFormatter;
 import de.tr7zw.nbtapi.NBT;
-import de.tr7zw.nbtapi.iface.ReadWriteNBTList;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -546,15 +545,21 @@ public class ItemManager {
         return ItemCategory.ITEM_GENERIC;
     }
 
+    // TODO: returns null - bug
     public static ArrayList<String> getInteractEventsFromItem(String name, ActionType actionType) {
         ArrayList<String> interactEvents = new ArrayList<>();
 
         String path = MineshaftApi.getInstance().getItemPath();
 
+        System.out.printf(path, name + ".yml");
+
         File fileYaml = new File(path, name + ".yml");
 
         // return null if file does not exist
-        if (!fileYaml.exists()) return null;
+        if (!fileYaml.exists()) {
+            MineshaftApi.getAnyPlayer().sendMessage("File not found");
+            return null;
+        }
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 
@@ -571,7 +576,13 @@ public class ItemManager {
 
         String clickPath = "action.";
 
+        MineshaftApi.getAnyPlayer().sendMessage(clickPath + actionType.getClickPath());
+        MineshaftApi.getAnyPlayer().sendMessage(clickPath + actionType.getClickPath());
+
+        if(yamlConfiguration.contains("action")) MineshaftApi.getAnyPlayer().sendMessage("path found");
         if(yamlConfiguration.contains(clickPath + actionType.getClickPath())) {
+            System.out.printf("path found");
+            MineshaftApi.getAnyPlayer().sendMessage(yamlConfiguration.getStringList(clickPath + actionType.getClickPath()).toString());
             interactEvents.addAll(yamlConfiguration.getStringList(clickPath + actionType.getClickPath()));
         }
 

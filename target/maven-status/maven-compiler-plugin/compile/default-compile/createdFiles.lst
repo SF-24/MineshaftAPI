@@ -32,6 +32,7 @@ com\mineshaft\mineshaftapi\command\HealCommand.class
 com\mineshaft\mineshaftapi\manager\ui\UIManager.class
 com\mineshaft\mineshaftapi\util\ColourFormatter.class
 com\mineshaft\mineshaftapi\listener\JoinListener.class
+com\mineshaft\mineshaftapi\manager\ActionType.class
 com\mineshaft\mineshaftapi\util\Language.class
 com\mineshaft\mineshaftapi\manager\PlayerManager$1.class
 com\mineshaft\mineshaftapi\util\NumericFormatter.class
@@ -47,6 +48,7 @@ com\mineshaft\mineshaftapi\manager\event\fields\UniqueEventFields.class
 com\mineshaft\mineshaftapi\manager\game_objects\LaserRunnable$1.class
 com\mineshaft\mineshaftapi\manager\PlayerStatManager.class
 com\mineshaft\mineshaftapi\dependency\VaultEconomy.class
+com\mineshaft\mineshaftapi\listener\InteractListener.class
 com\mineshaft\mineshaftapi\manager\item\ItemManager.class
 com\mineshaft\mineshaftapi\util\LocationFormatter.class
 com\mineshaft\mineshaftapi\manager\game_objects\LaserRunnable.class

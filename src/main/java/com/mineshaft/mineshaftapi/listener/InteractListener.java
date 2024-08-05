@@ -51,15 +51,22 @@ public class InteractListener implements Listener {
             clickType=ActionType.LEFT_CLICK;
         }
 
-        if(Objects.requireNonNull(clickType).equals(ActionType.RIGHT_CLICK) || clickType.equals(ActionType.LEFT_CLICK)) {
-            ItemStack item = e.getItem();
+        ItemStack item = e.getItem();
+
+        if(ItemManager.getItemIdFromItem(item)!=null && (clickType.equals(ActionType.RIGHT_CLICK) || clickType.equals(ActionType.LEFT_CLICK))) {
             Player player = e.getPlayer();
 
             UUID uuid = ItemManager.getItemIdFromItem(item);
             String name = ItemManager.getItemName(uuid);
+            System.out.printf("name: " + name);
 
-            // Get events by string name
+            // Get events by string name // this is null
             ArrayList<String> events = ItemManager.getInteractEventsFromItem(name, clickType);
+
+            if(events==null) return;
+
+            e.setCancelled(true);
+
             player.sendMessage("events: " + events.toString());
 
             for(String event : events) {

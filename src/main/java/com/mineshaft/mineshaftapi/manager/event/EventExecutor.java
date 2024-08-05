@@ -24,7 +24,9 @@ package com.mineshaft.mineshaftapi.manager.event;
 
 import org.bukkit.Location;
 
-public class EventExecutor {
+import java.util.UUID;
+
+public abstract class EventExecutor {
 
     protected Event event;
     protected Location loc;
@@ -38,4 +40,5 @@ public class EventExecutor {
         // TODO:
     }
 
+    public abstract void executeEvent(UUID casterId);
 }

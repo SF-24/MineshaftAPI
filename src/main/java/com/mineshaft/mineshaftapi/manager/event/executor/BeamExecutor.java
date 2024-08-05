@@ -29,6 +29,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class BeamExecutor extends EventExecutor {
 
     public BeamExecutor(BeamEvent event, Location loc) {
@@ -36,7 +38,7 @@ public class BeamExecutor extends EventExecutor {
     }
 
     @Override
-    public void executeEvent() {
+    public void executeEvent(UUID casterId) {
         super.executeEvent();
 
         if(event instanceof BeamEvent) {
@@ -54,7 +56,15 @@ public class BeamExecutor extends EventExecutor {
             player.sendMessage("speed: " + ((BeamEvent) event).getSpeed());
             player.sendMessage("particle type: " + ((BeamEvent) event).getParticleType());
 */
-            LaserRunnable laserRunnable = new LaserRunnable(beamEvent,super.loc);
+            Location customLoc = super.loc.add(event.getOffset());
+            if(Bukkit.getPlayer(casterId)!=null) {
+                if(Bukkit.getPlayer(casterId).isSneaking()) {
+                    loc.add(0,-0.5,0);
+                }
+            }
+
+            LaserRunnable laserRunnable = new LaserRunnable(beamEvent,customLoc);
+            laserRunnable.setCaster(casterId);
         }
 
     }

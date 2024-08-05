@@ -29,12 +29,12 @@ import com.mineshaft.mineshaftapi.manager.event.fields.TriggerType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -53,21 +53,26 @@ public class LaserRunnable extends BukkitRunnable {
     int particle = 10;
     int speedCount = 4;
 
+    UUID casterId = null;
+
     double t = 0;
 
     Location loc;
 
     public LaserRunnable(BeamEvent event, Location loc) {
-        this.location=loc.add(event.getOffset());
+        this.location=loc;
         this.loc=location;
-        Bukkit.getServer().getOnlinePlayers().iterator().next().sendMessage(location.getX() + " " + location.getY() + " " + location.getZ());
         this.event = event;
-        dir=loc.getDirection().normalize();
+        dir=location.getDirection().normalize();
         speed = event.getSpeed();
         target=event.getTarget();
         this.flyDistance=event.getFlyDistance();
         this.speedCount=this.speed;
         this.start();
+    }
+
+    public void setCaster(UUID uuid) {
+        this.casterId=uuid;
     }
 
     public void start() {
@@ -92,15 +97,7 @@ public class LaserRunnable extends BukkitRunnable {
             this.speedCount=40;
         }
 
-        // this executes
-        if(t<1) {
-            Logger.log(Level.WARNING, "speed count: " + this.speedCount);
-        }
-
         for(int i = 0; i<speedCount; i++) {
-            Logger.logError("");
-            Logger.logError("t="+t);
-
             t += 0.25;
             dist=t;
 
@@ -109,8 +106,6 @@ public class LaserRunnable extends BukkitRunnable {
             double z = dir.getZ() * dist;
 
             loc.add(x,y,z);
-
-            Logger.logWarning("-!- " + loc.getX() + " " + loc.getY() + " " + loc.getZ() + " t=" + t);
 
             // flip on hit barrier
             if(loc.getBlock().getType().equals(Material.BARRIER)) {
@@ -122,51 +117,33 @@ public class LaserRunnable extends BukkitRunnable {
                 //PLAY FIZZLE SOUND
                 //loc.getWorld().spawnParticle(Particle.FLAME, loc,0,0.2,0,0,0.1);
                 loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_EXTINGUISH, 10.0f, 1.0f);
-                Logger.logWarning("block hit at loc " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
                 this.cancel();
 
                 // if hits barrier block or air
             } else/* if(!loc.getBlock().getType().equals(Material.BARRIER))*/ {
                 //
 
-                Entity e = null;
-                HashMap<UUID, Double> entities = new HashMap<>();
+                LivingEntity e = null;
                 boolean foundEntity = false;
 
                 // IF SPELL HITS ENTITY
-                for (Entity en : loc.getChunk().getEntities()) {
-                    if (en.getLocation().distance(loc) < 1.75) {
-                        if (en instanceof LivingEntity) {
+                for (Entity en : loc.getWorld().getNearbyEntities(loc, 1.75, 2.0, 1.75)) { //getChunk().getEntities()) {
+                    float distance = 10;
+
+                    if ((!flipped && !en.getUniqueId().equals(casterId)) && en.getLocation().distance(loc) < 1.75) {
+                        if (en instanceof LivingEntity && !(en instanceof ItemFrame)) {
                             foundEntity = true;
-                            en.setFireTicks(10);
-                            entities.put(en.getUniqueId(), en.getLocation().distance(loc));
-                            Logger.logWarning("hit at loc " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
+                            // entity detected
+                            if (distance>en.getLocation().distance(loc)) {
+                                e=(LivingEntity)en;
+                            }
                         }
                     }
                 }
 
-                // if found entity
-                if(foundEntity) {
-                    double distance = 10;
-                    UUID id = null;
-                    for (UUID uuid : entities.keySet()) {
-                        if (entities.get(uuid) < distance) {
-                            distance = entities.get(uuid);
-                            id = uuid;
-                        }
-                    }
-
-
-                    for (Entity en : loc.getChunk().getEntities()) {
-                        if (en.getUniqueId().equals(id)) {
-                            e = en;
-                        }
-                    }
-                }
-
-                if(foundEntity && e instanceof LivingEntity) {
+                if(foundEntity && e != null) {
                     // IF ENTITY IS NOT CASTER OR WAS CASTER BUT SPELL BOUNCED OFF SHIELD
-                    if (t>9) {
+                    if (t>0.5) {
                         boolean affectsEntity = false;
                         LocalEvent localEvent = null;
                         LocalEvent playerEvent = null;
@@ -187,8 +164,6 @@ public class LaserRunnable extends BukkitRunnable {
                             affectsEntity=true;
                         }
 
-
-
                         // test if entity has a shield or similar
                         boolean isReflected = false;
 
@@ -206,8 +181,18 @@ public class LaserRunnable extends BukkitRunnable {
 
                             switch (switchEvent) {
                                 case DAMAGE:
-                                    float damage = (float) switchParam;
-                                    ((LivingEntity) e).damage(damage);
+                                    double damage = 5;
+                                    if(switchParam instanceof Double ) {
+                                        damage = (double) switchParam;
+                                    } else if(switchParam instanceof Integer) {
+                                        damage = (int) switchParam;
+                                    }
+
+                                    if(Bukkit.getPlayer(casterId)!=null) {
+                                        e.damage(damage, Bukkit.getPlayer(casterId));
+                                    } else {
+                                        e.damage(damage);
+                                    }
                                     break;
                                 case EXPLODE:
                                     break;
@@ -236,7 +221,6 @@ public class LaserRunnable extends BukkitRunnable {
             loc.subtract(x, y, z);
 
             if (t >= flyDistance || t>=100) {
-                MineshaftApi.getAnyPlayer().sendMessage("beam destroyed");
                 this.cancel();
             }
         }

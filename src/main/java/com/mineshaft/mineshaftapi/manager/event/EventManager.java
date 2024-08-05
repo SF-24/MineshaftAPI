@@ -126,11 +126,11 @@ public class EventManager {
         }
     }
 
-    public boolean runEvent(Event event, Location loc) {
+    public boolean runEvent(Event event, Location loc, UUID casterId) {
         System.out.printf("event execute");
         switch (event.getEventType()) {
             case BEAM:
-                new BeamExecutor((BeamEvent) event,loc).executeEvent();
+                new BeamExecutor((BeamEvent) event,loc).executeEvent(casterId);
                 return true;
             case PLAY_SOUND:
                 if(loc.getWorld()==null) return false;

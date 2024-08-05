@@ -125,5 +125,9 @@ public final class MineshaftApi extends JavaPlugin {
         reloadEvents();
     }
 
+    public static Player getAnyPlayer() {
+        return Bukkit.getServer().getOnlinePlayers().iterator().next();
+    }
+
 
 }

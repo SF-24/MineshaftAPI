@@ -38,7 +38,7 @@ public class BeamEvent extends Event {
     int power = 10;
     int speed = 20;
     int flyDistance = 40;
-    int particleCount = 50;
+    int particleCount = 0;
     org.bukkit.Particle particleType= org.bukkit.Particle.DRAGON_BREATH;
 
     HashMap<LocalEvent, Object> onHitEntity = new HashMap<>();

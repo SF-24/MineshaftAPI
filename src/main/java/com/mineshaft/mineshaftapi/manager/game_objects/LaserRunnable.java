@@ -120,7 +120,7 @@ public class LaserRunnable extends BukkitRunnable {
             // IF SPELL HITS BLOCK (not air)
             if (!loc.getBlock().getType().equals(Material.AIR)) {
                 //PLAY FIZZLE SOUND
-                loc.getWorld().spawnParticle(Particle.FLAME, loc,0,0.2,0,0,5);
+                //loc.getWorld().spawnParticle(Particle.FLAME, loc,0,0.2,0,0,0.1);
                 loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_EXTINGUISH, 10.0f, 1.0f);
                 Logger.logWarning("block hit at loc " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
                 this.cancel();
@@ -138,6 +138,7 @@ public class LaserRunnable extends BukkitRunnable {
                     if (en.getLocation().distance(loc) < 1.75) {
                         if (en instanceof LivingEntity) {
                             foundEntity = true;
+                            en.setFireTicks(10);
                             entities.put(en.getUniqueId(), en.getLocation().distance(loc));
                             Logger.logWarning("hit at loc " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
                         }
@@ -235,7 +236,7 @@ public class LaserRunnable extends BukkitRunnable {
             loc.subtract(x, y, z);
 
             if (t >= flyDistance || t>=100) {
-                Bukkit.getServer().getOnlinePlayers().iterator().next().sendMessage("beam destroyed");
+                MineshaftApi.getAnyPlayer().sendMessage("beam destroyed");
                 this.cancel();
             }
         }

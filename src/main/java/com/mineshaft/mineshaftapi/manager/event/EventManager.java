@@ -279,6 +279,7 @@ public class EventManager {
 
                         switch (localEvent) {
                             case DAMAGE:
+                                object = yamlConfiguration.getDouble(path);
                             case EXPLODE:
                                 object = yamlConfiguration.getInt(path);
                                 break;
@@ -306,7 +307,7 @@ public class EventManager {
 
 
             } else {
-                beamEvent.setOnHitEntity(LocalEvent.DAMAGE, 10);
+                beamEvent.setOnHitEntity(LocalEvent.DAMAGE, 10.0);
             }
             return beamEvent;
         }

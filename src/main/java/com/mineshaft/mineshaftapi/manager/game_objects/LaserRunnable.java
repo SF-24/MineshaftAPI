@@ -60,13 +60,13 @@ public class LaserRunnable extends BukkitRunnable {
     public LaserRunnable(BeamEvent event, Location loc) {
         this.location=loc.add(event.getOffset());
         this.loc=location;
-        Bukkit.getServer().getPlayer("XpKitty").sendMessage(location.getX() + " " + location.getY() + " " + location.getZ());
+        Bukkit.getServer().getOnlinePlayers().iterator().next().sendMessage(location.getX() + " " + location.getY() + " " + location.getZ());
         this.event = event;
         dir=loc.getDirection().normalize();
         speed = event.getSpeed();
         target=event.getTarget();
         this.flyDistance=event.getFlyDistance();
-        this.speedCount=this.speed/20;
+        this.speedCount=this.speed;
         this.start();
     }
 
@@ -78,11 +78,6 @@ public class LaserRunnable extends BukkitRunnable {
     public void run() {
 
         if(t==0) {
-            // this works
-            Bukkit.getServer().getPlayer("XpKitty").sendMessage("t=0");
-            Bukkit.getServer().getPlayer("XpKitty").sendMessage(loc.toString());
-            Bukkit.getServer().getPlayer("XpKitty").sendMessage("EXECUTING:");
-
             loc=location;
         }
 
@@ -132,7 +127,7 @@ public class LaserRunnable extends BukkitRunnable {
 
                 // if hits barrier block or air
             } else/* if(!loc.getBlock().getType().equals(Material.BARRIER))*/ {
-                Logger.logWarning("hit at loc " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
+                //
 
                 Entity e = null;
                 HashMap<UUID, Double> entities = new HashMap<>();
@@ -144,6 +139,7 @@ public class LaserRunnable extends BukkitRunnable {
                         if (en instanceof LivingEntity) {
                             foundEntity = true;
                             entities.put(en.getUniqueId(), en.getLocation().distance(loc));
+                            Logger.logWarning("hit at loc " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
                         }
                     }
                 }
@@ -233,13 +229,13 @@ public class LaserRunnable extends BukkitRunnable {
                     loc.getWorld().spawnParticle(event.getParticleType(), loc, event.getParticleCount(), 0, 0 ,0, 0);
                 }
             } else {
-                Bukkit.getServer().getPlayer("XpKitty").sendMessage("no particles");
+                Bukkit.getServer().getOnlinePlayers().iterator().next().sendMessage("no particles");
             }
 
             loc.subtract(x, y, z);
 
             if (t >= flyDistance || t>=100) {
-                Bukkit.getServer().getPlayer("XpKitty").sendMessage("beam destroyed");
+                Bukkit.getServer().getOnlinePlayers().iterator().next().sendMessage("beam destroyed");
                 this.cancel();
             }
         }

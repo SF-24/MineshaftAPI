@@ -43,7 +43,7 @@ public class BeamExecutor extends EventExecutor {
             BeamEvent beamEvent = (BeamEvent) event;
 
             Player player = Bukkit.getServer().getOnlinePlayers().iterator().next();
-            player.sendMessage(((BeamEvent) event).getColour().toString());
+ /*           player.sendMessage(((BeamEvent) event).getColour().toString());
             player.sendMessage( "on hit:" + ((BeamEvent) event).getOnHitPlayer());
             player.sendMessage("type: " + event.getEventType());
             player.sendMessage("dist: " + ((BeamEvent) event).getFlyDistance());
@@ -53,7 +53,7 @@ public class BeamExecutor extends EventExecutor {
             player.sendMessage("offset: " + event.getOffset());
             player.sendMessage("speed: " + ((BeamEvent) event).getSpeed());
             player.sendMessage("particle type: " + ((BeamEvent) event).getParticleType());
-
+*/
             LaserRunnable laserRunnable = new LaserRunnable(beamEvent,super.loc);
         }
 

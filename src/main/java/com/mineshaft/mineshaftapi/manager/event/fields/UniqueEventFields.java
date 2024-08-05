@@ -31,7 +31,7 @@ public enum UniqueEventFields {
     SOUND(VariableTypeEnum.STRING, ""),
     COLOUR(VariableTypeEnum.STRING, "000000"),
     RANGE(VariableTypeEnum.INTEGER, 40),
-    SPEED(VariableTypeEnum.INTEGER, 5),
+    SPEED(VariableTypeEnum.INTEGER, 4),
     PROJECTILE_TYPE(VariableTypeEnum.PROJECTILE_TYPE, "ARROW"),
     TRIGGER(VariableTypeEnum.STRING, "entity"),
     PARTICLE(VariableTypeEnum.INTEGER,50);

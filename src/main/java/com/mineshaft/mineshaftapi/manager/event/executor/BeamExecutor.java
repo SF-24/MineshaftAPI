@@ -55,7 +55,6 @@ public class BeamExecutor extends EventExecutor {
             player.sendMessage("particle type: " + ((BeamEvent) event).getParticleType());
 
             LaserRunnable laserRunnable = new LaserRunnable(beamEvent,super.loc);
-            laserRunnable.start();
         }
 
     }

@@ -27,8 +27,9 @@ import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.List;
 
 public class BeamEvent extends Event {
 
@@ -75,15 +76,39 @@ public class BeamEvent extends Event {
         onHitBlock.put(event, value);
     }
 
-    public Set<LocalEvent> getOnHitBlock() {
-        return onHitBlock.keySet();
+    public List<LocalEvent> getOnHitBlock() {
+        List<LocalEvent> events = new ArrayList<>();
+        for(LocalEvent event : onHitBlock.keySet()) {
+            events.add(event);
+        }
+        return events;
     }
 
-    public Set<LocalEvent> getOnHitEntity() {
-        return onHitEntity.keySet();
+    public List<LocalEvent> getOnHitEntity() {
+        List<LocalEvent> events = new ArrayList<>();
+        for(LocalEvent event : onHitEntity.keySet()) {
+            events.add(event);
+        }
+        return events;
     }
 
-    public Set<LocalEvent> getOnHitPlayer() {
-        return onHitPlayer.keySet();
+    public List<LocalEvent> getOnHitPlayer() {
+        List<LocalEvent> events = new ArrayList<>();
+        for(LocalEvent event : onHitPlayer.keySet()) {
+            events.add(event);
+        }
+        return events;
+    }
+
+    public Object getOnHitBlockObject(LocalEvent event) {
+        return onHitBlock.get(event);
+    }
+
+    public Object getOnHitPlayerObject(LocalEvent event) {
+        return onHitPlayer.get(event);
+    }
+
+    public Object getOnHitEntityObject(LocalEvent event) {
+        return onHitEntity.get(event);
     }
 }

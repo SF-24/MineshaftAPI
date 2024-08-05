@@ -47,7 +47,7 @@ public class LaserRunnable extends BukkitRunnable {
 
     boolean flipped = false;
     double dist = 0;
-    int flyDistance = 0;
+    int flyDistance = 40;
     int speed = 4;
     BeamEvent event = new BeamEvent();
     int particle = 10;
@@ -65,8 +65,9 @@ public class LaserRunnable extends BukkitRunnable {
         dir=loc.getDirection().normalize();
         speed = event.getSpeed();
         target=event.getTarget();
-        this.dist=event.getFlyDistance();
+        this.flyDistance=event.getFlyDistance();
         this.speedCount=this.speed/20;
+        this.start();
     }
 
     public void start() {
@@ -77,6 +78,7 @@ public class LaserRunnable extends BukkitRunnable {
     public void run() {
 
         if(t==0) {
+            // this works
             Bukkit.getServer().getPlayer("XpKitty").sendMessage("t=0");
             Bukkit.getServer().getPlayer("XpKitty").sendMessage(loc.toString());
             Bukkit.getServer().getPlayer("XpKitty").sendMessage("EXECUTING:");
@@ -89,18 +91,18 @@ public class LaserRunnable extends BukkitRunnable {
             this.cancel();
         }
 
-        if(speed<1) {
+        if(speed<1||speedCount<1) {
             this.speedCount=1;
         } else if(speed>40) {
             this.speedCount=40;
         }
 
-        Logger.log(Level.WARNING,"speed count: " + speedCount);
+        // this executes
+        if(t<1) {
+            Logger.log(Level.WARNING, "speed count: " + this.speedCount);
+        }
 
         for(int i = 0; i<speedCount; i++) {
-
-            System.out.printf("speedcount!");
-
             Logger.logError("");
             Logger.logError("t="+t);
 
@@ -170,14 +172,25 @@ public class LaserRunnable extends BukkitRunnable {
                     if (t>9) {
                         boolean affectsEntity = false;
                         LocalEvent localEvent = null;
+                        LocalEvent playerEvent = null;
+                        Object param = null;
+                        Object playerParam = null;
 
-                        if(event.getOnHitEntity().contains(LocalEvent.DAMAGE)) {
+                        // get onHit stuff
+                        if(event.getOnHitEntity()!=null) {
+                            localEvent=event.getOnHitEntity().get(0);
+                            param=event.getOnHitEntityObject(LocalEvent.DAMAGE);
+                            playerEvent=event.getOnHitEntity().get(0);
+                            playerParam=event.getOnHitEntityObject(LocalEvent.DAMAGE);
                             affectsEntity=true;
-                            localEvent=LocalEvent.DAMAGE;
-                        } else if(event.getOnHitPlayer().contains(LocalEvent.DAMAGE)&&e instanceof Player) {
-                            affectsEntity=true;
-                            localEvent=LocalEvent.DAMAGE;
                         }
+                        if(event.getOnHitPlayer()!=null && e instanceof Player) {
+                            playerEvent=event.getOnHitPlayer().get(0);
+                            playerParam=event.getOnHitPlayerObject(LocalEvent.DAMAGE);
+                            affectsEntity=true;
+                        }
+
+
 
                         // test if entity has a shield or similar
                         boolean isReflected = false;
@@ -187,9 +200,17 @@ public class LaserRunnable extends BukkitRunnable {
 
                             this.cancel();
 
-                            switch (localEvent) {
+                            Object switchParam = param;
+                            LocalEvent switchEvent = localEvent;
+                            if(e instanceof Player) {
+                                switchParam=playerParam;
+                                switchEvent=playerEvent;
+                            }
+
+                            switch (switchEvent) {
                                 case DAMAGE:
-                                    ((LivingEntity) e).damage(5f);
+                                    float damage = (float) switchParam;
+                                    ((LivingEntity) e).damage(damage);
                                     break;
                                 case EXPLODE:
                                     break;
@@ -209,7 +230,7 @@ public class LaserRunnable extends BukkitRunnable {
                     loc.getWorld().spawnParticle(Particle.DUST, loc, 0, 0.2, 0, 0, 5, new Particle.DustOptions(event.getColour(), event.getSize()), true);
                     loc.getWorld().spawnParticle(Particle.DUST, loc, 0, 0.2, 0, 0, 5, new Particle.DustOptions(event.getColour(), event.getSize()), true);
                 } else {
-                    loc.getWorld().spawnParticle(event.getParticleType(), loc, event.getParticleCount());
+                    loc.getWorld().spawnParticle(event.getParticleType(), loc, event.getParticleCount(), 0, 0 ,0, 0);
                 }
             } else {
                 Bukkit.getServer().getPlayer("XpKitty").sendMessage("no particles");

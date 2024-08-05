@@ -23,6 +23,7 @@
 package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.ActionType;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemFields;
@@ -31,6 +32,7 @@ import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.TextFormatter;
 import de.tr7zw.nbtapi.NBT;
+import de.tr7zw.nbtapi.iface.ReadWriteNBTList;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -60,18 +62,18 @@ public class ItemManager {
     String path = MineshaftApi.getInstance().getItemPath();
 
     public void initialiseItems() {
-        items=new HashMap<>();
+        items = new HashMap<>();
 
         File folder = new File(path);
-        if(!folder.exists()) {
+        if (!folder.exists()) {
             folder.mkdirs();
         }
 
-        if(folder.listFiles()==null || folder.listFiles().length==0) {
+        if (folder.listFiles() == null || folder.listFiles().length == 0) {
             createDemoItem();
         }
 
-        for(File file : Objects.requireNonNull(folder.listFiles())) {
+        for (File file : Objects.requireNonNull(folder.listFiles())) {
             initialiseItem(file.getName());
         }
     }
@@ -82,7 +84,7 @@ public class ItemManager {
 
         String name = fileName.substring(0, fileName.lastIndexOf('.'));
 
-        if(!yamlConfiguration.contains("id")) {
+        if (!yamlConfiguration.contains("id")) {
             yamlConfiguration.createSection("id");
             yamlConfiguration.set("id", UUID.randomUUID().toString());
             try {
@@ -95,11 +97,11 @@ public class ItemManager {
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
     }
 
-    public String getItemName(UUID uuid) {
-        return items.get(uuid);
+    public static String getItemName(UUID uuid) {
+        return MineshaftApi.getInstance().getItemManagerInstance().items.get(uuid);
     }
 
-    public UUID getItemIdFromItem(ItemStack item) {
+    public static UUID getItemIdFromItem(ItemStack item) {
         NBT.get(item, nbt -> {
             String uuid = nbt.getString("uuid");
             return uuid;
@@ -109,40 +111,40 @@ public class ItemManager {
 
     public String getItemNameFromItem(ItemStack item) {
         UUID uuid = getItemIdFromItem(item);
-        if(uuid != null) {
+        if (uuid != null) {
             return getItemName(uuid);
         }
         return null;
     }
 
     public ItemStack getItem(String itemName) {
-        File fileYaml = new File(path, itemName+".yml");
+        File fileYaml = new File(path, itemName + ".yml");
 
         // return null if file does not exist
-        if(!fileYaml.exists()) return null;
+        if (!fileYaml.exists()) return null;
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 
         // Whether the item has a parent item
-        boolean hasParent=false;
+        boolean hasParent = false;
 
         String uuid = yamlConfiguration.getString("id");
 
         ItemStack item = new ItemStack(Material.BARRIER);
 
-        if(yamlConfiguration.contains("parent")) {
+        if (yamlConfiguration.contains("parent")) {
             String parentName = yamlConfiguration.getString("parent");
-            if(parentName!=null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
+            if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
                 item = getItem(parentName);
-                hasParent=true;
+                hasParent = true;
             }
         }
 
-        if(yamlConfiguration.contains("material")) {
+        if (yamlConfiguration.contains("material")) {
             try {
                 item = new ItemStack(Material.valueOf(yamlConfiguration.getString("material")));
             } catch (Exception e) {
-                if(!hasParent) {
+                if (!hasParent) {
                     Logger.logError("ERROR! Could not load item '" + itemName + "' invalid material");
                     return null;
                 }
@@ -175,25 +177,29 @@ public class ItemManager {
 
         String subcategory = null;
 
-        for(String field : yamlConfiguration.getKeys(false)) {
+        for (String field : yamlConfiguration.getKeys(false)) {
             switch (field) {
-                case "rarity":rarity = ItemRarity.valueOf(yamlConfiguration.getString("rarity").toUpperCase(Locale.ROOT));
+                case "rarity":
+                    rarity = ItemRarity.valueOf(yamlConfiguration.getString("rarity").toUpperCase(Locale.ROOT));
                     break;
-                case "item_category": category = ItemCategory.valueOf(yamlConfiguration.getString("item_category").toUpperCase(Locale.ROOT));
+                case "item_category":
+                    category = ItemCategory.valueOf(yamlConfiguration.getString("item_category").toUpperCase(Locale.ROOT));
                     break;
-                case "custom_model_data": meta.setCustomModelData(yamlConfiguration.getInt("custom_model_data"));
+                case "custom_model_data":
+                    meta.setCustomModelData(yamlConfiguration.getInt("custom_model_data"));
                     break;
-                case "name": displayName=yamlConfiguration.getString("name");
+                case "name":
+                    displayName = yamlConfiguration.getString("name");
                     break;
                 // Initialise stats
                 case "stats":
-                    statsString="stats";
+                    statsString = "stats";
                     break;
                 case "attributes":
-                    statsString="attributes";
+                    statsString = "attributes";
                     break;
                 case "modifiers":
-                    statsString="modifiers";
+                    statsString = "modifiers";
                     break;
                 case "durability":
                     durability = yamlConfiguration.getInt("durability");
@@ -204,7 +210,7 @@ public class ItemManager {
                 case "hide_attributes":
                     hideAttributes = yamlConfiguration.getBoolean("hide_attributes");
                 case "subcategory":
-                    subcategory=yamlConfiguration.getString("subcategory");
+                    subcategory = yamlConfiguration.getString("subcategory");
                 default:
             }
         }
@@ -214,32 +220,32 @@ public class ItemManager {
         // GENERATE LORE:
         ArrayList<String> lore = new ArrayList<>();
 
-        if(rarity!=ItemRarity.STANDARD) {
+        if (rarity != ItemRarity.STANDARD) {
             String itemDisplay = "Item";
 
-            if(category.equals(ItemCategory.WEAPON_MELEE) || category.equals(ItemCategory.WEAPON_RANGED)) {
-                itemDisplay="Weapon";
-            } else if(category.equals(ItemCategory.ARMOUR_CHESTPLATE)) {
-                itemDisplay="Chestplate";
-            } else if(category.equals(ItemCategory.ARMOUR_LEGGINGS)) {
-                itemDisplay="Leggings";
-            } else if(category.equals(ItemCategory.ARMOUR_BOOTS)) {
-                itemDisplay="Boots";
-            } else if(category.equals(ItemCategory.ARMOUR_HELMET)) {
-                itemDisplay="Helmet";
-            } else if(category.equals(ItemCategory.TOOL_AXE)) {
-                itemDisplay="Axe";
-            } else if(category.equals(ItemCategory.TOOL_PICKAXE)) {
-                itemDisplay="Pickaxe";
-            } else if(category.equals(ItemCategory.TOOL_SHOVEL)) {
-                itemDisplay="Shovel";
-            } else if(category.equals(ItemCategory.TOOL_HOE)) {
-                itemDisplay="Hoe";
-            } else if(category.equals(ItemCategory.ITEM_CONSUMABLE)) {
-                itemDisplay="Consumable";
+            if (category.equals(ItemCategory.WEAPON_MELEE) || category.equals(ItemCategory.WEAPON_RANGED)) {
+                itemDisplay = "Weapon";
+            } else if (category.equals(ItemCategory.ARMOUR_CHESTPLATE)) {
+                itemDisplay = "Chestplate";
+            } else if (category.equals(ItemCategory.ARMOUR_LEGGINGS)) {
+                itemDisplay = "Leggings";
+            } else if (category.equals(ItemCategory.ARMOUR_BOOTS)) {
+                itemDisplay = "Boots";
+            } else if (category.equals(ItemCategory.ARMOUR_HELMET)) {
+                itemDisplay = "Helmet";
+            } else if (category.equals(ItemCategory.TOOL_AXE)) {
+                itemDisplay = "Axe";
+            } else if (category.equals(ItemCategory.TOOL_PICKAXE)) {
+                itemDisplay = "Pickaxe";
+            } else if (category.equals(ItemCategory.TOOL_SHOVEL)) {
+                itemDisplay = "Shovel";
+            } else if (category.equals(ItemCategory.TOOL_HOE)) {
+                itemDisplay = "Hoe";
+            } else if (category.equals(ItemCategory.ITEM_CONSUMABLE)) {
+                itemDisplay = "Consumable";
             }
 
-            if(subcategory != null && !subcategory.equals("")) {
+            if (subcategory != null && !subcategory.equals("")) {
                 itemDisplay = TextFormatter.convertStringToName(subcategory);
             }
 
@@ -250,7 +256,7 @@ public class ItemManager {
 
         // Load file stats, append to lore and add them to the item
 
-        HashMap<ItemStats, Double> statMap = getStatMap(itemName,statsString);
+        HashMap<ItemStats, Double> statMap = getStatMap(itemName, statsString);
         System.out.println("stat map: " + statMap);
 
         EquipmentSlot slot = null;
@@ -258,77 +264,77 @@ public class ItemManager {
         switch (category) {
 
             case WEAPON_MELEE:
-                slot=EquipmentSlot.HAND;
+                slot = EquipmentSlot.HAND;
                 break;
             case WEAPON_RANGED:
-                slot=EquipmentSlot.HAND;
+                slot = EquipmentSlot.HAND;
                 break;
             case ARMOUR_HELMET:
-                slot=EquipmentSlot.HEAD;
+                slot = EquipmentSlot.HEAD;
                 break;
             case ARMOUR_CHESTPLATE:
-                slot=EquipmentSlot.CHEST;
+                slot = EquipmentSlot.CHEST;
                 break;
             case ARMOUR_LEGGINGS:
-                slot=EquipmentSlot.LEGS;
+                slot = EquipmentSlot.LEGS;
                 break;
             case ARMOUR_BOOTS:
-                slot=EquipmentSlot.FEET;
+                slot = EquipmentSlot.FEET;
                 break;
             case TOOL_AXE:
-                slot=EquipmentSlot.HAND;
+                slot = EquipmentSlot.HAND;
                 break;
             case TOOL_PICKAXE:
-                slot=EquipmentSlot.HAND;
+                slot = EquipmentSlot.HAND;
                 break;
             case TOOL_SHOVEL:
-                slot=EquipmentSlot.HAND;
+                slot = EquipmentSlot.HAND;
                 break;
             case TOOL_HOE:
-                slot=EquipmentSlot.HAND;
+                slot = EquipmentSlot.HAND;
                 break;
             case ITEM_CONSUMABLE:
-                slot=null;
+                slot = null;
                 FoodComponent component = new ItemStack(Material.APPLE).getItemMeta().getFood();
 
                 String path = "food.";
 
-                for(String field : yamlConfiguration.getConfigurationSection("food").getKeys(false)) {
+                for (String field : yamlConfiguration.getConfigurationSection("food").getKeys(false)) {
                     switch (field) {
                         case "saturation":
-                            component.setSaturation((float) yamlConfiguration.getDouble(path+"saturation"));
+                            component.setSaturation((float) yamlConfiguration.getDouble(path + "saturation"));
                         case "nutrition":
-                            component.setNutrition(yamlConfiguration.getInt(path+"nutrition"));
+                            component.setNutrition(yamlConfiguration.getInt(path + "nutrition"));
                         case "always_edible":
-                            component.setCanAlwaysEat(yamlConfiguration.getBoolean(path+"always_edible"));
+                            component.setCanAlwaysEat(yamlConfiguration.getBoolean(path + "always_edible"));
                         case "eat_seconds":
-                            component.setEatSeconds((float) yamlConfiguration.getDouble(path+"eat_seconds"));
+                            component.setEatSeconds((float) yamlConfiguration.getDouble(path + "eat_seconds"));
                         case "potion_effects":
-                            for (String effectName : yamlConfiguration.getConfigurationSection(path+"potion_effects").getKeys(false)) {
+                            for (String effectName : yamlConfiguration.getConfigurationSection(path + "potion_effects").getKeys(false)) {
                                 String tempPath = path + "potion_effects." + effectName + ".";
 
                                 PotionEffectType potionEffectType = PotionEffectType.getByName(effectName.toUpperCase());
 
-                                int duration = 20*60;
+                                int duration = 20 * 60;
                                 int amplifier = 0;
                                 boolean ambient = false;
                                 boolean particles = false;
                                 boolean icon = true;
-                                for(String parameter : yamlConfiguration.getConfigurationSection(path + "potion_effects." + effectName).getKeys(false)) {
+                                for (String parameter : yamlConfiguration.getConfigurationSection(path + "potion_effects." + effectName).getKeys(false)) {
                                     switch (parameter) {
                                         case "duration":
-                                            duration = yamlConfiguration.getInt(tempPath+"duration");
+                                            duration = yamlConfiguration.getInt(tempPath + "duration");
                                         case "amplifier":
-                                            amplifier = yamlConfiguration.getInt(tempPath+"amplifier");
+                                            amplifier = yamlConfiguration.getInt(tempPath + "amplifier");
                                         case "ambient":
-                                            ambient = yamlConfiguration.getBoolean(tempPath+"ambient");
+                                            ambient = yamlConfiguration.getBoolean(tempPath + "ambient");
                                         case "particles":
-                                            particles = yamlConfiguration.getBoolean(tempPath+"particles");
+                                            particles = yamlConfiguration.getBoolean(tempPath + "particles");
                                         case "icon":
-                                            icon = yamlConfiguration.getBoolean(tempPath+"icon");
+                                            icon = yamlConfiguration.getBoolean(tempPath + "icon");
                                     }
                                 }
-                                component.addEffect(new PotionEffect(potionEffectType, duration, amplifier,ambient, particles,icon), 1);
+                                component.addEffect(new PotionEffect(potionEffectType, duration, amplifier, ambient, particles, icon), 1);
                             }
                     }
                 }
@@ -336,26 +342,26 @@ public class ItemManager {
                 meta.setFood(component);
                 break;
             case OTHER:
-                slot=null;
+                slot = null;
                 break;
             case ITEM_GENERIC:
-                slot=null;
+                slot = null;
                 break;
         }
 
-        for(ItemStats stat : statMap.keySet()) {
+        for (ItemStats stat : statMap.keySet()) {
             double value = statMap.get(stat);
 
             lore.add(getStatString(stat, value));
 
             // If an item has an attack speed modifier, the attack speed is 4 + the modifier.
 
-            if(stat.equals(ItemStats.ATTACK_SPEED)) {
-                value= -1 * (4-value);
+            if (stat.equals(ItemStats.ATTACK_SPEED)) {
+                value = -1 * (4 - value);
             }
 
             AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER);
-            if(slot!=null) {
+            if (slot != null) {
                 attributeModifier = new AttributeModifier(UUID.randomUUID(), UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER, slot);
             }
 
@@ -364,10 +370,10 @@ public class ItemManager {
                     meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, attributeModifier);
                     break;
                 case DEFENCE:
-                    defence=value;
+                    defence = value;
                     break;
                 case SPEED:
-                    speed=value;
+                    speed = value;
                     break;
                 case HEALTH:
                     meta.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, attributeModifier);
@@ -390,7 +396,7 @@ public class ItemManager {
         }
 
         // Hide attributes
-        if(hideAttributes) {
+        if (hideAttributes) {
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }
 
@@ -403,7 +409,7 @@ public class ItemManager {
 
         item.setItemMeta(meta);
 
-        if(durability>0) {
+        if (durability > 0) {
             Damageable damageableMeta = (Damageable) meta;
             damageableMeta.setMaxDamage(durability);
             item.setItemMeta(damageableMeta);
@@ -415,11 +421,11 @@ public class ItemManager {
             // More are available! Ask your IDE, or see Javadoc for suggestions!
         });
 
-        if(speed!=0) {
-            setItemNbtStat(item,ItemStats.SPEED,speed);
+        if (speed != 0) {
+            setItemNbtStat(item, ItemStats.SPEED, speed);
         }
-        if(defence!=0) {
-            setItemNbtStat(item,ItemStats.DEFENCE,defence);
+        if (defence != 0) {
+            setItemNbtStat(item, ItemStats.DEFENCE, defence);
         }
 
         return item;
@@ -448,7 +454,7 @@ public class ItemManager {
                 e.printStackTrace();
             }
 
-            for(ItemFields itemFields : ItemFields.values()) {
+            for (ItemFields itemFields : ItemFields.values()) {
                 yamlConfiguration.createSection(itemFields.name().toLowerCase(Locale.ROOT));
                 if (!itemFields.getVariableType().equals(VariableTypeEnum.LIST)) {
                     yamlConfiguration.set(itemFields.name().toLowerCase(Locale.ROOT), itemFields.getDefaultValue());
@@ -457,7 +463,7 @@ public class ItemManager {
 
             // Create stats section
             yamlConfiguration.createSection("stats.damage");
-            yamlConfiguration.set("stats.damage",5);
+            yamlConfiguration.set("stats.damage", 5);
 
             // Save demo item
             try {
@@ -477,14 +483,14 @@ public class ItemManager {
         File fileYaml = new File(path, name + ".yml");
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 
-        if(!yamlConfiguration.contains(statPath)) {
+        if (!yamlConfiguration.contains(statPath)) {
             Logger.logError("could not find " + statPath + " in: " + path + "/" + name + ".yml");
             return statMap;
         }
 
         String yamlPath = statPath + ".";
 
-        for(String key : yamlConfiguration.getConfigurationSection(statPath).getKeys(false)) {
+        for (String key : yamlConfiguration.getConfigurationSection(statPath).getKeys(false)) {
 
             System.out.println("section: " + key);
 
@@ -493,8 +499,8 @@ public class ItemManager {
             double value = yamlConfiguration.getDouble(yamlStatPath);
             ItemStats statKey = ItemStats.valueOf(key.toUpperCase(Locale.ROOT));
 
-            if(statKey!=null && !statKey.equals(ItemStats.NULL)) {
-                statMap.put(statKey,value);
+            if (statKey != null && !statKey.equals(ItemStats.NULL)) {
+                statMap.put(statKey, value);
             }
         }
         return statMap;
@@ -506,13 +512,13 @@ public class ItemManager {
 
     protected static void setItemNbtStat(ItemStack stack, ItemStats stat, double value) {
         NBT.modify(stack, nbt -> {
-            nbt.setDouble("stat."+stat.name().toLowerCase(Locale.ROOT), value);
+            nbt.setDouble("stat." + stat.name().toLowerCase(Locale.ROOT), value);
         });
     }
 
     public static double getItemNbtStat(ItemStack stack, ItemStats stat) {
         NBT.get(stack, nbt -> {
-            return nbt.getDouble("stat."+stat.name().toLowerCase(Locale.ROOT));
+            return nbt.getDouble("stat." + stat.name().toLowerCase(Locale.ROOT));
         });
         return 0;
     }
@@ -520,16 +526,16 @@ public class ItemManager {
     public static HashMap<ItemStats, Double> getItemNbtStats(ItemStack stack) {
         HashMap<ItemStats, Double> statMap = new HashMap<>();
 
-        for(ItemStats stat : ItemStats.values()) {
-            double value=getItemNbtStat(stack,stat);
-            if(value!=0) statMap.put(stat,value);
+        for (ItemStats stat : ItemStats.values()) {
+            double value = getItemNbtStat(stack, stat);
+            if (value != 0) statMap.put(stat, value);
         }
         return statMap;
     }
 
     public static void setItemNbtCategory(ItemStack stack, ItemCategory category) {
         NBT.modify(stack, nbt -> {
-            nbt.setEnum("category",category);
+            nbt.setEnum("category", category);
         });
     }
 
@@ -540,4 +546,35 @@ public class ItemManager {
         return ItemCategory.ITEM_GENERIC;
     }
 
+    public static ArrayList<String> getInteractEventsFromItem(String name, ActionType actionType) {
+        ArrayList<String> interactEvents = new ArrayList<>();
+
+        String path = MineshaftApi.getInstance().getItemPath();
+
+        File fileYaml = new File(path, name + ".yml");
+
+        // return null if file does not exist
+        if (!fileYaml.exists()) return null;
+
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+
+        // Whether the item has a parent item
+        boolean hasParent = false;
+
+        if (yamlConfiguration.contains("parent")) {
+            String parentName = yamlConfiguration.getString("parent");
+            if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
+                interactEvents.addAll(getInteractEventsFromItem(name, actionType));
+                hasParent = true;
+            }
+        }
+
+        String clickPath = "action.";
+
+        if(yamlConfiguration.contains(clickPath + actionType.getClickPath())) {
+            interactEvents.addAll(yamlConfiguration.getStringList(clickPath + actionType.getClickPath()));
+        }
+
+        return interactEvents;
+    }
 }

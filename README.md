@@ -1,4 +1,5 @@
 
+
 # MineshaftAPI
 An spigot plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.20.6
 
@@ -16,6 +17,8 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 		 - [List of food stats](#list-of-food-stats)
 		 - [Potion effects](#potion-effects)
 		 - [Potion effect parameters](#potion-effect-parameters)
+		 - [Item events](#item-events)
+		 - [Item event parameters](#item-event-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
 - [Plugin reloading](#plugin-reloading)
 
@@ -191,6 +194,22 @@ potion_effects:
 | `ambient`|Ambient|Whether the displayed particles are ambient|Boolean|
 | `particles`|Show particles|Whether the effect particles are displayed|Boolean|
 | `icon`|Show icon|Whether the effect icon is displayed|Boolean|
+
+#### Item events
+This section controls what events are triggered when the player executes a certain action. This includes the item being right or left-clicked.
+
+```yaml
+action:
+  right_click:
+  - blaster-shot
+```
+
+#### Item event parameters
+
+| Value | Description |Data Type|Notes
+|:---------|-|:-----------|-:|-:|
+| `right_click`|A list of events triggered when the player right-clicks with the item in their hand|String List|
+| `left_click`|A list of events triggered when the player left-clicks with the item in their hand|String list|
 
 ### Obtaining custom items
 

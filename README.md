@@ -22,16 +22,16 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 	- [Obtaining custom items](#obtaining-custom-items)
 - [Plugin reloading](#plugin-reloading)
 
-## Important Copyright Information
+# Important Copyright Information
 **This project is under the GPU GPL v3 license**
 Terms of use can be found here: https://www.gnu.org/licenses/gpl-3.0.en.html
 
-## Documentation
+# Documentation
 Currently, the only functionality of this plugin is custom item creation and **Vault** server economy.
 
 A work in progress sidebar is displayed to all players on the server. Customization is not yet available
 
-## Item Creation 
+# Item Creation 
 
 Items are created via custom YAML files. These are placed in the `Mineshaft/Data/Items` folder in the plugin directory of your server.
 
@@ -39,7 +39,7 @@ Items can have a multitude of different parameters, which are used to customize 
 
 If your `Items` folder is empty, an example file `example-item.yml` will be placed in this folder.
 
-### Example
+## Example
 
 ```yaml
 name: Cleaver
@@ -59,7 +59,7 @@ stats:
 ```
 ![An image of the example item](https://raw.githubusercontent.com/SF-24/images/main/example.png?token=GHSAT0AAAAAACVH5VYE6TIIM3WQV535ATUKZVCIRKQ)
 
-### List of parameters
+## List of parameters
 Not all parameters are required for the item to work
 
 | Parameter    | Description | Data Type | Note
@@ -78,7 +78,7 @@ Not all parameters are required for the item to work
 | `stats` | List of item attributes | HashMap||
 |`id`|A unique id assigned by the plugin. This is used for the plugin to recognize the item.|UUID|Do not change or set manually. Two items having the same id will result in **MAJOR** bugs. Changing an item id results in previous items breaking.
 
-#### Item Category List
+### Item Category List
 
 | Value | Description |
 |:---------|:-----------|
@@ -96,7 +96,7 @@ Not all parameters are required for the item to work
 | `item_generic` | Generic item (no category) |
 | `other` | Other (Unspecified) |
 
-#### Item Rarity List
+### Item Rarity List
 
 | Value | Rarity | Text Colour | Description |
 |:---------|:-----------:|:--:|-|
@@ -107,7 +107,7 @@ Not all parameters are required for the item to work
 | `exotic` |<font color="magenta">Exotic</font>|magenta/purple|
 | `legendary` |<font color="ORANGE">Legendary</font>|orange/gold|
 
-#### Item stats and attributes
+### Item stats and attributes
 
 The `stat` property is used to add custom attributes to an item. 
 These attributes are applied to the player when the item is equipped
@@ -125,7 +125,7 @@ stats:
   health: 17
 ```
 
-#### List of item attributes
+### List of item attributes
 
 | Value | Stat | Description | Notes
 |:---------|-|:-----------|-:|
@@ -138,7 +138,7 @@ stats:
 | `attack_speed` | Attack Speed | The attack speed of an item. | Work in progress. Do not use on armour | 
 
 
-#### Food
+### Food
 
 The `food` property is used only for consumables. 
 If an item has a food property, it may be eaten by a player.
@@ -162,7 +162,7 @@ food:
       icon: true
 ```
 
-#### List of food stats
+### List of food stats
 
 | Value | Stat | Description |Data Type|Notes
 |:---------|-|:-----------|-:|-:|
@@ -172,7 +172,7 @@ food:
 | `always_edible`|Always Edible|Whether an item can be eaten when your health bar is full|Boolean|
 | `potion effects`|Potion effects|Potion effects given to the player when the item is consumed|Complex|
 
-#### Potion effects
+### Potion effects
 This section controls the potion effect which are applied when the item is consumed
 
 ```yaml
@@ -185,7 +185,7 @@ potion_effects:
     icon: true
 ```
 
-#### Potion effect parameters
+### Potion effect parameters
 | Value | Stat | Description |Data Type|Notes
 |:---------|-|:-----------|-:|-:|
 | `potion-effect-name`|Potion effect name|Replace with the potion effect type name|Enum|[1.21 effect list](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html)
@@ -195,7 +195,7 @@ potion_effects:
 | `particles`|Show particles|Whether the effect particles are displayed|Boolean|
 | `icon`|Show icon|Whether the effect icon is displayed|Boolean|
 
-#### Item events
+### Item events
 This section controls what events are triggered when the player executes a certain action. This includes the item being right or left-clicked.
 
 ```yaml
@@ -204,14 +204,14 @@ action:
   - blaster-shot
 ```
 
-#### Item event parameters
+### Item event parameters
 
 | Value | Description |Data Type|Notes
 |:---------|-|:-----------|-:|-:|
 | `right_click`|A list of events triggered when the player right-clicks with the item in their hand|String List|
 | `left_click`|A list of events triggered when the player left-clicks with the item in their hand|String list|
 
-### Obtaining custom items
+## Obtaining custom items
 
 Custom items can be obtained using the `/getitem` command. This command is by default accessible to players with operator permissions.
 
@@ -225,7 +225,7 @@ This may be saved in the file `example-item.yml` or `example-item.yaml`
 
 `/getitem diamond-sword` grants the player the item with the name `diamond-sword`
 
-## Plugin reloading
+# Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.
 
 Usage:

@@ -235,13 +235,35 @@ If your `Events` folder is empty, an example file called `example-event.yml` wil
 
 Each event is placed in a separate YAML file. The event can be bound to an item (in the [item's YAML file](#item-events)) or executed in game for debugging purposes.
 
+## Example
+
+```yaml
+parent: 'null'
+event_type: BEAM
+colour: '208010010'
+fly_distance: 40
+speed: 5
+particle_type: DUST
+particle_size: 1
+offset:
+  x: 0
+  y: 1.5
+  z: 0
+on_hit:
+  entity:
+    damage: 8
+```
+
+This event will fire a red coloured beam. If it hits a mob, it will damage it for 8 damage. 
+
 # Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.
 
 Usage:
-`/mineshaft reload [all|items|configs]`
+`/mineshaft reload [all|items|events|configs]`
 
 Examples:
 `/mineshaft reload` and `/mineshaft reload all` reloads the whole plugin
 `/mineshaft reload item` and `/mineshaft reload items` reloads custom items
+`/mineshaft reload event` and `/mineshaft reload events` reloads events
 `/mineshaft reload config` and `/mineshaft reload configs` will reload the configuration files. However, this functionality is yet to be implemented

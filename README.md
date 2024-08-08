@@ -207,8 +207,8 @@ action:
 
 ### Item event parameters
 
-| Value | Description |Data Type|Notes
-|:---------|-|:-----------|-:|-:|
+| Value | Description |Data Type
+|:---------|-|:-----------|
 | `right_click`|A list of events triggered when the player right-clicks with the item in their hand|String List|
 | `left_click`|A list of events triggered when the player left-clicks with the item in their hand|String list|
 

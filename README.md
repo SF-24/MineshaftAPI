@@ -32,6 +32,8 @@ Currently, the only functionality of this plugin are custom item creation, event
 
 A work in progress sidebar is displayed to all players on the server. Customisation is not yet available
 
+Images representing examples of content included in the plugin may not be entirely accurate, as these were taken by a user with client mods and a resource pack altering the look of the game.
+
 # Item Creation 
 
 Items are created via custom YAML files. These are placed in the `Mineshaft/Data/Items` folder in the plugin directory of your server.

@@ -260,6 +260,8 @@ on_hit:
 
 This event will fire a red coloured beam. If it hits a mob, it will damage it for 8 damage. 
 
+![An image of the vent being triggered by a player](https://raw.githubusercontent.com/SF-24/images/main/event2.png)The event shown above being triggered by a player
+
 # Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.
 

@@ -212,6 +212,8 @@ action:
 | `right_click`|A list of events triggered when the player right-clicks with the item in their hand|String List|
 | `left_click`|A list of events triggered when the player left-clicks with the item in their hand|String list|
 
+The specific event filename (excluding the `.yml` or `.yaml` extension) is used to access the event.
+
 ## Obtaining custom items
 
 Custom items can be obtained using the `/getitem` command. This command is by default accessible to players with operator permissions.

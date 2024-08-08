@@ -20,6 +20,7 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 		 - [Item events](#item-events)
 		 - [Item event parameters](#item-event-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
+- [Event creation](#event-creation)
 - [Plugin reloading](#plugin-reloading)
 
 # Important Copyright Information
@@ -27,9 +28,9 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 Terms of use can be found here: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 # Documentation
-Currently, the only functionality of this plugin is custom item creation and **Vault** server economy.
+Currently, the only functionality of this plugin are custom item creation, event creation and **Vault** server economy.
 
-A work in progress sidebar is displayed to all players on the server. Customization is not yet available
+A work in progress sidebar is displayed to all players on the server. Customisation is not yet available
 
 # Item Creation 
 
@@ -224,6 +225,15 @@ Examples:
 This may be saved in the file `example-item.yml` or `example-item.yaml`
 
 `/getitem diamond-sword` grants the player the item with the name `diamond-sword`
+
+# Event creation
+Custom events are created via YAML configuration files, similarly to custom items. These can be executed using a command or bound to an item, using the item configuration file. These files are placed in the `Mineshaft/Data/Events` folder in the server plugin directory.
+
+They can have many different parameters, which control what happens when the item is executed.
+
+If your `Events` folder is empty, an example file called `example-event.yml` will be created.
+
+Each event is placed in a separate YAML file. The event can be bound to an item (in the [item's YAML file](#item-events)) or executed in game for debugging purposes.
 
 # Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.

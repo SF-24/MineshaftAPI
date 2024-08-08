@@ -26,6 +26,7 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.ActionType;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +35,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 
 public class InteractListener implements Listener {
@@ -53,28 +53,33 @@ public class InteractListener implements Listener {
 
         ItemStack item = e.getItem();
 
-        if(ItemManager.getItemIdFromItem(item)!=null && (clickType.equals(ActionType.RIGHT_CLICK) || clickType.equals(ActionType.LEFT_CLICK))) {
-            Player player = e.getPlayer();
+        // return if the player is not holding an item
+        if(item==null) return;
 
-            UUID uuid = ItemManager.getItemIdFromItem(item);
-            String name = ItemManager.getItemName(uuid);
-            System.out.printf("name: " + name);
+        Player player = e.getPlayer();
 
-            // Get events by string name // this is null
+        final UUID[] uuid = new UUID[1];
+
+        NBT.get(item, nbt -> {
+            String id = nbt.getOrDefault("uuid","null");
+            if(id.equalsIgnoreCase("null")) return;
+            uuid[0] = UUID.fromString(id);
+        });
+        UUID uniqueId = uuid[0];
+
+        if(uniqueId !=null) {
+            String name = ItemManager.getItemName(uniqueId);
+
             ArrayList<String> events = ItemManager.getInteractEventsFromItem(name, clickType);
 
             if(events==null) return;
 
             e.setCancelled(true);
 
-            player.sendMessage("events: " + events.toString());
-
             for(String event : events) {
                 EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();
                 eventManager.runEvent(eventManager.getEvent(event), player.getLocation(), player.getUniqueId());
             }
-
         }
-
     }
 }

@@ -35,6 +35,7 @@ import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -70,12 +71,10 @@ public class EventManager {
 
     public void initialiseEvent(String fileName) {
         File fileYaml = new File(path, fileName);
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
-
         String name = fileName.substring(0, fileName.lastIndexOf('.'));
 
         events.add(name);
-        Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
+        Logger.logInfo("Initialised event '" + name + "'");
     }
 
     private void createDemoEvent() {
@@ -155,6 +154,10 @@ public class EventManager {
     }
 
     public Event getEvent(String eventName) {
+        return getEvent(eventName, null);
+    }
+
+    public Event getEvent(String eventName, ConfigurationSection section111) {
 
 
         File fileYaml = new File(path, eventName +".yml");

@@ -92,8 +92,9 @@ public class ItemManager {
                 e.printStackTrace();
             }
         }
-        items.put(UUID.fromString(yamlConfiguration.getString("id")), name);
+        items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
+        Logger.logError("Debug " + items.toString());
     }
 
     public static String getItemName(UUID uuid) {
@@ -101,11 +102,12 @@ public class ItemManager {
     }
 
     public static UUID getItemIdFromItem(ItemStack item) {
+        final UUID[] uuid = {null};
+
         NBT.get(item, nbt -> {
-            String uuid = nbt.getString("uuid");
-            return uuid;
+            uuid[0] = UUID.fromString(nbt.getString("uuid"));
         });
-        return null;
+        return uuid[0];
     }
 
     public String getItemNameFromItem(ItemStack item) {
@@ -547,22 +549,24 @@ public class ItemManager {
 
     // TODO: returns null - bug
     public static ArrayList<String> getInteractEventsFromItem(String name, ActionType actionType) {
+
         ArrayList<String> interactEvents = new ArrayList<>();
 
         String path = MineshaftApi.getInstance().getItemPath();
 
-        System.out.printf(path, name + ".yml");
+        Logger.logError(path + "/" + name + ".yml");
 
         File fileYaml = new File(path, name + ".yml");
 
         // return null if file does not exist
         if (!fileYaml.exists()) {
+            Logger.logError("FILE NOT FOUND ERROR!!!!!!!");
             MineshaftApi.getAnyPlayer().sendMessage("File not found");
             return null;
         }
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
-
+/*
         // Whether the item has a parent item
         boolean hasParent = false;
 
@@ -573,15 +577,16 @@ public class ItemManager {
                 hasParent = true;
             }
         }
-
+*/
         String clickPath = "action.";
 
         MineshaftApi.getAnyPlayer().sendMessage(clickPath + actionType.getClickPath());
         MineshaftApi.getAnyPlayer().sendMessage(clickPath + actionType.getClickPath());
 
         if(yamlConfiguration.contains("action")) MineshaftApi.getAnyPlayer().sendMessage("path found");
+
         if(yamlConfiguration.contains(clickPath + actionType.getClickPath())) {
-            System.out.printf("path found");
+            System.out.print("path found");
             MineshaftApi.getAnyPlayer().sendMessage(yamlConfiguration.getStringList(clickPath + actionType.getClickPath()).toString());
             interactEvents.addAll(yamlConfiguration.getStringList(clickPath + actionType.getClickPath()));
         }

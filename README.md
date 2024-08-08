@@ -21,6 +21,8 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 		 - [Item event parameters](#item-event-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
 - [Event creation](#event-creation)
+  - [Event example](#event-example)
+  - [List of event parameters](#list-of-event-parameters)
 - [Plugin reloading](#plugin-reloading)
 
 # Important Copyright Information
@@ -239,7 +241,7 @@ If your `Events` folder is empty, an example file called `example-event.yml` wil
 
 Each event is placed in a separate YAML file. The event can be bound to an item (in the [item's YAML file](#item-events)) or executed in game for debugging purposes.
 
-## Example
+## Event example
 
 ```yaml
 parent: 'null'
@@ -261,6 +263,9 @@ on_hit:
 This event will fire a red coloured beam. If it hits a mob, it will damage it for 8 damage. 
 
 ![An image of the vent being triggered by a player](https://raw.githubusercontent.com/SF-24/images/main/event2.png)The event shown above being triggered by a player
+
+## List of event parameters
+### ***Coming soon....***
 
 # Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.

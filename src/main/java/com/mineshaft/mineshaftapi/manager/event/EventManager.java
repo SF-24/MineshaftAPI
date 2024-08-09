@@ -131,7 +131,6 @@ public class EventManager {
     }
 
     public boolean runEvent(Event event, Location loc, UUID casterId) {
-        System.out.print("event execute");
         switch (event.getEventType()) {
             case NULL:
                 return false;
@@ -184,7 +183,7 @@ public class EventManager {
 
         Event eventClass = new Event();
         eventClass.setName(eventName);
-        EventType eventType = eventClass.getEventType();
+        EventType eventType = EventType.NULL;
 
         List<String> uniqueFields = new ArrayList<>();
 
@@ -203,15 +202,8 @@ public class EventManager {
         }
 
         if(yamlConfiguration.contains("event_type")) {
-            try {
-                eventType = EventType.valueOf(yamlConfiguration.getString("event_type"));
-            } catch (Exception e) {
-                if(!hasParent) {
-                    Logger.logError("ERROR! Could not load event '" + eventName + "");
-                    return null;
-                }
-                Logger.logWarning("ERROR! Could not load event type for event: '" + eventName + "'. Invalid event type. Using parent event type instead");
-            }
+//            MineshaftApi.getAnyPlayer().sendMessage("e type: " + yamlConfiguration.getString("event_type"));
+            eventType = EventType.valueOf(yamlConfiguration.getString("event_type").toUpperCase(Locale.ROOT));
         }
 
         boolean isEventsList = false;
@@ -252,6 +244,9 @@ public class EventManager {
 
             for(String key : yamlConfiguration.getKeys(false)) {
                 switch (key) {
+                    case "sound":
+                        beamEvent.setSound(yamlConfiguration.getString(key));
+                        break;
                     case "speed":
                         beamEvent.setSpeed(yamlConfiguration.getInt(key));
                         break;
@@ -267,7 +262,7 @@ public class EventManager {
                         beamEvent.setParticleCount(yamlConfiguration.getInt(key));
                         break;
                     case "particle_type":
-                        beamEvent.setParticleType(Particle.valueOf(yamlConfiguration.getString(key)));
+                        beamEvent.setParticleType(Particle.valueOf(yamlConfiguration.getString(key).toUpperCase()));
                         break;
                     case "fly_distance":
                         beamEvent.setFlyDistance(yamlConfiguration.getInt(key));
@@ -286,7 +281,7 @@ public class EventManager {
 
                         LocalEvent localEvent = null;
                         try {
-                            localEvent = LocalEvent.valueOf(element.toUpperCase(Locale.ROOT));
+                            localEvent = LocalEvent.valueOf(element.toUpperCase(Locale.ROOT).toUpperCase(Locale.ROOT));
                         } catch (Exception e) {
                             Logger.logError("Could not load local event " + element  + " for yaml event: " + eventName);
                             break;

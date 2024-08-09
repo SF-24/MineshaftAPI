@@ -32,14 +32,6 @@ public class DependencyInit {
     VaultDependency vaultDependency = null;
 
     public void initialiseDependencies() {
-
-        if (hasMythicMobs()) {
-            // Register placeholders
-            Bukkit.getPluginManager().registerEvents(new MythicEventListener(), MineshaftApi.getInstance());
-        } else {
-            // Log warning
-            Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
-        }
         if (hasPlaceholderAPI()) {
             // Register placeholders
             new MineshaftPlaceholderExpansion(MineshaftApi.getInstance()).register();
@@ -68,7 +60,7 @@ public class DependencyInit {
     }
 
     public static boolean hasMythicMobs() {
-        return Bukkit.getPluginManager().getPlugin("MythicMobs") != null && Bukkit.getPluginManager().isPluginEnabled("MythicMobs");
+        return Bukkit.getPluginManager().getPlugin("MythicMobs") != null || Bukkit.getPluginManager().isPluginEnabled("MythicMobs");
     }
 
     public VaultDependency getVault() {return vaultDependency;}

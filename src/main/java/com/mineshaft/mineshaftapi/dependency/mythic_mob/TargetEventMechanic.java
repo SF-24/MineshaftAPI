@@ -25,16 +25,15 @@ package com.mineshaft.mineshaftapi.dependency.mythic_mob;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
-import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
-import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.adapters.AbstractLocation;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -53,11 +52,11 @@ public class TargetEventMechanic implements ITargetedEntitySkill {
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity targetEntity) {
         data.getParameters();
 
+        MineshaftApi.getAnyPlayer().sendMessage("executing event!");
+
         UUID uuid = data.getCaster().getEntity().getUniqueId();
 
         AbstractLocation targetLoc = targetEntity.getLocation();
-
-        //Vector vector = new Vector();
 
         final Location loc = getLocation(data, targetLoc);
 
@@ -65,16 +64,18 @@ public class TargetEventMechanic implements ITargetedEntitySkill {
 
         EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();
 
-        Event event = eventManager.getEvent(eventName);
-
+        Event event = eventManager.getEvent("blaster-shot");
+/*
         if(event instanceof BeamEvent) {
+            MineshaftApi.getAnyPlayer().sendMessage("Beam event!");
+
             if (((BeamEvent) event).getOnHitEntity().contains(LocalEvent.DAMAGE)) {
                 ((BeamEvent) event).setOnHitEntity(LocalEvent.DAMAGE,damage);
             }
             if (((BeamEvent) event).getOnHitPlayer().contains(LocalEvent.DAMAGE)) {
                 ((BeamEvent) event).setOnHitPlayer(LocalEvent.DAMAGE,damage);
             }
-        }
+        }*/
 
         eventManager.runEvent(event, loc, uuid);
 
@@ -82,7 +83,7 @@ public class TargetEventMechanic implements ITargetedEntitySkill {
     }
 
     private static @NotNull Location getLocation(SkillMetadata data, AbstractLocation targetLoc) {
-        Location loc = new Location((World) data.getCaster().getLocation().getWorld(), data.getCaster().getLocation().getX(), data.getCaster().getLocation().getY(), data.getCaster().getLocation().getZ());
+        Location loc = new Location(Bukkit.getWorld(data.getCaster().getLocation().getWorld().getUniqueId()), data.getCaster().getLocation().getX(), data.getCaster().getLocation().getY(), data.getCaster().getLocation().getZ());
 
         AbstractLocation casterLoc = data.getCaster().getLocation();
 
@@ -90,17 +91,8 @@ public class TargetEventMechanic implements ITargetedEntitySkill {
         double y = targetLoc.getY()-casterLoc.getY();
         double z = targetLoc.getZ()-casterLoc.getZ();
 
-        // Calculate the hypotenuse of the x,z,L triangle
-        double L = Math.sqrt(Math.pow(x,2) + Math.pow(z,2));
+        loc.setDirection(new Vector(x,y,z));
 
-        // Calculate the pitch (p)
-        double pitch = Math.atan(y/L);
-
-        // Calculate the yaw (γ)
-        double yaw = Math.atan(z/x);
-
-        loc.setPitch((float) pitch);
-        loc.setYaw((float) yaw);
         return loc;
     }
 

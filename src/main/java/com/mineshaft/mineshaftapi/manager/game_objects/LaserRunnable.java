@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class LaserRunnable extends BukkitRunnable {
@@ -107,16 +107,58 @@ public class LaserRunnable extends BukkitRunnable {
 
             loc.add(x,y,z);
 
+            ArrayList<Material> ignoredBlocks = new ArrayList<>();
+            ignoredBlocks.add(Material.VINE);
+            ignoredBlocks.add(Material.TALL_GRASS);
+            ignoredBlocks.add(Material.SHORT_GRASS);
+            ignoredBlocks.add(Material.ROSE_BUSH);
+            ignoredBlocks.add(Material.LILAC);
+            ignoredBlocks.add(Material.PEONY);
+            ignoredBlocks.add(Material.OXEYE_DAISY);
+            ignoredBlocks.add(Material.POPPY);
+            ignoredBlocks.add(Material.DANDELION);
+            ignoredBlocks.add(Material.BLUE_ORCHID);
+            ignoredBlocks.add(Material.ALLIUM);
+            ignoredBlocks.add(Material.AZURE_BLUET);
+            ignoredBlocks.add(Material.ORANGE_TULIP);
+            ignoredBlocks.add(Material.RED_TULIP);
+            ignoredBlocks.add(Material.PINK_TULIP);
+            ignoredBlocks.add(Material.WHITE_TULIP);
+            ignoredBlocks.add(Material.CORNFLOWER);
+            ignoredBlocks.add(Material.LILY_OF_THE_VALLEY);
+            ignoredBlocks.add(Material.TORCHFLOWER);
+            ignoredBlocks.add(Material.WITHER_ROSE);
+            ignoredBlocks.add(Material.PINK_PETALS);
+            ignoredBlocks.add(Material.SUNFLOWER);
+            ignoredBlocks.add(Material.PITCHER_PLANT);
+            ignoredBlocks.add(Material.ACACIA_SAPLING);
+            ignoredBlocks.add(Material.BAMBOO_SAPLING);
+            ignoredBlocks.add(Material.OAK_SAPLING);
+            ignoredBlocks.add(Material.CHERRY_SAPLING);
+            ignoredBlocks.add(Material.JUNGLE_SAPLING);
+            ignoredBlocks.add(Material.SPRUCE_SAPLING);
+            ignoredBlocks.add(Material.DARK_OAK_SAPLING);
+            ignoredBlocks.add(Material.BIRCH_SAPLING);
+            ignoredBlocks.add(Material.MANGROVE_PROPAGULE);
+            ignoredBlocks.add(Material.FERN);
+            ignoredBlocks.add(Material.LARGE_FERN);
+            ignoredBlocks.add(Material.CAVE_VINES);
+            ignoredBlocks.add(Material.TWISTING_VINES);
+            ignoredBlocks.add(Material.WEEPING_VINES);
+            ignoredBlocks.add(Material.DEAD_BUSH);
+            ignoredBlocks.add(Material.SWEET_BERRY_BUSH);
+            ignoredBlocks.add(Material.GLOW_BERRIES);
+            ignoredBlocks.add(Material.BIG_DRIPLEAF);
+            ignoredBlocks.add(Material.SMALL_DRIPLEAF);
+            ignoredBlocks.add(Material.BIG_DRIPLEAF_STEM);
+
             // flip on hit barrier
             if(loc.getBlock().getType().equals(Material.BARRIER)) {
                 flipped = true;
-            }
-
-            // IF SPELL HITS BLOCK (not air)
-            if (!loc.getBlock().getType().equals(Material.AIR)) {
+            } else if (!loc.getBlock().getType().equals(Material.AIR) && !ignoredBlocks.contains(loc.getBlock().getType())) {
                 //PLAY FIZZLE SOUND
                 //loc.getWorld().spawnParticle(Particle.FLAME, loc,0,0.2,0,0,0.1);
-                loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_EXTINGUISH, 10.0f, 1.0f);
+                loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
                 this.cancel();
 
                 // if hits barrier block or air

@@ -37,10 +37,10 @@ permissions:
     default: false
     description: Allows access to debug currency
   mineshaft.debug.items:
-    default: false
+    default: op
     description: Allows access to debug items
   mineshaft.debug.events:
-    default: false
+    default: op
     description: Allows access to debug events
   mineshaft.op:
     permission: default.op

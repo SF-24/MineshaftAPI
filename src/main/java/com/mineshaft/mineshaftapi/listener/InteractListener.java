@@ -26,6 +26,7 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.ActionType;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import de.tr7zw.nbtapi.NBT;
 import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
@@ -98,6 +99,12 @@ public class InteractListener implements Listener {
             for(String event : events) {
                 EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();
                 Event executableEvent = eventManager.getEvent(event, item);
+                if(executableEvent instanceof BeamEvent) {
+                    String sound = ((BeamEvent) executableEvent).getSound();
+                    if(sound!=null) {
+                        player.getLocation().getWorld().playSound(player.getLocation(), sound, 1.0f, 1.0f);
+                    }
+                }
                 eventManager.runEvent(executableEvent, player.getLocation(), player.getUniqueId());
             }
         }

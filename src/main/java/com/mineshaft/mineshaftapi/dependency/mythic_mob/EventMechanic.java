@@ -32,8 +32,8 @@ import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedLocationSkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -80,7 +80,7 @@ public class EventMechanic implements ITargetedLocationSkill {
     }
 
     private static @NotNull Location getLocation(SkillMetadata data, AbstractLocation targetLoc) {
-        Location loc = new Location((World) data.getCaster().getLocation().getWorld(), data.getCaster().getLocation().getX(), data.getCaster().getLocation().getY(), data.getCaster().getLocation().getZ());
+        Location loc = new Location(Bukkit.getWorld(data.getCaster().getLocation().getWorld().getUniqueId()), data.getCaster().getLocation().getX(), data.getCaster().getLocation().getY(), data.getCaster().getLocation().getZ());
 
         AbstractLocation casterLoc = data.getCaster().getLocation();
 

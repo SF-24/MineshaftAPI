@@ -52,7 +52,7 @@ public class JsonPlayerManager {
     private void initiateFile(UUID uuid) throws Exception {
 
         String path = ProfileManager.getProfilePathOfPlayer(uuid);
-        System.out.println("PATH: " + path);
+        //System.out.println("PATH: " + path);
 
         File file = new File(path, "player_data.json");
 
@@ -142,7 +142,7 @@ public class JsonPlayerManager {
 
         PlayerDataClass pdc = gson.fromJson(reader, PlayerDataClass.class);
         if(pdc==null) {
-            System.out.println("ERROR! PlayerDataClass is null");
+            Logger.logError("ERROR! PlayerDataClass is null");
         }
 
         assert pdc != null;

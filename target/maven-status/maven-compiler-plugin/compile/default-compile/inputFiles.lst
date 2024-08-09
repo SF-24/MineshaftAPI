@@ -19,7 +19,6 @@ C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftap
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\util\LocationFormatter.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\manager\ActionType.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\command\HealCommand.java
-C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\manager\YamlShortcut.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\util\ColourFormatter.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\manager\PlayerStatManager.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\manager\item\fields\ItemFields.java
@@ -37,6 +36,7 @@ C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftap
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\listener\JoinListener.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\manager\ui\PlayerMenuManager.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\manager\CooldownManager.java
+C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\dependency\mythic_mob\TargetEventMechanic.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\manager\event\EventManager.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\util\NumericFormatter.java
 C:\Users\Admin\IdeaProjects\MineshaftApi\src\main\java\com\mineshaft\mineshaftapi\manager\event\fields\EventType.java

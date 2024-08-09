@@ -281,7 +281,7 @@ public class ItemManager {
         // Load file stats, append to lore and add them to the item
 
         HashMap<ItemStats, Double> statMap = getStatMap(itemName, statsString);
-        System.out.println("stat map: " + statMap);
+        //System.out.println("stat map: " + statMap);
 
         EquipmentSlot slot = null;
 
@@ -520,7 +520,7 @@ public class ItemManager {
     }
 
     protected HashMap<ItemStats, Double> getStatMap(String name, String statPath) {
-        System.out.println("getting statmap");
+        //System.out.println("getting statmap");
 
         HashMap<ItemStats, Double> statMap = new HashMap<>();
 
@@ -537,7 +537,7 @@ public class ItemManager {
 
         for (String key : yamlConfiguration.getConfigurationSection(statPath).getKeys(false)) {
 
-            System.out.println("section: " + key);
+            //System.out.println("section: " + key);
 
             String yamlStatPath = yamlPath + key;
 

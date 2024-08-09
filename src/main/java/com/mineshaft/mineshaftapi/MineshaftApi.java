@@ -25,6 +25,7 @@ package com.mineshaft.mineshaftapi;
 import com.mineshaft.mineshaftapi.command.*;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
+import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicEventListener;
 import com.mineshaft.mineshaftapi.listener.InteractListener;
 import com.mineshaft.mineshaftapi.listener.JoinListener;
 import com.mineshaft.mineshaftapi.manager.CooldownManager;
@@ -55,6 +56,14 @@ public final class MineshaftApi extends JavaPlugin {
                 Logger.logInfo("Wtyczka mineshaft API została włączona");
             case ENGLISH:
                 Logger.logInfo("Plugin mineshaft API has been enabled");
+        }
+
+        if (DependencyInit.hasMythicMobs()) {
+            // Register placeholders
+            Bukkit.getPluginManager().registerEvents(new MythicEventListener(), MineshaftApi.getInstance());
+        } else {
+            // Log warning
+            Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
         }
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);

@@ -4,7 +4,6 @@ com\mineshaft\mineshaftapi\command\MineshaftCommand.class
 com\mineshaft\mineshaftapi\manager\json\PlayerDataClass.class
 com\mineshaft\mineshaftapi\listener\UIListener.class
 com\mineshaft\mineshaftapi\command\GetItemCommand.class
-com\mineshaft\mineshaftapi\manager\YamlShortcut.class
 com\mineshaft\mineshaftapi\manager\event\fields\EventType.class
 com\mineshaft\mineshaftapi\manager\json\JsonPlayerManager.class
 com\mineshaft\mineshaftapi\manager\VariableTypeEnum.class

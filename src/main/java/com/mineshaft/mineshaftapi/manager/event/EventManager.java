@@ -332,8 +332,6 @@ public class EventManager {
 
                 double damage = ItemManager.getItemNbtStat(executingItem, ItemStats.RANGED_DAMAGE);
 
-                MineshaftApi.getAnyPlayer().sendMessage("Ranged damage: " + damage);
-
                 if(damage<=0) return beamEvent;
 
                 if(beamEvent.getOnHitEntity().contains(LocalEvent.DAMAGE)) {

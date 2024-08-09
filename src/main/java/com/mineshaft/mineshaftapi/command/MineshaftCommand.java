@@ -68,8 +68,8 @@ public class MineshaftCommand implements CommandExecutor {
                         break;
                     case "config":
                     case "configs":
-                        // TODO: reload configs
-                        sendMessageToSender(sender, ChatColor.RED + "This functionality is yet to be implemented");
+                        MineshaftApi.reloadConfigs();
+                        sender.sendMessage(ChatColor.AQUA + "Configuration files have been reloaded");
                         break;
                     default:
                         // send error message

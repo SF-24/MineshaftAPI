@@ -26,27 +26,30 @@ import org.bukkit.ChatColor;
 
 public enum ItemStats {
 
-    NULL(""),
+    NULL("",9),
 
-    DAMAGE(ChatColor.DARK_GREEN.toString()),
-    RANGED_DAMAGE(ChatColor.DARK_GREEN.toString()),
+    DAMAGE(ChatColor.DARK_GREEN.toString(),1),
+    RANGED_DAMAGE(ChatColor.DARK_GREEN.toString(),2),
 
-    SPEED(ChatColor.WHITE.toString()),
+    SPEED(ChatColor.WHITE.toString(),5),
 
-    DEFENCE(ChatColor.GREEN.toString()),
-    HEALTH(ChatColor.RED.toString()),
+    DEFENCE(ChatColor.GREEN.toString(),4),
+    HEALTH(ChatColor.RED.toString(),3),
 
-    ATTACK_SPEED(ChatColor.AQUA.toString()),
+    ATTACK_SPEED(ChatColor.AQUA.toString(),8),
 
-    ATTACK_REACH(ChatColor.YELLOW.toString()),
-    MINING_REACH(ChatColor.YELLOW.toString()),
-    REACH(ChatColor.YELLOW.toString());
+    ATTACK_REACH(ChatColor.YELLOW.toString(),6),
+    MINING_REACH(ChatColor.YELLOW.toString(),7),
+    REACH(ChatColor.YELLOW.toString(),6);
 
     private final String colour;
+    private final int priority;
 
-    ItemStats(String colour) {
+    ItemStats(String colour, int priority) {
+        this.priority=priority;
         this.colour=colour;
     }
 
+    public int getPriority() {return priority;}
     public String getColour() {return colour;}
 }

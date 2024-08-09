@@ -53,6 +53,7 @@ import java.util.*;
 public class ItemManager {
 
     HashMap<UUID, String> items = new HashMap<>();
+    HashMap<UUID, List<String>> cachedEvents = new HashMap<>();
 
     public HashMap<UUID, String> getItemList() {
         return items;
@@ -132,12 +133,33 @@ public class ItemManager {
 
         ItemStack item = new ItemStack(Material.BARRIER);
 
+
+        // Rarity
+        ItemRarity rarity=ItemRarity.STANDARD;
+
+        String itemDisplay = "Item";
+        String parentItemDisplay = null;
+
         if (yamlConfiguration.contains("parent")) {
             String parentName = yamlConfiguration.getString("parent");
             if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
                 item = getItem(parentName);
                 hasParent = true;
+                File parent = new File(path, itemName + ".yml");
+                if(parent.exists()) {
+                    YamlConfiguration parentYaml = YamlConfiguration.loadConfiguration(parent);
+                    if( parentYaml.getString("subcategory")!=null) {
+                        parentItemDisplay = TextFormatter.convertStringToName(parentYaml.getString("subcategory"));
+                    }
+                }
             }
+        }
+        final String[] rareCategory = new String[1];
+        NBT.modify(item, nbt -> {
+            rareCategory[0] = nbt.getOrNull("rarity", String.class);
+        });
+        if(rareCategory[0]!=null) {
+            rarity = ItemRarity.valueOf(rareCategory[0].toUpperCase(Locale.ROOT));
         }
 
         if (yamlConfiguration.contains("material")) {
@@ -154,9 +176,6 @@ public class ItemManager {
 
         // ItemMeta variable
         ItemMeta meta = item.getItemMeta();
-
-        // Rarity
-        ItemRarity rarity = ItemRarity.STANDARD;
 
         // Temporarily unused - will be used for stuff like AH sorting, item abilities, etc.
         ItemCategory category = ItemCategory.ITEM_GENERIC;
@@ -222,7 +241,6 @@ public class ItemManager {
         ArrayList<String> lore = new ArrayList<>();
 
         if (rarity != ItemRarity.STANDARD) {
-            String itemDisplay = "Item";
 
             if (category.equals(ItemCategory.WEAPON_MELEE) || category.equals(ItemCategory.WEAPON_RANGED)) {
                 itemDisplay = "Weapon";
@@ -246,13 +264,18 @@ public class ItemManager {
                 itemDisplay = "Consumable";
             }
 
-            if (subcategory != null && !subcategory.equals("")) {
+            if (subcategory != null && !subcategory.equalsIgnoreCase("")) {
                 itemDisplay = TextFormatter.convertStringToName(subcategory);
+            } else if(parentItemDisplay!=null) {
+                itemDisplay=parentItemDisplay;
             }
 
-            lore.add(rarity.getColourCode() + ChatColor.ITALIC.toString() + rarity.getName() + " " + itemDisplay);
+            if(MineshaftApi.getInstance().getConfigManager().useItalicItemRarity()) {
+                lore.add(rarity.getColourCode() + ChatColor.ITALIC.toString() + rarity.getName() + " " + itemDisplay);
+            } else {
+                lore.add(rarity.getColourCode() + rarity.getName() + " " + itemDisplay);
+            }
             lore.add("");
-
         }
 
         // Load file stats, append to lore and add them to the item
@@ -349,10 +372,11 @@ public class ItemManager {
                 break;
         }
 
+        int lowestPriority = 100;
+        int highestPriority= 0;
+
         for (ItemStats stat : statMap.keySet()) {
             double value = statMap.get(stat);
-
-            lore.add(getStatString(stat, value));
 
             // If an item has an attack speed modifier, the attack speed is 4 + the modifier.
 
@@ -364,6 +388,9 @@ public class ItemManager {
             if (slot != null) {
                 attributeModifier = new AttributeModifier(UUID.randomUUID(), UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER, slot);
             }
+
+            if(stat.getPriority()<lowestPriority) lowestPriority=stat.getPriority();
+            if(stat.getPriority()>highestPriority) highestPriority=stat.getPriority();
 
             switch (stat) {
                 case DAMAGE:
@@ -395,6 +422,14 @@ public class ItemManager {
                     meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, attributeModifier);
                     break;
                 default:
+            }
+        }
+
+        for(int i = lowestPriority; i<=highestPriority; i++) {
+            for(ItemStats stat : statMap.keySet()) {
+                if (i == stat.getPriority()) {
+                    lore.add(getStatString(stat, statMap.get(stat)));
+                }
             }
         }
 
@@ -433,6 +468,10 @@ public class ItemManager {
         if(ranged_damage!=0) {
             setItemNbtStat(item, ItemStats.RANGED_DAMAGE, ranged_damage);
         }
+        ItemRarity finalRarity = rarity;
+        NBT.modify(item, nbt -> {
+            nbt.setString("rarity", finalRarity.toString());
+        });
 
         return item;
     }
@@ -571,14 +610,12 @@ public class ItemManager {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 
         // Whether the item has a parent item
-        boolean hasParent = false;
+        // TODO: fix this code
 
-        if (yamlConfiguration.contains("parent")) {
-            String parentName = yamlConfiguration.getString("parent");
-            if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
-                interactEvents.addAll(getInteractEventsFromItem(name, actionType));
-                hasParent = true;
-            }
+        String parent = yamlConfiguration.getString("parent");
+        if(parent!=null && !parent.equalsIgnoreCase("null")) {
+            List<String> parentEvents = getInteractEventsFromItem(parent, actionType);
+            interactEvents.addAll(parentEvents);
         }
 
         String clickPath = "action.";

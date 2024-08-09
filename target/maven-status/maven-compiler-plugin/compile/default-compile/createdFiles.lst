@@ -1,4 +1,5 @@
 com\mineshaft\mineshaftapi\manager\ProfileManager.class
+com\mineshaft\mineshaftapi\dependency\mythic_mob\TargetEventMechanic.class
 com\mineshaft\mineshaftapi\command\MineshaftCommand.class
 com\mineshaft\mineshaftapi\manager\json\PlayerDataClass.class
 com\mineshaft\mineshaftapi\listener\UIListener.class
@@ -9,6 +10,7 @@ com\mineshaft\mineshaftapi\manager\json\JsonPlayerManager.class
 com\mineshaft\mineshaftapi\manager\VariableTypeEnum.class
 com\mineshaft\mineshaftapi\manager\PlayerManager.class
 com\mineshaft\mineshaftapi\manager\event\EventManager.class
+com\mineshaft\mineshaftapi\manager\CooldownManager.class
 com\mineshaft\mineshaftapi\manager\item\fields\ItemFields.class
 com\mineshaft\mineshaftapi\manager\item\fields\ItemRarity.class
 com\mineshaft\mineshaftapi\manager\event\fields\TriggerType.class
@@ -24,6 +26,7 @@ com\mineshaft\mineshaftapi\manager\event\event_subclass\BeamEvent.class
 com\mineshaft\mineshaftapi\manager\event\EventManager$1.class
 com\mineshaft\mineshaftapi\MineshaftApi$1.class
 com\mineshaft\mineshaftapi\manager\event\fields\EventFields.class
+com\mineshaft\mineshaftapi\dependency\mythic_mob\MythicEventListener.class
 com\mineshaft\mineshaftapi\manager\item\ItemStats.class
 com\mineshaft\mineshaftapi\manager\ui\PlayerMenuManager.class
 com\mineshaft\mineshaftapi\manager\event\fields\LocalEvent.class
@@ -36,6 +39,7 @@ com\mineshaft\mineshaftapi\manager\ActionType.class
 com\mineshaft\mineshaftapi\util\Language.class
 com\mineshaft\mineshaftapi\manager\PlayerManager$1.class
 com\mineshaft\mineshaftapi\util\NumericFormatter.class
+com\mineshaft\mineshaftapi\dependency\mythic_mob\EventMechanic.class
 com\mineshaft\mineshaftapi\manager\item\fields\ItemCategory.class
 com\mineshaft\mineshaftapi\manager\event\EventExecutor.class
 com\mineshaft\mineshaftapi\manager\player_skills\PlayerSkills.class
@@ -47,6 +51,7 @@ com\mineshaft\mineshaftapi\listener\DamageListener.class
 com\mineshaft\mineshaftapi\manager\event\fields\UniqueEventFields.class
 com\mineshaft\mineshaftapi\manager\game_objects\LaserRunnable$1.class
 com\mineshaft\mineshaftapi\manager\PlayerStatManager.class
+com\mineshaft\mineshaftapi\manager\config\ConfigManager.class
 com\mineshaft\mineshaftapi\dependency\VaultEconomy.class
 com\mineshaft\mineshaftapi\listener\InteractListener.class
 com\mineshaft\mineshaftapi\manager\item\ItemManager.class

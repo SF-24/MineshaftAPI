@@ -20,27 +20,40 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.listener;
+package com.mineshaft.mineshaftapi.manager.config;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.SidebarManager;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerManager;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.configuration.file.FileConfiguration;
 
-public class JoinListener implements Listener {
+public class ConfigManager {
 
-    @EventHandler
-    public void PlayerJoinEvent(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
-
-        // Make a new json player manager
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
-
-        if(MineshaftApi.getInstance().getConfigManager().getSidebarEnabled()) {
-            SidebarManager.displayScoreboard(player);
-        }
+    public ConfigManager(MineshaftApi mineshaftApi) {
+        mineshaftApi.getConfig().options().copyDefaults();
+        mineshaftApi.saveDefaultConfig();
     }
+
+    public FileConfiguration getConfig() {
+        return MineshaftApi.getInstance().getConfig();
+    }
+
+    public boolean getSidebarEnabled() {
+        return getConfig().getBoolean("enable-sidebar");
+    }
+
+    public boolean useVault() {
+        return getConfig().getBoolean("enable-vault");
+    }
+
+    public boolean useItalicItemRarity() {
+        return getConfig().getBoolean("italic-item-rarity");
+    }
+
+    public boolean enableItemCooldownAnimation() {
+        return getConfig().getBoolean("enable-cooldown-animation");
+    }
+
+    public void reloadConfigs() {
+        MineshaftApi.getInstance().reloadConfig();
+    }
+
 }

@@ -23,6 +23,7 @@
 package com.mineshaft.mineshaftapi.dependency;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicEventListener;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 
@@ -32,6 +33,13 @@ public class DependencyInit {
 
     public void initialiseDependencies() {
 
+        if (hasMythicMobs()) {
+            // Register placeholders
+            Bukkit.getPluginManager().registerEvents(new MythicEventListener(), MineshaftApi.getInstance());
+        } else {
+            // Log warning
+            Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
+        }
         if (hasPlaceholderAPI()) {
             // Register placeholders
             new MineshaftPlaceholderExpansion(MineshaftApi.getInstance()).register();
@@ -39,11 +47,15 @@ public class DependencyInit {
             // Log warning
             Logger.logWarning("PlaceholderAPI is not installed. While this plugin is not required, however some functionality will be disabled");
         }
-        if(hasVault()) {
-            vaultDependency=new VaultDependency();
+        if (MineshaftApi.getInstance().getConfigManager().useVault() && hasVault()) {
+            vaultDependency = new VaultDependency();
         } else {
-            // Log warning
-            Logger.logWarning("Vault is not installed. While this plugin is not required, however some functionality and compatibility features will be disabled");
+            if (!MineshaftApi.getInstance().getConfigManager().useVault()) {
+                Logger.logInfo("Vault has been disabled in the config. Due to this, some functionality and compatibility features will be disabled");
+            } else {
+                // Log warning
+                Logger.logWarning("Vault is not installed. While this plugin is not required, however some functionality and compatibility features will be disabled");
+            }
         }
     }
 

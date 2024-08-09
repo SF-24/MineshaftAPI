@@ -20,27 +20,26 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.listener;
+package com.mineshaft.mineshaftapi.dependency.mythic_mob;
 
-import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.SidebarManager;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerManager;
-import org.bukkit.entity.Player;
+import com.mineshaft.mineshaftapi.util.Logger;
+import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
-public class JoinListener implements Listener {
+public class MythicEventListener implements Listener {
 
     @EventHandler
-    public void PlayerJoinEvent(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
+    public void onMythicMechanicLoad(MythicMechanicLoadEvent event)	{
+        Logger.logInfo("MythicMechanicLoadEvent called for mechanic " + event.getMechanicName());
 
-        // Make a new json player manager
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
-
-        if(MineshaftApi.getInstance().getConfigManager().getSidebarEnabled()) {
-            SidebarManager.displayScoreboard(player);
+        if(event.getMechanicName().equalsIgnoreCase("mineshaftevent"))	{
+            event.register(new EventMechanic(event.getConfig()));
+            Logger.logInfo("-- Registered mineshaft mechanic!");
+        } else if(event.getMechanicName().equalsIgnoreCase("targetedmineshaftevent"))	{
+            event.register(new TargetEventMechanic(event.getConfig()));
+            Logger.logInfo("-- Registered mineshaft targeting mechanic!");
         }
     }
+
 }

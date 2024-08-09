@@ -26,13 +26,22 @@ commands:
       - coins
   getitem:
     description: Give yourself an item of your choice
-    permission: mineshaft.debug.give
+    permission: mineshaft.debug.items
 permissions:
   mineshaft.player:
     default: true
   mineshaft.debug:
     default: op
     description: Allows access to debug features
+  mineshaft.debug.balance:
+    default: false
+    description: Allows access to debug currency
+  mineshaft.debug.items:
+    default: false
+    description: Allows access to debug items
+  mineshaft.debug.events:
+    default: false
+    description: Allows access to debug events
   mineshaft.op:
     permission: default.op
     description: Default operator permission

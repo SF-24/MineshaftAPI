@@ -28,6 +28,10 @@ import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import de.tr7zw.nbtapi.NBT;
+import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.Item;
+import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -73,9 +77,23 @@ public class InteractListener implements Listener {
 
             ArrayList<String> events = ItemManager.getInteractEventsFromItem(name, clickType);
 
-            if(events==null) return;
+            if(events==null||events.isEmpty()) return;
 
             e.setCancelled(true);
+
+            boolean cannotFire = (MineshaftApi.getInstance().getCooldownManager().hasCooldown(player.getUniqueId(), uniqueId));
+
+            if(cannotFire) {
+                return;
+            }
+
+            MineshaftApi.getInstance().getCooldownManager().addPlayerKey(player.getUniqueId(), uniqueId, 400L);
+
+            // send item cooldown animation
+            if(MineshaftApi.getInstance().getConfigManager().enableItemCooldownAnimation()) {
+                Item handItem = ((CraftPlayer) player).getHandle().getItemInHand(InteractionHand.MAIN_HAND).getItem();
+                ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(handItem, 8));
+            }
 
             for(String event : events) {
                 EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();

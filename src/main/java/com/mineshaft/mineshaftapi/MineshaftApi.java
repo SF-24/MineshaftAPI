@@ -27,7 +27,9 @@ import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
 import com.mineshaft.mineshaftapi.listener.InteractListener;
 import com.mineshaft.mineshaftapi.listener.JoinListener;
+import com.mineshaft.mineshaftapi.manager.CooldownManager;
 import com.mineshaft.mineshaftapi.manager.PlayerManager;
+import com.mineshaft.mineshaftapi.manager.config.ConfigManager;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.util.Language;
@@ -40,6 +42,8 @@ import java.io.File;
 
 public final class MineshaftApi extends JavaPlugin {
 
+    ConfigManager configManager = new ConfigManager(this);
+    CooldownManager cooldownManager = new CooldownManager();
     ItemManager itemManager;
     EventManager eventManager;
     DependencyInit dependencyInit = new DependencyInit();
@@ -94,7 +98,7 @@ public final class MineshaftApi extends JavaPlugin {
         return MineshaftApi.getPlugin(MineshaftApi.class);
     }
 
-    private final String pluginFolder = "plugins" + File.separator + "Mineshaft";
+    private final String pluginFolder = "plugins" + File.separator + "MineshaftApi";
 
     public String getPluginFolder() { return MineshaftApi.getInstance().pluginFolder;}
 
@@ -110,7 +114,11 @@ public final class MineshaftApi extends JavaPlugin {
 
     public EventManager getEventManagerInstance() {return eventManager;}
 
-    public boolean hasVaultDependency() { return dependencyInit.hasVault(); }
+    public CooldownManager getCooldownManager() {return cooldownManager;}
+
+    public ConfigManager getConfigManager() {return configManager;}
+
+    public boolean hasVaultDependency() { return DependencyInit.hasVault(); }
 
     public VaultDependency getVault() {return dependencyInit.getVault();}
 
@@ -125,6 +133,11 @@ public final class MineshaftApi extends JavaPlugin {
     public static void reloadPlugin() {
         reloadItems();
         reloadEvents();
+        reloadConfigs();
+    }
+
+    public static void reloadConfigs() {
+        MineshaftApi.getInstance().getConfigManager().reloadConfigs();
     }
 
     public static Player getAnyPlayer() {

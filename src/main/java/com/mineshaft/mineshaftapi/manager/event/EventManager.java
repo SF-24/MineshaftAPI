@@ -30,6 +30,8 @@ import com.mineshaft.mineshaftapi.manager.event.fields.EventFields;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.UniqueEventFields;
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.util.ColourFormatter;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Location;
@@ -37,10 +39,13 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
+import static com.mineshaft.mineshaftapi.manager.item.ItemStats.DAMAGE;
 
 public class EventManager {
 
@@ -126,9 +131,12 @@ public class EventManager {
     }
 
     public boolean runEvent(Event event, Location loc, UUID casterId) {
-        System.out.printf("event execute");
+        System.out.print("event execute");
         switch (event.getEventType()) {
+            case NULL:
+                return false;
             case BEAM:
+                if(!(event instanceof BeamEvent)) return false;
                 new BeamExecutor((BeamEvent) event,loc).executeEvent(casterId);
                 return true;
             case PLAY_SOUND:
@@ -154,12 +162,16 @@ public class EventManager {
     }
 
     public Event getEvent(String eventName) {
-        return getEvent(eventName, null);
+        // TODO: make this use configuration section
+        return getEvent(eventName, null,null);
     }
 
-    public Event getEvent(String eventName, ConfigurationSection section111) {
+    public Event getEvent(String eventName, ItemStack executingItem) {
+        return getEvent(eventName, executingItem, null);
+    }
 
-
+    // parent bit not working
+    public Event getEvent(String eventName, ItemStack executingItem, ConfigurationSection placeholder) {
         File fileYaml = new File(path, eventName +".yml");
 
         // return null if file does not exist
@@ -181,6 +193,8 @@ public class EventManager {
         }
 
         if(yamlConfiguration.contains("parent")) {
+            // TODO: fix parent inheritance
+
             String parentName = yamlConfiguration.getString("parent");
             if(parentName!=null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
                 eventClass = getEvent(parentName);
@@ -312,6 +326,24 @@ public class EventManager {
             } else {
                 beamEvent.setOnHitEntity(LocalEvent.DAMAGE, 10.0);
             }
+
+            if(executingItem!=null) {
+                // Override damage via weapon stat
+
+                double damage = ItemManager.getItemNbtStat(executingItem, ItemStats.RANGED_DAMAGE);
+
+                MineshaftApi.getAnyPlayer().sendMessage("Ranged damage: " + damage);
+
+                if(damage<=0) return beamEvent;
+
+                if(beamEvent.getOnHitEntity().contains(LocalEvent.DAMAGE)) {
+                    beamEvent.setOnHitEntity(LocalEvent.DAMAGE, damage);
+                }
+                if(beamEvent.getOnHitPlayer().contains(DAMAGE)) {
+                    beamEvent.setOnHitPlayer(LocalEvent.DAMAGE,damage);
+                }
+            }
+
             return beamEvent;
         }
 

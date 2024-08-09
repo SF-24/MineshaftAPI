@@ -24,6 +24,7 @@ package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.ActionType;
+import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import de.tr7zw.nbtapi.NBT;
@@ -78,7 +79,8 @@ public class InteractListener implements Listener {
 
             for(String event : events) {
                 EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();
-                eventManager.runEvent(eventManager.getEvent(event), player.getLocation(), player.getUniqueId());
+                Event executableEvent = eventManager.getEvent(event, item);
+                eventManager.runEvent(executableEvent, player.getLocation(), player.getUniqueId());
             }
         }
     }

@@ -94,7 +94,6 @@ public class ItemManager {
         }
         items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
-        Logger.logError("Debug " + items.toString());
     }
 
     public static String getItemName(UUID uuid) {
@@ -169,6 +168,7 @@ public class ItemManager {
         // Item stat values
         double defence = 0;
         double speed = 0;
+        double ranged_damage = 0;
 
         int durability = 0;
 
@@ -343,8 +343,7 @@ public class ItemManager {
                 meta.setFood(component);
                 break;
             case OTHER:
-                slot = null;
-                break;
+            case AMMUNITION:
             case ITEM_GENERIC:
                 slot = null;
                 break;
@@ -375,6 +374,9 @@ public class ItemManager {
                     break;
                 case SPEED:
                     speed = value;
+                    break;
+                case RANGED_DAMAGE:
+                    ranged_damage = value;
                     break;
                 case HEALTH:
                     meta.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, attributeModifier);
@@ -427,6 +429,9 @@ public class ItemManager {
         }
         if (defence != 0) {
             setItemNbtStat(item, ItemStats.DEFENCE, defence);
+        }
+        if(ranged_damage!=0) {
+            setItemNbtStat(item, ItemStats.RANGED_DAMAGE, ranged_damage);
         }
 
         return item;
@@ -518,10 +523,11 @@ public class ItemManager {
     }
 
     public static double getItemNbtStat(ItemStack stack, ItemStats stat) {
+        final double[] value = {0};
         NBT.get(stack, nbt -> {
-            return nbt.getDouble("stat." + stat.name().toLowerCase(Locale.ROOT));
+            value[0] = nbt.getDouble("stat." + stat.name().toLowerCase(Locale.ROOT));
         });
-        return 0;
+        return value[0];
     }
 
     public static HashMap<ItemStats, Double> getItemNbtStats(ItemStack stack) {
@@ -554,19 +560,16 @@ public class ItemManager {
 
         String path = MineshaftApi.getInstance().getItemPath();
 
-        Logger.logError(path + "/" + name + ".yml");
-
         File fileYaml = new File(path, name + ".yml");
 
         // return null if file does not exist
         if (!fileYaml.exists()) {
             Logger.logError("FILE NOT FOUND ERROR!!!!!!!");
-            MineshaftApi.getAnyPlayer().sendMessage("File not found");
             return null;
         }
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
-/*
+
         // Whether the item has a parent item
         boolean hasParent = false;
 
@@ -577,17 +580,10 @@ public class ItemManager {
                 hasParent = true;
             }
         }
-*/
+
         String clickPath = "action.";
 
-        MineshaftApi.getAnyPlayer().sendMessage(clickPath + actionType.getClickPath());
-        MineshaftApi.getAnyPlayer().sendMessage(clickPath + actionType.getClickPath());
-
-        if(yamlConfiguration.contains("action")) MineshaftApi.getAnyPlayer().sendMessage("path found");
-
         if(yamlConfiguration.contains(clickPath + actionType.getClickPath())) {
-            System.out.print("path found");
-            MineshaftApi.getAnyPlayer().sendMessage(yamlConfiguration.getStringList(clickPath + actionType.getClickPath()).toString());
             interactEvents.addAll(yamlConfiguration.getStringList(clickPath + actionType.getClickPath()));
         }
 

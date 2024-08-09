@@ -24,6 +24,7 @@ package com.mineshaft.mineshaftapi.manager.event.fields;
 
 public enum EventType {
 
+    NULL,
     BEAM,
     PLAY_SOUND,
     BETONQUEST

@@ -40,6 +40,8 @@ public enum ItemCategory {
     ITEM_CONSUMABLE,
     ITEM_GENERIC,
 
+    AMMUNITION,
+
     OTHER
 
 }

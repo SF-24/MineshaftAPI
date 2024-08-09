@@ -29,6 +29,7 @@ public enum ItemStats {
     NULL(""),
 
     DAMAGE(ChatColor.DARK_GREEN.toString()),
+    RANGED_DAMAGE(ChatColor.DARK_GREEN.toString()),
 
     SPEED(ChatColor.WHITE.toString()),
 

@@ -1,4 +1,5 @@
 
+
 # MineshaftAPI
 An spigot plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.20.6
 
@@ -16,19 +17,26 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 		 - [List of food stats](#list-of-food-stats)
 		 - [Potion effects](#potion-effects)
 		 - [Potion effect parameters](#potion-effect-parameters)
+		 - [Item events](#item-events)
+		 - [Item event parameters](#item-event-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
+- [Event creation](#event-creation)
+  - [Event example](#event-example)
+  - [List of event parameters](#list-of-event-parameters)
 - [Plugin reloading](#plugin-reloading)
 
-## Important Copyright Information
+# Important Copyright Information
 **This project is under the GPU GPL v3 license**
 Terms of use can be found here: https://www.gnu.org/licenses/gpl-3.0.en.html
 
-## Documentation
-Currently, the only functionality of this plugin is custom item creation and **Vault** server economy.
+# Documentation
+Currently, the only functionality of this plugin are custom item creation, event creation and **Vault** server economy.
 
-A work in progress sidebar is displayed to all players on the server. Customization is not yet available
+A work in progress sidebar is displayed to all players on the server. Customisation is not yet available
 
-## Item Creation 
+Images representing examples of content included in the plugin may not be entirely accurate, as these were taken by a user with client mods and a resource pack altering the look of the game.
+
+# Item Creation 
 
 Items are created via custom YAML files. These are placed in the `Mineshaft/Data/Items` folder in the plugin directory of your server.
 
@@ -36,7 +44,7 @@ Items can have a multitude of different parameters, which are used to customize 
 
 If your `Items` folder is empty, an example file `example-item.yml` will be placed in this folder.
 
-### Example
+## Example
 
 ```yaml
 name: Cleaver
@@ -56,7 +64,7 @@ stats:
 ```
 ![An image of the example item](https://raw.githubusercontent.com/SF-24/images/main/example.png?token=GHSAT0AAAAAACVH5VYE6TIIM3WQV535ATUKZVCIRKQ)
 
-### List of parameters
+## List of parameters
 Not all parameters are required for the item to work
 
 | Parameter    | Description | Data Type | Note
@@ -75,7 +83,7 @@ Not all parameters are required for the item to work
 | `stats` | List of item attributes | HashMap||
 |`id`|A unique id assigned by the plugin. This is used for the plugin to recognize the item.|UUID|Do not change or set manually. Two items having the same id will result in **MAJOR** bugs. Changing an item id results in previous items breaking.
 
-#### Item Category List
+### Item Category List
 
 | Value | Description |
 |:---------|:-----------|
@@ -93,7 +101,7 @@ Not all parameters are required for the item to work
 | `item_generic` | Generic item (no category) |
 | `other` | Other (Unspecified) |
 
-#### Item Rarity List
+### Item Rarity List
 
 | Value | Rarity | Text Colour | Description |
 |:---------|:-----------:|:--:|-|
@@ -104,7 +112,7 @@ Not all parameters are required for the item to work
 | `exotic` |<font color="magenta">Exotic</font>|magenta/purple|
 | `legendary` |<font color="ORANGE">Legendary</font>|orange/gold|
 
-#### Item stats and attributes
+### Item stats and attributes
 
 The `stat` property is used to add custom attributes to an item. 
 These attributes are applied to the player when the item is equipped
@@ -122,7 +130,7 @@ stats:
   health: 17
 ```
 
-#### List of item attributes
+### List of item attributes
 
 | Value | Stat | Description | Notes
 |:---------|-|:-----------|-:|
@@ -135,7 +143,7 @@ stats:
 | `attack_speed` | Attack Speed | The attack speed of an item. | Work in progress. Do not use on armour | 
 
 
-#### Food
+### Food
 
 The `food` property is used only for consumables. 
 If an item has a food property, it may be eaten by a player.
@@ -159,7 +167,7 @@ food:
       icon: true
 ```
 
-#### List of food stats
+### List of food stats
 
 | Value | Stat | Description |Data Type|Notes
 |:---------|-|:-----------|-:|-:|
@@ -169,7 +177,7 @@ food:
 | `always_edible`|Always Edible|Whether an item can be eaten when your health bar is full|Boolean|
 | `potion effects`|Potion effects|Potion effects given to the player when the item is consumed|Complex|
 
-#### Potion effects
+### Potion effects
 This section controls the potion effect which are applied when the item is consumed
 
 ```yaml
@@ -182,7 +190,7 @@ potion_effects:
     icon: true
 ```
 
-#### Potion effect parameters
+### Potion effect parameters
 | Value | Stat | Description |Data Type|Notes
 |:---------|-|:-----------|-:|-:|
 | `potion-effect-name`|Potion effect name|Replace with the potion effect type name|Enum|[1.21 effect list](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html)
@@ -192,7 +200,25 @@ potion_effects:
 | `particles`|Show particles|Whether the effect particles are displayed|Boolean|
 | `icon`|Show icon|Whether the effect icon is displayed|Boolean|
 
-### Obtaining custom items
+### Item events
+This section controls what events are triggered when the player executes a certain action. This includes the item being right or left-clicked.
+
+```yaml
+action:
+  right_click:
+  - blaster-shot
+```
+
+### Item event parameters
+
+| Value | Description |Data Type
+|:---------|-|:-----------|
+| `right_click`|A list of events triggered when the player right-clicks with the item in their hand|String List|
+| `left_click`|A list of events triggered when the player left-clicks with the item in their hand|String list|
+
+The specific event filename (excluding the `.yml` or `.yaml` extension) is used to access the event.
+
+## Obtaining custom items
 
 Custom items can be obtained using the `/getitem` command. This command is by default accessible to players with operator permissions.
 
@@ -206,13 +232,49 @@ This may be saved in the file `example-item.yml` or `example-item.yaml`
 
 `/getitem diamond-sword` grants the player the item with the name `diamond-sword`
 
-## Plugin reloading
+# Event creation
+Custom events are created via YAML configuration files, similarly to custom items. These can be executed using a command or bound to an item, using the item configuration file. These files are placed in the `Mineshaft/Data/Events` folder in the server plugin directory.
+
+They can have many different parameters, which control what happens when the item is executed.
+
+If your `Events` folder is empty, an example file called `example-event.yml` will be created.
+
+Each event is placed in a separate YAML file. The event can be bound to an item (in the [item's YAML file](#item-events)) or executed in game for debugging purposes.
+
+## Event example
+
+```yaml
+parent: 'null'
+event_type: BEAM
+colour: '208010010'
+fly_distance: 40
+speed: 5
+particle_type: DUST
+particle_size: 1
+offset:
+  x: 0
+  y: 1.5
+  z: 0
+on_hit:
+  entity:
+    damage: 8
+```
+
+This event will fire a red coloured beam. If it hits a mob, it will damage it for 8 damage. 
+
+![An image of the vent being triggered by a player](https://raw.githubusercontent.com/SF-24/images/main/event2.png)The event shown above being triggered by a player
+
+## List of event parameters
+### ***Coming soon....***
+
+# Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.
 
 Usage:
-`/mineshaft reload [all|items|configs]`
+`/mineshaft reload [all|items|events|configs]`
 
 Examples:
 `/mineshaft reload` and `/mineshaft reload all` reloads the whole plugin
 `/mineshaft reload item` and `/mineshaft reload items` reloads custom items
+`/mineshaft reload event` and `/mineshaft reload events` reloads events
 `/mineshaft reload config` and `/mineshaft reload configs` will reload the configuration files. However, this functionality is yet to be implemented

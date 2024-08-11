@@ -59,11 +59,19 @@ public class MythicAssist {
         double pitchError = 0;
         double yawError = 0;
 
-/*        if(error>=0) {
-            pitchError = random.nextDouble(error * 2) - error;
-            yawError = random.nextDouble(error * 2) - error;
+        if(offset>0) {
+            double error = ((double)offset)/100;
+
+            pitchError = random.nextDouble(error);
+            yawError = random.nextDouble(error);
+            if(random.nextBoolean()) {
+                pitchError=-pitchError;
+            }
+            if(random.nextBoolean()) {
+                yawError=-yawError;
+            }
         }
-*/
+
         double updatedPitch = pitch + pitchError;
         double updatedYaw = yaw + yawError;
 
@@ -71,12 +79,19 @@ public class MythicAssist {
         double z2 = Math.sin(updatedYaw)*L;
         double y2 = Math.tan(updatedPitch)*x2;
 
+        if((z2<0 && z>0)||(z2>0 && z<0)) z2=z2*-1;
+        if((x2<0 && x>0)||(x2>0 && x<0)) x2=x2*-1;
+        if((y2<0 && y>0)||(y2>0 && y<0)) y2=y2*-1;
 
-        loc.setDirection(new Vector(x,y,z));
+        //loc.setDirection(new Vector(x,y,z));
         Vector vector2 = new Vector(x2,y2,z2);
-
-        MineshaftApi.getAnyPlayer().sendMessage("v0: " + loc.getDirection().normalize());
-        MineshaftApi.getAnyPlayer().sendMessage("v2: " + vector2.normalize());
+        if(offset>0) {
+            loc.setDirection(new Vector(x2, y2, z2));
+        } else {
+            loc.setDirection(new Vector(x,y,z));
+        }
+        //MineshaftApi.getAnyPlayer().sendMessage("v0: " + loc.getDirection().normalize());
+        //MineshaftApi.getAnyPlayer().sendMessage("v2: " + vector2.normalize());
 
         return loc;
     }

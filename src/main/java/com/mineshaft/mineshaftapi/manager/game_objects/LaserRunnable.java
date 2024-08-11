@@ -36,8 +36,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class LaserRunnable extends BukkitRunnable {
 
@@ -200,6 +200,7 @@ public class LaserRunnable extends BukkitRunnable {
                 for (Entity en : loc.getWorld().getNearbyEntities(loc, 1.75, 2.0, 1.75)) { //getChunk().getEntities()) {
 
                     BoundingBox boundingBox = en.getBoundingBox();
+                    boundingBox.expand(0.1,0.1,0.1,0.1,0.1,0.1);
                     if((!flipped && !en.getUniqueId().equals(casterId)) && boundingBox.contains(loc.getX(),loc.getY(),loc.getZ())) {
                         if (en instanceof LivingEntity && !(en instanceof ItemFrame)) {
                             foundEntity = true;

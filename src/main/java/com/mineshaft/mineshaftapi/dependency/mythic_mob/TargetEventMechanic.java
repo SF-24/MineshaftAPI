@@ -57,9 +57,10 @@ public class TargetEventMechanic implements ITargetedEntitySkill {
 
         AbstractLocation targetLoc = targetEntity.getLocation();
 
-        final Location loc = MythicAssist.getLocation(data, targetLoc, 0);
+        MineshaftApi.getAnyPlayer().sendMessage("offset: " + this.offset);
 
-        MineshaftApi.getAnyPlayer().sendMessage("executing event!");
+        final Location loc = MythicAssist.getLocation(data, targetLoc, this.offset);
+
        // MineshaftApi.getAnyPlayer().sendMessage("damage: " + damage);
        // MineshaftApi.getAnyPlayer().sendMessage("event: " + event);
 

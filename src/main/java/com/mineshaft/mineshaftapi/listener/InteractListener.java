@@ -102,7 +102,7 @@ public class InteractListener implements Listener {
                 if(executableEvent instanceof BeamEvent) {
                     String sound = ((BeamEvent) executableEvent).getSound();
                     if(sound!=null) {
-                        player.getLocation().getWorld().playSound(player.getLocation(), sound, 1.0f, 1.0f);
+                        player.getLocation().getWorld().playSound(player.getLocation(), sound, 5.0f, 1.0f);
                     }
                 }
                 eventManager.runEvent(executableEvent, player.getLocation(), player.getUniqueId());

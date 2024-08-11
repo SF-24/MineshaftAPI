@@ -33,6 +33,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -60,6 +61,7 @@ public class LaserRunnable extends BukkitRunnable {
     Location loc;
 
     public LaserRunnable(BeamEvent event, Location loc) {
+        if(loc.getWorld()==null) return;
         this.location=loc;
         this.loc=location;
         this.event = event;
@@ -151,32 +153,59 @@ public class LaserRunnable extends BukkitRunnable {
             ignoredBlocks.add(Material.BIG_DRIPLEAF);
             ignoredBlocks.add(Material.SMALL_DRIPLEAF);
             ignoredBlocks.add(Material.BIG_DRIPLEAF_STEM);
+            ignoredBlocks.add(Material.BLACK_CARPET);
+/*            ignoredBlocks.add(Material.YELLOW_CARPET);
+            ignoredBlocks.add(Material.PURPLE_CARPET);
+            ignoredBlocks.add(Material.LIGHT_GRAY_CARPET);
+            ignoredBlocks.add(Material.RED_CARPET);
+            ignoredBlocks.add(Material.WHITE_CARPET);
+            ignoredBlocks.add(Material.ORANGE_CARPET);
+            ignoredBlocks.add(Material.PINK_CARPET);
+            ignoredBlocks.add(Material.MAGENTA_CARPET);
+            ignoredBlocks.add(Material.LIGHT_BLUE_CARPET);
+            ignoredBlocks.add(Material.MOSS_CARPET);
+            ignoredBlocks.add(Material.LIME_CARPET);
+            ignoredBlocks.add(Material.GREEN_CARPET);
+            ignoredBlocks.add(Material.BROWN_CARPET);
+            ignoredBlocks.add(Material.GRAY_CARPET);
+            ignoredBlocks.add(Material.BLUE_CARPET);
+            ignoredBlocks.add(Material.CYAN_CARPET);*/
+            ignoredBlocks.add(Material.TORCH);
+            ignoredBlocks.add(Material.WALL_TORCH);
+            ignoredBlocks.add(Material.REDSTONE_TORCH);
+            ignoredBlocks.add(Material.REDSTONE_WALL_TORCH);
+            ignoredBlocks.add(Material.SOUL_TORCH);
+            ignoredBlocks.add(Material.SOUL_WALL_TORCH);
 
             // flip on hit barrier
             if(loc.getBlock().getType().equals(Material.BARRIER)) {
                 flipped = true;
             } else if (!loc.getBlock().getType().equals(Material.AIR) && !ignoredBlocks.contains(loc.getBlock().getType())) {
                 //PLAY FIZZLE SOUND
-                //loc.getWorld().spawnParticle(Particle.FLAME, loc,0,0.2,0,0,0.1);
-                loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
-                this.cancel();
+                if(loc.getBlock().getBoundingBox().contains(loc.getX(),loc.getY(),loc.getZ())) {
 
+                    loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_EXTINGUISH, 0.75f, 1.0f);
+                    loc.getWorld().spawnParticle(Particle.SMOKE, loc, 50, 0, 0, 0, 0);
+                    this.cancel();
+                    break;
+                }
                 // if hits barrier block or air
-            } else/* if(!loc.getBlock().getType().equals(Material.BARRIER))*/ {
-                //
+            } else {
 
                 LivingEntity e = null;
                 boolean foundEntity = false;
 
+                double distance = 10;
                 // IF SPELL HITS ENTITY
                 for (Entity en : loc.getWorld().getNearbyEntities(loc, 1.75, 2.0, 1.75)) { //getChunk().getEntities()) {
-                    float distance = 10;
 
-                    if ((!flipped && !en.getUniqueId().equals(casterId)) && en.getLocation().distance(loc) < 1.75) {
+                    BoundingBox boundingBox = en.getBoundingBox();
+                    if((!flipped && !en.getUniqueId().equals(casterId)) && boundingBox.contains(loc.getX(),loc.getY(),loc.getZ())) {
                         if (en instanceof LivingEntity && !(en instanceof ItemFrame)) {
                             foundEntity = true;
                             // entity detected
                             if (distance>en.getLocation().distance(loc)) {
+                                distance = en.getLocation().distance(loc);
                                 e=(LivingEntity)en;
                             }
                         }

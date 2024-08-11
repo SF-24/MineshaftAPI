@@ -2,6 +2,7 @@ com\mineshaft\mineshaftapi\manager\ProfileManager.class
 com\mineshaft\mineshaftapi\dependency\mythic_mob\TargetEventMechanic.class
 com\mineshaft\mineshaftapi\command\MineshaftCommand.class
 com\mineshaft\mineshaftapi\manager\json\PlayerDataClass.class
+com\mineshaft\mineshaftapi\dependency\mythic_mob\MythicAssist.class
 com\mineshaft\mineshaftapi\listener\UIListener.class
 com\mineshaft\mineshaftapi\command\GetItemCommand.class
 com\mineshaft\mineshaftapi\manager\event\fields\EventType.class

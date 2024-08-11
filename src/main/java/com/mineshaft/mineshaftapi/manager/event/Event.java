@@ -32,7 +32,7 @@ public class Event {
 
     protected String parent = "null";
     protected String name = "Unnamed Event";
-    protected Vector offset = new Vector(0,0,0);
+    protected Vector offset = new Vector(0.0,0.0,0.0);
     protected EventType eventType = EventType.BEAM;
     protected TriggerType target = TriggerType.ANY;
 
@@ -40,7 +40,7 @@ public class Event {
 
     public void setTarget(TriggerType target) {this.target = target;}
     public void setOffset(Vector offset) {this.offset=offset;}
-    public void setOffset(int x, int y, int z) {this.offset=new Vector(x,y,z);}
+    public void setOffset(double x, double y, double z) {this.offset=new Vector(x,y,z);}
     public void setName(String name) {this.name=name;}
     public void setEventType(EventType eventType) {this.eventType=eventType;}
     public void addParameter(String key, Object value) {customParameters.put(key,value);}

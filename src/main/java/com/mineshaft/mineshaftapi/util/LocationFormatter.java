@@ -30,9 +30,7 @@ public class LocationFormatter {
         return loc.add(x,y,z);
     }
 
-    public Location applyOffset(Location loc, Location offset) {
-        return loc.add(offset);
-    }
+    public Location applyOffset(Location loc, Location offset) {return loc.add(offset);}
 
     public Location applyOffset(Location loc, Vector offset) {
         return loc.add(offset);

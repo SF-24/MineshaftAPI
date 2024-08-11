@@ -43,9 +43,6 @@ public class BeamExecutor extends EventExecutor {
 
         if(event instanceof BeamEvent) {
             BeamEvent beamEvent = (BeamEvent) event;
-
-            Player player = Bukkit.getServer().getOnlinePlayers().iterator().next();
-
             Location customLoc = super.loc.add(event.getOffset());
             if(Bukkit.getPlayer(casterId)!=null) {
                 if(Bukkit.getPlayer(casterId).isSneaking()) {

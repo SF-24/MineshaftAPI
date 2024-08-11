@@ -1,8 +1,13 @@
 # Whether vault compatibility is enabled
 enable-vault: true
-# Whether the item rarity description will be italic
-italic-item-rarity: true
+
 # Whether items have a cooldown animation
 enable-cooldown-animation: true
 # Whether the sidebar is enabled
 enable-sidebar: false
+
+# Whether the item rarity description will be italic
+italic-item-rarity: true
+# Singular and plural form of the currency name
+currency-singular: Credit
+currency-plural: Credits

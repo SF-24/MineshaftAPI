@@ -52,8 +52,6 @@ public class JsonPlayerManager {
     private void initiateFile(UUID uuid) throws Exception {
 
         String path = ProfileManager.getProfilePathOfPlayer(uuid);
-        //System.out.println("PATH: " + path);
-
         File file = new File(path, "player_data.json");
 
         if(!file.exists()) {
@@ -136,7 +134,7 @@ public class JsonPlayerManager {
         }
 
         if(reader==null) {
-            System.err.println("[rpg] Error reading file \"" + file.getName() + "\"");
+            Logger.logError("Error reading file \"" + file.getName() + "\"");
             return null;
         }
 

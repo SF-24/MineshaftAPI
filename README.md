@@ -1,5 +1,6 @@
 
 
+
 # MineshaftAPI
 An spigot plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.20.6
 
@@ -32,13 +33,15 @@ Terms of use can be found here: https://www.gnu.org/licenses/gpl-3.0.en.html
 # Documentation
 Currently, the only functionality of this plugin are custom item creation, event creation and **Vault** server economy.
 
-A work in progress sidebar is displayed to all players on the server. Customisation is not yet available
+Events can be triggered as **MythicMobs** mechanics via the integration.
+
+A work in progress sidebar (disabled by default) is displayed to all players on the server. Customisation is not yet available. 
 
 Images representing examples of content included in the plugin may not be entirely accurate, as these were taken by a user with client mods and a resource pack altering the look of the game.
 
 # Item Creation 
 
-Items are created via custom YAML files. These are placed in the `Mineshaft/Data/Items` folder in the plugin directory of your server.
+Items are created via custom YAML files. These are placed in the `Mineshaft/Items` folder in the plugin directory of your server.
 
 Items can have a multitude of different parameters, which are used to customize the item.
 
@@ -233,7 +236,7 @@ This may be saved in the file `example-item.yml` or `example-item.yaml`
 `/getitem diamond-sword` grants the player the item with the name `diamond-sword`
 
 # Event creation
-Custom events are created via YAML configuration files, similarly to custom items. These can be executed using a command or bound to an item, using the item configuration file. These files are placed in the `Mineshaft/Data/Events` folder in the server plugin directory.
+Custom events are created via YAML configuration files, similarly to custom items. These can be executed using a command or bound to an item, using the item configuration file. These files are placed in the `Mineshaft/Events` folder in the server plugin directory.
 
 They can have many different parameters, which control what happens when the item is executed.
 
@@ -267,6 +270,26 @@ This event will fire a red coloured beam. If it hits a mob, it will damage it fo
 ## List of event parameters
 ### ***Coming soon....***
 
+# Configuration
+
+Functionality of the plugin can be modified via the `config.yml` file in the plugin folder. The currency name parameter does not yet work.
+
+```yaml
+# Whether vault compatibility is enabled
+enable-vault: true
+
+# Whether items have a cooldown animation
+enable-cooldown-animation: true
+# Whether the sidebar is enabled
+enable-sidebar: false
+
+# Whether the item rarity description will be italic
+italic-item-rarity: true
+# Singular and plural form of the currency name
+currency-singular: Credit
+currency-plural: Credits
+```
+
 # Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.
 
@@ -277,4 +300,4 @@ Examples:
 `/mineshaft reload` and `/mineshaft reload all` reloads the whole plugin
 `/mineshaft reload item` and `/mineshaft reload items` reloads custom items
 `/mineshaft reload event` and `/mineshaft reload events` reloads events
-`/mineshaft reload config` and `/mineshaft reload configs` will reload the configuration files. However, this functionality is yet to be implemented
+`/mineshaft reload config` and `/mineshaft reload configs` reloads the configuration

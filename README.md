@@ -57,8 +57,8 @@ The following features are not yet explained in the documentation
 - Item stat priority list (descending)
 
 # Upcoming and planned features
-**Not all features in this list may be added**
-*This is just a to-do list featuring my current ideas*
+**Not all features in this list may be added**<br>
+*This is just a to-do list featuring my current ideas*<br>
 *List elements in italic will definitely be added*
 
 - *[important!] Completing the README file and adding all events, parameters, etc.*

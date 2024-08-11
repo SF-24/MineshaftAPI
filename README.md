@@ -7,6 +7,7 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 ## Table of Contents
 - [Copyright notice](#Important-Copyright-Information)
 - [Documentation introduction](#Documentation)
+- [Upcoming features](#Upcoming-and-planned-features)
 - [Item creation](#Item-Creation )
 	- [Example](#Example)
 	- [List of parameters](#List-of-parameters)
@@ -24,6 +25,8 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 - [Event creation](#event-creation)
   - [Event example](#event-example)
   - [List of event parameters](#list-of-event-parameters)
+    - [Beam event type](#beam-event-type)
+- [Configuration](#configuration)
 - [Plugin reloading](#plugin-reloading)
 
 # Important Copyright Information
@@ -38,6 +41,49 @@ Events can be triggered as **MythicMobs** mechanics via the integration.
 A work in progress sidebar (disabled by default) is displayed to all players on the server. Customisation is not yet available. 
 
 Images representing examples of content included in the plugin may not be entirely accurate, as these were taken by a user with client mods and a resource pack altering the look of the game.
+
+## Undocumented features
+The following features are not yet explained in the documentation
+
+- Beam event parameters
+- MythicMobs compatibility
+- Currency command (requires permission)
+- Permissions
+- Heal command (OP only)
+- PlayerSkills (WIP)
+- Placeholders (Placeholder API integration)
+- Weapon cooldown
+- Item subtypes (partially explained)
+- Item stat priority list (descending)
+
+# Upcoming and planned features
+**Not all features in this list may be added**
+*This is just a to-do list featuring my current ideas*
+*List elements in italic will definitely be added*
+
+- *[important!] Completing the README file and adding all events, parameters, etc.*
+- *[important!] Working armour support*
+- *More configuration: item rarities, etc.*
+- *Extendable weapons (lightsaber creation, etc.)*
+- *Customisable weapon cooldown*
+- *Player attributes: Strength, intelligence, etc.*
+- Ammunition feature for ranged weapons (with reloading)
+- Customisable sidebar
+- More Placeholders
+- Custom menus and shops
+- BetonQuest integration
+- BetonQuest quest tracker
+- More MythicMobs features
+- FreeMinecraftModels integration with MythicMobs compatibility
+- Custom crafting system
+- Skills
+- Item customisation (replacing parts, etc.)
+- In-built mob support (similar to MythicMobs or EliteMobs)
+- Dungeons
+- More events
+- Replacing local events with events
+- NPCs
+- Better API and JavaDocs
 
 # Item Creation 
 
@@ -279,7 +325,9 @@ The following parameters are available for all events. Each event type has uniqu
 
 ### Beam event type
 
-The beam event fires off a beam in the direction in which the entity that executed it is facing. 
+The beam event fires off a beam in the direction in which the entity that executed it is facing. It supports multiple unique parameters. Not all parameters have to be filled in for the event to work
+
+### ***TODO: coming soon***
 
 # Configuration
 

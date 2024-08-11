@@ -61,7 +61,7 @@ The following features are not yet explained in the documentation
 *This is just a to-do list featuring my current ideas*<br>
 *List elements in italic will definitely be added*
 
-- *[important!] Completing the README file and adding all events, parameters, etc.*
+- *[important!] Completing the README file and adding all documentation*
 - *[important!] Working armour support*
 - *More configuration: item rarities, etc.*
 - *Extendable weapons (lightsaber creation, etc.)*

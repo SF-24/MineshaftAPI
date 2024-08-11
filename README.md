@@ -138,6 +138,7 @@ stats:
 | Value | Stat | Description | Notes
 |:---------|-|:-----------|-:|
 | `damage` |Attack damage|  Increases damage dealt via ranged and melee | WIP -> extremely glitchy when using ranged weapons |
+| `ranged_damage` |Ranged attack damage|  Increases ranged damage | WIP -> currently only applies to beam events triggered using this weapon |
 | `speed` | Health| Increases maximum health when equipped||
 | `defence` | Defence| Reduces damage taken (excluding certain sources like drowning) | Defence scalability will be modified|
 | `speed` | Speed | Will increase movement speed when implemented | Stat is applied to items, however functionality has not yet been implemented |
@@ -268,7 +269,17 @@ This event will fire a red coloured beam. If it hits a mob, it will damage it fo
 ![An image of the vent being triggered by a player](https://raw.githubusercontent.com/SF-24/images/main/event2.png)The event shown above being triggered by a player
 
 ## List of event parameters
-### ***Coming soon....***
+The following parameters are available for all events. Each event type has unique parameters only available for its type.
+
+| Value | Description |Data Type
+|:---------|-|:-----------|
+| `parent`|The parent event. Currently WIP|String|
+| `event_type`|The event type. Specifies what happens when the event is triggered. Currently only `BEAM` is supported|Enum|
+| `offset`|The offset of the event. These values are added to the location where the event is executed|Complex|
+
+### Beam event type
+
+The beam event fires off a beam in the direction in which the entity that executed it is facing. 
 
 # Configuration
 

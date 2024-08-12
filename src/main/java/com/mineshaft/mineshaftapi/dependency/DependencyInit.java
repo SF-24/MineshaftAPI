@@ -23,15 +23,30 @@
 package com.mineshaft.mineshaftapi.dependency;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicEventListener;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonExperienceEvent;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonExperienceEventFactory;
 import com.mineshaft.mineshaftapi.util.Logger;
+import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
+import org.betonquest.betonquest.quest.PrimaryServerThreadData;
 import org.bukkit.Bukkit;
+import org.slf4j.LoggerFactory;
 
 public class DependencyInit {
 
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(DependencyInit.class);
     VaultDependency vaultDependency = null;
 
     public void initialiseDependencies() {
+        if(hasBetonQuest()) {
+            BetonQuestLoggerFactory loggerFactory = MineshaftApi.getInstance().getServer().getServicesManager().load(BetonQuestLoggerFactory.class);
+            PrimaryServerThreadData data = new PrimaryServerThreadData(Bukkit.getServer(), Bukkit.getScheduler(), BetonQuest.getInstance());
+
+            BetonQuest.getInstance().registerNonStaticEvent("mineshaftxp", new BetonExperienceEventFactory(loggerFactory, data));
+
+        } else {
+            Logger.logWarning("BetonQuest is not enabled. Plugin compatibility features have been disabled.");
+        }
         if (hasPlaceholderAPI()) {
             // Register placeholders
             new MineshaftPlaceholderExpansion(MineshaftApi.getInstance()).register();
@@ -61,6 +76,10 @@ public class DependencyInit {
 
     public static boolean hasMythicMobs() {
         return Bukkit.getPluginManager().getPlugin("MythicMobs") != null || Bukkit.getPluginManager().isPluginEnabled("MythicMobs");
+    }
+
+    public static boolean hasBetonQuest() {
+        return Bukkit.getPluginManager().getPlugin("BetonQuest") != null || Bukkit.getPluginManager().isPluginEnabled("BetonQuest");
     }
 
     public VaultDependency getVault() {return vaultDependency;}

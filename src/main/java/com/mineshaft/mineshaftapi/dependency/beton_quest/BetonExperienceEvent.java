@@ -20,37 +20,25 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item;
+package com.mineshaft.mineshaftapi.dependency.beton_quest;
 
-import org.bukkit.ChatColor;
+import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import org.betonquest.betonquest.api.profiles.OnlineProfile;
+import org.betonquest.betonquest.api.quest.event.online.OnlineEvent;
+import org.betonquest.betonquest.exceptions.InstructionParseException;
+import org.betonquest.betonquest.exceptions.QuestRuntimeException;
+import org.betonquest.betonquest.quest.event.NotificationSender;
 
-public enum ItemStats {
+public class BetonExperienceEvent implements OnlineEvent {
+    final int amount;
 
-    NULL("",20),
-
-    DAMAGE(ChatColor.DARK_GREEN.toString(),1),
-    RANGED_DAMAGE(ChatColor.DARK_GREEN.toString(),2),
-
-    SPEED(ChatColor.WHITE.toString(),5),
-
-    DEFENCE(ChatColor.GREEN.toString(),4),
-    HEALTH(ChatColor.RED.toString(),3),
-
-    ATTACK_SPEED(ChatColor.AQUA.toString(),8),
-    ATTACK_KNOCKBACK(ChatColor.BLUE.toString(), 9),
-
-    ATTACK_REACH(ChatColor.YELLOW.toString(),6),
-    MINING_REACH(ChatColor.YELLOW.toString(),7),
-    REACH(ChatColor.YELLOW.toString(),6);
-
-    private final String colour;
-    private final int priority;
-
-    ItemStats(String colour, int priority) {
-        this.priority=priority;
-        this.colour=colour;
+    public BetonExperienceEvent(final int amount, final NotificationSender experienceSender) throws InstructionParseException {
+        this.amount=amount;
     }
 
-    public int getPriority() {return priority;}
-    public String getColour() {return colour;}
+
+    @Override
+    public void execute(OnlineProfile profile) throws QuestRuntimeException {
+        JsonPlayerBridge.addXp(profile.getOnlineProfile().get().getPlayer(), amount);
+    }
 }

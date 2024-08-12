@@ -36,6 +36,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
@@ -43,6 +44,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -306,14 +308,8 @@ public class ItemManager {
                 slot = EquipmentSlot.FEET;
                 break;
             case TOOL_AXE:
-                slot = EquipmentSlot.HAND;
-                break;
             case TOOL_PICKAXE:
-                slot = EquipmentSlot.HAND;
-                break;
             case TOOL_SHOVEL:
-                slot = EquipmentSlot.HAND;
-                break;
             case TOOL_HOE:
                 slot = EquipmentSlot.HAND;
                 break;
@@ -372,6 +368,25 @@ public class ItemManager {
                 break;
         }
 
+        if(yamlConfiguration.contains("tool")) {
+            ToolComponent toolComponent = meta.getTool();
+            for (String field : yamlConfiguration.getConfigurationSection("tool").getKeys(false)) {
+                switch (field) {
+                    case "mining_speed":
+                        double miningSpeed = yamlConfiguration.getDouble("mining_speed");
+                        toolComponent.setDefaultMiningSpeed((float) miningSpeed);
+                    case "block_list":
+                        for(String key : yamlConfiguration.getConfigurationSection("block_list").getKeys(false)) {
+
+                        }
+                    case "tool_type":
+
+                }
+                meta.setTool(toolComponent);
+            }
+        }
+
+
         int lowestPriority = 100;
         int highestPriority= 0;
 
@@ -420,6 +435,9 @@ public class ItemManager {
                     break;
                 case ATTACK_SPEED:
                     meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, attributeModifier);
+                    break;
+                case ATTACK_KNOCKBACK:
+                    meta.addAttributeModifier(Attribute.GENERIC_ATTACK_KNOCKBACK, attributeModifier);
                     break;
                 default:
             }

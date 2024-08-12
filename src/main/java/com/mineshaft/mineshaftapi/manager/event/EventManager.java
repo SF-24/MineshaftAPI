@@ -170,13 +170,15 @@ public class EventManager {
     }
 
     // parent bit not working
-    public Event getEvent(String eventName, ItemStack executingItem, ConfigurationSection placeholder) {
+    public Event getEvent(String eventName, ItemStack executingItem, ConfigurationSection mainConfigSection) {
+
         File fileYaml = new File(path, eventName +".yml");
 
         // return null if file does not exist
         if(!fileYaml.exists()) return null;
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+        if(mainConfigSection==null) mainConfigSection=yamlConfiguration.getDefaultSection();
 
         // Whether the item has a parent item
         boolean hasParent=false;
@@ -194,7 +196,7 @@ public class EventManager {
         if(yamlConfiguration.contains("parent")) {
             // TODO: fix parent inheritance
 
-            String parentName = yamlConfiguration.getString("parent");
+            String parentName = yamlConfiguration.getString( "parent");
             if(parentName!=null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
                 eventClass = getEvent(parentName);
                 hasParent=true;
@@ -203,7 +205,7 @@ public class EventManager {
 
         if(yamlConfiguration.contains("event_type")) {
 //            MineshaftApi.getAnyPlayer().sendMessage("e type: " + yamlConfiguration.getString("event_type"));
-            eventType = EventType.valueOf(yamlConfiguration.getString("event_type").toUpperCase(Locale.ROOT));
+            eventType = EventType.valueOf(yamlConfiguration.getString( "event_type").toUpperCase(Locale.ROOT));
         }
 
         boolean isEventsList = false;

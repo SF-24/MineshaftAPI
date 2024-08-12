@@ -90,9 +90,6 @@ public class MythicAssist {
         } else {
             loc.setDirection(new Vector(x,y,z));
         }
-        //MineshaftApi.getAnyPlayer().sendMessage("v0: " + loc.getDirection().normalize());
-        //MineshaftApi.getAnyPlayer().sendMessage("v2: " + vector2.normalize());
-
         return loc;
     }
 

@@ -29,9 +29,5 @@ public enum EventType {
     PLAY_SOUND,
     BETONQUEST,
 
-    ITEM_PURCHASE,
-
-    LOCAL_EVENT
-
-
+    ITEM_PURCHASE
 }

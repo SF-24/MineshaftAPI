@@ -170,7 +170,7 @@ public class EventManager {
     }
 
     // parent bit not working
-    public Event getEvent(String eventName, ItemStack executingItem, ConfigurationSection mainConfigSection) {
+    public Event getEvent(String eventName, ItemStack executingItem, ConfigurationSection placeholder) {
 
         File fileYaml = new File(path, eventName +".yml");
 
@@ -178,7 +178,6 @@ public class EventManager {
         if(!fileYaml.exists()) return null;
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
-        if(mainConfigSection==null) mainConfigSection=yamlConfiguration.getDefaultSection();
 
         // Whether the item has a parent item
         boolean hasParent=false;

@@ -39,6 +39,37 @@ public class JsonPlayerBridge {
         jsonPlayerManager.setCoins(coins);
     }
 
+    public static int getXp(Player player) {
+        // if vault is not installed, use built-in currency
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getXp();
+    }
+
+    public static void setXp(Player player, int experience) {
+        // if vault is not installed, use built-in currency
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        if(experience<0) experience=0;
+        jsonPlayerManager.setXp(experience);
+    }
+
+    public static void addXp(Player player, int amount) {
+        int xp = getXp(player) + amount;
+        if(xp<0) xp=0;
+        setXp(player, xp);
+    }
+
+    public static void setLevel(Player player, int amount) {
+        int level = amount;
+        if(level<1) level=1;
+        setLevel(player, level);
+    }
+
+    public static int getLevel(Player player) {
+        // if vault is not installed, use built-in currency
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getLevel();
+    }
+
     public static void addCoins(Player player, int amount) {
         int coins = getCoins(player) + amount;
         if(coins<0) coins=0;

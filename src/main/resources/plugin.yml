@@ -9,6 +9,9 @@ website: https://github.com/SF-24
 depend: [ ]
 softdepend: [ MythicMobs, Vault, BetonQuest, PlaceholderAPI ]
 commands:
+  player_data:
+    permission: mineshaft.debug.players
+    description: Allows to modify player data
   mineshaft:
     permission: mineshaft.op
     description: Main plugin command. Used to reload the plugin and data
@@ -45,3 +48,6 @@ permissions:
   mineshaft.op:
     permission: default.op
     description: Default operator permission
+  mineshaft.debug.players:
+    default: op
+    description: Allows to modify player data

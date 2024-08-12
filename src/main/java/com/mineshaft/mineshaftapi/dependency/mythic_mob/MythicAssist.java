@@ -22,7 +22,6 @@
 
 package com.mineshaft.mineshaftapi.dependency.mythic_mob;
 
-import com.mineshaft.mineshaftapi.MineshaftApi;
 import io.lumine.mythic.api.adapters.AbstractLocation;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import org.bukkit.Bukkit;

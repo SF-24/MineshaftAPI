@@ -50,6 +50,8 @@ public class PlayerDataClass {
     public void setCoins(int amount) {
         this.coins=amount;
     }
+    public void setXp(int amount) {this.xp=amount;}
+    public void setLevel(int amount) {this.level=amount;}
 
     // Skill data manipulation
     public int getSkillLevel(PlayerSkills skill) {

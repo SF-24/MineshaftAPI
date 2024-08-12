@@ -179,6 +179,16 @@ public class JsonPlayerManager {
         saveFile(data);
     }
 
+    public int getXp() {
+        PlayerDataClass data = loadData(this.player);
+        return data.getXp();
+    }
+
+    public int getLevel() {
+        PlayerDataClass data = loadData(this.player);
+        return data.getLevel();
+    }
+
     public int getCoins() {
         PlayerDataClass data = loadData(this.player);
         int coins = data.getCoins();
@@ -190,5 +200,19 @@ public class JsonPlayerManager {
         data.setCoins(amount);
         saveFile(data);
         SidebarManager.updateCoins(player);
+    }
+
+    public void setXp(int amount) {
+        PlayerDataClass data = loadData(player);
+        data.setXp(amount);
+        saveFile(data);
+        // TODO: update XP and level
+    }
+
+    public void setLevel(int amount) {
+        PlayerDataClass data = loadData(player);
+        data.setLevel(amount);
+        saveFile(data);
+        // TODO: update level display
     }
 }

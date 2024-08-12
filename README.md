@@ -1,11 +1,13 @@
 
 
+
 # MineshaftAPI
 An spigot plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.20.6
 
 ## Table of Contents
 - [Copyright notice](#Important-Copyright-Information)
 - [Documentation introduction](#Documentation)
+- [Upcoming features](#Upcoming-and-planned-features)
 - [Item creation](#Item-Creation )
 	- [Example](#Example)
 	- [List of parameters](#List-of-parameters)
@@ -23,6 +25,8 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 - [Event creation](#event-creation)
   - [Event example](#event-example)
   - [List of event parameters](#list-of-event-parameters)
+    - [Beam event type](#beam-event-type)
+- [Configuration](#configuration)
 - [Plugin reloading](#plugin-reloading)
 
 # Important Copyright Information
@@ -32,13 +36,58 @@ Terms of use can be found here: https://www.gnu.org/licenses/gpl-3.0.en.html
 # Documentation
 Currently, the only functionality of this plugin are custom item creation, event creation and **Vault** server economy.
 
-A work in progress sidebar is displayed to all players on the server. Customisation is not yet available
+Events can be triggered as **MythicMobs** mechanics via the integration.
+
+A work in progress sidebar (disabled by default) is displayed to all players on the server. Customisation is not yet available. 
 
 Images representing examples of content included in the plugin may not be entirely accurate, as these were taken by a user with client mods and a resource pack altering the look of the game.
 
+## Undocumented features
+The following features are not yet explained in the documentation
+
+- Beam event parameters
+- MythicMobs compatibility
+- Currency command (requires permission)
+- Permissions
+- Heal command (OP only)
+- PlayerSkills (WIP)
+- Placeholders (Placeholder API integration)
+- Weapon cooldown
+- Item subtypes (partially explained)
+- Item stat priority list (descending)
+
+# Upcoming and planned features
+**Not all features in this list may be added**<br>
+*This is just a to-do list featuring my current ideas*<br>
+*List elements in italic will definitely be added*
+
+- *[important!] Completing the README file and adding all documentation*
+- *[important!] Working armour support*
+- *More configuration: item rarities, etc.*
+- *Extendable weapons (lightsaber creation, etc.)*
+- *Customisable weapon cooldown*
+- *Player attributes: Strength, intelligence, etc.*
+- Ammunition feature for ranged weapons (with reloading)
+- Customisable sidebar
+- More Placeholders
+- Custom menus and shops
+- BetonQuest integration
+- BetonQuest quest tracker
+- More MythicMobs features
+- FreeMinecraftModels integration with MythicMobs compatibility
+- Custom crafting system
+- Skills
+- Item customisation (replacing parts, etc.)
+- In-built mob support (similar to MythicMobs or EliteMobs)
+- Dungeons
+- More events
+- Replacing local events with events
+- NPCs
+- Better API and JavaDocs
+
 # Item Creation 
 
-Items are created via custom YAML files. These are placed in the `Mineshaft/Data/Items` folder in the plugin directory of your server.
+Items are created via custom YAML files. These are placed in the `Mineshaft/Items` folder in the plugin directory of your server.
 
 Items can have a multitude of different parameters, which are used to customize the item.
 
@@ -135,6 +184,7 @@ stats:
 | Value | Stat | Description | Notes
 |:---------|-|:-----------|-:|
 | `damage` |Attack damage|  Increases damage dealt via ranged and melee | WIP -> extremely glitchy when using ranged weapons |
+| `ranged_damage` |Ranged attack damage|  Increases ranged damage | WIP -> currently only applies to beam events triggered using this weapon |
 | `speed` | Health| Increases maximum health when equipped||
 | `defence` | Defence| Reduces damage taken (excluding certain sources like drowning) | Defence scalability will be modified|
 | `speed` | Speed | Will increase movement speed when implemented | Stat is applied to items, however functionality has not yet been implemented |
@@ -233,7 +283,7 @@ This may be saved in the file `example-item.yml` or `example-item.yaml`
 `/getitem diamond-sword` grants the player the item with the name `diamond-sword`
 
 # Event creation
-Custom events are created via YAML configuration files, similarly to custom items. These can be executed using a command or bound to an item, using the item configuration file. These files are placed in the `Mineshaft/Data/Events` folder in the server plugin directory.
+Custom events are created via YAML configuration files, similarly to custom items. These can be executed using a command or bound to an item, using the item configuration file. These files are placed in the `Mineshaft/Events` folder in the server plugin directory.
 
 They can have many different parameters, which control what happens when the item is executed.
 
@@ -265,7 +315,39 @@ This event will fire a red coloured beam. If it hits a mob, it will damage it fo
 ![An image of the vent being triggered by a player](https://raw.githubusercontent.com/SF-24/images/main/event2.png)The event shown above being triggered by a player
 
 ## List of event parameters
-### ***Coming soon....***
+The following parameters are available for all events. Each event type has unique parameters only available for its type.
+
+| Value | Description |Data Type
+|:---------|-|:-----------|
+| `parent`|The parent event. Currently WIP|String|
+| `event_type`|The event type. Specifies what happens when the event is triggered. Currently only `BEAM` is supported|Enum|
+| `offset`|The offset of the event. These values are added to the location where the event is executed|Complex|
+
+### Beam event type
+
+The beam event fires off a beam in the direction in which the entity that executed it is facing. It supports multiple unique parameters. Not all parameters have to be filled in for the event to work
+
+### ***TODO: coming soon***
+
+# Configuration
+
+Functionality of the plugin can be modified via the `config.yml` file in the plugin folder. The currency name parameter does not yet work.
+
+```yaml
+# Whether vault compatibility is enabled
+enable-vault: true
+
+# Whether items have a cooldown animation
+enable-cooldown-animation: true
+# Whether the sidebar is enabled
+enable-sidebar: false
+
+# Whether the item rarity description will be italic
+italic-item-rarity: true
+# Singular and plural form of the currency name
+currency-singular: Credit
+currency-plural: Credits
+```
 
 # Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.
@@ -277,4 +359,4 @@ Examples:
 `/mineshaft reload` and `/mineshaft reload all` reloads the whole plugin
 `/mineshaft reload item` and `/mineshaft reload items` reloads custom items
 `/mineshaft reload event` and `/mineshaft reload events` reloads events
-`/mineshaft reload config` and `/mineshaft reload configs` will reload the configuration files. However, this functionality is yet to be implemented
+`/mineshaft reload config` and `/mineshaft reload configs` reloads the configuration

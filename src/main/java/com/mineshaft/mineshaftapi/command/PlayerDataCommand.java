@@ -35,42 +35,37 @@ public class PlayerDataCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 
-        if (args.length < 3) {
-            sender.sendMessage(ChatColor.RED + "Not enough arguments!");
-            sendUsageMessage(sender);
-            return false;
-        } else {
-            Player player = Bukkit.getPlayer(args[0]);
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Specified player does not exist or is offline");
-                return false;
-            }
-            if (args[2].equals("experience")) {
-                if (args[1].equalsIgnoreCase("set") && args.length == 4) {
-                    try {
-                        int amount = Integer.parseInt(args[3]);
-                        JsonPlayerBridge.setXp(player, amount);
-                    } catch (NumberFormatException e) {
-                        sender.sendMessage(ChatColor.RED + "Amount specified must be a number");
-                        sendUsageMessage(sender);
-                    }
-                } else if (args[1].equalsIgnoreCase("add") && args.length == 4) {
-                    try {
-                        int amount = Integer.parseInt(args[3]);
-                        JsonPlayerBridge.addXp(player, amount);
-                    } catch (NumberFormatException e) {
-                        sender.sendMessage(ChatColor.RED + "Amount specified must be a number");
-                        sendUsageMessage(sender);
-                    }
-                } else if (args[1].equalsIgnoreCase("get") && args.length==3) {
-                    sender.sendMessage(player.getName() + " has " + ChatColor.AQUA + JsonPlayerBridge.getXp(player) + ChatColor.WHITE + " XP");
-                    sendUsageMessage(sender);
-                    return false;
-                }
-            }
-            sendUsageMessage(sender);
+
+        Player player = Bukkit.getPlayer(args[0]);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "Specified player does not exist or is offline");
             return false;
         }
+        if (args[2].equals("experience")) {
+            if (args[1].equalsIgnoreCase("set") && args.length == 4) {
+                try {
+                    int amount = Integer.parseInt(args[3]);
+                    JsonPlayerBridge.setXp(player, amount);
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(ChatColor.RED + "Amount specified must be a number");
+                    sendUsageMessage(sender);
+                }
+            } else if (args[1].equalsIgnoreCase("add") && args.length == 4) {
+                try {
+                    int amount = Integer.parseInt(args[3]);
+                    JsonPlayerBridge.addXp(player, amount);
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(ChatColor.RED + "Amount specified must be a number");
+                    sendUsageMessage(sender);
+                }
+            } else if (args[1].equalsIgnoreCase("get") && args.length==3) {
+                sender.sendMessage(player.getName() + " has " + ChatColor.AQUA + JsonPlayerBridge.getXp(player) + ChatColor.WHITE + " XP");
+                sendUsageMessage(sender);
+                return false;
+            }
+        }
+        sendUsageMessage(sender);
+        return false;
     }
 
     public static void sendUsageMessage(CommandSender sender) {

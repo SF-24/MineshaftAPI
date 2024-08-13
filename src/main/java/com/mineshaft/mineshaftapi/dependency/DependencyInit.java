@@ -23,7 +23,6 @@
 package com.mineshaft.mineshaftapi.dependency;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonExperienceEvent;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonExperienceEventFactory;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;

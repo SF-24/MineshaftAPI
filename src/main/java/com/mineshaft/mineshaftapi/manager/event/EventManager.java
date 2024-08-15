@@ -32,6 +32,7 @@ import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.UniqueEventFields;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
 import com.mineshaft.mineshaftapi.util.ColourFormatter;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Location;
@@ -327,6 +328,14 @@ public class EventManager {
                 // Override damage via weapon stat
 
                 double damage = ItemManager.getItemNbtStat(executingItem, ItemStats.RANGED_DAMAGE);
+
+                int range = (int) ItemManager.getItemNbtRangedStat(executingItem, RangedItemStats.FIRING_RANGE);
+
+                double firingSpeed = ItemManager.getItemNbtRangedStat(executingItem, RangedItemStats.FIRING_SPEED);
+
+                if(range<0) range = 0;
+
+                beamEvent.setFlyDistance(range);
 
                 if(damage<=0) return beamEvent;
 

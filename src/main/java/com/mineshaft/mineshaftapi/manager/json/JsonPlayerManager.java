@@ -199,7 +199,9 @@ public class JsonPlayerManager {
         PlayerDataClass data = loadData(player);
         data.setCoins(amount);
         saveFile(data);
-        SidebarManager.updateCoins(player);
+        if(MineshaftApi.getInstance().getConfigManager().getSidebarEnabled()) {
+            SidebarManager.updateCoins(player);
+        }
     }
 
     public void setXp(int amount) {

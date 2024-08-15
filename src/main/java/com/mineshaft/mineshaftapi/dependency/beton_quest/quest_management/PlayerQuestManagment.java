@@ -20,24 +20,14 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item;
+package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
 
-import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
-public enum RangedItemStats {
-    FIRING_SPEED(ChatColor.AQUA.toString(),1),
-    FIRING_RANGE(ChatColor.BLUE.toString(),2);
+public class PlayerQuestManagment {
 
-    private final String colour;
-    private final int priority;
-
-    RangedItemStats(String colour, int priority) {
-        this.priority=priority;
-        this.colour=colour;
+    public static void addQuestToPlayer(Player player, QuestObject quest) {
+        // TODO:
     }
 
-    public int getPriority() {return priority;}
-    public String getColour() {return colour;}
-
-
-    }
+}

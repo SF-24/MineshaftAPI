@@ -36,7 +36,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
@@ -194,6 +193,7 @@ public class ItemManager {
         int durability = 0;
 
         String statsString = "stats";
+        String rangedStatsString = "rangedstats";
 
         boolean hideAttributes = true;
 
@@ -282,8 +282,9 @@ public class ItemManager {
 
         // Load file stats, append to lore and add them to the item
 
+        // Get standard and ranged item statistics
         HashMap<ItemStats, Double> statMap = getStatMap(itemName, statsString);
-        //System.out.println("stat map: " + statMap);
+        HashMap<RangedItemStats, Double> rangedStatMap = getRangedStatMap(itemName, rangedStatsString);
 
         EquipmentSlot slot = null;
 
@@ -443,10 +444,26 @@ public class ItemManager {
             }
         }
 
+        boolean hasStats = false;
+
         for(int i = lowestPriority; i<=highestPriority; i++) {
             for(ItemStats stat : statMap.keySet()) {
                 if (i == stat.getPriority()) {
+                    hasStats=true;
                     lore.add(getStatString(stat, statMap.get(stat)));
+                }
+            }
+        }
+
+        if(hasStats) {
+            lore.add("");
+        }
+
+
+        for(int i = lowestPriority; i<=highestPriority; i++) {
+            for(RangedItemStats stat : rangedStatMap.keySet()) {
+                if (i == stat.getPriority()) {
+                    lore.add(getRangedStatString(stat, statMap.get(stat)));
                 }
             }
         }
@@ -486,6 +503,11 @@ public class ItemManager {
         if(ranged_damage!=0) {
             setItemNbtStat(item, ItemStats.RANGED_DAMAGE, ranged_damage);
         }
+
+        for(RangedItemStats stat : rangedStatMap.keySet()) {
+            setItemNbtRangedStat(item, stat, rangedStatMap.get(stat));
+        }
+
         ItemRarity finalRarity = rarity;
         NBT.modify(item, nbt -> {
             nbt.setString("rarity", finalRarity.toString());
@@ -569,8 +591,40 @@ public class ItemManager {
         return statMap;
     }
 
+    protected HashMap<RangedItemStats, Double> getRangedStatMap(String name, String rangedStatPath) {
+        HashMap<RangedItemStats, Double> statMap = new HashMap<>();
+
+        String path = MineshaftApi.getInstance().getItemPath();
+        File fileYaml = new File(path, name + ".yml");
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+
+        if (!yamlConfiguration.contains(rangedStatPath)) {
+            Logger.logError("could not find " + rangedStatPath + " in: " + path + "/" + name + ".yml");
+            return statMap;
+        }
+
+        String yamlPath = rangedStatPath + ".";
+
+        for (String key : yamlConfiguration.getConfigurationSection(rangedStatPath).getKeys(false)) {
+            String yamlStatPath = yamlPath + key;
+
+            double value = yamlConfiguration.getDouble(yamlStatPath);
+            RangedItemStats statKey = RangedItemStats.valueOf(key.toUpperCase(Locale.ROOT));
+
+            // Null check - likely not needed
+            if (statKey != null && !statKey.equals(ItemStats.NULL)) {
+                statMap.put(statKey, value);
+            }
+        }
+        return statMap;
+    }
+
     protected static String getStatString(ItemStats stat, Double value) {
         return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + "+" + NumericFormatter.formatNumberAdvanced(value);
+    }
+
+    protected static String getRangedStatString(RangedItemStats stat, Double value) {
+        return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value);
     }
 
     protected static void setItemNbtStat(ItemStack stack, ItemStats stat, double value) {
@@ -579,10 +633,24 @@ public class ItemManager {
         });
     }
 
+    protected static void setItemNbtRangedStat(ItemStack stack, RangedItemStats stat, double value) {
+        NBT.modify(stack, nbt -> {
+            nbt.setDouble("ranged_stat." + stat.name().toLowerCase(Locale.ROOT), value);
+        });
+    }
+
     public static double getItemNbtStat(ItemStack stack, ItemStats stat) {
         final double[] value = {0};
         NBT.get(stack, nbt -> {
             value[0] = nbt.getDouble("stat." + stat.name().toLowerCase(Locale.ROOT));
+        });
+        return value[0];
+    }
+
+    public static double getItemNbtRangedStat(ItemStack stack, RangedItemStats stat) {
+        final double[] value = {0};
+        NBT.get(stack, nbt -> {
+            value[0] = nbt.getDouble("ranged_stat." + stat.name().toLowerCase(Locale.ROOT));
         });
         return value[0];
     }

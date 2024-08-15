@@ -2,11 +2,14 @@ com\mineshaft\mineshaftapi\manager\ProfileManager.class
 com\mineshaft\mineshaftapi\dependency\mythic_mob\TargetEventMechanic.class
 com\mineshaft\mineshaftapi\command\MineshaftCommand.class
 com\mineshaft\mineshaftapi\manager\json\PlayerDataClass.class
+com\mineshaft\mineshaftapi\manager\item\RangedItemStats.class
 com\mineshaft\mineshaftapi\dependency\mythic_mob\MythicAssist.class
 com\mineshaft\mineshaftapi\listener\UIListener.class
 com\mineshaft\mineshaftapi\command\GetItemCommand.class
+com\mineshaft\mineshaftapi\command\PlayerDataCommand.class
 com\mineshaft\mineshaftapi\manager\event\fields\EventType.class
 com\mineshaft\mineshaftapi\manager\json\JsonPlayerManager.class
+com\mineshaft\mineshaftapi\dependency\beton_quest\BetonExperienceEventFactory.class
 com\mineshaft\mineshaftapi\manager\VariableTypeEnum.class
 com\mineshaft\mineshaftapi\manager\PlayerManager.class
 com\mineshaft\mineshaftapi\manager\event\EventManager.class
@@ -21,6 +24,7 @@ com\mineshaft\mineshaftapi\command\MenuCommand.class
 com\mineshaft\mineshaftapi\command\MonetaryBalanceCommand.class
 com\mineshaft\mineshaftapi\manager\event\executor\BeamExecutor.class
 com\mineshaft\mineshaftapi\manager\item\ItemManager$1.class
+com\mineshaft\mineshaftapi\dependency\beton_quest\BetonExperienceEvent.class
 com\mineshaft\mineshaftapi\manager\item\fields\ItemSubcategory.class
 com\mineshaft\mineshaftapi\manager\event\event_subclass\BeamEvent.class
 com\mineshaft\mineshaftapi\manager\event\EventManager$1.class

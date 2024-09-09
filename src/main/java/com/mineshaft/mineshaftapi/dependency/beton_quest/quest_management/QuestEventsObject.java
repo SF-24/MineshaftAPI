@@ -24,11 +24,16 @@ package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
 
 public class QuestEventsObject {
 
+    protected String questPackage;
     protected String cancelEvent;
 
-    public QuestEventsObject(String cancelEvent) {
+    public QuestEventsObject(String questPackage, String cancelEvent) {
         this.cancelEvent=cancelEvent;
+        this.questPackage=questPackage;
     }
+
+    public String getQuestPackage() { return questPackage; }
+    public String getCancelEvent() { return cancelEvent; }
 
 
 

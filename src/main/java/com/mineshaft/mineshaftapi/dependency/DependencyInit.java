@@ -43,7 +43,7 @@ public class DependencyInit {
             PrimaryServerThreadData data = new PrimaryServerThreadData(Bukkit.getServer(), Bukkit.getScheduler(), BetonQuest.getInstance());
 
             BetonQuest.getInstance().registerNonStaticEvent("mineshaftxp", new BetonExperienceEventFactory(loggerFactory, data));
-            BetonQuest.getInstance().registerNonStaticEvent("logquest", new BetonDisplayQuestEventFactory(loggerFactory, data));
+            BetonQuest.getInstance().registerNonStaticEvent("displayquest", new BetonDisplayQuestEventFactory(loggerFactory, data));
         } else {
             Logger.logWarning("BetonQuest is not enabled. Plugin compatibility features have been disabled.");
         }

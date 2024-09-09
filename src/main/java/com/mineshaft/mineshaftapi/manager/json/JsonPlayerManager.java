@@ -24,6 +24,7 @@ package com.mineshaft.mineshaftapi.manager.json;
 
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.ProfileManager;
 import com.mineshaft.mineshaftapi.manager.SidebarManager;
 import com.mineshaft.mineshaftapi.manager.player_skills.PlayerSkills;
@@ -32,6 +33,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class JsonPlayerManager {
@@ -216,5 +218,23 @@ public class JsonPlayerManager {
         data.setLevel(amount);
         saveFile(data);
         // TODO: update level display
+    }
+
+    public void addQuest(Player player, QuestObject questObject) {
+        PlayerDataClass data = loadData(player);
+        data.addQuest(questObject);
+        saveFile(data);
+    }
+
+    public boolean removeQuest(Player player, String questName) {
+        PlayerDataClass data = loadData(player);
+        boolean value = data.removeQuest(questName);
+        saveFile(data);
+        return value;
+    }
+
+    public ArrayList<QuestObject> getQuests(Player player) {
+        PlayerDataClass data = loadData(player);
+        return data.getQuests();
     }
 }

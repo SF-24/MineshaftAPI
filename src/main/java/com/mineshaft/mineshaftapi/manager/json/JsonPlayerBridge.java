@@ -22,7 +22,22 @@
 
 package com.mineshaft.mineshaftapi.manager.json;
 
+import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.dependency.DependencyInit;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonExperienceEvent;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import com.mineshaft.mineshaftapi.util.Logger;
+import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.betonquest.betonquest.api.profiles.Profile;
+import org.betonquest.betonquest.config.Config;
+import org.betonquest.betonquest.exceptions.ObjectNotFoundException;
+import org.betonquest.betonquest.id.EventID;
+import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
 
 public class JsonPlayerBridge {
 
@@ -81,4 +96,48 @@ public class JsonPlayerBridge {
         return getCoins(player)>=amount;
     }
 
+    /**
+    * QUESTS AND DISPLAY
+    */
+
+    public static void addQuest(Player player, QuestObject questObject) {
+
+    }
+
+    public static void removeQuest(Player player, String questName) {
+        if (getQuest(player, questName) == null) {
+            return;
+        }
+        if (DependencyInit.hasBetonQuest()) {
+            QuestEventsObject cancelEvent = getQuest(player,questName).getEventObject();
+            if(cancelEvent!=null) {
+                final QuestPackage questPackage = Config.getPackages().get(cancelEvent.getQuestPackage());
+                final Profile playerProfile = PlayerConverter.getID(player);
+                try {
+                    BetonQuest.event(playerProfile, new EventID(questPackage,cancelEvent.getCancelEvent()));
+                } catch (ObjectNotFoundException e) {
+                    Logger.logError("Could not execute BetonQuest event with name: " + cancelEvent.getCancelEvent() + " of package " + cancelEvent.getQuestPackage());
+                }
+            }
+        } else {
+            Logger.logError("Attempted to use quest display API while BetonQuest is not enabled. Quest functionality is unavailable without this plugin!");
+        }
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.removeQuest(player, questName);
+
+    }
+
+    public static ArrayList<QuestObject> getQuests(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getQuests(player);
+    }
+
+    public static QuestObject getQuest(Player player, String questName) {
+        for(QuestObject questObject : getQuests(player)) {
+            if(questObject.getName().equalsIgnoreCase(questName)) {
+                return questObject;
+            }
+        }
+        return null;
+    }
 }

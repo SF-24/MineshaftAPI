@@ -33,6 +33,8 @@ import org.betonquest.betonquest.exceptions.InstructionParseException;
 import org.betonquest.betonquest.quest.PrimaryServerThreadData;
 import org.betonquest.betonquest.quest.event.*;
 
+import java.util.ArrayList;
+
 public class BetonDisplayQuestEventFactory implements EventFactory {
 
     private final BetonQuestLoggerFactory loggerFactory;
@@ -58,8 +60,13 @@ public class BetonDisplayQuestEventFactory implements EventFactory {
             notificationSender = new NoNotificationSender();
         }
 
-        final int value = instruction.getInt("amount", 5);
-        return new PrimaryServerThreadEvent(new OnlineEventAdapter(new BetonExperienceEvent(value,notificationSender), log, questPackage), data);
-    }
+        final String name = instruction.getOptional("name", "Unnamed Quest");
+        final String description = instruction.getOptional("name", "");
+        final String cancelEvent = instruction.getOptional("onCancel", "");
 
+        ArrayList<String> objectivesBase = (ArrayList<String>) instruction.getList("objectives",instruction::getOptional);
+
+        return new PrimaryServerThreadEvent(new OnlineEventAdapter(new BetonDisplayQuestEvent(name, description, objectivesBase, cancelEvent, questPackage.getConfig().getName(),notificationSender), log, questPackage), data);
+    }
 }
+

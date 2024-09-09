@@ -22,18 +22,22 @@
 
 package com.mineshaft.mineshaftapi.manager.json;
 
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player_skills.SkillClass;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PlayerDataClass {
 
     HashMap<PlayerSkills, SkillClass> skills = new HashMap<>();
+    ArrayList<QuestObject> quests = new ArrayList<>();
 
     int coins = 0;
     int xp = 0;
     int level = 1;
+
 
     PlayerDataClass() {
         for(PlayerSkills skill : PlayerSkills.values()) {
@@ -52,6 +56,10 @@ public class PlayerDataClass {
     }
     public void setXp(int amount) {this.xp=amount;}
     public void setLevel(int amount) {this.level=amount;}
+
+    /**
+     * Skills
+     */
 
     // Skill data manipulation
     public int getSkillLevel(PlayerSkills skill) {
@@ -94,5 +102,29 @@ public class PlayerDataClass {
     public HashMap<PlayerSkills, SkillClass> getSkillMap() {
         return skills;
     }
+
+    /**
+     * Quests
+     */
+
+    public void addQuest(QuestObject questObject) {
+        quests.add(questObject);
+    }
+
+    public ArrayList<QuestObject> getQuests() {
+        return quests;
+    }
+
+    public boolean removeQuest(String questName) {
+        for(int i=0; i<quests.size(); i++) {
+            if(quests.get(i).getName().equalsIgnoreCase(questName)) {
+                quests.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 }

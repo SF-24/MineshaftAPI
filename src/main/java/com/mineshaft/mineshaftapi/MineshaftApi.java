@@ -132,6 +132,8 @@ public final class MineshaftApi extends JavaPlugin {
 
     public VaultDependency getVault() {return dependencyInit.getVault();}
 
+    public DependencyInit getDependencyInit() {return dependencyInit;}
+
     public static void reloadItems() {
         MineshaftApi.getInstance().itemManager.initialiseItems();
     }

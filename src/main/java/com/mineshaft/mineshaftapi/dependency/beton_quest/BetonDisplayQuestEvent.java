@@ -38,18 +38,20 @@ public class BetonDisplayQuestEvent implements OnlineEvent {
     final String description;
     final ArrayList<String> objectives;
     final String cancelEvent;
+    final String questPackage;
 
-    public BetonDisplayQuestEvent(String name, String description, ArrayList<String> objectives, String cancelEvent, final NotificationSender experienceSender) throws InstructionParseException {
+    public BetonDisplayQuestEvent(String name, String description, ArrayList<String> objectives, String cancelEvent, String questPackage, final NotificationSender experienceSender) throws InstructionParseException {
         this.name=name;
         this.description=description;
         this.objectives=objectives;
         this.cancelEvent=cancelEvent;
+        this.questPackage=questPackage;
     }
 
 
     @Override
     public void execute(OnlineProfile profile) throws QuestRuntimeException {
-        QuestObject questObject = new QuestObject(name, description, objectives, new QuestEventsObject(cancelEvent));
+        QuestObject questObject = new QuestObject(name, description, objectives, new QuestEventsObject(cancelEvent, questPackage));
         PlayerQuestManagment.addQuestToPlayer(profile.getPlayer(), questObject);
     }
 

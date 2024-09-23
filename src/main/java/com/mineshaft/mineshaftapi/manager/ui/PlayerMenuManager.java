@@ -22,19 +22,58 @@
 
 package com.mineshaft.mineshaftapi.manager.ui;
 
+import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.item_shop.ItemMenu;
+import com.mineshaft.mineshaftapi.manager.item_shop.ItemType;
+import com.mineshaft.mineshaftapi.manager.item_shop.MenuItem;
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.HashMap;
 
 public class PlayerMenuManager {
 
-    public static void OpenPlayerMenu(Player player) {
+    public static void OpenPlayerMenu(Player player, String title, int size, HashMap<Integer, MenuItem> items) {
 
-        Inventory ui = Bukkit.createInventory(null, 27, ChatColor.BLACK + "Menu");
+        Inventory ui = Bukkit.createInventory(null, size, title);
+
+        for(int key : items.keySet()) {
+            MenuItem menuItem = items.get(key);
+            ItemStack item = MineshaftApi.getInstance().getItemManagerInstance().getItem(menuItem.getItemId());
+
+            NBT.modify(item, nbt -> {
+                nbt.setEnum("category", menuItem.getItemType());
+            });
+
+            if(menuItem.getItemType().equals(ItemType.PURCHASE)) {
+                int price = menuItem.getPriceIfCanBuy();
+                String name = menuItem.getItemId();
+                if(price>0) {
+                    NBT.modify(item, nbt -> {
+                        nbt.setInteger("price", price);
+                    });
+                }
+                if(name!=null && !name.equalsIgnoreCase("") && name.equalsIgnoreCase("null") && !name.equalsIgnoreCase("nil")) {
+                    NBT.modify(item, nbt -> {
+                        nbt.setString("itemName", name);
+                    });
+                }
+            }
+
+            ui.setItem(key, item);
+        }
 
         player.openInventory(ui);
 
+    }
+
+    // open menu for player
+    public static void OpenMenu(Player player, ItemMenu itemMenu) {
+        OpenPlayerMenu(player, itemMenu.getTitle(), itemMenu.getSize(), itemMenu.getItems());
     }
 
 }

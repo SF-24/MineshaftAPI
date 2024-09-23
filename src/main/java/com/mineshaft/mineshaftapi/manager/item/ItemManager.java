@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class ItemManager {
+    
 
     HashMap<UUID, String> items = new HashMap<>();
     HashMap<UUID, List<String>> cachedEvents = new HashMap<>();
@@ -70,7 +71,7 @@ public class ItemManager {
             folder.mkdirs();
         }
 
-        if (folder.listFiles() == null || folder.listFiles().length == 0) {
+        if (folder.listFiles() == null || Objects.requireNonNull(folder.listFiles()).length == 0) {
             createDemoItem();
         }
 

@@ -86,7 +86,7 @@ public class CooldownManager {
 
     // Does not work with old cooldown. Completely disregards it
     public Duration getPlayerCooldown() {
-
+        return null;
     }
 
 }

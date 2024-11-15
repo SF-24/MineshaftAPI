@@ -58,11 +58,13 @@ public class MythicAssist {
         double pitchError = 0;
         double yawError = 0;
 
+        // TODO: check whether pitch and yaw is in radians or degrees.
+
         if(offset>0) {
             double error = ((double)offset)/100;
 
-            pitchError = random.nextDouble(error);
-            yawError = random.nextDouble(error);
+            pitchError = Math.toDegrees(random.nextDouble(error));
+            yawError = Math.toDegrees(random.nextDouble(error));
             if(random.nextBoolean()) {
                 pitchError=-pitchError;
             }

@@ -35,6 +35,9 @@ import java.util.Calendar;
 
 public class SidebarManager {
 
+    // TODO: to be updated with better system
+
+    @Deprecated
     public static void displayScoreboard(Player player) {
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -89,7 +92,7 @@ public class SidebarManager {
         // Purse -> coin display
         sidebar.add(ChatColor.GOLD.toString());
 
-        if(!objective.equals("")) {
+        if(!objective.isEmpty()) {
             sidebar.add("  ");
             sidebar.add(ChatColor.WHITE + " Current quest");
             sidebar.add(ChatColor.BLUE.toString());

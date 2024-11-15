@@ -23,15 +23,14 @@
 package com.mineshaft.mineshaftapi.manager.game_objects;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.Display.DisplayManager;
+import com.mineshaft.mineshaftapi.manager.Display.DisplayType;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.TriggerType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -44,6 +43,7 @@ public class LaserRunnable extends BukkitRunnable {
     Location location;
     Vector dir;
 
+    DisplayType displayType = DisplayType.ITEM;
     TriggerType target = TriggerType.ENTITY;
 
     boolean flipped = false;
@@ -52,13 +52,18 @@ public class LaserRunnable extends BukkitRunnable {
     int speed = 4;
     BeamEvent event = new BeamEvent();
     int particle = 10;
+    Display projectile = null;
     int speedCount = 4;
+
+    boolean hasProjectile;
+    boolean hideParticles;
 
     UUID casterId = null;
 
     double t = 0;
 
     Location loc;
+    private Object stack;
 
     public LaserRunnable(BeamEvent event, Location loc) {
         if(loc.getWorld()==null) return;
@@ -71,6 +76,14 @@ public class LaserRunnable extends BukkitRunnable {
         this.flyDistance=event.getFlyDistance();
         this.speedCount=this.speed;
         this.start();
+    }
+
+    public void setProjectile(DisplayType displayType, Object stack) {
+        hasProjectile = true;
+        hideParticles = true;
+        this.stack=stack;
+        this.displayType=displayType;
+        this.projectile = DisplayManager.generateDisplay(displayType,stack,loc);
     }
 
     public void setCaster(UUID uuid) {
@@ -108,6 +121,11 @@ public class LaserRunnable extends BukkitRunnable {
             double z = dir.getZ() * dist;
 
             loc.add(x,y,z);
+
+            if(hasProjectile&&(projectile != null)) {
+                projectile.remove();
+                projectile=DisplayManager.generateDisplay(displayType,stack,loc);
+            }
 
             ArrayList<Material> ignoredBlocks = new ArrayList<>();
             ignoredBlocks.add(Material.VINE);
@@ -180,7 +198,7 @@ public class LaserRunnable extends BukkitRunnable {
             // flip on hit barrier
             if(loc.getBlock().getType().equals(Material.BARRIER)) {
                 flipped = true;
-            } else if (!loc.getBlock().getType().equals(Material.AIR) && !ignoredBlocks.contains(loc.getBlock().getType())) {
+            } else if (!hideParticles && !loc.getBlock().getType().equals(Material.AIR) && !ignoredBlocks.contains(loc.getBlock().getType())) {
                 //PLAY FIZZLE SOUND
                 if(loc.getBlock().getBoundingBox().contains(loc.getX(),loc.getY(),loc.getZ())) {
 

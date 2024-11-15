@@ -28,6 +28,7 @@ import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
 import de.tr7zw.nbtapi.NBT;
 import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
 import net.minecraft.world.InteractionHand;
@@ -40,6 +41,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.Time;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -88,12 +91,24 @@ public class InteractListener implements Listener {
                 return;
             }
 
-            MineshaftApi.getInstance().getCooldownManager().addPlayerKey(player.getUniqueId(), uniqueId, 400L);
+            // Shots per second
+            double firingSpeed = ItemManager.getItemNbtRangedStat(item, RangedItemStats.FIRING_SPEED);
+            double firingCooldown = 1 / firingSpeed;
+
+            if(firingSpeed>0) {
+                // Firing cooldown
+                // Apply cooldown
+                MineshaftApi.getInstance().getCooldownManager().addPlayerCooldown(player.getUniqueId(), uniqueId, Duration.ofMillis((long) (firingCooldown*1000)));
+            } else {
+                MineshaftApi.getInstance().getCooldownManager().addPlayerCooldown(player.getUniqueId(), uniqueId, Duration.ofMillis(400L));
+            }
 
             // send item cooldown animation
             if(MineshaftApi.getInstance().getConfigManager().enableItemCooldownAnimation()) {
+                int delayInTicks = (int) (firingCooldown/20);
+
                 Item handItem = ((CraftPlayer) player).getHandle().getItemInHand(InteractionHand.MAIN_HAND).getItem();
-                ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(handItem, 8));
+                ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(handItem, delayInTicks));
             }
 
             for(String event : events) {

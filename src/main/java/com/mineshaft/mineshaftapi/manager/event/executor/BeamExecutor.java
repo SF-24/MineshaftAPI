@@ -22,12 +22,14 @@
 
 package com.mineshaft.mineshaftapi.manager.event.executor;
 
+import com.mineshaft.mineshaftapi.manager.Display.DisplayType;
 import com.mineshaft.mineshaftapi.manager.event.EventExecutor;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.game_objects.LaserRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -52,6 +54,10 @@ public class BeamExecutor extends EventExecutor {
 
             LaserRunnable laserRunnable = new LaserRunnable(beamEvent,customLoc);
             laserRunnable.setCaster(casterId);
+
+            if(beamEvent.hasProjectile()) {
+                laserRunnable.setProjectile(DisplayType.ITEM,new ItemStack(Material.FIRE_CHARGE));
+            }
         }
 
     }

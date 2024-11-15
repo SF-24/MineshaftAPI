@@ -23,6 +23,7 @@
 package com.mineshaft.mineshaftapi.manager.event;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.CooldownManager;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.event.executor.BeamExecutor;
@@ -272,6 +273,9 @@ public class EventManager {
                     case "power":
                         beamEvent.setPower(yamlConfiguration.getInt(key));
                         break;
+                    case "projectile":
+                        beamEvent.setProjectile(true);
+                        break;
                 }
             }
 
@@ -330,8 +334,6 @@ public class EventManager {
                 double damage = ItemManager.getItemNbtStat(executingItem, ItemStats.RANGED_DAMAGE);
 
                 int range = (int) ItemManager.getItemNbtRangedStat(executingItem, RangedItemStats.FIRING_RANGE);
-
-                double firingSpeed = ItemManager.getItemNbtRangedStat(executingItem, RangedItemStats.FIRING_SPEED);
 
                 if(range<0) range = 0;
 

@@ -33,6 +33,7 @@ import java.util.List;
 
 public class BeamEvent extends Event {
 
+    boolean hasProjectile=false;
     int size = 2;
     org.bukkit.Color colour = org.bukkit.Color.RED;
     int power = 10;
@@ -54,7 +55,9 @@ public class BeamEvent extends Event {
     public void setParticleType(Particle particle) {this.particleType = particle;}
     public void setSize(int size) {this.size = size;}
     public void setColour(org.bukkit.Color colour) {this.colour = colour;}
+    public void setProjectile(boolean projectile) { this.hasProjectile=projectile;}
 
+    public boolean hasProjectile() {return this.hasProjectile;}
     public int getParticleCount() {return particleCount;}
     public int getPower() {return power;}
     public int getSpeed() {return speed;}

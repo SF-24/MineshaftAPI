@@ -51,6 +51,15 @@ public final class MineshaftApi extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        // Ascii text generator: https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20
+
+        Logger.logInfo("   __  ____              __        _____    ___   ___  ____");
+        Logger.logInfo("  /  |/  (_)__  ___ ___ / /  ___ _/ _/ /_  / _ | / _ \\/  _/");
+        Logger.logInfo(" / /|_/ / / _ \\/ -_|_-</ _ \\/ _ `/ _/ __/ / __ |/ ___// / ");
+        Logger.logInfo("/_/  /_/_/_//_/\\__/___/_//_/\\_,_/_/ \\__/ /_/ |_/_/  /___/");
+        Logger.logInfo("                                                           ");
+
         switch (getDebugLanguage()) {
             case POLISH:
                 Logger.logInfo("Wtyczka mineshaft API została włączona");

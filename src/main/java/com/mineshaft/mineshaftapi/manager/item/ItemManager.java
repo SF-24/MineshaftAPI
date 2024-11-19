@@ -76,11 +76,38 @@ public class ItemManager {
         }
 
         for (File file : Objects.requireNonNull(folder.listFiles())) {
-            initialiseItem(file.getName());
+            if(!file.isDirectory()) {
+                initialiseItem(file.getName());
+            } else {
+                initialiseFilesInDirectory(path, file.getName(), 0);
+            }
+        }
+    }
+
+    // Initialises files in a given directory
+    // iteration is used to avoid an infinite loop
+    public void initialiseFilesInDirectory(String path, String dirName, int iteration) {
+        File folder = new File(path + File.separator + dirName);
+
+        if(iteration>99) {
+            Logger.logWarning("Went into subfolder in directory \""+path+"\\"+dirName+"\" more than 99 times. Returning to avoid infinite loop.");
+            return;
+        }
+
+        for(File file : Objects.requireNonNull(folder.listFiles())) {
+            if(file.isDirectory()) {
+                initialiseFilesInDirectory(path+File.separator+dirName, file.getName(), iteration++);
+            } else {
+                initialiseItem(file.getName());
+            }
         }
     }
 
     public void initialiseItem(String fileName) {
+        if(items.containsValue(fileName)) {
+            Logger.logWarning("Conflicting item names: '" + fileName + "'. This may result in errors due to items containing the same name. This may be fixed in a future release.");
+        }
+
         File fileYaml = new File(path, fileName);
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 

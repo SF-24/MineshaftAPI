@@ -1,4 +1,5 @@
 com\mineshaft\mineshaftapi\manager\ProfileManager.class
+com\mineshaft\mineshaftapi\util\QuickFunction.class
 com\mineshaft\mineshaftapi\dependency\mythic_mob\TargetEventMechanic.class
 com\mineshaft\mineshaftapi\manager\Display\DisplayType.class
 com\mineshaft\mineshaftapi\command\MineshaftCommand.class
@@ -62,6 +63,7 @@ com\mineshaft\mineshaftapi\dependency\MineshaftPlaceholderExpansion.class
 com\mineshaft\mineshaftapi\util\TextFormatter.class
 com\mineshaft\mineshaftapi\dependency\beton_quest\quest_management\QuestStatus.class
 com\mineshaft\mineshaftapi\MineshaftApi.class
+com\mineshaft\mineshaftapi\manager\item\ItemManagerAccessUtility.class
 com\mineshaft\mineshaftapi\dependency\VaultDependency.class
 com\mineshaft\mineshaftapi\listener\DamageListener.class
 com\mineshaft\mineshaftapi\manager\event\fields\UniqueEventFields.class

@@ -41,7 +41,7 @@ public class CooldownManager {
     private HashMap<UUID, Map<UUID, Instant>> itemCooldownMap = new HashMap<>();
 
     // Important: time in milliseconds
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public void addPlayerKey(UUID uuid, UUID itemId, long timeInMilliseconds) {
         Cache<UUID, Long> cooldown;
         if(itemCacheMap.containsKey(uuid)) {

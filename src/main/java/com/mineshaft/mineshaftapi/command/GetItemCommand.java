@@ -23,13 +23,22 @@
 package com.mineshaft.mineshaftapi.command;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.ItemManagerAccessUtility;
 import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.util.QuickFunction;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
 
 public class GetItemCommand implements CommandExecutor {
     @Override
@@ -45,10 +54,32 @@ public class GetItemCommand implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "Please specify an item name");
             sendItemList(player);
             return false;
-        }
+        } else if(args.length>1 && args.length <= 3) {
 
-        if(args.length>1) {
+            if(args[0].equalsIgnoreCase("gui")) {
+                String folder = args[1];
 
+
+                if(args.length>2) {
+                    try{
+                        int page = Integer.parseInt(args[2]);
+                        if(page<1) {
+                            page=1;
+                            player.sendMessage(ChatColor.RED+"number cannot be less than 1");
+                        }
+                        sendItemListUi(player,folder,page);
+                    } catch (NumberFormatException e) {
+                        player.sendMessage(ChatColor.RED+ "Incorrect number format. Use:");
+                        sendSyntax(player);
+                    }
+                } else {
+                    sendItemListUi(player,folder,1);
+                }
+            } else {
+                player.sendMessage(ChatColor.RED + "Incorrect command syntax. Use:");
+                sendSyntax(player);
+            }
+        } else {
             player.sendMessage(ChatColor.RED + "Too many parameters");
             return false;
         }
@@ -68,5 +99,49 @@ public class GetItemCommand implements CommandExecutor {
         for(String name : MineshaftApi.getInstance().getItemManagerInstance().getItemList().values()) {
             player.sendMessage(" " + ChatColor.BLUE + name);
         }
+    }
+
+    protected void sendItemListUi(Player player, String folder, int page) {
+
+        Inventory itemInventory = Bukkit.createInventory(null, 54, ChatColor.BLACK + "Item View UI");
+
+        ItemStack emptyItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta emptyItemMeta = emptyItem.getItemMeta();
+        emptyItemMeta = QuickFunction.setLocalisedName(emptyItemMeta,"immutable");
+        emptyItemMeta.setDisplayName("");
+        emptyItem.setItemMeta(emptyItemMeta);
+
+        for(int i = 45; i<54; i++) {
+            itemInventory.setItem(i,emptyItem);
+        }
+
+        ArrayList<ArrayList<ItemStack>> itemList = ItemManagerAccessUtility.getItemsEnMasseFull(folder,-2);
+
+        if(itemList.size()>=2) {
+            if(page!=itemList.size()) {
+                ItemStack nextItem = new ItemStack(Material.ARROW);
+                ItemMeta nextMeta = nextItem.getItemMeta();
+                nextMeta.setDisplayName("Next Page");
+                nextMeta=QuickFunction.setLocalisedName(nextMeta,"next");
+                nextItem.setItemMeta(nextMeta);
+                itemInventory.setItem(53, nextItem);
+            }
+            if(page!=1) {
+                ItemStack backItem = new ItemStack(Material.ARROW);
+                ItemMeta backMeta = backItem.getItemMeta();
+                backMeta.setDisplayName("Previous Page");
+                backMeta=QuickFunction.setLocalisedName(backMeta,"back");
+                backItem.setItemMeta(backMeta);
+                itemInventory.setItem(45,backItem);
+            }
+        }
+
+        player.openInventory(itemInventory);
+    }
+
+    public static void sendSyntax(Player player) {
+        player.sendMessage(ChatColor.RED + "/getitem <item>");
+        player.sendMessage(ChatColor.RED + "/getitem <gui> <folder> [page]");
+        player.sendMessage(ChatColor.RED + "/getitem <gui> null");
     }
 }

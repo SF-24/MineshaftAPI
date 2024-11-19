@@ -22,10 +22,16 @@
 
 package com.mineshaft.mineshaftapi.listener;
 
+import com.mineshaft.mineshaftapi.util.QuickFunction;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class UIListener implements Listener {
 
@@ -35,6 +41,12 @@ public class UIListener implements Listener {
         String title = ChatColor.translateAlternateColorCodes('&', e.getView().getTitle());
 
         String menu = ChatColor.BLACK + "Menu";
+
+        List<String> blockList = List.of("immutable","back","next","close","reload","button");
+        assert e.getCurrentItem().getItemMeta()!=null;
+        if(e.getCurrentItem().hasItemMeta() && QuickFunction.hasLocalisedName(e.getCurrentItem().getItemMeta()) && blockList.contains(QuickFunction.getLocalisedMane(e.getCurrentItem().getItemMeta()))) {
+            e.setCancelled(true);
+        }
 
         if (title.equalsIgnoreCase(ChatColor.BLACK + "Menu")) {
             e.setCancelled(true);

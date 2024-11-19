@@ -20,25 +20,30 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.command;
+package com.mineshaft.mineshaftapi.util;
 
-import com.mineshaft.mineshaftapi.util.Logger;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 
-public class HealCommand implements CommandExecutor {
-    @Override @Deprecated()
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(sender instanceof Player) {
-           Player player =  ((Player) sender);
-           player.setHealth(((Player) sender).getMaxHealth());
-           player.sendMessage(ChatColor.WHITE + "You have been healed");
-        } else {
-            Logger.logInfo("You are not a player");
-        }
-        return false;
+public class QuickFunction {
+
+    /**
+    * For running functions which otherwise result errors due to deprecation
+     * and being marked for removal
+    */
+
+    @SuppressWarnings("all")
+    public static boolean hasLocalisedName(ItemMeta meta) {
+        return meta.hasLocalizedName();
+    }
+
+    @SuppressWarnings("all")
+    public static ItemMeta setLocalisedName(ItemMeta meta,String name) {
+        meta.setLocalizedName(name);
+        return meta;
+    }
+
+    @SuppressWarnings("all")
+    public static String getLocalisedMane(ItemMeta meta) {
+        return meta.getLocalizedName();
     }
 }

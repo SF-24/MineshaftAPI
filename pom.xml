@@ -6,7 +6,7 @@
 
     <groupId>com.mineshaft</groupId>
     <artifactId>mineshaft-api</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT-191124-01</version>
     <packaging>jar</packaging>
 
     <name>Mineshaft Api</name>

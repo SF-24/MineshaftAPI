@@ -4,7 +4,7 @@
   <groupId>com.mineshaft</groupId>
   <artifactId>mineshaft-api</artifactId>
   <name>Mineshaft Api</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT-191124-01</version>
   <description>A Minecraft plugin focusing on Rpg and Multiplayer elements</description>
   <url>https://github.com/SF-24</url>
   <build>
@@ -25,6 +25,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <phase>package</phase>

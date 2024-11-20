@@ -24,8 +24,15 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.util.QuickFunction;
 import jdk.jfr.Description;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 
@@ -60,4 +67,43 @@ public class ItemManagerAccessUtility {
         return itemList;
     }
 
+    public static Inventory getItemUI(String folder, int page) {
+        Inventory itemInventory = Bukkit.createInventory(null, 54, ChatColor.BLACK + "Item View UI");
+
+        ItemStack emptyItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta emptyItemMeta = emptyItem.getItemMeta();
+        emptyItemMeta = QuickFunction.setLocalisedName(emptyItemMeta,"immutable");
+        emptyItemMeta.setDisplayName("");
+        emptyItem.setItemMeta(emptyItemMeta);
+
+        for(int i = 45; i<54; i++) {
+            itemInventory.setItem(i,emptyItem);
+        }
+
+        ArrayList<ArrayList<ItemStack>> itemList = ItemManagerAccessUtility.getItemsEnMasseFull(folder,-2);
+
+        if(itemList.size()>=2) {
+            if(page!=itemList.size()) {
+                ItemStack nextItem = new ItemStack(Material.ARROW);
+                ItemMeta nextMeta = nextItem.getItemMeta();
+                nextMeta.setDisplayName("Next Page");
+                nextMeta=QuickFunction.setLocalisedName(nextMeta,"next"+page);
+                nextItem.setItemMeta(nextMeta);
+                itemInventory.setItem(53, nextItem);
+            }
+            if(page!=1) {
+                ItemStack backItem = new ItemStack(Material.ARROW);
+                ItemMeta backMeta = backItem.getItemMeta();
+                backMeta.setDisplayName("Previous Page");
+                backMeta=QuickFunction.setLocalisedName(backMeta,"back"+page);
+                backItem.setItemMeta(backMeta);
+                itemInventory.setItem(45,backItem);
+            }
+        }
+        return itemInventory;
+    }
+
+    public static void sendItemListUi(Player player, String folder, int page) {
+        player.openInventory(getItemUI(folder,page));
+    }
 }

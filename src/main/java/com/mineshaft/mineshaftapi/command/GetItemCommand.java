@@ -23,6 +23,7 @@
 package com.mineshaft.mineshaftapi.command;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.listener.UIListener;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManagerAccessUtility;
 import com.mineshaft.mineshaftapi.util.Logger;
@@ -67,13 +68,13 @@ public class GetItemCommand implements CommandExecutor {
                             page=1;
                             player.sendMessage(ChatColor.RED+"number cannot be less than 1");
                         }
-                        sendItemListUi(player,folder,page);
+                        ItemManagerAccessUtility.sendItemListUi(player,folder,page);
                     } catch (NumberFormatException e) {
                         player.sendMessage(ChatColor.RED+ "Incorrect number format. Use:");
                         sendSyntax(player);
                     }
                 } else {
-                    sendItemListUi(player,folder,1);
+                    ItemManagerAccessUtility.sendItemListUi(player,folder,1);
                 }
             } else {
                 player.sendMessage(ChatColor.RED + "Incorrect command syntax. Use:");
@@ -101,43 +102,7 @@ public class GetItemCommand implements CommandExecutor {
         }
     }
 
-    protected void sendItemListUi(Player player, String folder, int page) {
 
-        Inventory itemInventory = Bukkit.createInventory(null, 54, ChatColor.BLACK + "Item View UI");
-
-        ItemStack emptyItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        ItemMeta emptyItemMeta = emptyItem.getItemMeta();
-        emptyItemMeta = QuickFunction.setLocalisedName(emptyItemMeta,"immutable");
-        emptyItemMeta.setDisplayName("");
-        emptyItem.setItemMeta(emptyItemMeta);
-
-        for(int i = 45; i<54; i++) {
-            itemInventory.setItem(i,emptyItem);
-        }
-
-        ArrayList<ArrayList<ItemStack>> itemList = ItemManagerAccessUtility.getItemsEnMasseFull(folder,-2);
-
-        if(itemList.size()>=2) {
-            if(page!=itemList.size()) {
-                ItemStack nextItem = new ItemStack(Material.ARROW);
-                ItemMeta nextMeta = nextItem.getItemMeta();
-                nextMeta.setDisplayName("Next Page");
-                nextMeta=QuickFunction.setLocalisedName(nextMeta,"next");
-                nextItem.setItemMeta(nextMeta);
-                itemInventory.setItem(53, nextItem);
-            }
-            if(page!=1) {
-                ItemStack backItem = new ItemStack(Material.ARROW);
-                ItemMeta backMeta = backItem.getItemMeta();
-                backMeta.setDisplayName("Previous Page");
-                backMeta=QuickFunction.setLocalisedName(backMeta,"back");
-                backItem.setItemMeta(backMeta);
-                itemInventory.setItem(45,backItem);
-            }
-        }
-
-        player.openInventory(itemInventory);
-    }
 
     public static void sendSyntax(Player player) {
         player.sendMessage(ChatColor.RED + "/getitem <item>");

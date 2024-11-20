@@ -1,6 +1,7 @@
 
 
 
+
 # MineshaftAPI
 An spigot plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.20.6
 
@@ -27,6 +28,10 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
   - [List of event parameters](#list-of-event-parameters)
     - [Beam event type](#beam-event-type)
 - [Configuration](#configuration)
+- [Integrations](#integrations)
+    - [Mythic Mobs](#mythic-mobs)
+        - [Mineshaft event skill](#mineshaft-event)
+        - [Targeted Mineshaft event skill](#targeted-mineshaft-event)
 - [Plugin reloading](#plugin-reloading)
 
 # Important Copyright Information
@@ -348,6 +353,59 @@ italic-item-rarity: true
 currency-singular: Credit
 currency-plural: Credits
 ```
+
+# Integrations
+
+## Mythic Mobs
+The MythicMobs integration allows you to trigger events *directly* from a MythicMobs file in the form of MythicMobs skills.
+
+The section can be directly appended to the `Skills` section of a MythicMob or the `Skills` section of a MythicMob skill. More information on the MythicMobs API is available on their [wiki](https://git.mythiccraft.io/mythiccraft/MythicMobs/-/wikis/home)
+
+Below is an example of a MythicMobs skill, which containing MineshaftAPI event. 
+```yaml
+BlasterBeam:
+  Cooldown: 1.5
+  Skills:
+  - targetedmineshaftevent{e=blaster-shot;d=4;o=13} @Target
+  - sound{s=minecraft:blaster.blasterrifle;v=5.0} @self
+```
+The @Target parameter after the skill just specifies the target and is an inbuilt MythicMobs function. 
+For entity targeters, please reffer to the MythicMobs [wiki page](https://git.mythiccraft.io/mythiccraft/MythicMobs/-/wikis/Skills/Targeters)
+<br>
+Currently there are two types of MythicMobs events: `mineshaftevent` and `targetedmineshaftevent`
+
+### Mineshaft event
+The mineshaft event takes a location as a target the entity is aiming at. This allows the entity to aim at a block rather than a player or entity.
+
+Syntax:
+`mineshaftevent{e=event-name;d=damage}` or
+`mineshaftevent{event=event-name;damage=damage}`
+
+Where `damage` is the amount of damage dealth if the event damages an entity (this only works with certain events) and `event-name` is the name of the event.
+
+Examples:
+`mineshaftevent{event=loud-bang}`
+`mineshaftevent{e=laser-shot;d=10} @TargetLocation`
+`mineshaftevent{event=smoke-bomb;d=1} @self`
+
+### Targeted Mineshaft event
+The targeted mineshaft event is incredibly similar, however instead of a location, it takes the target as an entity.
+<br>
+With events fired in a direction, like the beam event, this fires them in the direction of the target.
+<br>
+To stop the MythicMobs having too accurate aim,  an optional parameter `offset` has been added. The offset (in degrees on an axis (WIP)) determines the maximum amount of degrees the beam is rotated away from the target, allowing the mob to miss its shot (by a maximum margin of your choice).
+<br>
+Syntax:
+`targetedmineshaftevent{e=event-name;d=damage;o=offset}` or
+`targetedmineshaftevent{event=event-name;damage=damage;offset=offset}`
+
+Where `damage` is the amount of damage dealth if the event damages an entity (this only works with certain events), `event-name` is the name of the event and `offset` is the offset (explained above).  
+
+Examples:
+`mineshaftevent{event=loud-bang}`
+`mineshaftevent{e=direct-shot;d=22} @lastAttacker`
+`mineshaftevent{e=laser-shot;d=10;offset=2} @Target`
+`mineshaftevent{event=grenade-throw;o=25} @NearestPlayer`
 
 # Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.

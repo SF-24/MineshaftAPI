@@ -52,14 +52,16 @@ public class GetItemCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if(args.length==0) {
-            player.sendMessage(ChatColor.RED + "Please specify an item name");
-            sendItemList(player);
-            return false;
-        } else if(args.length==1) {
+            String itemName = args[0];
+            ItemStack item = MineshaftApi.getInstance().getItemManagerInstance().getItem(itemName);
+
+            if(item==null) {player.sendMessage(ChatColor.RED + "Selected item does not exist!"); sendItemList(player); return false;}
+
+            player.getInventory().addItem(item);        } else if(args.length==1) {
 
             String item = args[0];
             player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
-
+            return false;
         } else if(args.length <= 3) {
 
             if(args[0].equalsIgnoreCase("gui")) {
@@ -90,12 +92,7 @@ public class GetItemCommand implements CommandExecutor {
             return false;
         }
 
-        String itemName = args[0];
-        ItemStack item = MineshaftApi.getInstance().getItemManagerInstance().getItem(itemName);
 
-        if(item==null) {player.sendMessage(ChatColor.RED + "Selected item does not exist!"); sendItemList(player); return false;}
-
-        player.getInventory().addItem(item);
 
         return false;
     }

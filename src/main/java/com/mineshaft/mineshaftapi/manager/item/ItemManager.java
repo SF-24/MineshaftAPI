@@ -487,10 +487,11 @@ public class ItemManager {
             lore.add("");
         }
 
-
+        // get ranged stat strings
+        Logger.logInfo(rangedStatMap.toString());
         for(int i = lowestPriority; i<=highestPriority; i++) {
             for(RangedItemStats stat : rangedStatMap.keySet()) {
-                if (i == stat.getPriority()) {
+                if (i == stat.getPriority() && statMap.get(stat)!=null) {
                     lore.add(getRangedStatString(stat, statMap.get(stat)));
                 }
             }
@@ -652,6 +653,7 @@ public class ItemManager {
     }
 
     protected static String getRangedStatString(RangedItemStats stat, Double value) {
+        if(value==null||value<0) value=0d;
         return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value);
     }
 

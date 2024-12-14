@@ -55,7 +55,12 @@ public class GetItemCommand implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "Please specify an item name");
             sendItemList(player);
             return false;
-        } else if(args.length>1 && args.length <= 3) {
+        } else if(args.length==1) {
+
+            String item = args[0];
+            player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+
+        } else if(args.length <= 3) {
 
             if(args[0].equalsIgnoreCase("gui")) {
                 String folder = args[1];
@@ -106,7 +111,7 @@ public class GetItemCommand implements CommandExecutor {
 
     public static void sendSyntax(Player player) {
         player.sendMessage(ChatColor.RED + "/getitem <item>");
-        player.sendMessage(ChatColor.RED + "/getitem <gui> <folder> [page]");
-        player.sendMessage(ChatColor.RED + "/getitem <gui> null");
+        player.sendMessage(ChatColor.RED + "/getitem gui <folder> [page]");
+        player.sendMessage(ChatColor.RED + "/getitem gui null");
     }
 }

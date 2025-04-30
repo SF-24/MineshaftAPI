@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.manager.item;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.QuickFunction;
+import de.tr7zw.nbtapi.NBT;
 import jdk.jfr.Description;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -68,9 +69,12 @@ public class ItemManagerAccessUtility {
 
         ItemStack emptyItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta emptyItemMeta = emptyItem.getItemMeta();
-        emptyItemMeta = QuickFunction.setLocalisedName(emptyItemMeta,"immutable");
         emptyItemMeta.setDisplayName("");
         emptyItem.setItemMeta(emptyItemMeta);
+
+        NBT.modify(emptyItem, nbt->{
+            nbt.setString("clickAction", "cancel");
+        });
 
         for(int i = 45; i<54; i++) {
             itemInventory.setItem(i,emptyItem);

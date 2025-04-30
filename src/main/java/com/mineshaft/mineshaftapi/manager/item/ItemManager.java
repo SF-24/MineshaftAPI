@@ -428,6 +428,12 @@ public class ItemManager {
             if (slot != null) {
                 attributeModifier = new AttributeModifier(UUID.randomUUID(), UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER, slot);
             }
+            if(stat.equals(ItemStats.DAMAGE)) {
+                attributeModifier = new AttributeModifier(UUID.randomUUID().toString(), value-1, AttributeModifier.Operation.ADD_NUMBER);
+                if (slot != null) {
+                    attributeModifier = new AttributeModifier(UUID.randomUUID(), UUID.randomUUID().toString(), value-1, AttributeModifier.Operation.ADD_NUMBER, slot);
+                }
+            }
 
             if(stat.getPriority()<lowestPriority) lowestPriority=stat.getPriority();
             if(stat.getPriority()>highestPriority) highestPriority=stat.getPriority();
@@ -645,6 +651,7 @@ public class ItemManager {
     }
 
     protected static String getStatString(ItemStats stat, Double value) {
+
         return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + "+" + NumericFormatter.formatNumberAdvanced(value);
     }
 

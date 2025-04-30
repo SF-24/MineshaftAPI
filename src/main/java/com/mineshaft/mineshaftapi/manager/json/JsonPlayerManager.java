@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class JsonPlayerManager {
@@ -157,6 +158,10 @@ public class JsonPlayerManager {
         writeData(data, getFile(player));
     }
 
+    /**
+     * Data modification
+     * */
+
     public int getSkillLevel(Player player, PlayerSkills skill) {
         return loadData(player).getSkillLevel(skill);
     }
@@ -168,6 +173,10 @@ public class JsonPlayerManager {
         data.setSkillLevel(skill,level);
         saveFile(data);
     }
+
+    /**
+     * Basic data:
+     * */
 
     public void addXp(PlayerSkills skill, int amount) {
         PlayerDataClass data = loadData(player);
@@ -206,15 +215,48 @@ public class JsonPlayerManager {
         PlayerDataClass data = loadData(player);
         data.setXp(amount);
         saveFile(data);
-        // TODO: update XP and level
     }
 
     public void setLevel(int amount) {
         PlayerDataClass data = loadData(player);
         data.setLevel(amount);
         saveFile(data);
-        // TODO: update level display
     }
+
+    /**
+     * Player Attributes API
+     * */
+
+    public void setSkillPoints(int points) {
+        PlayerDataClass data = loadData(player);
+        data.setSkillPoints(points);
+        saveFile(data);
+    }
+
+    public int getSkillPoints() {
+        PlayerDataClass data = loadData(player);
+        return data.getSkillPoints();
+    }
+
+    public void setAttribute(String attribute, int value) {
+        PlayerDataClass data = loadData(player);
+        data.setAttribute(attribute, value);
+        saveFile(data);
+    }
+
+    public int getAttribute(String attribute) {
+        PlayerDataClass data = loadData(player);
+        return data.getAttribute(attribute);
+    }
+
+    public HashMap<String, Integer> getAttributeMap() {
+        PlayerDataClass data = loadData(player);
+        return data.getAttributes();
+    }
+
+    /**
+     * Quests
+     * */
 
     public void addQuest(Player player, QuestObject questObject) {
         PlayerDataClass data = loadData(player);

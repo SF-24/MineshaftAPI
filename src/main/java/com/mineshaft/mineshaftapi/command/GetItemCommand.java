@@ -48,21 +48,21 @@ public class GetItemCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if(args.length==0) {
-            String itemName = args[0];
-            ItemStack item = MineshaftApi.getInstance().getItemManagerInstance().getItem(itemName);
-
-            if(item==null) {player.sendMessage(ChatColor.RED + "Selected item does not exist!"); sendItemList(player); return false;}
-
-            player.getInventory().addItem(item);        } else if(args.length==1) {
+            sendItemList(player);
+        } else if(args.length==1) {
 
             String item = args[0];
-            player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+            try {
+                player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+            } catch(NullPointerException e) {
+                player.sendMessage(ChatColor.RED + "Invalid item");
+                sendItemList(player);
+            }
             return false;
         } else if(args.length <= 3) {
 
             if(args[0].equalsIgnoreCase("gui")) {
                 String folder = args[1];
-
 
                 if(args.length>2) {
                     try{

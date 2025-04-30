@@ -76,7 +76,6 @@ public final class MineshaftApi extends JavaPlugin {
 
         getCommand("mineshaft").setExecutor(new MineshaftCommand());
         getCommand("player_data").setExecutor(new PlayerDataCommand());
-        getCommand("menu").setExecutor(new MenuCommand());
         getCommand("balance").setExecutor(new MonetaryBalanceCommand());
         getCommand("getitem").setExecutor(new GetItemCommand());
         getCommand("heal").setExecutor(new HealCommand());

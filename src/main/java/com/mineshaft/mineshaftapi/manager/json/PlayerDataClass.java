@@ -28,11 +28,13 @@ import java.util.HashMap;
 public class PlayerDataClass {
 
     HashMap<PlayerSkills, SkillClass> skills = new HashMap<>();
+    HashMap<String, Integer> playerAttributes = new HashMap<>();
     ArrayList<QuestObject> quests = new ArrayList<>();
 
     int coins = 0;
     int xp = 0;
     int level = 1;
+    int skillPoints = 0;
 
 
     PlayerDataClass() {
@@ -41,6 +43,9 @@ public class PlayerDataClass {
         }
     }
 
+    /**
+    * Basic data
+    * */
 
     public int getLevel() { return level; };
     public int getXp() { return xp; }
@@ -52,6 +57,17 @@ public class PlayerDataClass {
     }
     public void setXp(int amount) {this.xp=amount;}
     public void setLevel(int amount) {this.level=amount;}
+
+    /**
+     * Player Attributes API
+     * */
+    public HashMap<String, Integer> getAttributes() {return playerAttributes;}
+
+    public int getAttribute(String attribute) {return playerAttributes.get(attribute);}
+    public int getSkillPoints() {return skillPoints;}
+
+    public void setAttribute(String attribute, int value) {playerAttributes.put(attribute, value);}
+    public void setSkillPoints(int value) {skillPoints = value;}
 
     /**
      * Skills

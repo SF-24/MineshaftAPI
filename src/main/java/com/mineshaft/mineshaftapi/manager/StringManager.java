@@ -42,7 +42,7 @@ public class StringManager {
         for(char c : message.toCharArray()){
             if(c == '§'){
                 previousCode = true;
-            }else if(previousCode == true){
+            }else if(previousCode){
                 previousCode = false;
                 if(c == 'l' || c == 'L'){
                     isBold = true;
@@ -66,7 +66,7 @@ public class StringManager {
         player.sendMessage(sb + message);
     }
 
-    public static void debugMessage(Player player, String string) {
+    public static void sendDebugMessage(Player player, String string) {
         if(player.hasPermission("mineshaft.debug")) {
             player.sendMessage(ChatColor.RED + "[DEBUG] " + string);
         }

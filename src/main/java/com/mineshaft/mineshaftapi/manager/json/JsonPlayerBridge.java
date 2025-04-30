@@ -18,9 +18,7 @@
 
 package com.mineshaft.mineshaftapi.manager.json;
 
-import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonExperienceEvent;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.util.Logger;
@@ -34,8 +32,13 @@ import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class JsonPlayerBridge {
+
+    /**
+     * Basic data
+     * */
 
     public static int getCoins(Player player) {
         // if vault is not installed, use built-in currency
@@ -69,10 +72,10 @@ public class JsonPlayerBridge {
         setXp(player, xp);
     }
 
-    public static void setLevel(Player player, int amount) {
-        int level = amount;
+    public static void setLevel(Player player, int level) {
         if(level<1) level=1;
-        setLevel(player, level);
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setLevel(level);
     }
 
     public static int getLevel(Player player) {
@@ -90,6 +93,35 @@ public class JsonPlayerBridge {
     public static boolean hasCoins(Player player, int amount) {
         int balance = getCoins(player);
         return getCoins(player)>=amount;
+    }
+
+    /**
+     * Attributes
+     */
+
+    public static int getSkillPoints(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getSkillPoints();
+    }
+
+    public static void setSkillPoints(Player player, int points) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setSkillPoints(points);
+    }
+
+    public static int getAttribute(Player player, String attribute) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getAttribute(attribute);
+    }
+
+    public static HashMap<String, Integer> getAttributeMap(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getAttributeMap();
+    }
+
+    public static void setAttribute(Player player, String attribute, int value) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setAttribute(attribute, value);
     }
 
     /**

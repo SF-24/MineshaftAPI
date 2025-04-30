@@ -18,9 +18,6 @@ commands:
   heal:
     permission: mineshaft.debug.heal
     description: Heals the user
-  menu:
-    description: Opens the in game menu
-    permission: mineshaft.player.menu
   balance:
     description: Modify your currency amount
     permission: mineshaft.debug.balance

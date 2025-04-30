@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.listener;
 import com.mineshaft.mineshaftapi.manager.item.ItemManagerAccessUtility;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.QuickFunction;
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -61,6 +62,22 @@ public class UIListener implements Listener {
                     err.printStackTrace();
                 }
             }
+        } else {
+            NBT.get(e.getCurrentItem(), nbt -> {
+                switch (nbt.getString("clickAction")) {
+                    case "close":
+                    case "closeView":
+                        e.setCancelled(true);
+                        e.getWhoClicked().closeInventory();
+                        break;
+                    case "cancel":
+                    case "immutable":
+                        e.setCancelled(true);
+                        break;
+                    default:
+                        break;
+                }
+            });
         }
 
         if (ChatColor.translateAlternateColorCodes('&',title).equalsIgnoreCase(ChatColor.BLACK + "Menu")) {

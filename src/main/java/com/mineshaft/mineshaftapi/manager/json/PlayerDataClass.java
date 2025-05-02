@@ -31,6 +31,8 @@ public class PlayerDataClass {
     HashMap<String, Integer> playerAttributes = new HashMap<>();
     ArrayList<QuestObject> quests = new ArrayList<>();
 
+    HashMap<Integer, String> inventory = null;
+
     int coins = 0;
     int xp = 0;
     int level = 1;
@@ -42,6 +44,13 @@ public class PlayerDataClass {
             skills.put(skill, new SkillClass(skill));
         }
     }
+
+    /**
+     * Inventory
+     * */
+
+    public void setInventory(HashMap<Integer, String> inventory) { this.inventory = inventory; }
+    public HashMap<Integer, String> getInventory() { return inventory;}
 
     /**
     * Basic data

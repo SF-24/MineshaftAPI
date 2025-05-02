@@ -25,13 +25,12 @@ import com.mineshaft.mineshaftapi.manager.ProfileManager;
 import com.mineshaft.mineshaftapi.manager.SidebarManager;
 import com.mineshaft.mineshaftapi.manager.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
+import io.lumine.mythic.bukkit.utils.serialize.InventorySerialization;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class JsonPlayerManager {
 
@@ -274,5 +273,33 @@ public class JsonPlayerManager {
     public ArrayList<QuestObject> getQuests(Player player) {
         PlayerDataClass data = loadData(player);
         return data.getQuests();
+    }
+
+    /**
+     * Inventory
+     */
+
+    public void setInventory(Player player) {
+        PlayerDataClass data = loadData(player);
+
+        HashMap<Integer, String> inventory = new HashMap<>();
+        for(int i = 0 ; i < player.getInventory().getSize(); i++) {
+            if (player.getInventory().getItem(i) != null) {
+                inventory.put(i, InventorySerialization.encodeItemStackToString(player.getInventory().getItem(i)));
+            }
+        }
+        data.setInventory(inventory);
+        saveFile(data);
+    }
+
+    public void getInventory(Player player) {
+        PlayerDataClass data = loadData(player);
+        HashMap<Integer, String> inv = data.getInventory();
+
+        for(int i : inv.keySet()) {
+            if(inv.get(i)!=null) {
+                player.getInventory().setItem(i, InventorySerialization.decodeItemStack(inv.get(i)));
+            }
+        }
     }
 }

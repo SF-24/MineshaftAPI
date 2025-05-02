@@ -30,6 +30,7 @@ import org.betonquest.betonquest.exceptions.ObjectNotFoundException;
 import org.betonquest.betonquest.id.EventID;
 import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -167,5 +168,19 @@ public class JsonPlayerBridge {
             }
         }
         return null;
+    }
+
+    /**
+     * Player inventory
+     * */
+
+    public static void saveInventory(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setInventory(player);
+    }
+
+    public static void loadInventory(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.getInventory(player);
     }
 }

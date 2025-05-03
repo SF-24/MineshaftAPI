@@ -37,6 +37,7 @@ public class PlayerDataClass {
     int xp = 0;
     int level = 1;
     int skillPoints = 0;
+    double tempArmourClass = 0;
 
 
     PlayerDataClass() {
@@ -51,6 +52,9 @@ public class PlayerDataClass {
 
     public void setInventory(HashMap<Integer, String> inventory) { this.inventory = inventory; }
     public HashMap<Integer, String> getInventory() { return inventory;}
+
+    public void setTempArmourClass(double value) {this.tempArmourClass = value;}
+    public double getTempArmourClass() {return tempArmourClass;}
 
     /**
     * Basic data
@@ -72,7 +76,8 @@ public class PlayerDataClass {
      * */
     public HashMap<String, Integer> getAttributes() {return playerAttributes;}
 
-    public int getAttribute(String attribute) {return playerAttributes.get(attribute);}
+    public int getAttribute(String attribute) {return playerAttributes.get(attribute)==null?-1:playerAttributes.get(attribute);}
+    public boolean hasAttribute(String attribute) {return playerAttributes.containsKey(attribute);}
     public int getSkillPoints() {return skillPoints;}
 
     public void setAttribute(String attribute, int value) {playerAttributes.put(attribute, value);}

@@ -110,6 +110,12 @@ public class JsonPlayerBridge {
         jsonPlayerManager.setSkillPoints(points);
     }
 
+    public static boolean hasAttribute(Player player, String attribute) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.hasAttribute(attribute);
+    }
+
+
     public static int getAttribute(Player player, String attribute) {
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
         return jsonPlayerManager.getAttribute(attribute);
@@ -182,5 +188,10 @@ public class JsonPlayerBridge {
     public static void loadInventory(Player player) {
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
         jsonPlayerManager.getInventory(player);
+    }
+
+    public static double getTempArmourClass(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getPlayerTempArmourClass();
     }
 }

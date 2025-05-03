@@ -29,8 +29,11 @@ public enum ItemStats {
 
     SPEED(ChatColor.WHITE.toString(),5),
 
-    DEFENCE(ChatColor.GREEN.toString(),4),
     HEALTH(ChatColor.RED.toString(),3),
+    ARMOUR_CLASS(ChatColor.GREEN.toString(),4),
+    ARMOUR(ChatColor.GREEN.toString(),5),
+
+    MAXIMUM_ADDED_DEX_MODIFIER("!debug! ",-10),
 
     ATTACK_SPEED(ChatColor.AQUA.toString(),8),
     ATTACK_KNOCKBACK(ChatColor.BLUE.toString(), 9),

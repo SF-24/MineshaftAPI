@@ -21,15 +21,15 @@ package com.mineshaft.mineshaftapi.manager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
+import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
 import java.util.List;
 
 public class PlayerStatManager {
 
-    public static double getPlayerStat(ItemStats stat, Player player) {
-        int value = 0;
+    public static double getRawPlayerStat(ItemStats stat, Player player) {
+        double value = 0;
         if(stat.equals(ItemStats.SPEED)) value = 100;
 
         List<ItemCategory> armourCategories = new java.util.ArrayList<>();
@@ -53,6 +53,59 @@ public class PlayerStatManager {
         value+=ItemManager.getItemNbtStat(player.getInventory().getBoots(), stat);
 
         return value;
+    }
+
+    /**
+     * Use this for amour class
+     * */
+    public static double getPlayerStat(ItemStats stat, Player player) {
+        if(stat.equals(ItemStats.ARMOUR_CLASS)) {
+            if ((player.getOpenInventory().getTopInventory().getHolder()==null)) {
+                return JsonPlayerBridge.getTempArmourClass(player);
+            } else {
+                if(JsonPlayerBridge.hasAttribute(player,"dex")) {
+                    int dex = JsonPlayerBridge.getAttribute(player, "dex");
+                    int maximumDex = (int) getPlayerStat(ItemStats.MAXIMUM_ADDED_DEX_MODIFIER, player);
+                    int dexModifier = 0;
+                    if (maximumDex > 0) {
+                        dexModifier = Math.max(calculateAttributeModifier(dex), maximumDex);
+                    } else if (maximumDex < 0)
+                        dexModifier = calculateAttributeModifier(dex);
+                    return dexModifier+getRawPlayerStat(ItemStats.ARMOUR_CLASS,player);
+                }
+                return getRawPlayerStat(ItemStats.ARMOUR_CLASS,player);
+            }
+        } else if(stat.equals(ItemStats.MAXIMUM_ADDED_DEX_MODIFIER)) {
+            int maximumDex=-99999;
+            for(int i = 0; i<4; i++) {
+                int temp = 0;
+                switch (i) {
+                    case 0:
+                        temp = (int) ItemManager.getMaximumDexterityModifier(player.getInventory().getHelmet());
+                        break;
+                    case 1:
+                        temp = (int) ItemManager.getMaximumDexterityModifier(player.getInventory().getChestplate());
+                        break;
+                    case 2:
+                        temp = (int) ItemManager.getMaximumDexterityModifier(player.getInventory().getLeggings());
+                        break;
+                    case 3:
+                        temp = (int) ItemManager.getMaximumDexterityModifier(player.getInventory().getBoots());
+                        break;
+                    default:
+                        break;
+                }
+                if(maximumDex<0) {maximumDex = temp;}
+                else if(maximumDex>0 && temp<maximumDex) {maximumDex = temp;}
+            }
+            return maximumDex;
+        }
+        return getRawPlayerStat(stat, player);
+    }
+
+
+    public static int calculateAttributeModifier(int attribute) {
+        return (attribute-10) /2;
     }
 
 }

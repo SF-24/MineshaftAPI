@@ -22,6 +22,8 @@ import com.mineshaft.mineshaftapi.command.*;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
 import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicEventListener;
+import com.mineshaft.mineshaftapi.listener.DamageListener;
+import com.mineshaft.mineshaftapi.listener.EquipListener;
 import com.mineshaft.mineshaftapi.listener.InteractListener;
 import com.mineshaft.mineshaftapi.listener.JoinListener;
 import com.mineshaft.mineshaftapi.manager.CooldownManager;
@@ -73,6 +75,8 @@ public final class MineshaftApi extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new InteractListener(), this);
+        Bukkit.getPluginManager().registerEvents(new DamageListener(), this);
+        Bukkit.getPluginManager().registerEvents(new EquipListener(), this);
 
         getCommand("mineshaft").setExecutor(new MineshaftCommand());
         getCommand("player_data").setExecutor(new PlayerDataCommand());

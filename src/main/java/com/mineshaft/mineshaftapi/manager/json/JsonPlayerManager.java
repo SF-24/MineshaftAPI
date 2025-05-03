@@ -21,8 +21,10 @@ package com.mineshaft.mineshaftapi.manager.json;
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import com.mineshaft.mineshaftapi.manager.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.ProfileManager;
 import com.mineshaft.mineshaftapi.manager.SidebarManager;
+import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import io.lumine.mythic.bukkit.utils.serialize.InventorySerialization;
@@ -248,6 +250,11 @@ public class JsonPlayerManager {
         return data.getAttribute(attribute);
     }
 
+    public boolean hasAttribute(String attribute) {
+        PlayerDataClass data = loadData(player);
+        return data.hasAttribute(attribute);
+    }
+
     public HashMap<String, Integer> getAttributeMap() {
         PlayerDataClass data = loadData(player);
         return data.getAttributes();
@@ -288,6 +295,7 @@ public class JsonPlayerManager {
                 inventory.put(i, InventorySerialization.encodeItemStackToString(player.getInventory().getItem(i)));
             }
         }
+        data.setTempArmourClass(PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS,player));
         data.setInventory(inventory);
         saveFile(data);
     }
@@ -301,5 +309,10 @@ public class JsonPlayerManager {
                 player.getInventory().setItem(i, InventorySerialization.decodeItemStack(inv.get(i)));
             }
         }
+    }
+
+    public double getPlayerTempArmourClass() {
+        PlayerDataClass data = loadData(player);
+        return data.getTempArmourClass();
     }
 }

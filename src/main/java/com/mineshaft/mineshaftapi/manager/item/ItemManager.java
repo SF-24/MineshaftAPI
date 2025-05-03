@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.ActionType;
+import com.mineshaft.mineshaftapi.manager.ArmourType;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemFields;
@@ -29,6 +30,7 @@ import com.mineshaft.mineshaftapi.util.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.TextFormatter;
 import de.tr7zw.nbtapi.NBT;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -38,6 +40,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.potion.PotionEffect;
@@ -180,6 +183,9 @@ public class ItemManager {
             }
         }
         final String[] rareCategory = new String[1];
+
+
+
         NBT.modify(item, nbt -> {
             rareCategory[0] = nbt.getOrNull("rarity", String.class);
         });
@@ -210,11 +216,16 @@ public class ItemManager {
         String displayName = "Custom Item";
 
         // Item stat values
+        double maximum_dex_modifier = 0;
         double defence = 0;
         double speed = 0;
         double ranged_damage = 0;
 
         int durability = 0;
+
+        int r = -1;
+        int g = -1;
+        int b = -1;
 
         String statsString = "stats";
         String rangedStatsString = "rangedstats";
@@ -222,6 +233,8 @@ public class ItemManager {
         boolean hideAttributes = true;
 
         String subcategory = null;
+
+        final ArmourType armourType;
 
         for (String field : yamlConfiguration.getKeys(false)) {
             switch (field) {
@@ -248,6 +261,7 @@ public class ItemManager {
                     statsString = "modifiers";
                     break;
                 case "durability":
+                    meta.setMaxStackSize(1);
                     durability = yamlConfiguration.getInt("durability");
                 case "stack_size":
                     meta.setMaxStackSize(yamlConfiguration.getInt("stack_size"));
@@ -259,6 +273,29 @@ public class ItemManager {
                     subcategory = yamlConfiguration.getString("subcategory");
                 default:
             }
+        }
+
+        if(category==ItemCategory.ARMOUR_HELMET || category==ItemCategory.ARMOUR_BOOTS  || category==ItemCategory.ARMOUR_CHESTPLATE || category==ItemCategory.ARMOUR_LEGGINGS) {
+            if(yamlConfiguration.contains("armour.type")) {
+                armourType=ArmourType.valueOf(yamlConfiguration.getString("armour.type"));
+            } else if(yamlConfiguration.contains("armor.type")) {
+                armourType=ArmourType.valueOf(yamlConfiguration.getString("armor.type"));
+            } else {
+                armourType=ArmourType.NONE;
+            }
+            if(yamlConfiguration.contains("armour.colour")) {
+                if(yamlConfiguration.contains("armour.colour.g")) {
+                    g = yamlConfiguration.getInt("armour.colour.g");
+                }
+                if(yamlConfiguration.contains("armour.colour.r")) {
+                    r = yamlConfiguration.getInt("armour.colour.r");
+                }
+                if(yamlConfiguration.contains("armour.colour.b")) {
+                    b = yamlConfiguration.getInt("armour.colour.b");
+                }
+            }
+        } else {
+            armourType=ArmourType.NONE;
         }
 
         meta.setDisplayName(rarity.getColourCode() + displayName);
@@ -301,6 +338,11 @@ public class ItemManager {
             } else {
                 lore.add(rarity.getColourCode() + rarity.getName() + " " + itemDisplay);
             }
+
+            if(!armourType.equals(ArmourType.NONE)) {
+                lore.add(ChatColor.GRAY + armourType.getName());
+            }
+
             lore.add("");
         }
 
@@ -394,20 +436,24 @@ public class ItemManager {
         }
 
         if(yamlConfiguration.contains("tool")) {
-            ToolComponent toolComponent = meta.getTool();
-            for (String field : yamlConfiguration.getConfigurationSection("tool").getKeys(false)) {
-                switch (field) {
-                    case "mining_speed":
-                        double miningSpeed = yamlConfiguration.getDouble("mining_speed");
-                        toolComponent.setDefaultMiningSpeed((float) miningSpeed);
-                    case "block_list":
-                        for(String key : yamlConfiguration.getConfigurationSection("block_list").getKeys(false)) {
+            try {
+                ToolComponent toolComponent = meta.getTool();
+                for (String field : yamlConfiguration.getConfigurationSection("tool").getKeys(false)) {
+                    switch (field) {
+                        case "mining_speed":
+                            double miningSpeed = yamlConfiguration.getDouble("mining_speed");
+                            toolComponent.setDefaultMiningSpeed((float) miningSpeed);
+                        case "block_list":
+                            for (String key : yamlConfiguration.getConfigurationSection("block_list").getKeys(false)) {
 
-                        }
-                    case "tool_type":
+                            }
+                        case "tool_type":
 
+                    }
+                    meta.setTool(toolComponent);
                 }
-                meta.setTool(toolComponent);
+            } catch (NullPointerException e) {
+                Logger.logError("Error. Could not load tool properties for " + itemName);
             }
         }
 
@@ -442,7 +488,15 @@ public class ItemManager {
                 case DAMAGE:
                     meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, attributeModifier);
                     break;
-                case DEFENCE:
+                case MAXIMUM_ADDED_DEX_MODIFIER:
+                    // For use with MineshaftRpg only
+                    // Does nothing on its own
+                    maximum_dex_modifier = value;
+                    break;
+                case ARMOUR:
+                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, attributeModifier);
+                    break;
+                case ARMOUR_CLASS:
                     defence = value;
                     break;
                 case SPEED:
@@ -476,11 +530,18 @@ public class ItemManager {
 
         boolean hasStats = false;
 
+        if(lowestPriority<0) lowestPriority=0;
+
         for(int i = lowestPriority; i<=highestPriority; i++) {
             for(ItemStats stat : statMap.keySet()) {
                 if (i == stat.getPriority()) {
-                    hasStats=true;
-                    lore.add(getStatString(stat, statMap.get(stat)));
+                    hasStats = true;
+                    if (stat.equals(ItemStats.ARMOUR_CLASS) && statMap.get(stat)!=0) {
+                        lore.add(getStatString(stat, statMap.get(stat), category, (int) maximum_dex_modifier));
+
+                    } else if(statMap.get(stat)!=0) {
+                        lore.add(getStatString(stat, statMap.get(stat), category, 0));
+                    }
                 }
             }
         }
@@ -513,8 +574,16 @@ public class ItemManager {
 
         item.setItemMeta(meta);
 
+        if(meta instanceof LeatherArmorMeta) {
+            LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) item.getItemMeta();
+            if(g>=0 || r>=0 || b>=0) {
+                leatherArmorMeta.setColor(Color.fromRGB(Math.max(r, 0), Math.max(g, 0),Math.max(b,0)));
+            }
+            item.setItemMeta(leatherArmorMeta);
+        }
+
         if (durability > 0) {
-            Damageable damageableMeta = (Damageable) meta;
+            Damageable damageableMeta = (Damageable) item.getItemMeta();
             damageableMeta.setMaxDamage(durability);
             item.setItemMeta(damageableMeta);
         }
@@ -522,14 +591,21 @@ public class ItemManager {
         // Apply NBT tag with item
         NBT.modify(item, nbt -> {
             nbt.setString("uuid", uuid);
+            if(!armourType.equals(ArmourType.NONE)) {
+                nbt.setString("ArmourType",armourType.name().toLowerCase());
+            }
             // More are available! Ask your IDE, or see Javadoc for suggestions!
         });
+
 
         if (speed != 0) {
             setItemNbtStat(item, ItemStats.SPEED, speed);
         }
         if (defence != 0) {
-            setItemNbtStat(item, ItemStats.DEFENCE, defence);
+            setItemNbtStat(item, ItemStats.ARMOUR_CLASS, defence);
+        }
+        if (maximum_dex_modifier != 0) {
+            setItemNbtStat(item, ItemStats.MAXIMUM_ADDED_DEX_MODIFIER, maximum_dex_modifier);
         }
         if(ranged_damage!=0) {
             setItemNbtStat(item, ItemStats.RANGED_DAMAGE, ranged_damage);
@@ -650,8 +726,18 @@ public class ItemManager {
         return statMap;
     }
 
-    protected static String getStatString(ItemStats stat, Double value) {
-
+    protected static String getStatString(ItemStats stat, Double value, ItemCategory category, int arg) {
+        if(stat.equals(ItemStats.DAMAGE)||stat.equals(ItemStats.ATTACK_SPEED)) {
+            if(category.equals(ItemCategory.WEAPON_MELEE)||category.equals(ItemCategory.WEAPON_RANGED)||category.equals(ItemCategory.TOOL_AXE)||category.equals(ItemCategory.TOOL_PICKAXE)||category.equals(ItemCategory.TOOL_SHOVEL)||category.equals(ItemCategory.TOOL_HOE)) {
+                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value);
+            }
+        } else if(stat.equals(ItemStats.ARMOUR_CLASS)) {
+            if(arg>0) {
+                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + "+ DEX" + ChatColor.WHITE + "(" + arg + ")";
+            } else if(arg<0) {
+                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + "+ DEX";
+            }
+        }
         return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + "+" + NumericFormatter.formatNumberAdvanced(value);
     }
 
@@ -672,11 +758,35 @@ public class ItemManager {
         });
     }
 
-    public static double getItemNbtStat(ItemStack stack, ItemStats stat) {
+    public static double getMaximumDexterityModifier(ItemStack stack) {
+       if(stack==null) {
+           return -9999;
+       }
         final double[] value = {0};
         NBT.get(stack, nbt -> {
-            value[0] = nbt.getDouble("stat." + stat.name().toLowerCase(Locale.ROOT));
+            if (!nbt.hasNBTData()) {
+                value[0] = -8888;
+            } else {
+                value[0] = nbt.getDouble("stat." + ItemStats.MAXIMUM_ADDED_DEX_MODIFIER.name().toLowerCase(Locale.ROOT));
+            }
         });
+        return value[0];
+    }
+
+    public static double getItemNbtStat(ItemStack stack, ItemStats stat) {
+        if(stack==null) {return 0;}
+        final double[] value = {0};
+        try {
+            NBT.get(stack, nbt -> {
+                if (!nbt.hasNBTData()) {
+                    value[0] = 0;
+                } else {
+                    value[0] = nbt.getDouble("stat." + stat.name().toLowerCase(Locale.ROOT));
+                }
+            });
+        } catch (NullPointerException e) {
+            return 0;
+        }
         return value[0];
     }
 
@@ -705,9 +815,14 @@ public class ItemManager {
     }
 
     public static ItemCategory getItemNbtCategory(ItemStack stack) {
-        NBT.get(stack, nbt -> {
-            return nbt.getEnum("category", ItemCategory.class);
-        });
+        if(stack==null||stack.getAmount()<1) return ItemCategory.ITEM_GENERIC;
+        try {
+            NBT.get(stack, nbt -> {
+                return nbt.getEnum("category", ItemCategory.class);
+            });
+        } catch (NullPointerException e) {
+            return ItemCategory.ITEM_GENERIC;
+        }
         return ItemCategory.ITEM_GENERIC;
     }
 

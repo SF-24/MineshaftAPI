@@ -36,9 +36,7 @@ import java.util.*;
 
 public class JsonPlayerManager {
 
-    Player player = null;
-
-    MineshaftApi mineshaftApi = MineshaftApi.getInstance();
+    Player player;
 
     public JsonPlayerManager(Player player) {
         this.player=player;
@@ -288,6 +286,7 @@ public class JsonPlayerManager {
 
     public void setInventory(Player player) {
         PlayerDataClass data = loadData(player);
+        data.setTempArmourClass(PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS,player));
 
         HashMap<Integer, String> inventory = new HashMap<>();
         for(int i = 0 ; i < player.getInventory().getSize(); i++) {
@@ -295,7 +294,6 @@ public class JsonPlayerManager {
                 inventory.put(i, InventorySerialization.encodeItemStackToString(player.getInventory().getItem(i)));
             }
         }
-        data.setTempArmourClass(PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS,player));
         data.setInventory(inventory);
         saveFile(data);
     }

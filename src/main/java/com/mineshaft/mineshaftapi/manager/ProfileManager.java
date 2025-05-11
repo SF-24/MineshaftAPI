@@ -19,14 +19,26 @@
 package com.mineshaft.mineshaftapi.manager;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
+import com.mineshaft.mineshaftapi.manager.json.JsonProfileManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.UUID;
 
 public class ProfileManager {
 
+    public static String getProfileFolderPath() {
+        return MineshaftApi.getInstance().getPluginDataPath() + File.separator + "Profiles";
+    }
+
+    public static String getProfilePathOfPlayer(Player player) {
+        return getDataPathOfPlayer(player.getUniqueId()) + File.separator + JsonProfileBridge.getCurrentProfile(player);
+    }
+
     public static String getProfilePathOfPlayer(UUID playerId) {
-        return getDataPathOfPlayer(playerId) + File.separator + "Default";
+        return getDataPathOfPlayer(playerId) + File.separator + JsonProfileBridge.getCurrentProfile(Bukkit.getPlayer(playerId));
     }
 
     public static String getDataPathOfPlayer(UUID uuid) {

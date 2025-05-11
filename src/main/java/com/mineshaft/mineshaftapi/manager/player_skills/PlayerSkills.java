@@ -19,14 +19,42 @@
 package com.mineshaft.mineshaftapi.manager.player_skills;
 
 public enum PlayerSkills {
-    COMBAT("Combat"),
-    MINING("Mining"),
-    FORAGING("Foraging"),
-    FARMING("Farming");
+    ATHLETICS("Athletics", "STR"),
 
-    PlayerSkills(String name) {
+    ACROBATICS("Acrobatics", "DEX"),
+    SLEIGHT_OF_HAND("Sleight of Hand", "DEX"),
+    STEALTH("Stealth", "DEX"),
 
+    HISTORY("History", "DEX"),
+    INVESTIGATION("Investigation", "DEX"),
+    NATURE("Nature", "DEX"),
 
+    LORE("Lore", "INT"),
+    SHADOW_LORE("Shadow Lore", "INT"),
+    TRADITIONS("Traditions", "INT"),
+    //RIDDLES("Riddles", "INT")
 
+    ANIMAL_HANDLING("Animal Handling", "WIS"),
+    INSIGHT("Insight", "WIS"),
+    MEDICINE("Medicine", "WIS"),
+    PERCEPTION("Perception", "WIS"),
+    SURVIVAL("Survival", "WIS"),
+
+    DECEPTION("Deception", "CHA"),
+    INTIMIDATION("Intimidation", "CHA"),
+    PERFORMANCE("Performance", "CHA"),
+    PERSUASION("Persuasion", "CHA")
+
+    ;
+
+    final String name;
+    final String baseAbilityScore;
+
+    PlayerSkills(String name, String baseAbilityScore) {
+        this.name=name;
+        this.baseAbilityScore=baseAbilityScore;
     }
+
+    public String getName() {return this.name;}
+    public String getBaseAbilityScore() {return this.baseAbilityScore;}
 }

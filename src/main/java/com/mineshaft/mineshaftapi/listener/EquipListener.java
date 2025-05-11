@@ -61,6 +61,7 @@ public class EquipListener implements Listener {
                 }
                 // If the player swaps with the hotbar slot to equip armour
             } else if(e.getAction().equals(InventoryAction.HOTBAR_SWAP) && e.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
+                e.setCancelled(true);
                 if(isArmour(e.getWhoClicked().getInventory().getItem(e.getHotbarButton()))) {
                     e.setCancelled(ArmourEquipManager.tryEquip((Player) e.getWhoClicked(), e.getWhoClicked().getInventory().getItem(e.getHotbarButton())));
                 }

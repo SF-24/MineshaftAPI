@@ -24,14 +24,37 @@ import com.mineshaft.mineshaftapi.manager.player_skills.SkillClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PlayerDataClass {
 
+    // Character Data
+
     HashMap<PlayerSkills, SkillClass> skills = new HashMap<>();
     HashMap<String, Integer> playerAttributes = new HashMap<>();
+
+    HashMap<String, String> playerCharacterData = new HashMap<>();
+    HashMap<String, List<String>> playerCharacterListData = new HashMap<>();
+
+    // Quests
+
     ArrayList<QuestObject> quests = new ArrayList<>();
 
+    // Saved Inventory
+
     HashMap<Integer, String> inventory = null;
+
+    // Reputation
+
+    HashMap<String, Integer> reputation = new HashMap<>();
+
+    // Abilities
+
+    HashMap<String, Integer> abilities = new HashMap<>();
+    HashMap<String, Integer> spells = new HashMap<>();
+    HashMap<String, Integer> passiveAbilities = new HashMap<>();
+
+    // More character data
 
     int coins = 0;
     int xp = 0;
@@ -39,6 +62,8 @@ public class PlayerDataClass {
     int skillPoints = 0;
     double tempArmourClass = 0;
 
+    double unarmedDamage = 1.0d;
+    int armourClassBonus = 0;
 
     PlayerDataClass() {
         for(PlayerSkills skill : PlayerSkills.values()) {
@@ -70,6 +95,61 @@ public class PlayerDataClass {
     }
     public void setXp(int amount) {this.xp=amount;}
     public void setLevel(int amount) {this.level=amount;}
+
+    // Unarmed damage
+    public void setUnarmedDamage(double value) {this.unarmedDamage=value;}
+    public double getUnarmedDamage() {return this.unarmedDamage;}
+    public void setArmourClassBonus(int value) {this.armourClassBonus = value;}
+    public int getArmourClassBonus() {return this.armourClassBonus;}
+
+    /**
+     * Abilities
+     */
+
+    public HashMap<String, Integer> getAbilities() { return abilities;}
+    public HashMap<String, Integer> getSpells() { return spells;}
+    public HashMap<String, Integer> getPassiveAbilities() { return passiveAbilities;}
+
+    public boolean hasAbility(String ability) { return abilities.containsKey(ability);}
+    public boolean hasPassiveAbility(String ability) { return passiveAbilities.containsKey(ability);}
+    public boolean hasSpell(String spell) {return spells.containsKey(spell);}
+
+    public void addAbility(String ability, int level) {this.abilities.put(ability, level);}
+    public void addPassiveAbility(String ability, int level) {this.passiveAbilities.put(ability, level);}
+    public void addSpell(String spell, int level) {this.spells.put(spell, level);}
+
+    public void removeAbility(String ability) {this.abilities.remove(ability);}
+    public void removePassiveAbility(String ability) {this.passiveAbilities.remove(ability);}
+    public void removeSpell(String spell) {this.spells.remove(spell);}
+
+    /**
+     * Character Data
+     *
+     */
+
+    public HashMap<String, String> getCharacterData() {return playerCharacterData;}
+    public String getCharacterDataValue(String key) {return playerCharacterData.get(key);}
+    public void setCharacterDataValue(String key, String value) {playerCharacterData.put(key,value);}
+
+    public HashMap<String, List<String>> getCharDataList() {return playerCharacterListData;}
+    public List<String> getCharDataListElement(String key) {return playerCharacterListData.get(key);}
+    public void setCharDataListElement(String key, List<String> value) {playerCharacterListData.put(key,value);}
+
+    public void addToCharDataList(String listKey, String element) {
+        List<String> list = playerCharacterListData.get(listKey);
+        list.add(element);
+        playerCharacterListData.put(listKey,list);
+    }
+
+    public void removeFromCharDataList(String listKey, String element) {
+        List<String> list = playerCharacterListData.get(listKey);
+        list.remove(element);
+        playerCharacterListData.put(listKey,list);
+    }
+
+    public List<String> getInCharDataList(String listKey) {
+        return playerCharacterListData.get(listKey);
+    }
 
     /**
      * Player Attributes API

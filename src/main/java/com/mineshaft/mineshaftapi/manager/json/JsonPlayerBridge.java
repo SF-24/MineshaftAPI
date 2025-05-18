@@ -30,10 +30,10 @@ import org.betonquest.betonquest.exceptions.ObjectNotFoundException;
 import org.betonquest.betonquest.id.EventID;
 import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class JsonPlayerBridge {
 
@@ -97,8 +97,36 @@ public class JsonPlayerBridge {
     }
 
     /**
+     * Misc
+     * */
+
+    public static void setUnarmedDamage(Player player, double amount) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setUnarmedDamage(amount);
+    }
+
+    public static double getUnarmedDamage(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getUnarmedDamage();
+    }
+
+    public static void setArmourClassBonus(Player player, int amount) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setArmourClassBonus(amount);
+    }
+
+    public static int getArmourClassBonus(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getArmourClassBonus();
+    }
+
+    /**
      * Attributes
      */
+
+    public static void addSkillPoints(Player player, int points) {
+        setSkillPoints(player, points+getSkillPoints(player));
+    }
 
     public static int getSkillPoints(Player player) {
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
@@ -182,7 +210,13 @@ public class JsonPlayerBridge {
 
     public static void saveInventory(Player player) {
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        //jsonPlayerManager.setTempArmourClass();
         jsonPlayerManager.setInventory(player);
+    }
+
+    public static void setTempArmourClass(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setTempArmourClass();
     }
 
     public static void loadInventory(Player player) {
@@ -193,5 +227,136 @@ public class JsonPlayerBridge {
     public static double getTempArmourClass(Player player) {
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
         return jsonPlayerManager.getPlayerTempArmourClass();
+    }
+
+    /**
+     * Player character data
+     *
+     * @return
+     */
+
+    public static String getCharacterDataValue(Player player, String key) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getCharacterDataValue(key);
+    }
+
+    public static void setCharacterDataValue(Player player, String key, String value) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setCharacterDataValue(key,value);
+    }
+
+    public static HashMap<String, List<String>> getCharDataList(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getCharDataList();
+    }
+
+    public static List<String> getCharDataListElement(Player player, String key) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getCharDataListElement(key);
+    }
+
+    public static void setCharDataListElement(Player player, String key, List<String> value) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setCharDataListElement(key, value);
+    }
+
+    public static void addToCharDataList(Player player, String key, String element) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.addToCharDataList(key, element);
+    }
+
+    public static void addToCharDataList(Player player, String key, List<String> element) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.addToCharDataList(key, element);
+    }
+
+    public static void removeFromCharDataList(Player player, String key, String element) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.removeFromCharDataList(key, element);
+    }
+
+    public static List<String> getInCharDataList(Player player, String key) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getInCharDataList(key);
+    }
+
+    /**
+     * Abilities
+     * */
+
+    public static void addAbility(Player player, String ability, int level) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.addAbility(ability,level);
+    }
+
+    public static void addPassiveAbility(Player player, String ability, int level) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.addPassiveAbility(ability,level);
+    }
+
+    public static void addSpell(Player player, String spell, int level) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.addSpell(spell,level);
+    }
+
+    public static void removeAbility(Player player, String ability) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.removeAbility(ability);
+    }
+
+    public static void removePassiveAbility(Player player, String ability) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.removePassiveAbility(ability);
+    }
+
+    public static void removeSpell(Player player, String spell) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.removeSpell(spell);
+    }
+
+    public static boolean hasAbility(Player player, String ability) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.hasAbility(ability);
+    }
+
+    public static boolean hasPassiveAbility(Player player, String ability) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.hasPassiveAbility(ability);
+    }
+
+    public static boolean hasSpell(Player player, String ability) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.hasSpell(ability);
+    }
+
+    public static HashMap<String, Integer> getAbilities(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getAbilities();
+    }
+
+    public static HashMap<String, Integer> getPassiveAbilities(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getPassiveAbilities();
+    }
+
+    public static HashMap<String, Integer> getSpells(Player player) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getSpells();
+    }
+
+    /**
+     * Proficiencies
+     * */
+
+    public static void addWeaponProficiencies(Player player, List<String> proficiencies) {
+        addToCharDataList(player, "weaponProficiencies", proficiencies);
+    }
+
+    public static void addWeaponProficiency(Player player, String proficiency) {
+        addToCharDataList(player, "weaponProficiencies", proficiency);
+    }
+
+    public static List<String> getWeaponProficiencies(Player player) {
+        return getInCharDataList(player, "weaponProficiencies");
     }
 }

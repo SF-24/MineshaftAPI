@@ -29,17 +29,17 @@ public class JsonProfileBridge {
         return jpm.getCurrentProfile();
     }
 
-    public void setCurrentProfile(Player player, String profile) {
+    public static void setCurrentProfile(Player player, String profile) {
         JsonProfileManager jpm = new JsonProfileManager(player);
         jpm.setCurrentProfile(profile);
     }
 
-    public void addProfile(Player player, String profile) {
+    public static void addProfile(Player player, String profile) {
         JsonProfileManager jpm = new JsonProfileManager(player);
         jpm.addProfile(profile);
     }
 
-    public void removeProfile(Player player, String profile) {
+    public static void removeProfile(Player player, String profile) {
         JsonProfileManager jpm = new JsonProfileManager(player);
         jpm.removeProfile(profile);
     }

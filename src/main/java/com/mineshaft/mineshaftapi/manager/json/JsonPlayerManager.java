@@ -32,7 +32,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class JsonPlayerManager {
 
@@ -153,16 +156,16 @@ public class JsonPlayerManager {
         writeData(data, getFile(player));
     }
 
-    public void saveFile(PlayerDataClass data) {
-        writeData(data, getFile(player));
-    }
-
     /**
      * Data modification
      * */
 
     public int getSkillLevel(Player player, PlayerSkills skill) {
         return loadData(player).getSkillLevel(skill);
+    }
+
+    public void saveFile(PlayerDataClass data) {
+        writeData(data, getFile(player));
     }
 
     public void addSkillLevel(Player player, PlayerSkills skill, int amount) {
@@ -220,6 +223,159 @@ public class JsonPlayerManager {
         PlayerDataClass data = loadData(player);
         data.setLevel(amount);
         saveFile(data);
+    }
+
+    /**
+     * Misc
+     * */
+
+    public void setUnarmedDamage(double amount) {
+        PlayerDataClass data = loadData(player);
+        data.setUnarmedDamage(amount);
+        saveFile(data);
+    }
+
+    public double getUnarmedDamage() {
+        PlayerDataClass data = loadData(player);
+        return data.getUnarmedDamage();
+    }
+
+    public void setArmourClassBonus(int amount) {
+        PlayerDataClass data = loadData(player);
+        data.setArmourClassBonus(amount);
+        saveFile(data);
+    }
+
+    public int getArmourClassBonus() {
+        PlayerDataClass data = loadData(player);
+        return data.getArmourClassBonus();
+    }
+
+    /**
+     * Player character data
+     *
+     */
+
+    public String getCharacterDataValue(String key) {
+        PlayerDataClass data = loadData(player);
+        return data.getCharacterDataValue(key);
+    }
+
+    public void setCharacterDataValue(String key, String value) {
+        PlayerDataClass data = loadData(player);
+        data.setCharacterDataValue(key,value);
+        saveFile(data);
+    }
+
+    public HashMap<String, List<String>> getCharDataList() {
+        PlayerDataClass data = loadData(player);
+        return data.getCharDataList();
+    }
+
+    public List<String> getCharDataListElement(String key) {
+        PlayerDataClass data = loadData(player);
+        return data.getCharDataListElement(key);
+    }
+
+    public void setCharDataListElement(String key, List<String> value) {
+        PlayerDataClass data = loadData(player);
+        data.setCharDataListElement(key, value);
+        saveFile(data);
+    }
+
+    public void addToCharDataList(String key, String element) {
+        PlayerDataClass data = loadData(player);
+        data.addToCharDataList(key, element);
+        saveFile(data);
+    }
+
+    public void addToCharDataList(String key, List<String> elements) {
+        PlayerDataClass data = loadData(player);
+        for(String val : elements) {
+            data.addToCharDataList(key, val);
+        }
+        saveFile(data);
+    }
+
+    public void removeFromCharDataList(String key, String element) {
+        PlayerDataClass data = loadData(player);
+        data.removeFromCharDataList(key, element);
+        saveFile(data);
+    }
+
+    public List<String> getInCharDataList(String key) {
+        PlayerDataClass data = loadData(player);
+        return data.getInCharDataList(key);
+    }
+
+    /**
+     * Spells and Abilities
+     * */
+
+    public void addAbility(String ability, int level) {
+        PlayerDataClass data = loadData(player);
+        data.addAbility(ability,level);
+        saveFile(data);
+    }
+
+    public void addPassiveAbility(String ability, int level) {
+        PlayerDataClass data = loadData(player);
+        data.addPassiveAbility(ability,level);
+        saveFile(data);
+    }
+
+    public void addSpell(String spell, int level) {
+        PlayerDataClass data = loadData(player);
+        data.addSpell(spell,level);
+        saveFile(data);
+    }
+
+    public void removeAbility(String ability) {
+        PlayerDataClass data = loadData(player);
+        data.removeAbility(ability);
+        saveFile(data);
+    }
+
+    public void removePassiveAbility(String ability) {
+        PlayerDataClass data = loadData(player);
+        data.removePassiveAbility(ability);
+        saveFile(data);
+    }
+
+    public void removeSpell(String spell) {
+        PlayerDataClass data = loadData(player);
+        data.removeSpell(spell);
+        saveFile(data);
+    }
+
+    public boolean hasAbility(String ability) {
+        PlayerDataClass data = loadData(player);
+        return data.hasAbility(ability);
+    }
+
+    public boolean hasPassiveAbility(String ability) {
+        PlayerDataClass data = loadData(player);
+        return data.hasPassiveAbility(ability);
+    }
+
+    public boolean hasSpell(String ability) {
+        PlayerDataClass data = loadData(player);
+        return data.hasSpell(ability);
+    }
+
+    public HashMap<String, Integer> getAbilities() {
+        PlayerDataClass data = loadData(player);
+        return data.getAbilities();
+    }
+
+    public HashMap<String, Integer> getPassiveAbilities() {
+        PlayerDataClass data = loadData(player);
+        return data.getPassiveAbilities();
+    }
+
+    public HashMap<String, Integer> getSpells() {
+        PlayerDataClass data = loadData(player);
+        return data.getSpells();
     }
 
     /**
@@ -284,9 +440,14 @@ public class JsonPlayerManager {
      * Inventory
      */
 
-    public void setInventory(Player player) {
+    public void setTempArmourClass() {
         PlayerDataClass data = loadData(player);
         data.setTempArmourClass(PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS,player));
+        saveFile(data);
+    }
+
+    public void setInventory(Player player) {
+        PlayerDataClass data = loadData(player);
 
         HashMap<Integer, String> inventory = new HashMap<>();
         for(int i = 0 ; i < player.getInventory().getSize(); i++) {

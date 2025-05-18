@@ -45,9 +45,9 @@ public class EquipListener implements Listener {
         Logger.logInfo("click type: " + e.getClick());
         Logger.logInfo("hotbar button: " + e.getHotbarButton());
         Logger.logInfo("slot: " + e.getSlot());
-        if(e.getWhoClicked().getInventory().getItem(e.getHotbarButton())!=null) {
-            Logger.logInfo("hotbar item: " + e.getWhoClicked().getInventory().getItem(e.getHotbarButton()).getType());
-        }
+//        if(e.getWhoClicked().getInventory().getItem(e.getHotbarButton())!=null) {
+//            Logger.logInfo("hotbar item: " + e.getWhoClicked().getInventory().getItem(e.getHotbarButton()).getType());
+//        }
         if (e.getInventory().getHolder() != null) {
             if (e.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
                 // if player clicks on armour slot

@@ -38,16 +38,20 @@ public class EquipListener implements Listener {
     @EventHandler
     private void onInventoryClick(InventoryClickEvent e) {
 
-        Logger.logInfo("current: " + Objects.requireNonNull(e.getCurrentItem()).getType());
-        Logger.logInfo("cursor: " + Objects.requireNonNull(e.getCursor()).getType());
-        Logger.logInfo("action: " + e.getAction());
-        Logger.logInfo("slot type: " + e.getSlotType());
-        Logger.logInfo("click type: " + e.getClick());
-        Logger.logInfo("hotbar button: " + e.getHotbarButton());
-        Logger.logInfo("slot: " + e.getSlot());
+        try {
+            Logger.logInfo("current: " + Objects.requireNonNull(e.getCurrentItem()).getType());
+            Logger.logInfo("cursor: " + Objects.requireNonNull(e.getCursor()).getType());
+            Logger.logInfo("action: " + e.getAction());
+            Logger.logInfo("slot type: " + e.getSlotType());
+            Logger.logInfo("click type: " + e.getClick());
+            Logger.logInfo("hotbar button: " + e.getHotbarButton());
+            Logger.logInfo("slot: " + e.getSlot());
 //        if(e.getWhoClicked().getInventory().getItem(e.getHotbarButton())!=null) {
 //            Logger.logInfo("hotbar item: " + e.getWhoClicked().getInventory().getItem(e.getHotbarButton()).getType());
 //        }
+        } catch (Exception npe) {
+            System.out.println("Could not execute interact debug.");
+        }
         if (e.getInventory().getHolder() != null) {
             if (e.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
                 // if player clicks on armour slot

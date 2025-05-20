@@ -29,6 +29,10 @@ import java.util.UUID;
 
 public class ProfileManager {
 
+    public static String getPluginPath() {
+        return MineshaftApi.getInstance().getPluginDataPath();
+    }
+
     public static String getProfileFolderPath() {
         return MineshaftApi.getInstance().getPluginDataPath() + File.separator + "Profiles";
     }

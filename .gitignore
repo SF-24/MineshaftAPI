@@ -25,3 +25,6 @@ replay_pid*
 
 # target folder
 target/*
+
+# paper nms
+.paper-nms

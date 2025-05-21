@@ -3,7 +3,7 @@
 
 
 # MineshaftAPI
-An spigot plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.20.6
+A paper (formerly spigot) plugin for Minecraft servers. Build with maven, documentation coming soon. Designed for Minecraft 1.21.4. _(formerly 1.20.6)_
 
 ## Table of Contents
 - [Copyright notice](#Important-Copyright-Information)
@@ -20,6 +20,7 @@ An spigot plugin for Minecraft servers. Build with maven, documentation coming s
 		 - [List of food stats](#list-of-food-stats)
 		 - [Potion effects](#potion-effects)
 		 - [Potion effect parameters](#potion-effect-parameters)
+		-  [Armour](#armour)
 		 - [Item events](#item-events)
 		 - [Item event parameters](#item-event-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
@@ -41,9 +42,12 @@ Terms of use can be found here:[ https://www.gnu.org/licenses/gpl-3.0.en.html](h
 # Documentation
 Currently, the only functionality of this plugin are custom item creation, event creation and **Vault** server economy.
 
+
+This plugin contains many other API features used in other plugins, including loading and saving player data under multiple profiles, mathematical calculations and more.
+
 Events can be triggered as **MythicMobs** mechanics via the integration.
 
-A work in progress sidebar (disabled by default) is displayed to all players on the server. Customisation is not yet available. 
+~~A work in progress sidebar (disabled by default) is displayed to all players on the server. Customisation is not yet available.~~ (Shelved idea)
 
 Images representing examples of content included in the plugin may not be entirely accurate, as these were taken by a user with client mods and a resource pack altering the look of the game.
 
@@ -55,10 +59,10 @@ The following features are not yet explained in the documentation
 - Currency command (requires permission)
 - Permissions
 - Heal command (OP only)
-- PlayerSkills (WIP)
+- PlayerSkills API (via MineshaftRpg) and Data API
 - Placeholders (Placeholder API integration)
 - Weapon cooldown
-- Item subtypes (partially explained)
+- Item subtypes (partially explained. WIP)
 - Item stat priority list (descending)
 
 # Upcoming and planned features
@@ -121,50 +125,50 @@ stats:
 ## List of parameters
 Not all parameters are required for the item to work
 
-| Parameter    | Description | Data Type | Note
-|:---------|:-----------:|-----------:|--:|
-| `parent` | The name of the parent item. All values unspecified in the file will be set to those of the parent. A parent item may also have its own parent item.| String||
-| `name` | The custom name for the item | String||
-| `subcategory` | The displayed category of the item |String|Only affects the item description. Use any value you want |
-| `material` | The Minecraft material for the item| Enum | [1.21 Material List](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)|
-| `rarity` | Rarity of the item |Enum|[Rarity List](#Item-Rarity-List)|
-| `item_category` | Category of the item | Enum|[Category List](#Item-Category-List)|
-| `custom_model_data` | Custom Model Data | Integer||
-| `durability` | The amount of times an item may be used before it breaks | Integer||
-| `stack_size` | The maximum stack size of any given item | Integer|Value between 1 and 99|
-| `hide_attributes` | Whether the default Minecraft attribute description will be hidden | boolean|Default is true. Only set to false for debugging.|
-| `enchantment_glint` | WIP: do not set | boolean||
-| `stats` | List of item attributes | HashMap||
-|`id`|A unique id assigned by the plugin. This is used for the plugin to recognize the item.|UUID|Do not change or set manually. Two items having the same id will result in **MAJOR** bugs. Changing an item id results in previous items breaking.
+| Parameter           |                                                                     Description                                                                      | Data Type |                                                                                                                                               Note |
+|:--------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------:|----------:|---------------------------------------------------------------------------------------------------------------------------------------------------:|
+| `parent`            | The name of the parent item. All values unspecified in the file will be set to those of the parent. A parent item may also have its own parent item. |    String |                                                                                                                                                    |
+| `name`              |                                                             The custom name for the item                                                             |    String |                                                                                                                                                    |
+| `subcategory`       |                                                          The displayed category of the item                                                          |    String |                                                                                          Only affects the item description. Use any value you want |
+| `material`          |                                                         The Minecraft material for the item                                                          |      Enum |                                                            [1.21 Material List](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html) |
+| `rarity`            |                                                                  Rarity of the item                                                                  |      Enum |                                                                                                                   [Rarity List](#Item-Rarity-List) |
+| `item_category`     |                                                                 Category of the item                                                                 |      Enum |                                                                                                               [Category List](#Item-Category-List) |
+| `custom_model_data` |                                                                  Custom Model Data                                                                   |   Integer |                                                                                                                                                    |
+| `durability`        |                                               The amount of times an item may be used before it breaks                                               |   Integer |                                                                                                                                                    |
+| `stack_size`        |                                                       The maximum stack size of any given item                                                       |   Integer |                                                                                                                             Value between 1 and 99 |
+| `hide_attributes`   |                                          Whether the default Minecraft attribute description will be hidden                                          |   boolean |                                                                                                  Default is true. Only set to false for debugging. |
+| `enchantment_glint` |                                                                   WIP: do not set                                                                    |   boolean |                                                                                                                                                    |
+| `stats`             |                                                               List of item attributes                                                                |   HashMap |                                                                                                                                                    |
+| `id`                |                                A unique id assigned by the plugin. This is used for the plugin to recognize the item.                                |      UUID | Do not change or set manually. Two items having the same id will result in **MAJOR** bugs. Changing an item id results in previous items breaking. |
 
 ### Item Category List
 
-| Value | Description |
-|:---------|:-----------|
-| `weapon_melee` | Melee weapon |
-| `weapon_ranged` | Ranged weapon |
-| `armour_helmet` | Helmet (Equip in head slot) |
+| Value               | Description                      |
+|:--------------------|:---------------------------------|
+| `weapon_melee`      | Melee weapon                     |
+| `weapon_ranged`     | Ranged weapon                    |
+| `armour_helmet`     | Helmet (Equip in head slot)      |
 | `armour_chestplate` | Chestplate (Equip in chest slot) |
-| `armour_leggings` | Leggings (Equip in leg slot) |
-| `armour_boots` | Boots (Equip in foot slot) |
-| `tool_axe` | Axe |
-| `tool_pickaxe` | Pickaxe |
-| `tool_shovel` | Shovel |
-| `tool_hoe` | Hoe |
-| `item_consumable` | Consumable item (One time use) |
-| `item_generic` | Generic item (no category) |
-| `other` | Other (Unspecified) |
+| `armour_leggings`   | Leggings (Equip in leg slot)     |
+| `armour_boots`      | Boots (Equip in foot slot)       |
+| `tool_axe`          | Axe                              |
+| `tool_pickaxe`      | Pickaxe                          |
+| `tool_shovel`       | Shovel                           |
+| `tool_hoe`          | Hoe                              |
+| `item_consumable`   | Consumable item (One time use)   |
+| `item_generic`      | Generic item (no category)       |
+| `other`             | Other (Unspecified)              |
 
 ### Item Rarity List
 
-| Value | Rarity | Text Colour | Description |
-|:---------|:-----------:|:--:|-|
-| `standard` |~~No Description~~||Standard items with no rarity|
-| `common` |<font color="white">Common</font>|white|
-| `uncommon` |<font color="lime">Uncommon</font>|green|
-| `rare` |<font color="blue">Rare</font>|blue|
-| `exotic` |<font color="magenta">Exotic</font>|magenta/purple|
-| `legendary` |<font color="ORANGE">Legendary</font>|orange/gold|
+| Value       |                Rarity                 |  Text Colour   | Description                   |
+|:------------|:-------------------------------------:|:--------------:|-------------------------------|
+| `standard`  |          ~~No Description~~           |                | Standard items with no rarity |
+| `common`    |   <font color="white">Common</font>   |     white      |
+| `uncommon`  |  <font color="lime">Uncommon</font>   |     green      |
+| `rare`      |    <font color="blue">Rare</font>     |      blue      |
+| `exotic`    |  <font color="magenta">Exotic</font>  | magenta/purple |
+| `legendary` | <font color="ORANGE">Legendary</font> |  orange/gold   |
 
 ### Item stats and attributes
 
@@ -180,22 +184,24 @@ See below for a list of custom attributes
 stats:
   damage: 5
   speed: 10
-  defence: 32
+  armour: 32
   health: 17
 ```
 
 ### List of item attributes
 
-| Value | Stat | Description | Notes
-|:---------|-|:-----------|-:|
-| `damage` |Attack damage|  Increases damage dealt via ranged and melee | WIP -> extremely glitchy when using ranged weapons |
-| `ranged_damage` |Ranged attack damage|  Increases ranged damage | WIP -> currently only applies to beam events triggered using this weapon |
-| `speed` | Health| Increases maximum health when equipped||
-| `defence` | Defence| Reduces damage taken (excluding certain sources like drowning) | Defence scalability will be modified|
-| `speed` | Speed | Will increase movement speed when implemented | Stat is applied to items, however functionality has not yet been implemented |
-| `reach` | Reach | Affects block and entity interaction reach distance | | `mining_reach` | Block Interaction Reach | Affects block interaction reach distance |
-| `attack_reach` | Entity Interaction Reach | Affects entity interaction reach distance | 
-| `attack_speed` | Attack Speed | The attack speed of an item. | Work in progress. Do not use on armour | 
+| Value                        | Stat                             | Description                                                             |                                                                        Notes |
+|:-----------------------------|----------------------------------|:------------------------------------------------------------------------|-----------------------------------------------------------------------------:|
+| `damage`                     | Attack damage                    | Increases damage dealt via ranged and melee                             |                           WIP -> extremely glitchy when using ranged weapons |
+| `ranged_damage`              | Ranged attack damage             | Increases ranged damage                                                 |     WIP -> currently only applies to beam events triggered using this weapon |
+| `speed`                      | Health                           | Increases maximum health when equipped                                  |                                                                              |
+| `speed`                      | Speed                            | Will increase movement speed when implemented                           | Stat is applied to items, however functionality has not yet been implemented |
+| `reach`                      | Reach                            | Affects block and entity interaction reach distance                     |                                                                              | `mining_reach` | Block Interaction Reach | Affects block interaction reach distance |
+| `attack_reach`               | Entity Interaction Reach         | Affects entity interaction reach distance                               |                                                                              |
+| `attack_speed`               | Attack Speed                     | The attack speed of an item.                                            |                                       Work in progress. Do not use on armour | 
+| `armour`                     | Armour                           | The default Minecraft armour stat                                       |                                                                              |
+| `armour_class`               | Armour Class (WIP)               | Reduces damage taken (excluding certain sources like drowning)          |                                    Armour Class scalability will be modified |
+| `maximum_added_dex_modifier` | Maximum added dexterity modifier | Modifies the maximum MineshaftRpg dexterity bonus added to armour class |   Only works in conjunction with MineshaftRpg (WIP). Does nothing on its own |
 
 
 ### Food
@@ -212,7 +218,6 @@ food:
   nutrition: 5
   saturation: 0.5
   always_edible: true
-  eat_seconds: 0.2
   potion_effects:
     speed:
       duration: 200
@@ -224,13 +229,13 @@ food:
 
 ### List of food stats
 
-| Value | Stat | Description |Data Type|Notes
-|:---------|-|:-----------|-:|-:|
-| `nutrition`|Nutrition|The amount of health icons healed by the food|Integer
-| `saturation`|Saturation|Saturation healed by the food|Float|
-| `eat_seconds`|Eat seconds|Time in seconds it takes to consume an item|Float|
-| `always_edible`|Always Edible|Whether an item can be eaten when your health bar is full|Boolean|
-| `potion effects`|Potion effects|Potion effects given to the player when the item is consumed|Complex|
+| Value             | Stat                                      | Description                                                  | Data Type | Notes |
+|:------------------|-------------------------------------------|:-------------------------------------------------------------|----------:|------:|
+| `nutrition`       | Nutrition                                 | The amount of health icons healed by the food                |   Integer |       |
+| `saturation`      | Saturation                                | Saturation healed by the food                                |     Float |       |
+| `always_edible`   | Always Edible                             | Whether an item can be eaten when your health bar is full    |   Boolean |       |
+| `potion effects`  | Potion effects                            | Potion effects given to the player when the item is consumed |   Complex |       |
+| ~~`eat_seconds`~~ | __REMOVED IN 1.21.4__<br> ~~Eat seconds~~ | Time in seconds it takes to consume an item                  |     Float |       |
 
 ### Potion effects
 This section controls the potion effect which are applied when the item is consumed
@@ -245,15 +250,44 @@ potion_effects:
     icon: true
 ```
 
+### Armour
+
+```yaml
+armour:
+  type: MEDIUM_ARMOUR
+  colour:
+    r: 255
+    g: 255
+    b: 255
+```
+
+| Value    | Stat        | Description                                           |     Data Type |                    Notes |
+|:---------|-------------|:------------------------------------------------------|--------------:|-------------------------:|
+| `colour` | Colour      | The colour of the armour (leather only) in RGB format | Complex (RGB) |                          |
+| `type`   | Armour Type | The armour type                                       |          Enum | Applied as a description |
+
 ### Potion effect parameters
-| Value | Stat | Description |Data Type|Notes
-|:---------|-|:-----------|-:|-:|
-| `potion-effect-name`|Potion effect name|Replace with the potion effect type name|Enum|[1.21 effect list](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html)
-| `duration`|Duration|Duration in ticks of the effect|Integer|
-| `amplifier`|Amplifier|Level of the effect - starting with 0|Integer|
-| `ambient`|Ambient|Whether the displayed particles are ambient|Boolean|
-| `particles`|Show particles|Whether the effect particles are displayed|Boolean|
-| `icon`|Show icon|Whether the effect icon is displayed|Boolean|
+| Value                | Stat               | Description                                 | Data Type |                                                                                                Notes |
+|:---------------------|--------------------|:--------------------------------------------|----------:|-----------------------------------------------------------------------------------------------------:|
+| `potion-effect-name` | Potion effect name | Replace with the potion effect type name    |      Enum | [1.21 effect list](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html) |
+| `duration`           | Duration           | Duration in ticks of the effect             |   Integer |                                                                                                      |
+| `amplifier`          | Amplifier          | Level of the effect - starting with 0       |   Integer |                                                                                                      |
+| `ambient`            | Ambient            | Whether the displayed particles are ambient |   Boolean |                                                                                                      |
+| `particles`          | Show particles     | Whether the effect particles are displayed  |   Boolean |                                                                                                      |
+| `icon`               | Show icon          | Whether the effect icon is displayed        |   Boolean |                                                                                                      |
+
+
+#### Armour Types (WIP)
+
+Optional value. Works in conjunction with MineshaftRpg. Does nothing on its own
+
+| Type            | Name           |
+|:----------------|----------------|
+| `NONE`          | None (default) |
+| `CLOTHES`       | Clothes        |
+| `LIGHT_ARMOUR`  | Light Armour   |
+| `MEDIUM_ARMOUR` | Medium Armour  |
+| `HEAVY_ARMOUR`  | Heavy Armour   |
 
 ### Item events
 This section controls what events are triggered when the player executes a certain action. This includes the item being right or left-clicked.
@@ -266,10 +300,10 @@ action:
 
 ### Item event parameters
 
-| Value | Description |Data Type
-|:---------|-|:-----------|
-| `right_click`|A list of events triggered when the player right-clicks with the item in their hand|String List|
-| `left_click`|A list of events triggered when the player left-clicks with the item in their hand|String list|
+| Value         | Description                                                                         | Data Type   |
+|:--------------|-------------------------------------------------------------------------------------|:------------|
+| `right_click` | A list of events triggered when the player right-clicks with the item in their hand | String List |
+| `left_click`  | A list of events triggered when the player left-clicks with the item in their hand  | String list |
 
 The specific event filename (excluding the `.yml` or `.yaml` extension) is used to access the event.
 
@@ -322,11 +356,11 @@ This event will fire a red coloured beam. If it hits a mob, it will damage it fo
 ## List of event parameters
 The following parameters are available for all events. Each event type has unique parameters only available for its type.
 
-| Value | Description |Data Type
-|:---------|-|:-----------|
-| `parent`|The parent event. Currently WIP|String|
-| `event_type`|The event type. Specifies what happens when the event is triggered. Currently only `BEAM` is supported|Enum|
-| `offset`|The offset of the event. These values are added to the location where the event is executed|Complex|
+| Value        | Description                                                                                            | Data Type |
+|:-------------|--------------------------------------------------------------------------------------------------------|:----------|
+| `parent`     | The parent event. Currently WIP                                                                        | String    |
+| `event_type` | The event type. Specifies what happens when the event is triggered. Currently only `BEAM` is supported | Enum      |
+| `offset`     | The offset of the event. These values are added to the location where the event is executed            | Complex   |
 
 ### Beam event type
 
@@ -370,7 +404,7 @@ BlasterBeam:
   - sound{s=minecraft:blaster.blasterrifle;v=5.0} @self
 ```
 The @Target parameter after the skill just specifies the target and is an inbuilt MythicMobs function. 
-For entity targeters, please reffer to the MythicMobs [wiki page](https://git.mythiccraft.io/mythiccraft/MythicMobs/-/wikis/Skills/Targeters)
+For entity targeters, please refer to the MythicMobs [wiki page](https://git.mythiccraft.io/mythiccraft/MythicMobs/-/wikis/Skills/Targeters)
 <br>
 Currently there are two types of MythicMobs events: `mineshaftevent` and `targetedmineshaftevent`
 
@@ -393,7 +427,7 @@ The targeted mineshaft event is incredibly similar, however instead of a locatio
 <br>
 With events fired in a direction, like the beam event, this fires them in the direction of the target.
 <br>
-To stop the MythicMobs having too accurate aim,  an optional parameter `offset` has been added. The offset (in degrees on an axis (WIP)) determines the maximum amount of degrees the beam is rotated away from the target, allowing the mob to miss its shot (by a maximum margin of your choice).
+To stop the MythicMobs having too accurate aim, an optional parameter `offset` has been added. The offset (in degrees on an axis, distributed uniformly (WIP)) determines the maximum amount of degrees the beam is rotated away from the target, allowing the mob to miss its shot (by a maximum margin of your choice).
 <br>
 Syntax:
 `targetedmineshaftevent{e=event-name;d=damage;o=offset}` or

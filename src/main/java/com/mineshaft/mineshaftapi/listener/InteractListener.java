@@ -26,10 +26,13 @@ import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
 import de.tr7zw.nbtapi.NBT;
+import io.papermc.paper.registry.PaperRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
-import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,7 +40,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.Time;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -104,7 +106,8 @@ public class InteractListener implements Listener {
                 int delayInTicks = (int) (firingCooldown/20);
 
                 Item handItem = ((CraftPlayer) player).getHandle().getItemInHand(InteractionHand.MAIN_HAND).getItem();
-                ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(handItem, delayInTicks));
+                ResourceLocation cooldownGroup = BuiltInRegistries.ITEM.getKey(handItem);
+                ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(cooldownGroup, delayInTicks));
             }
 
             for(String event : events) {

@@ -394,8 +394,8 @@ public class ItemManager {
                             component.setNutrition(yamlConfiguration.getInt(path + "nutrition"));
                         case "always_edible":
                             component.setCanAlwaysEat(yamlConfiguration.getBoolean(path + "always_edible"));
-                        case "eat_seconds":
-                            component.setEatSeconds((float) yamlConfiguration.getDouble(path + "eat_seconds"));
+//                        case "eat_seconds":
+//                            component.setEatSeconds((float) yamlConfiguration.getDouble(path + "eat_seconds"));
                         case "potion_effects":
                             for (String effectName : yamlConfiguration.getConfigurationSection(path + "potion_effects").getKeys(false)) {
                                 String tempPath = path + "potion_effects." + effectName + ".";

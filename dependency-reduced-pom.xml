@@ -16,6 +16,19 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>ca.bkaw</groupId>
+        <artifactId>paper-nms-maven-plugin</artifactId>
+        <version>1.4.7</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>remap</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
@@ -61,10 +74,6 @@
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
     <repository>
-      <id>papermc</id>
-      <url>https://repo.papermc.io/repository/maven-public/</url>
-    </repository>
-    <repository>
       <id>sonatype</id>
       <url>https://oss.sonatype.org/content/groups/public/</url>
     </repository>
@@ -95,12 +104,17 @@
       <url>https://repo.magmaguy.com/releases</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>bytecode.space</id>
+      <url>https://repo.bytecode.space/repository/maven-public/</url>
+    </pluginRepository>
+  </pluginRepositories>
   <dependencies>
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot</artifactId>
-      <version>1.20.6-R0.1-SNAPSHOT</version>
-      <classifier>remapped-mojang</classifier>
+      <groupId>ca.bkaw</groupId>
+      <artifactId>paper-nms</artifactId>
+      <version>1.21.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -129,7 +143,7 @@
     </dependency>
   </dependencies>
   <properties>
-    <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>1.8</java.version>
   </properties>
 </project>

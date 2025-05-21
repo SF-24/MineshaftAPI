@@ -29,6 +29,7 @@ import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.TextFormatter;
 import de.tr7zw.nbtapi.NBT;
+import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -45,13 +46,13 @@ import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class ItemManager {
-    
 
     HashMap<UUID, String> items = new HashMap<>();
     HashMap<UUID, List<String>> cachedEvents = new HashMap<>();
@@ -65,10 +66,7 @@ public class ItemManager {
     public void initialiseItems() {
         items = new HashMap<>();
 
-        File folder = new File(path);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
+        File folder = getFolder();
 
         if (folder.listFiles() == null || Objects.requireNonNull(folder.listFiles()).length == 0) {
             createDemoItem();
@@ -78,7 +76,7 @@ public class ItemManager {
             if(!file.isDirectory()) {
                 initialiseItem(file.getName());
             } else {
-                initialiseFilesInDirectory(path, file.getName(), 0);
+                initialiseFilesInDirectory(getPath(), file.getName(), 0);
             }
         }
     }
@@ -146,6 +144,7 @@ public class ItemManager {
         return null;
     }
 
+    @SuppressWarnings({"deprecation","removal"})
     public ItemStack getItem(String itemName) {
         File fileYaml = new File(path, itemName + ".yml");
 
@@ -350,6 +349,8 @@ public class ItemManager {
 
         // Get standard and ranged item statistics
         HashMap<ItemStats, Double> statMap = getStatMap(itemName, statsString);
+        // TODO: Add in 1.21.5 when update comes out
+        //HashMap<WeaponStats, Double> weaponStatMap = getWeaponStatMap(itemName, statsString);
         HashMap<RangedItemStats, Double> rangedStatMap = getRangedStatMap(itemName, rangedStatsString);
 
         EquipmentSlot slot = null;
@@ -396,33 +397,6 @@ public class ItemManager {
                             component.setCanAlwaysEat(yamlConfiguration.getBoolean(path + "always_edible"));
 //                        case "eat_seconds":
 //                            component.setEatSeconds((float) yamlConfiguration.getDouble(path + "eat_seconds"));
-                        case "potion_effects":
-                            for (String effectName : yamlConfiguration.getConfigurationSection(path + "potion_effects").getKeys(false)) {
-                                String tempPath = path + "potion_effects." + effectName + ".";
-
-                                PotionEffectType potionEffectType = PotionEffectType.getByName(effectName.toUpperCase());
-
-                                int duration = 20 * 60;
-                                int amplifier = 0;
-                                boolean ambient = false;
-                                boolean particles = false;
-                                boolean icon = true;
-                                for (String parameter : yamlConfiguration.getConfigurationSection(path + "potion_effects." + effectName).getKeys(false)) {
-                                    switch (parameter) {
-                                        case "duration":
-                                            duration = yamlConfiguration.getInt(tempPath + "duration");
-                                        case "amplifier":
-                                            amplifier = yamlConfiguration.getInt(tempPath + "amplifier");
-                                        case "ambient":
-                                            ambient = yamlConfiguration.getBoolean(tempPath + "ambient");
-                                        case "particles":
-                                            particles = yamlConfiguration.getBoolean(tempPath + "particles");
-                                        case "icon":
-                                            icon = yamlConfiguration.getBoolean(tempPath + "icon");
-                                    }
-                                }
-                                component.addEffect(new PotionEffect(potionEffectType, duration, amplifier, ambient, particles, icon), 1);
-                            }
                     }
                 }
 
@@ -433,6 +407,73 @@ public class ItemManager {
             case ITEM_GENERIC:
                 slot = null;
                 break;
+        }
+
+        if(yamlConfiguration.contains("consumable")) {
+            String path = "consumable.";
+            ArrayList<io.papermc.paper.datacomponent.item.consumable.ConsumeEffect> effects = new ArrayList<>();
+            HashMap<PotionEffect, Float> potionEffects = new HashMap<>();
+            io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation animation = io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation.EAT;
+            float eatSeconds = 1.0f;
+            boolean consumeParticles = true;
+            for (String key : yamlConfiguration.getConfigurationSection("consumable").getKeys(false)) {
+                switch (key) {
+                    case "consume_seconds":
+                        eatSeconds = (float) yamlConfiguration.getDouble(path + "eat_seconds");
+                        break;
+                    case "animation":
+                        animation = ItemUseAnimation.valueOf(yamlConfiguration.getString(path + "animation"));
+                        break;
+                    case "has_consume_particles":
+                        consumeParticles = yamlConfiguration.getBoolean("has_consume_particles");
+                        break;
+                    case "consume_sound":
+                        // TODO: Add consume sound
+                        break;
+                    case "potion_effects":
+                        for (String effectName : yamlConfiguration.getConfigurationSection(path + "potion_effects").getKeys(false)) {
+                            if(effectName.equalsIgnoreCase("clear")) {
+                                effects.add(io.papermc.paper.datacomponent.item.consumable.ConsumeEffect.clearAllStatusEffects());
+                            }
+                            String tempPath = path + "potion_effects." + effectName + ".";
+                            PotionEffectType potionEffectType = PotionEffectType.getByName(effectName.toUpperCase());
+                            int duration = 20 * 60;
+                            int amplifier = 0;
+                            float effectProbability = 1.0f;
+                            boolean ambient = false;
+                            boolean particles = false;
+                            boolean icon = true;
+                            for (String parameter : yamlConfiguration.getConfigurationSection(path + "potion_effects." + effectName).getKeys(false)) {
+                                switch (parameter) {
+                                    case "probability":
+                                        effectProbability = (float) yamlConfiguration.getDouble(tempPath + "probability");
+                                        break;
+                                    case "duration":
+                                        duration = yamlConfiguration.getInt(tempPath + "duration");
+                                    case "amplifier":
+                                        amplifier = yamlConfiguration.getInt(tempPath + "amplifier");
+                                    case "ambient":
+                                        ambient = yamlConfiguration.getBoolean(tempPath + "ambient");
+                                    case "particles":
+                                        particles = yamlConfiguration.getBoolean(tempPath + "particles");
+                                    case "icon":
+                                        icon = yamlConfiguration.getBoolean(tempPath + "icon");
+                                }
+                            }
+                            potionEffects.put(new PotionEffect(potionEffectType,duration,amplifier,ambient,particles,icon),effectProbability);
+                        }
+                        for(PotionEffect eff : potionEffects.keySet()) {
+                            effects.add(io.papermc.paper.datacomponent.item.consumable.ConsumeEffect.applyStatusEffects(Collections.singletonList(eff),potionEffects.get(eff)));
+                        }
+
+                    default:
+                        break;
+                }
+            }
+
+            // Add consumable
+            io.papermc.paper.datacomponent.item.Consumable consumable = io.papermc.paper.datacomponent.item.Consumable.consumable().consumeSeconds(eatSeconds).hasConsumeParticles(consumeParticles).animation(animation).build();
+            consumable.consumeEffects().addAll(effects);
         }
 
         if(yamlConfiguration.contains("tool")) {
@@ -470,6 +511,7 @@ public class ItemManager {
                 value = -1 * (4 - value);
             }
 
+
             AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER);
             if (slot != null) {
                 attributeModifier = new AttributeModifier(UUID.randomUUID(), UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER, slot);
@@ -486,7 +528,7 @@ public class ItemManager {
 
             switch (stat) {
                 case DAMAGE:
-                    meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, attributeModifier);
+                    meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, attributeModifier);
                     break;
                 case MAXIMUM_ADDED_DEX_MODIFIER:
                     // For use with MineshaftRpg only
@@ -494,7 +536,7 @@ public class ItemManager {
                     maximum_dex_modifier = value;
                     break;
                 case ARMOUR:
-                    meta.addAttributeModifier(Attribute.GENERIC_ARMOR, attributeModifier);
+                    meta.addAttributeModifier(Attribute.ARMOR, attributeModifier);
                     break;
                 case ARMOUR_CLASS:
                     defence = value;
@@ -506,23 +548,29 @@ public class ItemManager {
                     ranged_damage = value;
                     break;
                 case HEALTH:
-                    meta.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, attributeModifier);
+                    meta.addAttributeModifier(Attribute.MAX_HEALTH, attributeModifier);
                     break;
                 case ATTACK_REACH:
-                    meta.addAttributeModifier(Attribute.PLAYER_ENTITY_INTERACTION_RANGE, attributeModifier);
+                    meta.addAttributeModifier(Attribute.ENTITY_INTERACTION_RANGE, attributeModifier);
                     break;
                 case MINING_REACH:
-                    meta.addAttributeModifier(Attribute.PLAYER_BLOCK_INTERACTION_RANGE, attributeModifier);
+                    meta.addAttributeModifier(Attribute.BLOCK_INTERACTION_RANGE, attributeModifier);
                     break;
                 case REACH:
-                    meta.addAttributeModifier(Attribute.PLAYER_ENTITY_INTERACTION_RANGE, attributeModifier);
-                    meta.addAttributeModifier(Attribute.PLAYER_BLOCK_INTERACTION_RANGE, attributeModifier);
+                    meta.addAttributeModifier(Attribute.ENTITY_INTERACTION_RANGE, attributeModifier);
+                    meta.addAttributeModifier(Attribute.BLOCK_INTERACTION_RANGE, attributeModifier);
                     break;
                 case ATTACK_SPEED:
-                    meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, attributeModifier);
+                    meta.addAttributeModifier(Attribute.ATTACK_SPEED, attributeModifier);
                     break;
                 case ATTACK_KNOCKBACK:
-                    meta.addAttributeModifier(Attribute.GENERIC_ATTACK_KNOCKBACK, attributeModifier);
+                    meta.addAttributeModifier(Attribute.ATTACK_KNOCKBACK, attributeModifier);
+                    break;
+                case SNEAKING_SPEED:
+                    meta.addAttributeModifier(Attribute.SNEAKING_SPEED, attributeModifier);
+                    break;
+                case MINING_SPEED:
+                    meta.addAttributeModifier(Attribute.BLOCK_BREAK_SPEED, attributeModifier);
                     break;
                 default:
             }
@@ -671,9 +719,9 @@ public class ItemManager {
 
         HashMap<ItemStats, Double> statMap = new HashMap<>();
 
-        String path = MineshaftApi.getInstance().getItemPath();
-        File fileYaml = new File(path, name + ".yml");
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+        String path = getPath();
+        File fileYaml = getFileYaml(name);
+        @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
 
         if (!yamlConfiguration.contains(statPath)) {
             Logger.logError("could not find " + statPath + " in: " + path + "/" + name + ".yml");
@@ -698,12 +746,45 @@ public class ItemManager {
         return statMap;
     }
 
+    protected HashMap<WeaponStats, Double> getWeaponStatMap(String name, String statPath) {
+        //System.out.println("getting statmap");
+
+        HashMap<WeaponStats, Double> statMap = new HashMap<>();
+
+        String path = getPath();
+        File fileYaml = getFileYaml(name);
+        @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
+
+        if (!yamlConfiguration.contains(statPath)) {
+            Logger.logError("could not find " + statPath + " in: " + path + "/" + name + ".yml");
+            return statMap;
+        }
+
+        String yamlPath = statPath + ".";
+
+        for (String key : yamlConfiguration.getConfigurationSection(statPath).getKeys(false)) {
+
+            //System.out.println("section: " + key);
+
+            String yamlStatPath = yamlPath + key;
+
+            double value = yamlConfiguration.getDouble(yamlStatPath);
+            WeaponStats statKey = WeaponStats.valueOf(key.toUpperCase(Locale.ROOT));
+
+            if (!statKey.equals(WeaponStats.NULL)) {
+                statMap.put(statKey, value);
+            }
+        }
+        return statMap;
+    }
+
+
     protected HashMap<RangedItemStats, Double> getRangedStatMap(String name, String rangedStatPath) {
         HashMap<RangedItemStats, Double> statMap = new HashMap<>();
 
-        String path = MineshaftApi.getInstance().getItemPath();
-        File fileYaml = new File(path, name + ".yml");
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+        String path = getPath();
+        File fileYaml = getFileYaml(name);
+        @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
 
         if (!yamlConfiguration.contains(rangedStatPath)) {
             Logger.logError("could not find " + rangedStatPath + " in: " + path + "/" + name + ".yml");
@@ -719,7 +800,7 @@ public class ItemManager {
             RangedItemStats statKey = RangedItemStats.valueOf(key.toUpperCase(Locale.ROOT));
 
             // Null check - likely not needed
-            if (statKey != null && !statKey.equals(ItemStats.NULL)) {
+            if (statKey != null && !statKey.equals(RangedItemStats.NULL)) {
                 statMap.put(statKey, value);
             }
         }
@@ -727,7 +808,7 @@ public class ItemManager {
     }
 
     protected static String getStatString(ItemStats stat, Double value, ItemCategory category, int arg) {
-        if(stat.equals(ItemStats.DAMAGE)||stat.equals(ItemStats.ATTACK_SPEED)) {
+        if(stat.equals(ItemStats.DAMAGE)||stat.equals(ItemStats.ATTACK_SPEED)||stat.equals(ItemStats.RANGED_DAMAGE)) {
             if(category.equals(ItemCategory.WEAPON_MELEE)||category.equals(ItemCategory.WEAPON_RANGED)||category.equals(ItemCategory.TOOL_AXE)||category.equals(ItemCategory.TOOL_PICKAXE)||category.equals(ItemCategory.TOOL_SHOVEL)||category.equals(ItemCategory.TOOL_HOE)) {
                 return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value);
             }
@@ -831,9 +912,7 @@ public class ItemManager {
 
         ArrayList<String> interactEvents = new ArrayList<>();
 
-        String path = MineshaftApi.getInstance().getItemPath();
-
-        File fileYaml = new File(path, name + ".yml");
+        File fileYaml = new File(getPath(), name + ".yml");
 
         // return null if file does not exist
         if (!fileYaml.exists()) {
@@ -859,5 +938,25 @@ public class ItemManager {
         }
 
         return interactEvents;
+    }
+
+    public static String getPath() {
+        return MineshaftApi.getInstance().getItemPath();
+    };
+
+    public static File getFolder() {
+        File folder = new File(getPath());
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder;
+    }
+
+    public static File getFileYaml(String name) {
+        return new File(getPath(), name + ".yml");
+    }
+
+    public static @NotNull YamlConfiguration getYamlConfiguration(File fileYaml) {
+        return YamlConfiguration.loadConfiguration(fileYaml);
     }
 }

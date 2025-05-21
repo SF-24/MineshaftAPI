@@ -90,7 +90,7 @@ public class InteractListener implements Listener {
             }
 
             // Shots per second
-            double firingSpeed = ItemManager.getItemNbtRangedStat(item, RangedItemStats.FIRING_SPEED);
+            double firingSpeed = ItemManager.getItemNbtRangedStat(item, RangedItemStats.FIRING_SPEED_CUSTOM);
             double firingCooldown = 1 / firingSpeed;
 
             if(firingSpeed>0) {

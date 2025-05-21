@@ -20,41 +20,29 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import org.bukkit.ChatColor;
 
-public enum ItemStats {
-
+public enum WeaponStats {
     NULL("",20),
 
     DAMAGE(ChatColor.DARK_GREEN.toString(),1),
     RANGED_DAMAGE(ChatColor.DARK_GREEN.toString(),2),
-
-    SPEED(ChatColor.WHITE.toString(),5),
-    SNEAKING_SPEED(ChatColor.WHITE.toString(),35),
-
-    HEALTH(ChatColor.RED.toString(),3),
-    ARMOUR_CLASS(ChatColor.GREEN.toString(),4),
-    ARMOUR(ChatColor.GREEN.toString(),5),
-
-    MAXIMUM_ADDED_DEX_MODIFIER("!debug! ",-10),
 
     ATTACK_SPEED(ChatColor.AQUA.toString(),8),
     ATTACK_KNOCKBACK(ChatColor.BLUE.toString(), 9),
 
     ATTACK_REACH(ChatColor.YELLOW.toString(),6),
     MINING_REACH(ChatColor.YELLOW.toString(),7),
-    REACH(ChatColor.YELLOW.toString(),6),
-
-    MINING_SPEED(ChatColor.WHITE.toString(),25),
-    MINING_EFFICIENCY(ChatColor.WHITE.toString(),26),
+    REACH(ChatColor.YELLOW.toString(),6)
     ;
 
     private final String colour;
     private final int priority;
 
-    ItemStats(String colour, int priority) {
+    WeaponStats(String colour, int priority) {
         this.priority=priority;
         this.colour=colour;
     }
 
     public int getPriority() {return priority;}
     public String getColour() {return colour;}
+
 }

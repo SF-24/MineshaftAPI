@@ -329,7 +329,7 @@ public class EventManager {
 
                 double damage = ItemManager.getItemNbtStat(executingItem, ItemStats.RANGED_DAMAGE);
 
-                int range = (int) ItemManager.getItemNbtRangedStat(executingItem, RangedItemStats.FIRING_RANGE);
+                int range = (int) ItemManager.getItemNbtRangedStat(executingItem, RangedItemStats.FIRING_RANGE_CUSTOM);
 
                 if(range<0) range = 0;
 

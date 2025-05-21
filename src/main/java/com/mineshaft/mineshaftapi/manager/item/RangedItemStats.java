@@ -21,8 +21,9 @@ package com.mineshaft.mineshaftapi.manager.item;
 import org.bukkit.ChatColor;
 
 public enum RangedItemStats {
-    FIRING_SPEED(ChatColor.AQUA.toString(),1),
-    FIRING_RANGE(ChatColor.BLUE.toString(),2);
+    NULL(ChatColor.WHITE.toString(), 0),
+    FIRING_SPEED_CUSTOM(ChatColor.AQUA.toString(),11),
+    FIRING_RANGE_CUSTOM(ChatColor.BLUE.toString(),12);
 
     private final String colour;
     private final int priority;

@@ -18,6 +18,7 @@ A paper (formerly spigot) plugin for Minecraft servers. Build with maven, docume
 		- [List of item attributes](#list-of-item-attributes)
 		-  [Food](#food)
 		 - [List of food stats](#list-of-food-stats)
+		 - [Consumable](#consumable)
 		 - [Potion effects](#potion-effects)
 		 - [Potion effect parameters](#potion-effect-parameters)
 		-  [Armour](#armour)
@@ -229,18 +230,48 @@ food:
 
 ### List of food stats
 
-| Value             | Stat                                      | Description                                                  | Data Type | Notes |
-|:------------------|-------------------------------------------|:-------------------------------------------------------------|----------:|------:|
-| `nutrition`       | Nutrition                                 | The amount of health icons healed by the food                |   Integer |       |
-| `saturation`      | Saturation                                | Saturation healed by the food                                |     Float |       |
-| `always_edible`   | Always Edible                             | Whether an item can be eaten when your health bar is full    |   Boolean |       |
-| `potion effects`  | Potion effects                            | Potion effects given to the player when the item is consumed |   Complex |       |
-| ~~`eat_seconds`~~ | __REMOVED IN 1.21.4__<br> ~~Eat seconds~~ | Time in seconds it takes to consume an item                  |     Float |       |
+| Value                | Stat                                          | Description                                                  | Data Type | Notes |
+|:---------------------|-----------------------------------------------|:-------------------------------------------------------------|----------:|------:|
+| `nutrition`          | Nutrition                                     | The amount of health icons healed by the food                |   Integer |       |
+| `saturation`         | Saturation                                    | Saturation healed by the food                                |     Float |       |
+| `always_edible`      | Always Edible                                 | Whether an item can be eaten when your health bar is full    |   Boolean |       |
+| ~~`potion effects`~~ | __REMOVED IN 1.21.4__ <br> ~~Potion effects~~ | Potion effects given to the player when the item is consumed |   Complex |       |
+| ~~`eat_seconds`~~    | __REMOVED IN 1.21.4__<br> ~~Eat seconds~~     | Time in seconds it takes to consume an item                  |     Float |       |
+
+### Consumable
+
+New in the version for paper 1.21.4
+
+```yaml
+consumable:
+  consume_seconds: 1.0
+  animation: EAT
+  has_consume_particles: true
+  potion_effects:
+    potion-effect-name:
+      duration: 200
+      amplifier: 1
+      ambient: true
+      particles: true
+      icon: true
+      probability: 0.5
+```
+
+| Value                   | Stat                  | Description                                                  | Data Type |                                                                                                                     Notes |
+|:------------------------|-----------------------|:-------------------------------------------------------------|----------:|--------------------------------------------------------------------------------------------------------------------------:|
+| `consume_seconds`       | Consumption Time      | The time in seconds taken to consume the item                |     Float |                                                                                                                           |
+| `animation`             | Animation             | The animation played during consumption                      |      Enum | Options from: <br>https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/item/consumable/ItemUseAnimation.html |
+| `has_consume_particles` | Consumption Particles | Whether particles are played during consumption              |   Boolean |                                                                                                                           |
+| `potion_effects`        | Potion effects        | Potion effects given to the player when the item is consumed |   Complex |                                                                                                                           |
 
 ### Potion effects
 This section controls the potion effect which are applied when the item is consumed
+Adding "clear" as seen below clears the potion effects
+
+The probability parameter is the chance of the effect being applied when the item is consumed.
 
 ```yaml
+
 potion_effects:
   potion-effect-name:
     duration: 200
@@ -248,6 +279,12 @@ potion_effects:
     ambient: true 
     particles: false
     icon: true
+    probability: 0.5
+```
+
+```yaml
+potion_effects:
+  clear:
 ```
 
 ### Armour

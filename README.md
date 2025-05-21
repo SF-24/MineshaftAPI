@@ -141,6 +141,7 @@ Not all parameters are required for the item to work
 | `enchantment_glint` |                                                                   WIP: do not set                                                                    |   boolean |                                                                                                                                                    |
 | `stats`             |                                                               List of item attributes                                                                |   HashMap |                                                                                                                                                    |
 | `id`                |                                A unique id assigned by the plugin. This is used for the plugin to recognize the item.                                |      UUID | Do not change or set manually. Two items having the same id will result in **MAJOR** bugs. Changing an item id results in previous items breaking. |
+| `item_model`        |                                                            The custom model for the item                                                             |    String |                                                                                                                                    Added in 1.21.4 |
 
 ### Item Category List
 

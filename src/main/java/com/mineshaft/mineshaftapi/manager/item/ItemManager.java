@@ -33,6 +33,7 @@ import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -246,6 +247,8 @@ public class ItemManager {
                 case "custom_model_data":
                     meta.setCustomModelData(yamlConfiguration.getInt("custom_model_data"));
                     break;
+                case "item_model":
+                    meta.setItemModel(NamespacedKey.minecraft("item_model"));
                 case "name":
                     displayName = yamlConfiguration.getString("name");
                     break;

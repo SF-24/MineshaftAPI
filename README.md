@@ -260,7 +260,7 @@ consumable:
 | Value                   | Stat                  | Description                                                  | Data Type |                                                                                                                     Notes |
 |:------------------------|-----------------------|:-------------------------------------------------------------|----------:|--------------------------------------------------------------------------------------------------------------------------:|
 | `consume_seconds`       | Consumption Time      | The time in seconds taken to consume the item                |     Float |                                                                                                                           |
-| `animation`             | Animation             | The animation played during consumption                      |      Enum | Options from: <br>https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/item/consumable/ItemUseAnimation.html |
+| `animation`             | Animation             | The animation played during consumption                      |      Enum | [Animation list](https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/item/consumable/ItemUseAnimation.html) |
 | `has_consume_particles` | Consumption Particles | Whether particles are played during consumption              |   Boolean |                                                                                                                           |
 | `potion_effects`        | Potion effects        | Potion effects given to the player when the item is consumed |   Complex |                                                                                                                           |
 

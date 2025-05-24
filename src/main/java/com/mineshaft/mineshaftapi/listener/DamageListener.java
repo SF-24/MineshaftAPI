@@ -18,10 +18,10 @@
 
 package com.mineshaft.mineshaftapi.listener;
 
-import com.mineshaft.mineshaftapi.manager.PlayerStatManager;
+import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
+import com.mineshaft.mineshaftapi.manager.player.combat.BlockingType;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
-import com.mineshaft.mineshaftapi.util.Logger;
-import de.unpixelt.armorchange.ArmorEquipEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,6 +29,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class DamageListener implements Listener {
 
@@ -53,17 +54,30 @@ public class DamageListener implements Listener {
 
 //            e.getEntity().sendMessage("executed " + e.getCause());
             if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001) {
-
                 Player player = (Player) e.getEntity();
 
-                // Update damage depending on defence stat
-                double defence = PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS,player);
-                double damageReduction = defence/(defence+20);
-                double damage = e.getDamage();
-                damage=damage*(1-damageReduction);
-                //player.sendMessage("Original damage " + e.getDamage());
-                e.setDamage(damage);
-                //player.sendMessage("New damage " + e.getDamage());
+                // If user is not blocking
+                if(MineshaftApi.getInstance().getBlockingManager().getBlockingType(player.getUniqueId())==null) {
+                    // Update damage depending on defence stat
+                    double defence = PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS, player);
+                    double damageReduction = defence / (defence + 20);
+                    double damage = e.getDamage();
+                    damage = damage * (1 - damageReduction);
+                    //player.sendMessage("Original damage " + e.getDamage());
+                    e.setDamage(damage);
+                    //player.sendMessage("New damage " + e.getDamage());
+
+                // On parry
+                } else if (MineshaftApi.getInstance().getBlockingManager().getBlockingType(player.getUniqueId()).equals(BlockingType.PARRY)) {
+                    e.setCancelled(true);
+                    float pitch = 0.725f + new Random().nextFloat(0.35f);
+                    player.getWorld().playSound(player.getLocation(), "minecraft:sword.parry", 2.0f, pitch);
+                    MineshaftApi.getInstance().getBlockingManager().removePlayerParry(player.getUniqueId());
+
+                // On block
+                } else if (MineshaftApi.getInstance().getBlockingManager().getBlockingType(player.getUniqueId()).equals(BlockingType.BLOCK)) {
+                    e.setDamage(e.getDamage() / 2);
+                }
             }
 
         }

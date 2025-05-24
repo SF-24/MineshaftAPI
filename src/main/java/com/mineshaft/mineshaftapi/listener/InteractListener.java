@@ -19,14 +19,14 @@
 package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.ActionType;
+import com.mineshaft.mineshaftapi.manager.player.ActionType;
+import com.mineshaft.mineshaftapi.manager.block.BlockManager;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
-import de.tr7zw.nbtapi.NBT;
-import io.papermc.paper.registry.PaperRegistries;
+import de.tr7zw.changeme.nbtapi.NBT;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class InteractListener implements Listener {
+
 
     @EventHandler
     void onInteract(PlayerInteractEvent e) {
@@ -83,14 +84,23 @@ public class InteractListener implements Listener {
 
             if(events==null||events.isEmpty()) return;
 
-            if(events.contains("parry") && (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+            if(events.contains("parry") && clickType.equals(ActionType.RIGHT_CLICK)) {
                 // Player is blocking:
+                if (player.isSneaking() || e.getAction().equals(Action.RIGHT_CLICK_AIR) || (e.getClickedBlock()!=null && !BlockManager.isInteractable(e.getClickedBlock().getType()))) {
 
-
-                return;
+                    if(MineshaftApi.getInstance().getBlockingManager().canBlock(player.getUniqueId())) {
+                        if (!MineshaftApi.getInstance().getBlockingManager().isPlayerBlocking(player.getUniqueId())) {
+                            // Start blocking
+                            MineshaftApi.getInstance().getBlockingManager().addPlayerBlocking(player.getUniqueId());
+                        }
+                    } else {
+                        // COOLDOWN!
+                        e.setCancelled(true);
+                    }
+                    return;
+                }
+                if(events.size()==1) return;
             }
-
-            e.setCancelled(true);
 
             boolean cannotFire = (MineshaftApi.getInstance().getCooldownManager().hasCooldown(player.getUniqueId(), uniqueId));
 
@@ -120,6 +130,10 @@ public class InteractListener implements Listener {
             }
 
             for(String event : events) {
+                if(EventManager.isHardcoded(event)) {break;}
+
+                // Cancel the event if it should be cancelled
+                e.setCancelled(true);
                 EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();
                 Event executableEvent = eventManager.getEvent(event, item);
                 if(executableEvent instanceof BeamEvent) {

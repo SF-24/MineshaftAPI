@@ -21,7 +21,7 @@ package com.mineshaft.mineshaftapi.listener;
 import com.mineshaft.mineshaftapi.manager.item.ItemManagerAccessUtility;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.QuickFunction;
-import de.tr7zw.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

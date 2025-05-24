@@ -19,7 +19,6 @@
 package com.mineshaft.mineshaftapi.manager.event;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.CooldownManager;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.event.executor.BeamExecutor;
@@ -349,6 +348,10 @@ public class EventManager {
         }
 
         return eventClass;
+    }
+
+    public static boolean isHardcoded(String event) {
+        return event.equalsIgnoreCase("parry");
     }
 
 }

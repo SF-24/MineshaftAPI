@@ -18,10 +18,10 @@
 
 package com.mineshaft.mineshaftapi.manager.event.executor;
 
-import com.mineshaft.mineshaftapi.manager.Display.DisplayType;
+import com.mineshaft.mineshaftapi.manager.entity.display.DisplayType;
 import com.mineshaft.mineshaftapi.manager.event.EventExecutor;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
-import com.mineshaft.mineshaftapi.manager.game_objects.LaserRunnable;
+import com.mineshaft.mineshaftapi.manager.event.game_objects.LaserRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

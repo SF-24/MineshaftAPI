@@ -18,7 +18,7 @@
 
 package com.mineshaft.mineshaftapi.command;
 
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

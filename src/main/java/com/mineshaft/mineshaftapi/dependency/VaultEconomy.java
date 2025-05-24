@@ -18,7 +18,7 @@
 
 package com.mineshaft.mineshaftapi.dependency;
 
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;

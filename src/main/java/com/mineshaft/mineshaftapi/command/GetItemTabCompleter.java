@@ -16,27 +16,25 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.listener;
+package com.mineshaft.mineshaftapi.command;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.ui.SidebarManager;
-import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerManager;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class JoinListener implements Listener {
+import java.util.ArrayList;
+import java.util.List;
 
-    @EventHandler
-    public void PlayerJoinEvent(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
-
-        // Make a new json player manager
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
-
-        if(MineshaftApi.getInstance().getConfigManager().getSidebarEnabled()) {
-            SidebarManager.displayScoreboard(player);
+public class GetItemTabCompleter implements TabCompleter {
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
+        if(args.length==1) {
+            return StringUtil.copyPartialMatches(args[0], MineshaftApi.getInstance().getItemManagerInstance().getItemList().values(),new ArrayList<>());
         }
+        return null;
     }
 }

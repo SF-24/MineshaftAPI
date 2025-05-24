@@ -87,7 +87,7 @@
                     <relocations>
                         <relocation>
                             <pattern>de.tr7zw.changeme.nbtapi</pattern>
-                            <shadedPattern>com.mineshaft.util.nbtapi</shadedPattern>
+                            <shadedPattern>com.mineshaft.mineshaftapi.nbtapi</shadedPattern>
                         </relocation>
 
                     </relocations>
@@ -160,8 +160,8 @@
 
         <dependency>
             <groupId>de.tr7zw</groupId>
-            <artifactId>item-nbt-api-plugin</artifactId>
-            <version>2.13.1</version>
+            <artifactId>item-nbt-api</artifactId>
+            <version>2.15.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

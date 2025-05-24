@@ -18,7 +18,7 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest;
 
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.api.quest.event.online.OnlineEvent;
 import org.betonquest.betonquest.exceptions.InstructionParseException;

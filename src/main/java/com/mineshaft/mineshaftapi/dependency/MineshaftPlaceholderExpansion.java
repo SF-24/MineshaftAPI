@@ -19,8 +19,8 @@
 package com.mineshaft.mineshaftapi.dependency;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
-import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;

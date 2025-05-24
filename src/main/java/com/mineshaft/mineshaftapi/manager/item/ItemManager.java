@@ -20,8 +20,7 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.ToolRuleExtended;
-import com.mineshaft.mineshaftapi.manager.ActionType;
-import com.mineshaft.mineshaftapi.manager.ArmourType;
+import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemFields;
@@ -29,7 +28,8 @@ import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.TextFormatter;
-import de.tr7zw.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NBT;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
@@ -411,74 +411,6 @@ public class ItemManager {
                 break;
         }
 
-
-        if(yamlConfiguration.contains("consumable")) {
-            String path = "consumable.";
-            ArrayList<ConsumeEffect> effects = new ArrayList<>();
-            HashMap<PotionEffect, Float> potionEffects = new HashMap<>();
-            ItemUseAnimation animation = ItemUseAnimation.EAT;
-            float eatSeconds = 1.0f;
-            boolean consumeParticles = true;
-            for (String key : yamlConfiguration.getConfigurationSection("consumable").getKeys(false)) {
-                switch (key) {
-                    case "consume_seconds":
-                        eatSeconds = (float) yamlConfiguration.getDouble(path + "eat_seconds");
-                        break;
-                    case "animation":
-                        animation = ItemUseAnimation.valueOf(yamlConfiguration.getString(path + "animation"));
-                        break;
-                    case "has_consume_particles":
-                        consumeParticles = yamlConfiguration.getBoolean("has_consume_particles");
-                        break;
-                    case "consume_sound":
-                        // TODO: Add consume sound
-                        break;
-                    case "potion_effects":
-                        for (String effectName : yamlConfiguration.getConfigurationSection(path + "potion_effects").getKeys(false)) {
-                            if(effectName.equalsIgnoreCase("clear")) {
-                                effects.add(ConsumeEffect.clearAllStatusEffects());
-                            }
-                            String tempPath = path + "potion_effects." + effectName + ".";
-                            PotionEffectType potionEffectType = PotionEffectType.getByName(effectName.toUpperCase());
-                            int duration = 20 * 60;
-                            int amplifier = 0;
-                            float effectProbability = 1.0f;
-                            boolean ambient = false;
-                            boolean particles = false;
-                            boolean icon = true;
-                            for (String parameter : yamlConfiguration.getConfigurationSection(path + "potion_effects." + effectName).getKeys(false)) {
-                                switch (parameter) {
-                                    case "probability":
-                                        effectProbability = (float) yamlConfiguration.getDouble(tempPath + "probability");
-                                        break;
-                                    case "duration":
-                                        duration = yamlConfiguration.getInt(tempPath + "duration");
-                                    case "amplifier":
-                                        amplifier = yamlConfiguration.getInt(tempPath + "amplifier");
-                                    case "ambient":
-                                        ambient = yamlConfiguration.getBoolean(tempPath + "ambient");
-                                    case "particles":
-                                        particles = yamlConfiguration.getBoolean(tempPath + "particles");
-                                    case "icon":
-                                        icon = yamlConfiguration.getBoolean(tempPath + "icon");
-                                }
-                            }
-                            potionEffects.put(new PotionEffect(potionEffectType,duration,amplifier,ambient,particles,icon),effectProbability);
-                        }
-                        for(PotionEffect eff : potionEffects.keySet()) {
-                            effects.add(ConsumeEffect.applyStatusEffects(Collections.singletonList(eff),potionEffects.get(eff)));
-                        }
-
-                    default:
-                        break;
-                }
-            }
-
-            // Add consumable
-            Consumable consumable = Consumable.consumable().consumeSeconds(eatSeconds).hasConsumeParticles(consumeParticles).animation(animation).build();
-            consumable.consumeEffects().addAll(effects);
-        }
-
         if(yamlConfiguration.contains("tool")) {
             try {
                 ToolComponent toolComponent = meta.getTool();
@@ -652,17 +584,6 @@ public class ItemManager {
 
         meta.setLore(lore);
 
-        /**
-         * Sword blocking
-         * */
-
-        ArrayList<String> rightClickActions = getInteractEventsFromItem(itemName,ActionType.RIGHT_CLICK);
-
-        if(rightClickActions.contains("parry")) {
-            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.BLOCK).build();
-        }
-
-
         item.setItemMeta(meta);
 
         /**
@@ -715,6 +636,83 @@ public class ItemManager {
         NBT.modify(item, nbt -> {
             nbt.setString("rarity", finalRarity.toString());
         });
+
+        if(yamlConfiguration.contains("consumable")) {
+            String path = "consumable.";
+            ArrayList<ConsumeEffect> effects = new ArrayList<>();
+            HashMap<PotionEffect, Float> potionEffects = new HashMap<>();
+            ItemUseAnimation animation = ItemUseAnimation.EAT;
+            float eatSeconds = 1.0f;
+            boolean consumeParticles = true;
+            for (String key : yamlConfiguration.getConfigurationSection("consumable").getKeys(false)) {
+                switch (key) {
+                    case "consume_seconds":
+                        eatSeconds = (float) yamlConfiguration.getDouble(path + "eat_seconds");
+                        break;
+                    case "animation":
+                        animation = ItemUseAnimation.valueOf(yamlConfiguration.getString(path + "animation"));
+                        break;
+                    case "has_consume_particles":
+                        consumeParticles = yamlConfiguration.getBoolean("has_consume_particles");
+                        break;
+                    case "consume_sound":
+                        // TODO: Add consume sound
+                        break;
+                    case "potion_effects":
+                        for (String effectName : yamlConfiguration.getConfigurationSection(path + "potion_effects").getKeys(false)) {
+                            if(effectName.equalsIgnoreCase("clear")) {
+                                effects.add(ConsumeEffect.clearAllStatusEffects());
+                            }
+                            String tempPath = path + "potion_effects." + effectName + ".";
+                            PotionEffectType potionEffectType = PotionEffectType.getByName(effectName.toUpperCase());
+                            int duration = 20 * 60;
+                            int amplifier = 0;
+                            float effectProbability = 1.0f;
+                            boolean ambient = false;
+                            boolean particles = false;
+                            boolean icon = true;
+                            for (String parameter : yamlConfiguration.getConfigurationSection(path + "potion_effects." + effectName).getKeys(false)) {
+                                switch (parameter) {
+                                    case "probability":
+                                        effectProbability = (float) yamlConfiguration.getDouble(tempPath + "probability");
+                                        break;
+                                    case "duration":
+                                        duration = yamlConfiguration.getInt(tempPath + "duration");
+                                    case "amplifier":
+                                        amplifier = yamlConfiguration.getInt(tempPath + "amplifier");
+                                    case "ambient":
+                                        ambient = yamlConfiguration.getBoolean(tempPath + "ambient");
+                                    case "particles":
+                                        particles = yamlConfiguration.getBoolean(tempPath + "particles");
+                                    case "icon":
+                                        icon = yamlConfiguration.getBoolean(tempPath + "icon");
+                                }
+                            }
+                            potionEffects.put(new PotionEffect(potionEffectType,duration,amplifier,ambient,particles,icon),effectProbability);
+                        }
+                        for(PotionEffect eff : potionEffects.keySet()) {
+                            effects.add(ConsumeEffect.applyStatusEffects(Collections.singletonList(eff),potionEffects.get(eff)));
+                        }
+
+                    default:
+                        break;
+                }
+            }
+
+            // Add consumable
+            Consumable consumable = Consumable.consumable().consumeSeconds(eatSeconds).hasConsumeParticles(consumeParticles).animation(animation).build();
+            consumable.consumeEffects().addAll(effects);
+            item.setData(DataComponentTypes.CONSUMABLE, consumable);
+        }
+
+        /**
+         * Sword blocking
+         * */
+
+        if(getInteractEventsFromItem(itemName,ActionType.RIGHT_CLICK).contains("parry")) {
+            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.BLOCK).build();
+            item.setData(DataComponentTypes.CONSUMABLE, consumable);
+        }
 
         return item;
     }

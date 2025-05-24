@@ -18,7 +18,7 @@
 
 package com.mineshaft.mineshaftapi.listener;
 
-import com.mineshaft.mineshaftapi.manager.ArmourEquipManager;
+import com.mineshaft.mineshaftapi.manager.player.ArmourEquipManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

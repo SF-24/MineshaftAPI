@@ -16,27 +16,21 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.listener;
+package com.mineshaft.mineshaftapi.manager.player;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.ui.SidebarManager;
-import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerManager;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
-public class JoinListener implements Listener {
-
-    @EventHandler
-    public void PlayerJoinEvent(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
-
-        // Make a new json player manager
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
-
-        if(MineshaftApi.getInstance().getConfigManager().getSidebarEnabled()) {
-            SidebarManager.displayScoreboard(player);
+public class PlayerManager {
+    public static void KickPlayers() {
+        for(Player player : MineshaftApi.getInstance().getServer().getOnlinePlayers()) {
+            switch (MineshaftApi.getLanguage(player)) {
+                case ENGLISH:
+                    player.kickPlayer("Server is reloading or has stopped");
+                case POLISH:
+                    player.kickPlayer("Serwer został wyłączony lub jest przeładowywany");
+            }
         }
     }
+
 }

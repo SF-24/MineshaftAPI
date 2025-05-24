@@ -19,15 +19,14 @@
 package com.mineshaft.mineshaftapi.manager.ui;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.item_shop.ItemMenu;
-import com.mineshaft.mineshaftapi.manager.item_shop.ItemType;
-import com.mineshaft.mineshaftapi.manager.item_shop.MenuItem;
-import de.tr7zw.nbtapi.NBT;
+import com.mineshaft.mineshaftapi.manager.ui.item_shop.ItemMenu;
+import com.mineshaft.mineshaftapi.manager.ui.item_shop.ItemType;
+import com.mineshaft.mineshaftapi.manager.ui.item_shop.MenuItem;
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 

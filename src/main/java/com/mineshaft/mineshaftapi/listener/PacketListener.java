@@ -18,8 +18,9 @@
 
 package com.mineshaft.mineshaftapi.listener;
 
-import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.MineshaftApi;
 import io.netty.channel.*;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,8 +40,11 @@ public class PacketListener implements Listener {
             @Override
             public void channelRead(ChannelHandlerContext ctx, Object packet) throws Exception {
                 // Observer packets coming in
-
-                Logger.logInfo("Incoming packet: " + packet.toString());
+                if(packet instanceof ServerboundPlayerActionPacket) {
+                    if(((ServerboundPlayerActionPacket) packet).getAction().equals(ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM)) {
+                        MineshaftApi.getInstance().getBlockingManager().removePlayerBlocking(player.getUniqueId());
+                    }
+                }
 
                 super.channelRead(ctx, packet);
             }
@@ -68,6 +72,7 @@ public class PacketListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         stop(e.getPlayer());
+        MineshaftApi.getInstance().getBlockingManager().removePlayerBlocking(e.getPlayer().getUniqueId());
     }
 
 

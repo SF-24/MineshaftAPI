@@ -23,8 +23,9 @@ import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
 import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicEventListener;
 import com.mineshaft.mineshaftapi.listener.*;
-import com.mineshaft.mineshaftapi.manager.CooldownManager;
-import com.mineshaft.mineshaftapi.manager.PlayerManager;
+import com.mineshaft.mineshaftapi.manager.player.combat.BlockingManager;
+import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
+import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
 import com.mineshaft.mineshaftapi.manager.config.ConfigManager;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
@@ -35,8 +36,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.UUID;
 
 public final class MineshaftApi extends JavaPlugin {
 
@@ -45,7 +44,7 @@ public final class MineshaftApi extends JavaPlugin {
     ItemManager itemManager;
     EventManager eventManager;
     DependencyInit dependencyInit = new DependencyInit();
-    private ArrayList<UUID> playersBlocking = new ArrayList<>();
+    BlockingManager blockingManager = new BlockingManager();
 
     @Override
     public void onEnable() {
@@ -83,6 +82,7 @@ public final class MineshaftApi extends JavaPlugin {
         getCommand("player_data").setExecutor(new PlayerDataCommand());
         getCommand("balance").setExecutor(new MonetaryBalanceCommand());
         getCommand("getitem").setExecutor(new GetItemCommand());
+        getCommand("getitem").setTabCompleter(new GetItemTabCompleter());
         getCommand("heal").setExecutor(new HealCommand());
 
         // Initialise custom items
@@ -171,12 +171,6 @@ public final class MineshaftApi extends JavaPlugin {
         return packageName.substring(packageName.lastIndexOf('.') + 1);
     }
 
+    public BlockingManager getBlockingManager() {return blockingManager;}
 
-    public void addPlayerBlocking(UUID uuid) {
-        this.playersBlocking.add(uuid);
-    }
-
-    public boolean isPlayerBlocking(UUID uuid) {
-        return this.playersBlocking.contains(uuid);
-    }
 }

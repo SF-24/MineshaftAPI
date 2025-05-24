@@ -19,6 +19,8 @@
 package com.mineshaft.mineshaftapi.dependency;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -59,12 +61,25 @@ public class MineshaftPlaceholderExpansion extends PlaceholderExpansion {
     // TODO: Make code actually do something
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String params) {
-        if (params.equalsIgnoreCase("placeholder1")) {
-            return plugin.getConfig().getString("placeholders.placeholder1", "default1");
+        if (params.equalsIgnoreCase("profile_name")) {
+            return (JsonProfileBridge.getCurrentProfile(player.getPlayer()));
         }
 
-        if (params.equalsIgnoreCase("placeholder2")) {
-            return plugin.getConfig().getString("placeholders.placeholder1", "default1");
+        if (params.equalsIgnoreCase("coins")) {
+            return String.valueOf((JsonPlayerBridge.getCoins(player.getPlayer())));
+        }
+
+        if (params.equalsIgnoreCase("level")) {
+            return String.valueOf((JsonPlayerBridge.getLevel(player.getPlayer())));
+        }
+
+        if (params.equalsIgnoreCase("xp")) {
+            return String.valueOf((JsonPlayerBridge.getXp(player.getPlayer())));
+        }
+
+        if (params.equalsIgnoreCase("test")) {
+            return "test";
+            //return plugin.getConfig().getString("placeholders.placeholder1", "default1");
         }
         return null; //
     }

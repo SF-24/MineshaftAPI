@@ -37,6 +37,10 @@ A paper (formerly spigot) plugin for Minecraft servers. Build with maven, docume
     - [Mythic Mobs](#mythic-mobs)
         - [Mineshaft event skill](#mineshaft-event)
         - [Targeted Mineshaft event skill](#targeted-mineshaft-event)
+    - [BetonQuest](#BetonQuest)
+    - [PlaceholderAPI](#PlaceholderAPI)
+- [Dependents](#dependents)
+    - [MineshaftRpg](#mineshaftrpg) 
 - [Plugin reloading](#plugin-reloading)
 
 # Important Copyright Information
@@ -532,6 +536,33 @@ Examples:
 `mineshaftevent{e=direct-shot;d=22} @lastAttacker`
 `mineshaftevent{e=laser-shot;d=10;offset=2} @Target`
 `mineshaftevent{event=grenade-throw;o=25} @NearestPlayer`
+
+## BetonQuest
+
+Description coming soon...
+
+## PlaceholderAPI
+
+| Placeholder    | Description                                     | Data Type |
+|:---------------|-------------------------------------------------|:----------|
+| `profile_name` | The current profile name                        | String    |
+| `coins`        | Number of coins owned                           | Double    |
+| `test`         | A debug placeholder                             | String    |
+
+Some placeholders require the presence of MineshaftRpg to fully work:
+
+| Placeholder | Description                                     | Data Type |
+|:------------|-------------------------------------------------|:----------|
+| `level`     | Current level ('1' unless MineshaftRpg is used) | Integer   |
+| `xp`        | Current xp ('0' unless MineshaftRpg is used)    | Integer   |
+| `culture`   | Current culture                                 | String    |
+
+
+
+# Dependents
+## MineshaftRpg
+
+A plugin based off the old RpgPlugin. Contains multiple features like character creation, ability scores, skills, levelling etc.
 
 # Plugin reloading
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.

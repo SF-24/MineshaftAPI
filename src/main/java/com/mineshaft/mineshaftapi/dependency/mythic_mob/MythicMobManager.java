@@ -26,7 +26,7 @@ public class MythicMobManager {
 
     public static boolean isMythicMob(Entity bukkitEntity) {
         if(DependencyInit.hasMythicMobs()) {
-            return MythicBukkit.inst().getMobManager().getActiveMob(bukkitEntity.getUniqueId()).isPresent();
+            return MythicBukkit.inst().getMobManager().isMythicMob(bukkitEntity);
         }
         return false;
     }

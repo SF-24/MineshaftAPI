@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.ToolRuleExtended;
 import com.mineshaft.mineshaftapi.manager.ActionType;
 import com.mineshaft.mineshaftapi.manager.ArmourType;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
@@ -29,11 +30,10 @@ import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.TextFormatter;
 import de.tr7zw.nbtapi.NBT;
+import io.papermc.paper.datacomponent.item.Consumable;
+import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -414,9 +414,9 @@ public class ItemManager {
 
         if(yamlConfiguration.contains("consumable")) {
             String path = "consumable.";
-            ArrayList<io.papermc.paper.datacomponent.item.consumable.ConsumeEffect> effects = new ArrayList<>();
+            ArrayList<ConsumeEffect> effects = new ArrayList<>();
             HashMap<PotionEffect, Float> potionEffects = new HashMap<>();
-            io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation animation = io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation.EAT;
+            ItemUseAnimation animation = ItemUseAnimation.EAT;
             float eatSeconds = 1.0f;
             boolean consumeParticles = true;
             for (String key : yamlConfiguration.getConfigurationSection("consumable").getKeys(false)) {
@@ -436,7 +436,7 @@ public class ItemManager {
                     case "potion_effects":
                         for (String effectName : yamlConfiguration.getConfigurationSection(path + "potion_effects").getKeys(false)) {
                             if(effectName.equalsIgnoreCase("clear")) {
-                                effects.add(io.papermc.paper.datacomponent.item.consumable.ConsumeEffect.clearAllStatusEffects());
+                                effects.add(ConsumeEffect.clearAllStatusEffects());
                             }
                             String tempPath = path + "potion_effects." + effectName + ".";
                             PotionEffectType potionEffectType = PotionEffectType.getByName(effectName.toUpperCase());
@@ -466,7 +466,7 @@ public class ItemManager {
                             potionEffects.put(new PotionEffect(potionEffectType,duration,amplifier,ambient,particles,icon),effectProbability);
                         }
                         for(PotionEffect eff : potionEffects.keySet()) {
-                            effects.add(io.papermc.paper.datacomponent.item.consumable.ConsumeEffect.applyStatusEffects(Collections.singletonList(eff),potionEffects.get(eff)));
+                            effects.add(ConsumeEffect.applyStatusEffects(Collections.singletonList(eff),potionEffects.get(eff)));
                         }
 
                     default:
@@ -475,7 +475,7 @@ public class ItemManager {
             }
 
             // Add consumable
-            io.papermc.paper.datacomponent.item.Consumable consumable = io.papermc.paper.datacomponent.item.Consumable.consumable().consumeSeconds(eatSeconds).hasConsumeParticles(consumeParticles).animation(animation).build();
+            Consumable consumable = Consumable.consumable().consumeSeconds(eatSeconds).hasConsumeParticles(consumeParticles).animation(animation).build();
             consumable.consumeEffects().addAll(effects);
         }
 
@@ -484,12 +484,41 @@ public class ItemManager {
                 ToolComponent toolComponent = meta.getTool();
                 for (String field : yamlConfiguration.getConfigurationSection("tool").getKeys(false)) {
                     switch (field) {
+                        case "damage_per_block":
+                            toolComponent.setDamagePerBlock(yamlConfiguration.getInt("damage_per_block"));
                         case "mining_speed":
-                            double miningSpeed = yamlConfiguration.getDouble("mining_speed");
-                            toolComponent.setDefaultMiningSpeed((float) miningSpeed);
-                        case "block_list":
-                            for (String key : yamlConfiguration.getConfigurationSection("block_list").getKeys(false)) {
+                            toolComponent.setDefaultMiningSpeed((float) yamlConfiguration.getDouble("mining_speed"));
+                        case "block_rules":
+                            for(ToolComponent.ToolRule rule : toolComponent.getRules()) {
+                                toolComponent.removeRule(rule);
+                            }
 
+                            for (String key : yamlConfiguration.getConfigurationSection("block_list").getKeys(false)) {
+                                String tempPath = "tool." + field + "." + "block_list." + key;
+                                // Each block rule
+                                List<ToolComponent.ToolRule> rules = List.of();
+                                for(String f : yamlConfiguration.getConfigurationSection(tempPath).getKeys(false)) {
+                                    ToolComponent.ToolRule toolRule = new ToolRuleExtended();
+
+                                    // Get block rule parameters
+                                    Tag<Tag> tag = Bukkit.getTag("minecraft",NamespacedKey.fromString(f.toUpperCase()),Tag.class);
+                                    @NotNull Set<Tag> mat = tag.getValues();
+                                    List<Material> materials = Collections.EMPTY_LIST;
+                                    mat.stream().map(t -> Material.valueOf(String.valueOf(t))).forEach(materials::add);
+                                    toolRule.setBlocks(materials);
+
+                                    if(yamlConfiguration.contains(tempPath + "." + f + ".blocks")) {
+
+                                    }
+                                    if(yamlConfiguration.contains(tempPath + "." + f + ".correct_for_drops")) {
+                                        toolRule.setCorrectForDrops(yamlConfiguration.getBoolean((tempPath + "." + f + ".correct_for_drops")));
+                                    }
+                                    if(yamlConfiguration.contains(tempPath + "." + f + ".mining_speed")) {
+                                        toolRule.setSpeed((float) yamlConfiguration.getDouble(tempPath + "." + f + ".mining_speed"));
+                                    }
+                                    rules.add(toolRule);
+                                }
+                                toolComponent.setRules(rules);
                             }
                         case "tool_type":
 

@@ -15,15 +15,18 @@ A paper (formerly spigot) plugin for Minecraft servers. Build with maven, docume
 		- [Item category list](#item-category-list)
 		- [Item rarity list](#item-rarity-list)
 		- [Item stats and attributes](#item-stats-and-attributes)
-		- [List of item attributes](#list-of-item-attributes)
+		    - [List of item attributes](#list-of-item-attributes)
 		-  [Food](#food)
-		 - [List of food stats](#list-of-food-stats)
-		 - [Consumable](#consumable)
-		 - [Potion effects](#potion-effects)
-		 - [Potion effect parameters](#potion-effect-parameters)
+            - [List of food stats](#list-of-food-stats)
+		- [Consumable](#consumable)
+		- [Potion effects](#potion-effects)
+            - [Potion effect parameters](#potion-effect-parameters)
 		-  [Armour](#armour)
-		 - [Item events](#item-events)
-		 - [Item event parameters](#item-event-parameters)
+		-  [Tools](#tool-component)
+            - [Default Mining Speed Values](#default-mining-speed-values)
+            - [Block Rules](#block-rules)
+      - [Item events](#item-events)
+          - [Item event parameters](#item-event-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
 - [Event creation](#event-creation)
   - [Event example](#event-example)
@@ -234,10 +237,12 @@ food:
 | Value                | Stat                                          | Description                                                  | Data Type | Notes |
 |:---------------------|-----------------------------------------------|:-------------------------------------------------------------|----------:|------:|
 | `nutrition`          | Nutrition                                     | The amount of health icons healed by the food                |   Integer |       |
-| `saturation`         | Saturation                                    | Saturation healed by the food                                |     Float |       |
+| `saturation`         | Saturation                                    | Saturation healed by the food                                |    Double |       |
+| `saturation`         | Saturation                                    | Saturation healed by the food                                |    Double |       |
 | `always_edible`      | Always Edible                                 | Whether an item can be eaten when your health bar is full    |   Boolean |       |
 | ~~`potion effects`~~ | __REMOVED IN 1.21.4__ <br> ~~Potion effects~~ | Potion effects given to the player when the item is consumed |   Complex |       |
-| ~~`eat_seconds`~~    | __REMOVED IN 1.21.4__<br> ~~Eat seconds~~     | Time in seconds it takes to consume an item                  |     Float |       |
+| ~~`eat_seconds`~~    | __REMOVED IN 1.21.4__<br> ~~Eat seconds~~     | Time in seconds it takes to consume an item                  |    Double |       |
+| ~~`eat_seconds`~~    | __REMOVED IN 1.21.4__<br> ~~Eat seconds~~     | Time in seconds it takes to consume an item                  |    Double |       |
 
 ### Consumable
 
@@ -260,7 +265,8 @@ consumable:
 
 | Value                   | Stat                  | Description                                                  | Data Type |                                                                                                                     Notes |
 |:------------------------|-----------------------|:-------------------------------------------------------------|----------:|--------------------------------------------------------------------------------------------------------------------------:|
-| `consume_seconds`       | Consumption Time      | The time in seconds taken to consume the item                |     Float |                                                                                                                           |
+| `consume_seconds`       | Consumption Time      | The time in seconds taken to consume the item                |    Double |                                                                                                                           |
+| `consume_seconds`       | Consumption Time      | The time in seconds taken to consume the item                |    Double |                                                                                                                           |
 | `animation`             | Animation             | The animation played during consumption                      |      Enum | [Animation list](https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/item/consumable/ItemUseAnimation.html) |
 | `has_consume_particles` | Consumption Particles | Whether particles are played during consumption              |   Boolean |                                                                                                                           |
 | `potion_effects`        | Potion effects        | Potion effects given to the player when the item is consumed |   Complex |                                                                                                                           |
@@ -326,6 +332,54 @@ Optional value. Works in conjunction with MineshaftRpg. Does nothing on its own
 | `LIGHT_ARMOUR`  | Light Armour   |
 | `MEDIUM_ARMOUR` | Medium Armour  |
 | `HEAVY_ARMOUR`  | Heavy Armour   |
+
+### Tool Component
+
+Allows to modify tool properties or set any other item as a tool
+
+```yaml
+tool:
+	damage_per_block: 1
+	mining_speed: 2
+	block_rules:
+		incorrect_for_wooden_tool:
+			correct_for_drops: false
+	mineable_pickaxe:
+		correct_for_drops: true
+		mining_speed: 2
+```
+| Value              | Description                                 | Data Type |
+|:-------------------|---------------------------------------------|:----------|
+| `damage_per_block` | The damage done to the tool per block mined | Integer   |
+| `mining_speed`     | The default mining speed                    | Double    |
+| `block_rules`      | A list of specific block mining rules       | Complex   |
+
+#### Default Mining Speed Values
+
+| Tool Type | Value |
+|:----------|-------|
+| Wooden    | 2     | 
+| Stone     | 4     | 
+| Iron      | 6     | 
+| Diamond   | 8     | 
+| Gold      | 10    | 
+
+#### Block Rules
+
+Block rules allow to define which blocks can be mined
+
+```yaml
+block_rules:
+  block_tag:
+    correct_for_drops: true
+    mining_speed: 3
+```
+
+| Value               | Description                                                               | Data Type | Notes                                                                            |
+|:--------------------|---------------------------------------------------------------------------|:----------|----------------------------------------------------------------------------------|
+| `block_tag`         | The name of the block tag containing the blocks corresponding to the rule | Integer   | [Vanilla Tag List](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Tag.html) |
+| `correct_for_drops` | Whether item drops will be obtained from blocks in this list              | Boolean   |                                                                                  |
+| `mining_speed`      | The mining speed of blocks in this list                                   | Double    |                                                                                  |
 
 ### Item events
 This section controls what events are triggered when the player executes a certain action. This includes the item being right or left-clicked.

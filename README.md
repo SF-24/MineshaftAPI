@@ -26,6 +26,7 @@ A paper (formerly spigot) plugin for Minecraft servers. Build with maven, docume
             - [Default Mining Speed Values](#default-mining-speed-values)
             - [Block Rules](#block-rules)
       - [Item events](#item-events)
+          - [Hardcoded events](#hardcoded-events) 
           - [Item event parameters](#item-event-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
 - [Event creation](#event-creation)
@@ -205,7 +206,8 @@ stats:
 | `ranged_damage`              | Ranged attack damage             | Increases ranged damage                                                 |     WIP -> currently only applies to beam events triggered using this weapon |
 | `speed`                      | Health                           | Increases maximum health when equipped                                  |                                                                              |
 | `speed`                      | Speed                            | Will increase movement speed when implemented                           | Stat is applied to items, however functionality has not yet been implemented |
-| `reach`                      | Reach                            | Affects block and entity interaction reach distance                     |                                                                              | `mining_reach` | Block Interaction Reach | Affects block interaction reach distance |
+| `reach`                      | Reach                            | Affects block and entity interaction reach distance                     |                                                                              | 
+| `mining_reach`               | Block Interaction Reach          | Affects block interaction reach distance                                |
 | `attack_reach`               | Entity Interaction Reach         | Affects entity interaction reach distance                               |                                                                              |
 | `attack_speed`               | Attack Speed                     | The attack speed of an item.                                            |                                       Work in progress. Do not use on armour | 
 | `armour`                     | Armour                           | The default Minecraft armour stat                                       |                                                                              |
@@ -393,6 +395,15 @@ action:
   right_click:
   - blaster-shot
 ```
+
+### Hardcoded events
+
+Custom events must not be named using any of the following names. These are reserved for hardcoded features.
+
+| Event   | Description                                                                                                         | 
+|:--------|---------------------------------------------------------------------------------------------------------------------|
+| `parry` | Implements weapon blocking similar to sword blocking. Works not just for swords. Works only for right click actions |
+
 
 ### Item event parameters
 

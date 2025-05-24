@@ -67,11 +67,13 @@ public class InteractListener implements Listener {
 
         final UUID[] uuid = new UUID[1];
 
-        NBT.get(item, nbt -> {
-            String id = nbt.getOrDefault("uuid","null");
-            if(id.equalsIgnoreCase("null")) return;
-            uuid[0] = UUID.fromString(id);
-        });
+        try {
+            NBT.get(item, nbt -> {
+                String id = nbt.getOrDefault("uuid", "null");
+                if (id.equalsIgnoreCase("null")) return;
+                uuid[0] = UUID.fromString(id);
+            });
+        } catch(Exception ignored) {}
         UUID uniqueId = uuid[0];
 
         if(uniqueId !=null) {
@@ -80,6 +82,13 @@ public class InteractListener implements Listener {
             ArrayList<String> events = ItemManager.getInteractEventsFromItem(name, clickType);
 
             if(events==null||events.isEmpty()) return;
+
+            if(events.contains("parry") && (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+                // Player is blocking:
+
+
+                return;
+            }
 
             e.setCancelled(true);
 

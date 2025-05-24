@@ -163,7 +163,7 @@ public class ItemManager {
 
 
         // Rarity
-        ItemRarity rarity=ItemRarity.STANDARD;
+        ItemRarity rarity = ItemRarity.STANDARD;
 
         String itemDisplay = "Item";
         String parentItemDisplay = null;
@@ -174,9 +174,9 @@ public class ItemManager {
                 item = getItem(parentName);
                 hasParent = true;
                 File parent = new File(path, itemName + ".yml");
-                if(parent.exists()) {
+                if (parent.exists()) {
                     YamlConfiguration parentYaml = YamlConfiguration.loadConfiguration(parent);
-                    if( parentYaml.getString("subcategory")!=null) {
+                    if (parentYaml.getString("subcategory") != null) {
                         parentItemDisplay = TextFormatter.convertStringToName(parentYaml.getString("subcategory"));
                     }
                 }
@@ -185,11 +185,10 @@ public class ItemManager {
         final String[] rareCategory = new String[1];
 
 
-
         NBT.modify(item, nbt -> {
             rareCategory[0] = nbt.getOrNull("rarity", String.class);
         });
-        if(rareCategory[0]!=null) {
+        if (rareCategory[0] != null) {
             rarity = ItemRarity.valueOf(rareCategory[0].toUpperCase(Locale.ROOT));
         }
 
@@ -277,27 +276,27 @@ public class ItemManager {
             }
         }
 
-        if(category==ItemCategory.ARMOUR_HELMET || category==ItemCategory.ARMOUR_BOOTS  || category==ItemCategory.ARMOUR_CHESTPLATE || category==ItemCategory.ARMOUR_LEGGINGS) {
-            if(yamlConfiguration.contains("armour.type")) {
-                armourType=ArmourType.valueOf(yamlConfiguration.getString("armour.type"));
-            } else if(yamlConfiguration.contains("armor.type")) {
-                armourType=ArmourType.valueOf(yamlConfiguration.getString("armor.type"));
+        if (category == ItemCategory.ARMOUR_HELMET || category == ItemCategory.ARMOUR_BOOTS || category == ItemCategory.ARMOUR_CHESTPLATE || category == ItemCategory.ARMOUR_LEGGINGS) {
+            if (yamlConfiguration.contains("armour.type")) {
+                armourType = ArmourType.valueOf(yamlConfiguration.getString("armour.type"));
+            } else if (yamlConfiguration.contains("armor.type")) {
+                armourType = ArmourType.valueOf(yamlConfiguration.getString("armor.type"));
             } else {
-                armourType=ArmourType.NONE;
+                armourType = ArmourType.NONE;
             }
-            if(yamlConfiguration.contains("armour.colour")) {
-                if(yamlConfiguration.contains("armour.colour.g")) {
+            if (yamlConfiguration.contains("armour.colour")) {
+                if (yamlConfiguration.contains("armour.colour.g")) {
                     g = yamlConfiguration.getInt("armour.colour.g");
                 }
-                if(yamlConfiguration.contains("armour.colour.r")) {
+                if (yamlConfiguration.contains("armour.colour.r")) {
                     r = yamlConfiguration.getInt("armour.colour.r");
                 }
-                if(yamlConfiguration.contains("armour.colour.b")) {
+                if (yamlConfiguration.contains("armour.colour.b")) {
                     b = yamlConfiguration.getInt("armour.colour.b");
                 }
             }
         } else {
-            armourType=ArmourType.NONE;
+            armourType = ArmourType.NONE;
         }
 
         meta.setDisplayName(rarity.getColourCode() + displayName);
@@ -331,17 +330,17 @@ public class ItemManager {
 
             if (subcategory != null && !subcategory.equalsIgnoreCase("")) {
                 itemDisplay = TextFormatter.convertStringToName(subcategory);
-            } else if(parentItemDisplay!=null) {
-                itemDisplay=parentItemDisplay;
+            } else if (parentItemDisplay != null) {
+                itemDisplay = parentItemDisplay;
             }
 
-            if(MineshaftApi.getInstance().getConfigManager().useItalicItemRarity()) {
+            if (MineshaftApi.getInstance().getConfigManager().useItalicItemRarity()) {
                 lore.add(rarity.getColourCode() + ChatColor.ITALIC.toString() + rarity.getName() + " " + itemDisplay);
             } else {
                 lore.add(rarity.getColourCode() + rarity.getName() + " " + itemDisplay);
             }
 
-            if(!armourType.equals(ArmourType.NONE)) {
+            if (!armourType.equals(ArmourType.NONE)) {
                 lore.add(ChatColor.GRAY + armourType.getName());
             }
 
@@ -411,6 +410,7 @@ public class ItemManager {
                 slot = null;
                 break;
         }
+
 
         if(yamlConfiguration.contains("consumable")) {
             String path = "consumable.";
@@ -652,7 +652,22 @@ public class ItemManager {
 
         meta.setLore(lore);
 
+        /**
+         * Sword blocking
+         * */
+
+        ArrayList<String> rightClickActions = getInteractEventsFromItem(itemName,ActionType.RIGHT_CLICK);
+
+        if(rightClickActions.contains("parry")) {
+            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.BLOCK).build();
+        }
+
+
         item.setItemMeta(meta);
+
+        /**
+         * NBT Features
+         */
 
         if(meta instanceof LeatherArmorMeta) {
             LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) item.getItemMeta();
@@ -677,7 +692,7 @@ public class ItemManager {
             // More are available! Ask your IDE, or see Javadoc for suggestions!
         });
 
-
+        // Custom stats.
         if (speed != 0) {
             setItemNbtStat(item, ItemStats.SPEED, speed);
         }
@@ -695,6 +710,7 @@ public class ItemManager {
             setItemNbtRangedStat(item, stat, rangedStatMap.get(stat));
         }
 
+        // Set rarity tag
         ItemRarity finalRarity = rarity;
         NBT.modify(item, nbt -> {
             nbt.setString("rarity", finalRarity.toString());

@@ -137,12 +137,14 @@ public class PlayerDataClass {
 
     public void addToCharDataList(String listKey, String element) {
         List<String> list = playerCharacterListData.get(listKey);
+        if(list==null) list = new ArrayList<>();
         list.add(element);
         playerCharacterListData.put(listKey,list);
     }
 
     public void removeFromCharDataList(String listKey, String element) {
         List<String> list = playerCharacterListData.get(listKey);
+        if(list==null) return;
         list.remove(element);
         playerCharacterListData.put(listKey,list);
     }
@@ -183,11 +185,27 @@ public class PlayerDataClass {
         skills.put(skill,skillClass);
     }
 
-    public void setSkillLevel(PlayerSkills skill, int amount) {
+    public void addSkillXp(PlayerSkills skill, int amount) {
         SkillClass skillClass = skills.get(skill);
         int newValue = skillClass.getXp()+amount;
-        skillClass.setLevel(newValue);
+        skillClass.setXp(newValue);
         skills.put(skill,skillClass);
+    }
+
+    public void setSkillLevel(PlayerSkills skill, int value) {
+        SkillClass skillClass = skills.get(skill);
+        skillClass.setLevel(value);
+        skills.put(skill,skillClass);
+    }
+
+    public void setProficiencyLevel(PlayerSkills skill, int value) {
+        SkillClass skillClass = skills.get(skill);
+        skillClass.setProficiencyLevel(value);
+        skills.put(skill,skillClass);
+    }
+
+    public int getProficiencyLevel(PlayerSkills skill) {
+        return skills.get(skill).getProficiencyLevel();
     }
 
     // check if a skill level needs to be recalculated

@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.manager.player.json;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
@@ -94,6 +95,50 @@ public class JsonPlayerBridge {
     public static boolean hasCoins(Player player, int amount) {
         int balance = getCoins(player);
         return getCoins(player)>=amount;
+    }
+
+    /**
+     * Skills
+     * */
+
+    public static int getSkillLevel(Player player, PlayerSkills skills) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getSkillLevel(skills);
+    }
+
+    public static void addSkillLevels(Player player, PlayerSkills skills, int amount) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.addSkillLevels(skills,amount);
+    }
+
+    public static void addSkillXp(Player player, PlayerSkills skills, int amount) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.addXp(skills,amount);
+    }
+
+    public static void setProficiencyLevel(Player player, PlayerSkills skill, int value) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        jsonPlayerManager.setProficiencyLevel(skill,value);
+    }
+
+    public static void setProficiencyLevels(Player player, List<PlayerSkills> skills, int value) {
+        if(skills==null || skills.isEmpty()) return;
+        for(PlayerSkills skill : skills) {
+            setProficiencyLevel(player,skill,value);
+        }
+    }
+
+    public static int getProficiencyLevel(Player player, PlayerSkills skill) {
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        return jsonPlayerManager.getProficiencyLevel(skill);
+    }
+
+    public boolean isSkillProficient(Player player, PlayerSkills skill) {
+        return getProficiencyLevel(player,skill)>0;
+    }
+
+    public boolean isSkillMastery(Player player, PlayerSkills skill) {
+        return getProficiencyLevel(player,skill)>1;
     }
 
     /**
@@ -261,11 +306,13 @@ public class JsonPlayerBridge {
     }
 
     public static void addToCharDataList(Player player, String key, String element) {
+
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
         jsonPlayerManager.addToCharDataList(key, element);
     }
 
     public static void addToCharDataList(Player player, String key, List<String> element) {
+        if(element==null || element.isEmpty()) return;
         JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
         jsonPlayerManager.addToCharDataList(key, element);
     }
@@ -348,7 +395,9 @@ public class JsonPlayerBridge {
      * Proficiencies
      * */
 
+
     public static void addWeaponProficiencies(Player player, List<String> proficiencies) {
+        if(proficiencies==null || proficiencies.isEmpty()) return;
         addToCharDataList(player, "weaponProficiencies", proficiencies);
     }
 

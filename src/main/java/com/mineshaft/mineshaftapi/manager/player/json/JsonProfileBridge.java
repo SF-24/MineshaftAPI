@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class JsonProfileBridge {
 
     public static String getCurrentProfile(Player player) {
+        if(player==null) return null;
         JsonProfileManager jpm = new JsonProfileManager(player);
         return jpm.getCurrentProfile();
     }

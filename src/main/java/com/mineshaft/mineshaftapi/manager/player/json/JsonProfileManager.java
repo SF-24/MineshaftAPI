@@ -34,6 +34,7 @@ public class JsonProfileManager {
     Player player;
 
     public JsonProfileManager(Player player) {
+        if(player==null||player.getUniqueId()==null) return;
         this.player=player;
         try {
             initiateFile(player.getUniqueId());

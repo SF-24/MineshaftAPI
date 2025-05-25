@@ -23,6 +23,7 @@ public class SkillClass {
     // variable
     int level;
     int xp;
+    int proficiencyLevel;
 
     PlayerSkills skill;
 
@@ -36,12 +37,14 @@ public class SkillClass {
     public int getXp() {
         return xp;
     }
-
+    public int getProficiencyLevel() {return proficiencyLevel;}
+    public boolean isProficient() {return proficiencyLevel>0;}
+    public boolean isMastery() {return proficiencyLevel>1;}
     public void setXp(int xp) {
         this.xp=xp;
     }
     public void setLevel(int level) {
         this.level=level;
     }
-
+    public void setProficiencyLevel(int proficiencyLevel) {this.proficiencyLevel=proficiencyLevel;}
 }

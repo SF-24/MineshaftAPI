@@ -160,20 +160,33 @@ public class JsonPlayerManager {
      * Data modification
      * */
 
-    public int getSkillLevel(Player player, PlayerSkills skill) {
+    public int getSkillLevel(PlayerSkills skill) {
         return loadData(player).getSkillLevel(skill);
     }
+
+
 
     public void saveFile(PlayerDataClass data) {
         writeData(data, getFile(player));
     }
 
-    public void addSkillLevel(Player player, PlayerSkills skill, int amount) {
+    public void addSkillLevels(PlayerSkills skill, int amount) {
         PlayerDataClass data = loadData(player);
         int level = data.getSkillLevel(skill);
         level+=amount;
         data.setSkillLevel(skill,level);
         saveFile(data);
+    }
+
+    public void setProficiencyLevel(PlayerSkills skill,int proficiencyLevel) {
+        PlayerDataClass data = loadData(player);
+        data.setProficiencyLevel(skill,proficiencyLevel);
+        saveFile(data);
+    }
+
+    public int getProficiencyLevel(PlayerSkills skill) {
+        PlayerDataClass data = loadData(player);
+        return data.getProficiencyLevel(skill);
     }
 
     /**

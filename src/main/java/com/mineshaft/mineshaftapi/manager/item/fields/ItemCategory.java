@@ -32,6 +32,7 @@ public enum ItemCategory {
     TOOL_PICKAXE,
     TOOL_SHOVEL,
     TOOL_HOE,
+    TOOL_MISC,
 
     ITEM_CONSUMABLE,
     ITEM_GENERIC,

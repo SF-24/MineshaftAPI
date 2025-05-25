@@ -105,7 +105,7 @@ public class PlayerStatManager {
 
 
     public static int calculateAttributeModifier(int attribute) {
-        return (attribute-10) /2;
+        return (int) (((double)attribute)-10.0 + (((double)attribute)-10.0<0?-0.5:0) /2.0);
     }
 
 }

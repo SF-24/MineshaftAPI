@@ -706,11 +706,17 @@ public class ItemManager {
         }
 
         /**
-         * Sword blocking
+         * Custom hardcoded properties
          * */
 
         if(getInteractEventsFromItem(itemName,ActionType.RIGHT_CLICK).contains("parry")) {
             Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.BLOCK).build();
+            item.setData(DataComponentTypes.CONSUMABLE, consumable);
+        } else if(getInteractEventsFromItem(itemName, ActionType.RIGHT_CLICK).contains("smoke_pipe") || getInteractEventsFromItem(itemName, ActionType.RIGHT_CLICK).contains("instrument")) {
+            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.TOOT_HORN).build();
+            item.setData(DataComponentTypes.CONSUMABLE, consumable);
+        } else if(getInteractEventsFromItem(itemName, ActionType.RIGHT_CLICK).contains("throw")) {
+            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.SPEAR).build();
             item.setData(DataComponentTypes.CONSUMABLE, consumable);
         }
 

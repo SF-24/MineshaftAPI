@@ -57,7 +57,7 @@ public class DependencyInit {
                 Logger.logInfo("Vault has been disabled in the config. Due to this, some functionality and compatibility features will be disabled");
             } else {
                 // Log warning
-                Logger.logWarning("Vault is not installed. While this plugin is not required, however some functionality and compatibility features will be disabled");
+                Logger.logWarning("Vault is not installed. While this plugin is not required, some functionality and compatibility features will be disabled");
             }
         }
     }

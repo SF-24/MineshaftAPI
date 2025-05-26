@@ -18,21 +18,27 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
 
-import org.betonquest.betonquest.api.config.quest.QuestPackage;
+public class BetonEventObject {
 
-public class QuestEventsObject {
+    boolean isPlayerEvent;
+    String questPackageName;
+    String event;
 
-    protected QuestPackage questPackage;
-    protected String cancelEvent;
-
-    public QuestEventsObject(QuestPackage questPackage, String cancelEvent) {
-        this.cancelEvent=cancelEvent;
-        this.questPackage=questPackage;
+    public BetonEventObject(boolean isPlayerEvent, String questPackageName, String event) {
+        this.isPlayerEvent = isPlayerEvent;
+        this.questPackageName = questPackageName;
+        this.event=event;
     }
 
-    public QuestPackage getQuestPackage() { return questPackage; }
-    public String getCancelEvent() { return cancelEvent; }
+    public String getEvent() {
+        return event;
+    }
 
+    public boolean isPlayerEvent() {
+        return isPlayerEvent;
+    }
 
-
+    public String getQuestPackageName() {
+        return questPackageName;
+    }
 }

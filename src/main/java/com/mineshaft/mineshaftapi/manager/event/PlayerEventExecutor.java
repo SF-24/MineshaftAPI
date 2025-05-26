@@ -16,23 +16,25 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
+package com.mineshaft.mineshaftapi.manager.event;
 
-import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.bukkit.entity.Player;
 
-public class QuestEventsObject {
+import java.util.UUID;
 
-    protected QuestPackage questPackage;
-    protected String cancelEvent;
+public abstract class PlayerEventExecutor {
 
-    public QuestEventsObject(QuestPackage questPackage, String cancelEvent) {
-        this.cancelEvent=cancelEvent;
-        this.questPackage=questPackage;
+    protected Event event;
+    protected Player player;
+
+    public PlayerEventExecutor(Event event) {
+        this.event=event;
     }
 
-    public QuestPackage getQuestPackage() { return questPackage; }
-    public String getCancelEvent() { return cancelEvent; }
+    public void executeEvent() {
+        // TODO:
+    }
 
-
+    public abstract void executeEvent(UUID casterId);
 
 }

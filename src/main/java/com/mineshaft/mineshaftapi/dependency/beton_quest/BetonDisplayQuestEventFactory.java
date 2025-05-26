@@ -18,20 +18,20 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest;
 
-import org.betonquest.betonquest.Instruction;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
-import org.betonquest.betonquest.api.logger.BetonQuestLogger;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
-import org.betonquest.betonquest.api.quest.event.Event;
-import org.betonquest.betonquest.api.quest.event.EventFactory;
+import org.betonquest.betonquest.api.quest.QuestException;
+import org.betonquest.betonquest.api.quest.event.PlayerEvent;
+import org.betonquest.betonquest.api.quest.event.PlayerEventFactory;
 import org.betonquest.betonquest.api.quest.event.online.OnlineEventAdapter;
-import org.betonquest.betonquest.exceptions.InstructionParseException;
+import org.betonquest.betonquest.instruction.argument.Argument;
+import org.betonquest.betonquest.instruction.variable.Variable;
 import org.betonquest.betonquest.quest.PrimaryServerThreadData;
-import org.betonquest.betonquest.quest.event.*;
+import org.betonquest.betonquest.quest.event.PrimaryServerThreadEvent;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class BetonDisplayQuestEventFactory implements EventFactory {
+public class BetonDisplayQuestEventFactory implements PlayerEventFactory {
 
     private final BetonQuestLoggerFactory loggerFactory;
     private final PrimaryServerThreadData data;
@@ -43,26 +43,20 @@ public class BetonDisplayQuestEventFactory implements EventFactory {
 
 
     @Override
-    public Event parseEvent(Instruction instruction) throws InstructionParseException {
+    public PlayerEvent parsePlayer(org.betonquest.betonquest.instruction.Instruction instruction) throws QuestException {
 
-        final BetonQuestLogger log = loggerFactory.create(BetonExperienceEvent.class);
-        final NotificationSender notificationSender;
+        final Variable<String> name = instruction.get(Argument.STRING);
+        final Variable<String> description = instruction.get(Argument.STRING);
+        final Variable<String> cancelEvent = instruction.get(Argument.STRING);
+        final Variable<List<String>> objectivesBase = instruction.getList(Argument.STRING);
 
         QuestPackage questPackage = instruction.getPackage();
 
-        if (instruction.hasArgument("notify")) {
-            notificationSender = new IngameNotificationSender(log, instruction.getPackage(), instruction.getID().getFullID(), NotificationLevel.INFO, "xp_given");
-        } else {
-            notificationSender = new NoNotificationSender();
-        }
-
-        final String name = instruction.getOptional("name", "Unnamed Quest");
-        final String description = instruction.getOptional("name", "");
-        final String cancelEvent = instruction.getOptional("onCancel", "");
-
-        ArrayList<String> objectivesBase = (ArrayList<String>) instruction.getList("objectives",instruction::getOptional);
-
-        return new PrimaryServerThreadEvent(new OnlineEventAdapter(new BetonDisplayQuestEvent(name, description, objectivesBase, cancelEvent, questPackage.getConfig().getName(),notificationSender), log, questPackage), data);
+        return new PrimaryServerThreadEvent(new OnlineEventAdapter(
+                new BetonDisplayQuestEvent(name, description, objectivesBase, cancelEvent, questPackage),
+                loggerFactory.create(BetonExperienceEvent.class),
+                instruction.getPackage()
+        ), data);
     }
 }
 

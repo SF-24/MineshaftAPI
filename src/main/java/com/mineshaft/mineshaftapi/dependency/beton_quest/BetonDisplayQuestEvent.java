@@ -21,22 +21,22 @@ package com.mineshaft.mineshaftapi.dependency.beton_quest;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.PlayerQuestManagment;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
-import org.betonquest.betonquest.api.profiles.OnlineProfile;
+import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.betonquest.betonquest.api.profile.OnlineProfile;
+import org.betonquest.betonquest.api.quest.QuestException;
 import org.betonquest.betonquest.api.quest.event.online.OnlineEvent;
-import org.betonquest.betonquest.exceptions.InstructionParseException;
-import org.betonquest.betonquest.exceptions.QuestRuntimeException;
-import org.betonquest.betonquest.quest.event.NotificationSender;
+import org.betonquest.betonquest.instruction.variable.Variable;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class BetonDisplayQuestEvent implements OnlineEvent {
-    final String name;
-    final String description;
-    final ArrayList<String> objectives;
-    final String cancelEvent;
-    final String questPackage;
+    final Variable<String> name;
+    final Variable<String> description;
+    final Variable<List<String>> objectives;
+    final Variable<String> cancelEvent;
+    final QuestPackage questPackage;
 
-    public BetonDisplayQuestEvent(String name, String description, ArrayList<String> objectives, String cancelEvent, String questPackage, final NotificationSender experienceSender) throws InstructionParseException {
+    public BetonDisplayQuestEvent(Variable<String> name, Variable<String> description, Variable<List<String>> objectives, Variable<String> cancelEvent, QuestPackage questPackage) {
         this.name=name;
         this.description=description;
         this.objectives=objectives;
@@ -44,11 +44,9 @@ public class BetonDisplayQuestEvent implements OnlineEvent {
         this.questPackage=questPackage;
     }
 
-
     @Override
-    public void execute(OnlineProfile profile) throws QuestRuntimeException {
-        QuestObject questObject = new QuestObject(name, description, objectives, new QuestEventsObject(cancelEvent, questPackage));
+    public void execute(final OnlineProfile profile) throws QuestException {
+        QuestObject questObject = new QuestObject(name.getValue(profile), description.getValue(profile), objectives.getValue(profile), new QuestEventsObject(questPackage, cancelEvent.getValue(profile)));
         PlayerQuestManagment.addQuestToPlayer(profile.getPlayer(), questObject);
     }
-
 }

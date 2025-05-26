@@ -16,23 +16,11 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
+package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
-import org.betonquest.betonquest.api.config.quest.QuestPackage;
+public enum VectorPlayerEventType {
 
-public class QuestEventsObject {
-
-    protected QuestPackage questPackage;
-    protected String cancelEvent;
-
-    public QuestEventsObject(QuestPackage questPackage, String cancelEvent) {
-        this.cancelEvent=cancelEvent;
-        this.questPackage=questPackage;
-    }
-
-    public QuestPackage getQuestPackage() { return questPackage; }
-    public String getCancelEvent() { return cancelEvent; }
-
-
+    DASH,
+    LEAP;
 
 }

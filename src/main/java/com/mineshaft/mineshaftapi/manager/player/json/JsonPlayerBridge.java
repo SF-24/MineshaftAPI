@@ -19,17 +19,16 @@
 package com.mineshaft.mineshaftapi.manager.player.json;
 
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.BetonEventObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
-import org.betonquest.betonquest.api.profiles.Profile;
-import org.betonquest.betonquest.config.Config;
-import org.betonquest.betonquest.exceptions.ObjectNotFoundException;
+import org.betonquest.betonquest.api.profile.OnlineProfile;
+import org.betonquest.betonquest.api.quest.QuestException;
 import org.betonquest.betonquest.id.EventID;
-import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -208,6 +207,19 @@ public class JsonPlayerBridge {
     * QUESTS AND DISPLAY
     */
 
+    public static void runBetonEvent(Player player, BetonEventObject betonEvent) {
+        runBetonPlayerEvent(player,BetonQuest.getInstance().getPackages().get(betonEvent.getQuestPackageName()),betonEvent.getEvent());
+    }
+
+    public static void runBetonPlayerEvent(Player player, QuestPackage questPackage, String event) {
+        final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
+        try {
+            BetonQuest.getInstance().getQuestTypeAPI().event(playerProfile,new EventID(questPackage,event));
+        } catch (QuestException e) {
+            Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
+        }
+    }
+
     public static void addQuest(Player player, QuestObject questObject) {
 
     }
@@ -219,13 +231,8 @@ public class JsonPlayerBridge {
         if (DependencyInit.hasBetonQuest()) {
             QuestEventsObject cancelEvent = getQuest(player,questName).getEventObject();
             if(cancelEvent!=null) {
-                final QuestPackage questPackage = Config.getPackages().get(cancelEvent.getQuestPackage());
-                final Profile playerProfile = PlayerConverter.getID(player);
-                try {
-                    BetonQuest.event(playerProfile, new EventID(questPackage,cancelEvent.getCancelEvent()));
-                } catch (ObjectNotFoundException e) {
-                    Logger.logError("Could not execute BetonQuest event with name: " + cancelEvent.getCancelEvent() + " of package " + cancelEvent.getQuestPackage());
-                }
+                final QuestPackage questPackage = (cancelEvent.getQuestPackage());
+                runBetonPlayerEvent(player,questPackage,questName);
             }
         } else {
             Logger.logError("Attempted to use quest display API while BetonQuest is not enabled. Quest functionality is unavailable without this plugin!");

@@ -21,7 +21,9 @@ package com.mineshaft.mineshaftapi.manager.event;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.VectorPlayerEvent;
 import com.mineshaft.mineshaftapi.manager.event.executor.BeamExecutor;
+import com.mineshaft.mineshaftapi.manager.event.executor.VectorEventExecutor;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventFields;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
@@ -31,6 +33,7 @@ import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
 import com.mineshaft.mineshaftapi.util.ColourFormatter;
 import com.mineshaft.mineshaftapi.util.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -135,6 +138,11 @@ public class EventManager {
                 if(!(event instanceof BeamEvent)) return false;
                 new BeamExecutor((BeamEvent) event,loc).executeEvent(casterId);
                 return true;
+            case PLAYER_VECTOR_DASH,PLAYER_VECTOR_LEAP:
+                if(!(event instanceof VectorPlayerEvent)) return false;
+                new VectorEventExecutor(event).executeEvent(casterId);
+                return true;
+
             case PLAY_SOUND:
                 if(loc.getWorld()==null) return false;
                 String sound = "";

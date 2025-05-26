@@ -18,18 +18,17 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest;
 
-import org.betonquest.betonquest.Instruction;
-import org.betonquest.betonquest.api.config.quest.QuestPackage;
-import org.betonquest.betonquest.api.logger.BetonQuestLogger;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
-import org.betonquest.betonquest.api.quest.event.Event;
-import org.betonquest.betonquest.api.quest.event.EventFactory;
+import org.betonquest.betonquest.api.quest.QuestException;
+import org.betonquest.betonquest.api.quest.event.PlayerEvent;
+import org.betonquest.betonquest.api.quest.event.PlayerEventFactory;
 import org.betonquest.betonquest.api.quest.event.online.OnlineEventAdapter;
-import org.betonquest.betonquest.exceptions.InstructionParseException;
+import org.betonquest.betonquest.instruction.argument.Argument;
+import org.betonquest.betonquest.instruction.variable.Variable;
 import org.betonquest.betonquest.quest.PrimaryServerThreadData;
-import org.betonquest.betonquest.quest.event.*;
+import org.betonquest.betonquest.quest.event.PrimaryServerThreadEvent;
 
-public class BetonExperienceEventFactory implements EventFactory {
+public class BetonExperienceEventFactory implements PlayerEventFactory {
     private final BetonQuestLoggerFactory loggerFactory;
     private final PrimaryServerThreadData data;
 
@@ -38,22 +37,13 @@ public class BetonExperienceEventFactory implements EventFactory {
         this.data=data;
     }
 
-
     @Override
-    public Event parseEvent(Instruction instruction) throws InstructionParseException {
-
-        final BetonQuestLogger log = loggerFactory.create(BetonExperienceEvent.class);
-        final NotificationSender notificationSender;
-
-        QuestPackage questPackage = instruction.getPackage();
-
-        if (instruction.hasArgument("notify")) {
-            notificationSender = new IngameNotificationSender(log, instruction.getPackage(), instruction.getID().getFullID(), NotificationLevel.INFO, "xp_given");
-        } else {
-            notificationSender = new NoNotificationSender();
-        }
-
-        final int value = instruction.getInt("amount", 5);
-        return new PrimaryServerThreadEvent(new OnlineEventAdapter(new BetonExperienceEvent(value,notificationSender), log, questPackage), data);
+    public PlayerEvent parsePlayer(org.betonquest.betonquest.instruction.Instruction instruction) throws QuestException {
+        final Variable<Number> amount = instruction.get(Argument.NUMBER);
+        return new PrimaryServerThreadEvent(new OnlineEventAdapter(
+                new BetonExperienceEvent(amount),
+                loggerFactory.create(BetonExperienceEvent.class),
+                instruction.getPackage()
+        ), data);
     }
 }

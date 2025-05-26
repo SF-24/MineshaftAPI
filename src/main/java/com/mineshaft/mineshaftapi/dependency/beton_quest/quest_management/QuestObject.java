@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class QuestObject {
 
@@ -27,12 +28,12 @@ public class QuestObject {
     protected String name = "";
     protected String description = "";
 
-    protected ArrayList<String> objectives = new ArrayList<>();
+    protected List<String> objectives = new ArrayList<>();
 
     protected QuestStatus status = QuestStatus.ACTIVE;
     private final QuestEventsObject eventObject;
 
-    public QuestObject(String name, String description, ArrayList<String> objectives, QuestEventsObject eventObject) {
+    public QuestObject(String name, String description, List<String> objectives, QuestEventsObject eventObject) {
         this.name=name;
         this.description=description;
         this.objectives=objectives;
@@ -44,7 +45,7 @@ public class QuestObject {
     public boolean usePlaceholderAPI() {return usePlaceholders;}
     public String getName() {return name;}
     public String getDescription() {return description;}
-    public ArrayList<String> getObjectives() {return objectives;}
+    public List<String> getObjectives() {return objectives;}
     public QuestStatus getStatus() {return status;}
     public QuestEventsObject getEventObject() {return eventObject;}
 }

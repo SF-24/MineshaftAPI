@@ -24,6 +24,8 @@ public enum EventType {
     BEAM,
     PLAY_SOUND,
     BETONQUEST,
+    PLAYER_VECTOR_DASH,
+    PLAYER_VECTOR_LEAP,
 
     ITEM_PURCHASE
 }

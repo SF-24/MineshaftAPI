@@ -19,22 +19,23 @@
 package com.mineshaft.mineshaftapi.dependency.beton_quest;
 
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
-import org.betonquest.betonquest.api.profiles.OnlineProfile;
+import org.betonquest.betonquest.api.profile.OnlineProfile;
+import org.betonquest.betonquest.api.quest.QuestException;
 import org.betonquest.betonquest.api.quest.event.online.OnlineEvent;
-import org.betonquest.betonquest.exceptions.InstructionParseException;
-import org.betonquest.betonquest.exceptions.QuestRuntimeException;
-import org.betonquest.betonquest.quest.event.NotificationSender;
+import org.betonquest.betonquest.instruction.variable.Variable;
 
 public class BetonExperienceEvent implements OnlineEvent {
-    final int amount;
+    /**
+     * The amount of exp to apply.
+     */
+    private final Variable<Number> amount;
 
-    public BetonExperienceEvent(final int amount, final NotificationSender experienceSender) throws InstructionParseException {
-        this.amount=amount;
+    public BetonExperienceEvent(final Variable<Number> amount) {
+        this.amount = amount;
     }
 
-
     @Override
-    public void execute(OnlineProfile profile) throws QuestRuntimeException {
-        JsonPlayerBridge.addXp(profile.getOnlineProfile().get().getPlayer(), amount);
+    public void execute(final OnlineProfile profile) throws QuestException {
+        JsonPlayerBridge.addXp(profile.getPlayer(), amount.getValue(profile).intValue());
     }
 }

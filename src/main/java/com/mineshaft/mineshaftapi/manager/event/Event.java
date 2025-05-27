@@ -20,6 +20,8 @@ package com.mineshaft.mineshaftapi.manager.event;
 
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.event.fields.TriggerType;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -31,9 +33,11 @@ public class Event {
     protected Vector offset = new Vector(0.0,0.0,0.0);
     protected EventType eventType = EventType.BEAM;
     protected TriggerType target = TriggerType.ANY;
+    protected String sound = null;
 
     protected HashMap<String, Object> customParameters = new HashMap<>();
 
+    public void setSound(String sound) {this.sound=sound;}
     public void setTarget(TriggerType target) {this.target = target;}
     public void setOffset(Vector offset) {this.offset=offset;}
     public void setOffset(double x, double y, double z) {this.offset=new Vector(x,y,z);}
@@ -47,4 +51,12 @@ public class Event {
     public Object getParameter(String key) {return customParameters.get(key);}
     public EventType getEventType() {return eventType;}
     public TriggerType getTarget() {return target;}
+    public String getSound() {return sound;}
+
+    public void playSound(Location loc) {
+        if(sound!=null) {
+            loc.getWorld().playSound(loc,sound, 1,1);
+        }
+    }
+
 }

@@ -45,7 +45,6 @@ public class VectorEventExecutor extends PlayerEventExecutor {
             if(vectorPlayerEvent.getSound()==null&&event.getParameter("sound")!=null) {
                 vectorPlayerEvent.setSound(event.getParameter("sound").toString());
             }
-            vectorPlayerEvent.playSound(player);
         }
 
     }

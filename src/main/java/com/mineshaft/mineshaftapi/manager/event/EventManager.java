@@ -217,7 +217,9 @@ public class EventManager {
 
         // get keys
         for(String field : yamlConfiguration.getKeys(false)) {
-            if(uniqueFields.contains(field)) {
+            if(field.equalsIgnoreCase("sound")) {
+                eventClass.setSound(yamlConfiguration.getString("sound"));
+            } else if(uniqueFields.contains(field)) {
                 eventClass.addParameter(field, yamlConfiguration.get(field));
             } else if(field.equals("offset")) {
                 // Set offset vector
@@ -250,9 +252,6 @@ public class EventManager {
 
             for(String key : yamlConfiguration.getKeys(false)) {
                 switch (key) {
-                    case "sound":
-                        beamEvent.setSound(yamlConfiguration.getString(key));
-                        break;
                     case "speed":
                         beamEvent.setSpeed(yamlConfiguration.getInt(key));
                         break;
@@ -301,6 +300,7 @@ public class EventManager {
                         switch (localEvent) {
                             case DAMAGE:
                                 object = yamlConfiguration.getDouble(path);
+                                break;
                             case EXPLODE:
                                 object = yamlConfiguration.getInt(path);
                                 break;

@@ -35,6 +35,8 @@ import java.util.ArrayList;
 
 public class ItemManagerAccessUtility {
 
+    // BROKEN! -> Needs fixing.
+
     @Description("Page numbers starting with 1." +
             "To avoid pagination set pageSize to 0 or -1. " +
             "Set page size to -2 to use default value (45)")

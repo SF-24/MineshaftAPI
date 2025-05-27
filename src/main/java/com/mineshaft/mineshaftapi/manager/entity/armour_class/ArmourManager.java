@@ -16,25 +16,25 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event;
+package com.mineshaft.mineshaftapi.manager.entity.armour_class;
 
-import org.bukkit.Location;
+import de.tr7zw.changeme.nbtapi.NBT;
+import org.bukkit.entity.Entity;
 
-import java.util.UUID;
+public class ArmourManager {
 
-public abstract class EventExecutor {
-
-    protected Event event;
-    protected Location loc;
-
-    public EventExecutor(Event event, Location loc) {
-        this.event=event;
-        this.loc=loc;
+    public static void setArmourClass(Entity entity, int armourClass) {
+        NBT.modify(entity, nbt->{
+            nbt.setInteger("armour_class",armourClass);
+        });
     }
 
-    public void executeEvent() {
-        event.playSound(loc);
+    public static int getArmourClass(Entity entity) {
+        if(entity==null) return 0;
+        NBT.get(entity, nbt->{
+            return nbt.getInteger("armour_class");
+        });
+        return 0;
     }
 
-    public abstract void executeEvent(UUID casterId);
 }

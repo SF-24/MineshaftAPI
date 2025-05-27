@@ -16,25 +16,12 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event;
+package com.mineshaft.mineshaftapi.manager.item.fields;
 
-import org.bukkit.Location;
+public enum ItemProperties {
 
-import java.util.UUID;
+    FINESSE,
+    LIGHT,
+    HEAVY,
 
-public abstract class EventExecutor {
-
-    protected Event event;
-    protected Location loc;
-
-    public EventExecutor(Event event, Location loc) {
-        this.event=event;
-        this.loc=loc;
-    }
-
-    public void executeEvent() {
-        event.playSound(loc);
-    }
-
-    public abstract void executeEvent(UUID casterId);
 }

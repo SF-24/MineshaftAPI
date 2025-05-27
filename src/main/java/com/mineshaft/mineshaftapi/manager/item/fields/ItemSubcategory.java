@@ -20,34 +20,66 @@ package com.mineshaft.mineshaftapi.manager.item.fields;
 
 public enum ItemSubcategory {
 
-    SWORD,
-    STAFF,
+    // W.I.P -> more coming soon...
 
-    LIGHTSABER,
-    VIBROWEAPON,
-    ELECTROSTAFF,
+    // TOOLS
 
-    CROSSBOW,
-    BOW,
-    GUN,
-    BLASTER,
-    RIFLE,
-    LASGUN,
+    TOOL /*generic*/ (ItemSubcategoryType.TOOL),
 
-    HELMET,
-    CHESTPLATE,
-    LEGGINGS,
-    BOOTS,
+    AXE(ItemSubcategoryType.TOOL),
+    PICKAXE(ItemSubcategoryType.TOOL),
+    SHOVEL(ItemSubcategoryType.TOOL),
+    HOE(ItemSubcategoryType.TOOL),
+    DRILL(ItemSubcategoryType.TOOL),
+    PIPE(ItemSubcategoryType.TOOL),
 
-    MEDKIT,
-    CONSUMABLE,
+    MEDKIT(ItemSubcategoryType.TOOL),
+    CONSUMABLE(ItemSubcategoryType.CONSUMABLE),
 
-    AXE,
-    PICKAXE,
-    HOE,
-    SHOVEL,
-    DRILL,
+    // WEAPONS
+    DAGGER(ItemSubcategoryType.WEAPON_SIMPLE),
+    STAFF(ItemSubcategoryType.WEAPON_SIMPLE),
 
-    DEFAULT;
+    SHORTSWORD(ItemSubcategoryType.WEAPON_MARTIAL),
+    LONGSWORD(ItemSubcategoryType.WEAPON_MARTIAL),
+    GLAIVE(ItemSubcategoryType.WEAPON_MARTIAL),
 
+    // RANGED WEAPONS
+    LIGHT_CROSSBOW(ItemSubcategoryType.WEAPON_SIMPLE),
+    HEAVY_CROSSBOW(ItemSubcategoryType.WEAPON_MARTIAL),
+    SHORTBOW(ItemSubcategoryType.WEAPON_SIMPLE),
+    LONGBOW(ItemSubcategoryType.WEAPON_MARTIAL),
+
+    // OTHER WEAPONS
+    LIGHTSABER(ItemSubcategoryType.WEAPON_LIGHT),
+    VIBROWEAPON(ItemSubcategoryType.WEAPON_LIGHT),
+    ELECTROSTAFF(ItemSubcategoryType.WEAPON_LIGHT),
+
+    // GUNS
+    GUN(ItemSubcategoryType.WEAPON_BLASTER),
+    BLASTER(ItemSubcategoryType.WEAPON_BLASTER),
+    RIFLE(ItemSubcategoryType.WEAPON_BLASTER),
+    LASGUN(ItemSubcategoryType.WEAPON_BLASTER),
+
+    // ARMOUR
+    HELMET(ItemSubcategoryType.ARMOUR),
+    HAT(ItemSubcategoryType.ARMOUR),
+    HOOD(ItemSubcategoryType.ARMOUR),
+    TUNIC(ItemSubcategoryType.ARMOUR),
+    CHESTPLATE(ItemSubcategoryType.ARMOUR),
+    TROUSERS(ItemSubcategoryType.ARMOUR),
+    LEGGINGS(ItemSubcategoryType.ARMOUR),
+    BOOTS(ItemSubcategoryType.ARMOUR),
+
+    DEFAULT(ItemSubcategoryType.NONE);
+
+    ;
+    private final ItemSubcategoryType type;
+
+    ItemSubcategory(ItemSubcategoryType type) {
+        this.type=type;
     }
+
+    public ItemSubcategoryType getType() {return type;}
+
+}

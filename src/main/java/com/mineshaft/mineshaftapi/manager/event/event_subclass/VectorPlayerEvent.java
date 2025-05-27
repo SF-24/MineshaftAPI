@@ -31,12 +31,6 @@ public class VectorPlayerEvent extends Event {
     public void setSound(String sound) {this.sound = sound;}
     public String getSound() {return sound;}
 
-    public void playSound(Player player) {
-        if(sound!=null) {
-            player.getWorld().playSound(player.getLocation(),sound, 1,1);
-        }
-    }
-
     public void dashPlayerEvent(Player player) {
         Vector dir = player.getLocation().getDirection().normalize();
 

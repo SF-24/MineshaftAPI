@@ -16,25 +16,22 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event;
+package com.mineshaft.mineshaftapi.manager.item.fields;
 
-import org.bukkit.Location;
+public enum ItemSubcategoryType {
 
-import java.util.UUID;
+    // MORE COMING SOON....
 
-public abstract class EventExecutor {
+    NONE,
 
-    protected Event event;
-    protected Location loc;
+    CONSUMABLE,
+    TOOL,
+    ARMOUR,
+    WEAPON_SIMPLE,
+    WEAPON_MARTIAL,
+    WEAPON_LIGHT,
+    WEAPON_VIBROWEAPON,
+    WEAPON_BLASTER
+    ;
 
-    public EventExecutor(Event event, Location loc) {
-        this.event=event;
-        this.loc=loc;
-    }
-
-    public void executeEvent() {
-        event.playSound(loc);
-    }
-
-    public abstract void executeEvent(UUID casterId);
 }

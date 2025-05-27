@@ -35,6 +35,8 @@ public class MythicEventListener implements Listener {
         } else if(event.getMechanicName().equalsIgnoreCase("targetedmineshaftevent"))	{
             event.register(new TargetEventMechanic(event.getConfig()));
             Logger.logInfo("-- Registered mineshaft targeting mechanic!");
+        } else if(event.getMechanic().equals("mineshaftarmourclass") || event.getMechanic().equals("mythic_armour_class") || event.getMechanic().equals("mineshaftarmour") || event.getMechanic().equals("mineshaft_armour")) {
+            event.register(new MythicSetArmourClassEvent(event.getConfig()));
         }
     }
 

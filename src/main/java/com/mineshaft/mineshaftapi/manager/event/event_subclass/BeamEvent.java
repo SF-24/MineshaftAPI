@@ -41,11 +41,11 @@ public class BeamEvent extends Event {
     HashMap<LocalEvent, Object> onHitEntity = new HashMap<>();
     HashMap<LocalEvent, Object> onHitBlock = new HashMap<>();
     HashMap<LocalEvent, Object> onHitPlayer = new HashMap<>();
-    private String sound;
+//    private String sound;
 
     public void setSpeed(int speed) {this.speed = speed;}
     public void setPower(int damage) {this.power = damage;}
-    public void setSound(String sound) {this.sound = sound;}
+  //  public void setSound(String sound) {this.sound = sound;}
     public void setFlyDistance(int flyDistance) {this.flyDistance = flyDistance;}
     public void setParticleCount(int particle) {this.particleCount = particle;}
     public void setParticleType(Particle particle) {this.particleType = particle;}
@@ -61,7 +61,7 @@ public class BeamEvent extends Event {
     public org.bukkit.Particle getParticleType() {return particleType;}
     public Color getColour() {return colour;}
     public int getSize() {return size;}
-    public String getSound() {return sound;}
+//    public String getSound() {return sound;}
 
     public void setOnHitEntity(LocalEvent event, Object value) {
         onHitEntity.clear();

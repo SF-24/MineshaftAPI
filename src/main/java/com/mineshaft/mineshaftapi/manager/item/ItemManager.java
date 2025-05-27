@@ -20,15 +20,16 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.ToolRuleExtended;
-import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemFields;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
+import com.mineshaft.mineshaftapi.manager.item.fields.*;
+import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.TextFormatter;
 import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTCompoundList;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
@@ -43,6 +44,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.components.EquippableComponent;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.potion.PotionEffect;
@@ -167,6 +169,7 @@ public class ItemManager {
 
         String itemDisplay = "Item";
         String parentItemDisplay = null;
+        ItemSubcategory subcategory = ItemSubcategory.DEFAULT;
 
         if (yamlConfiguration.contains("parent")) {
             String parentName = yamlConfiguration.getString("parent");
@@ -178,19 +181,12 @@ public class ItemManager {
                     YamlConfiguration parentYaml = YamlConfiguration.loadConfiguration(parent);
                     if (parentYaml.getString("subcategory") != null) {
                         parentItemDisplay = TextFormatter.convertStringToName(parentYaml.getString("subcategory"));
+                        subcategory = getItemSubcategory(parentYaml.getString("subcategory"));
                     }
                 }
             }
         }
-        final String[] rareCategory = new String[1];
 
-
-        NBT.modify(item, nbt -> {
-            rareCategory[0] = nbt.getOrNull("rarity", String.class);
-        });
-        if (rareCategory[0] != null) {
-            rarity = ItemRarity.valueOf(rareCategory[0].toUpperCase(Locale.ROOT));
-        }
 
         if (yamlConfiguration.contains("material")) {
             try {
@@ -231,15 +227,17 @@ public class ItemManager {
 
         boolean hideAttributes = true;
 
-        String subcategory = null;
-
         final ArmourType armourType;
+
+        List<String> itemProperties = new ArrayList<>();
 
         for (String field : yamlConfiguration.getKeys(false)) {
             switch (field) {
                 case "rarity":
                     rarity = ItemRarity.valueOf(yamlConfiguration.getString("rarity").toUpperCase(Locale.ROOT));
                     break;
+                case "item_properties":
+                    itemProperties=yamlConfiguration.getStringList("item_properties");
                 case "item_category":
                     category = ItemCategory.valueOf(yamlConfiguration.getString("item_category").toUpperCase(Locale.ROOT));
                     break;
@@ -271,7 +269,7 @@ public class ItemManager {
                 case "hide_attributes":
                     hideAttributes = yamlConfiguration.getBoolean("hide_attributes");
                 case "subcategory":
-                    subcategory = yamlConfiguration.getString("subcategory");
+                    subcategory = getItemSubcategory(yamlConfiguration.getString("subcategory"));
                 default:
             }
         }
@@ -328,8 +326,8 @@ public class ItemManager {
                 itemDisplay = "Consumable";
             }
 
-            if (subcategory != null && !subcategory.equalsIgnoreCase("")) {
-                itemDisplay = TextFormatter.convertStringToName(subcategory);
+            if (subcategory != null && !subcategory.equals(ItemSubcategory.DEFAULT)) {
+                itemDisplay = TextFormatter.convertStringToName(subcategory.name().toLowerCase());
             } else if (parentItemDisplay != null) {
                 itemDisplay = parentItemDisplay;
             }
@@ -385,6 +383,7 @@ public class ItemManager {
                 break;
             case ITEM_CONSUMABLE:
                 slot = null;
+
                 FoodComponent component = new ItemStack(Material.APPLE).getItemMeta().getFood();
 
                 String path = "food.";
@@ -584,6 +583,36 @@ public class ItemManager {
 
         meta.setLore(lore);
 
+        /**
+         * Custom equipment
+         */
+
+        if(slot!=null && yamlConfiguration.contains("armour")) {
+            EquippableComponent equippableComponent = meta.getEquippable();
+            if(equippableComponent==null) {equippableComponent=new ItemStack(Material.IRON_CHESTPLATE).getItemMeta().getEquippable();}
+
+            equippableComponent.setSlot(slot);
+            for(String key : yamlConfiguration.getConfigurationSection("armour").getKeys(false)) {
+                String path = "armour."+key;
+                switch (key) {
+                    case "equip_sound":
+                        equippableComponent.setEquipSound(Sound.valueOf(yamlConfiguration.getString(path)));
+                        break;
+                    case "model":
+                        equippableComponent.setModel(NamespacedKey.minecraft(yamlConfiguration.getString(path)));
+                        break;
+                    case "damage_on_hurt":
+                        equippableComponent.setDamageOnHurt(yamlConfiguration.getBoolean(path));
+                        break;
+                    default:
+                        break;
+                }
+            }
+            meta.setEquippable(equippableComponent);
+        }
+
+        // IMPORTANT!
+        // set item meta. no meta modification after here!!!!!!!
         item.setItemMeta(meta);
 
         /**
@@ -603,6 +632,8 @@ public class ItemManager {
             damageableMeta.setMaxDamage(durability);
             item.setItemMeta(damageableMeta);
         }
+
+        // final variant meta above here. No more after this.
 
         // Apply NBT tag with item
         NBT.modify(item, nbt -> {
@@ -705,6 +736,22 @@ public class ItemManager {
             item.setData(DataComponentTypes.CONSUMABLE, consumable);
         }
 
+
+        // Other properties
+        final String rareString = rarity.name().toLowerCase();
+
+        String finalSubcategory = subcategory.name().toLowerCase();
+        List<String> finalItemProperties = itemProperties;
+        List<String> finalItemProperties1 = itemProperties;
+        NBT.modify(item, nbt -> {
+            nbt.setString("rarity", rareString);
+            nbt.setString("sub_category", finalSubcategory);
+
+            // create the item property list
+            ReadWriteNBTList<String> propertyList = nbt.getStringList("item_properties");
+            propertyList.addAll(finalItemProperties1);
+        });
+        
         /**
          * Custom hardcoded properties
          * */
@@ -931,6 +978,41 @@ public class ItemManager {
         return value[0];
     }
 
+    // Get item subcategory from an item
+    public static ItemSubcategory getItemSubcategory(ItemStack item) {
+        if(item==null) return ItemSubcategory.DEFAULT;
+        NBT.get(item, nbt->{
+            return getItemSubcategory(nbt.getString("subcategory"));
+        });
+        return ItemSubcategory.DEFAULT;
+    }
+
+    public static List<String> getItemPropertiesAsString(ItemStack item) {
+        if(item==null) return Collections.emptyList();
+        NBT.get(item, nbt -> {
+            return nbt.getStringList("item_properties");
+        });
+        return Collections.emptyList();
+    }
+
+    public static List<ItemProperties> getItemProperties(ItemStack item) {
+        if(item==null) return Collections.emptyList();
+        List<ItemProperties> list = new ArrayList<>();
+        for(String p : getItemPropertiesAsString(item)) {
+            list.add(getItemProperty(p));
+        }
+        return list;
+    }
+
+    public static ItemProperties getItemProperty(String s) {
+        for(ItemProperties p : ItemProperties.values()) {
+            if(p.name().equalsIgnoreCase(s)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
     public static HashMap<ItemStats, Double> getItemNbtStats(ItemStack stack) {
         HashMap<ItemStats, Double> statMap = new HashMap<>();
 
@@ -1010,5 +1092,14 @@ public class ItemManager {
 
     public static @NotNull YamlConfiguration getYamlConfiguration(File fileYaml) {
         return YamlConfiguration.loadConfiguration(fileYaml);
+    }
+
+    public static ItemSubcategory getItemSubcategory(String subcategory) {
+        for(ItemSubcategory subcategoryItem : ItemSubcategory.values()) {
+            if(subcategoryItem.name().equalsIgnoreCase(subcategory)) {
+                return subcategoryItem;
+            }
+        }
+        return ItemSubcategory.DEFAULT;
     }
 }

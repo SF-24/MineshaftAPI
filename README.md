@@ -33,11 +33,14 @@ A paper (formerly spigot) plugin for Minecraft servers. Build with maven, docume
   - [Event example](#event-example)
   - [List of event parameters](#list-of-event-parameters)
     - [Beam event type](#beam-event-type)
+      - [On-hit local events](#on-hit-local-events)
+    - [Vector player event type](#vector-player-event-type)
 - [Configuration](#configuration)
 - [Integrations](#integrations)
     - [Mythic Mobs](#mythic-mobs)
         - [Mineshaft event skill](#mineshaft-event)
         - [Targeted Mineshaft event skill](#targeted-mineshaft-event)
+        - [Set armour class](#setting-armour-class)
     - [BetonQuest](#BetonQuest)
     - [PlaceholderAPI](#PlaceholderAPI)
 - [Dependents](#dependents)
@@ -58,18 +61,18 @@ Events can be triggered as **MythicMobs** mechanics via the integration.
 
 ~~A work in progress sidebar (disabled by default) is displayed to all players on the server. Customisation is not yet available.~~ (Shelved idea)
 
-Images representing examples of content included in the plugin may not be entirely accurate, as these were taken by a user with client mods and a resource pack altering the look of the game.
+Images representing examples of content included in the plugin may not be entirely accurate, as these were taken by a user with client mods and/or a resource pack altering the look of the game. 
+Some of these were taken with older versions of the plugin.
 
 ## Undocumented features
 The following features are not yet explained in the documentation
 
-- Beam event parameters
-- MythicMobs compatibility
+- MythicMobs compatibility (WIP)
 - Currency command (requires permission)
 - Permissions
 - Heal command (OP only)
 - PlayerSkills API (via MineshaftRpg) and Data API
-- Placeholders (Placeholder API integration)
+- Placeholders (Placeholder API integration) (partially)
 - Weapon cooldown
 - Item subtypes (partially explained. WIP)
 - Item stat priority list (descending)
@@ -463,15 +466,63 @@ This event will fire a red coloured beam. If it hits a mob, it will damage it fo
 ## List of event parameters
 The following parameters are available for all events. Each event type has unique parameters only available for its type.
 
-| Value        | Description                                                                                            | Data Type |
-|:-------------|--------------------------------------------------------------------------------------------------------|:----------|
-| `parent`     | The parent event. Currently WIP                                                                        | String    |
-| `event_type` | The event type. Specifies what happens when the event is triggered. Currently only `BEAM` is supported | Enum      |
-| `offset`     | The offset of the event. These values are added to the location where the event is executed            | Complex   |
+| Value        | Description                                                                                 | Data Type |
+|:-------------|---------------------------------------------------------------------------------------------|:----------|
+| `parent`     | The parent event. Currently WIP                                                             | String    |
+| `event_type` | The event type. Specifies what happens when the event is triggered.                         | Enum      |
+| `offset`     | The offset of the event. These values are added to the location where the event is executed | Complex   |
+| `sound`      | The sound which plays when the event triggers                                               | String    |
+
+| Event Type           | Description                                            |
+|:---------------------|--------------------------------------------------------|
+| `BEAM`               | Shoots a beam from the target location                 | 
+| `PLAYER_VECTOR_DASH` | Makes the player dash forwards                         | 
+| `PLAYER_VECTOR_LEAP` | Makes the player leap in the direction they are facing | 
+
 
 ### Beam event type
 
 The beam event fires off a beam in the direction in which the entity that executed it is facing. It supports multiple unique parameters. Not all parameters have to be filled in for the event to work
+
+| Value           | Description                                                              | Data Type |
+|:----------------|--------------------------------------------------------------------------|:----------|
+| `colour`        | The colour of the beam particles in RGB format (format: RRRGGGBBB)       | String    |
+| `particle_type` | The particle making up the beam                                          | Enum      |
+| `particle_size` | The size of the beam particles. Only applies to certain particles        | Integer   |
+| `fly_distance`  | The maximum distance the beam can fly. Only applies to certain particles | Integer   |
+| `speed`         | The speed of the beam in blocks per tick                                 | Integer   |
+| `offset`        | The offset from the cast location as a 3D vector                         | Vector    |
+| `on_hit`        | The local event, which occurs after a collision                          | Complex   |
+
+#### On hit local events
+
+On hit example:
+```yaml
+on_hit:
+  player:
+    explode: 1
+  entity:
+    damage: 2.0
+  block:
+    set_block: diamond_block
+```
+
+| Value       | Description                          | Data Type |
+|:------------|--------------------------------------|:----------|
+| `damage`    | Damage the entity or player          | Double    |
+| `explode`   | Trigger an explosion                 | Integer   |
+| `set_block` | Set the block at the target location | Material  |
+
+### Vector player event type
+
+Includes the `PLAYER_DASH_EVENT` and `PLAYER_LEAP_EVENT`.
+
+```yaml
+parent: 'null'
+event_type: PLAYER_DASH_EVENT
+```
+
+Takes no extra parameters.
 
 ### ***TODO: coming soon***
 
@@ -498,6 +549,7 @@ currency-plural: Credits
 # Integrations
 
 ## Mythic Mobs
+
 The MythicMobs integration allows you to trigger events *directly* from a MythicMobs file in the form of MythicMobs skills.
 
 The section can be directly appended to the `Skills` section of a MythicMob or the `Skills` section of a MythicMob skill. More information on the MythicMobs API is available on their [wiki](https://git.mythiccraft.io/mythiccraft/MythicMobs/-/wikis/home)
@@ -514,6 +566,8 @@ The @Target parameter after the skill just specifies the target and is an inbuil
 For entity targeters, please refer to the MythicMobs [wiki page](https://git.mythiccraft.io/mythiccraft/MythicMobs/-/wikis/Skills/Targeters)
 <br>
 Currently there are two types of MythicMobs events: `mineshaftevent` and `targetedmineshaftevent`
+<br><br>
+Another feature is setting the armour class of enemies.
 
 ### Mineshaft event
 The mineshaft event takes a location as a target the entity is aiming at. This allows the entity to aim at a block rather than a player or entity.
@@ -540,13 +594,27 @@ Syntax:
 `targetedmineshaftevent{e=event-name;d=damage;o=offset}` or
 `targetedmineshaftevent{event=event-name;damage=damage;offset=offset}`
 
-Where `damage` is the amount of damage dealth if the event damages an entity (this only works with certain events), `event-name` is the name of the event and `offset` is the offset (explained above).  
+Where `damage` is the amount of damage dealt if the event damages an entity (this only works with certain events, which do this), `event-name` is the name of the event and `offset` is the offset (explained above).  
 
 Examples:
 `mineshaftevent{event=loud-bang}`
 `mineshaftevent{e=direct-shot;d=22} @lastAttacker`
 `mineshaftevent{e=laser-shot;d=10;offset=2} @Target`
 `mineshaftevent{event=grenade-throw;o=25} @NearestPlayer`
+
+#### Setting armour class
+
+```yaml
+SetArmourClass:
+Skills:
+  - mineshaftarmourclass{v=10} @Self
+  - mineshaftarmourclass{value=10} @Self
+```
+The `v` (or `value`) parameter sets the armour class value. Leaving it unset sets it to 0.
+<br>
+The aliases `mineshaftarmourclass`, `mythic_armour_class`, `mineshaftarmour` and `mineshaft_armour` can be used for this event.
+<br><br>
+Regardless of the target, this event is triggered on the caster.
 
 ## BetonQuest
 
@@ -567,7 +635,6 @@ Some placeholders require the presence of MineshaftRpg to fully work:
 | `level`     | Current level ('1' unless MineshaftRpg is used) | Integer   |
 | `xp`        | Current xp ('0' unless MineshaftRpg is used)    | Integer   |
 | `culture`   | Current culture                                 | String    |
-
 
 
 # Dependents

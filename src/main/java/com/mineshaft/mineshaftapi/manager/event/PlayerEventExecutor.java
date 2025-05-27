@@ -32,7 +32,7 @@ public abstract class PlayerEventExecutor {
     }
 
     public void executeEvent() {
-        // TODO:
+        event.playSound(player.getLocation());
     }
 
     public abstract void executeEvent(UUID casterId);

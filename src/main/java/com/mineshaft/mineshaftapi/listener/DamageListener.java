@@ -19,6 +19,8 @@
 package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.DamageManager;
+import com.mineshaft.mineshaftapi.manager.entity.armour_class.ArmourManager;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.BlockingType;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
@@ -35,37 +37,30 @@ public class DamageListener implements Listener {
 
     @EventHandler
     void damageListener(EntityDamageEvent e) {
+        List<EntityDamageEvent.DamageCause> defendableDamage = new ArrayList<>();
+        defendableDamage.add(EntityDamageEvent.DamageCause.PROJECTILE);
+        defendableDamage.add(EntityDamageEvent.DamageCause.CONTACT);
+        defendableDamage.add(EntityDamageEvent.DamageCause.THORNS);
+        defendableDamage.add(EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+        defendableDamage.add(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION);
+        defendableDamage.add(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK);
+        defendableDamage.add(EntityDamageEvent.DamageCause.FLY_INTO_WALL);
+        defendableDamage.add(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION);
+        defendableDamage.add(EntityDamageEvent.DamageCause.HOT_FLOOR);
+        defendableDamage.add(EntityDamageEvent.DamageCause.MAGIC);
         if(e.getEntity() instanceof Player) {
-            List<EntityDamageEvent.DamageCause> defendableDamage = new ArrayList<>();
-            defendableDamage.add(EntityDamageEvent.DamageCause.PROJECTILE);
-            defendableDamage.add(EntityDamageEvent.DamageCause.CONTACT);
-            defendableDamage.add(EntityDamageEvent.DamageCause.THORNS);
-            defendableDamage.add(EntityDamageEvent.DamageCause.ENTITY_ATTACK);
-            defendableDamage.add(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION);
-            defendableDamage.add(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK);
-            defendableDamage.add(EntityDamageEvent.DamageCause.FLY_INTO_WALL);
-            defendableDamage.add(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION);
-            defendableDamage.add(EntityDamageEvent.DamageCause.HOT_FLOOR);
-            defendableDamage.add(EntityDamageEvent.DamageCause.MAGIC);
 
             if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
                 e.setCancelled(true);
             }
 
-//            e.getEntity().sendMessage("executed " + e.getCause());
             if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001) {
                 Player player = (Player) e.getEntity();
 
                 // If user is not blocking
                 if(MineshaftApi.getInstance().getBlockingManager().getBlockingType(player.getUniqueId())==null) {
-                    // Update damage depending on defence stat
-                    double defence = PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS, player);
-                    double damageReduction = defence / (defence + 20);
-                    double damage = e.getDamage();
-                    damage = damage * (1 - damageReduction);
-                    //player.sendMessage("Original damage " + e.getDamage());
-                    e.setDamage(damage);
-                    //player.sendMessage("New damage " + e.getDamage());
+                    // Update damage depending on armour class stat
+                    e.setDamage(DamageManager.calculateNewDamage(e.getDamage(),PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS, player)));
 
                 // On parry
                 } else if (MineshaftApi.getInstance().getBlockingManager().getBlockingType(player.getUniqueId()).equals(BlockingType.PARRY)) {
@@ -74,9 +69,16 @@ public class DamageListener implements Listener {
                     player.getWorld().playSound(player.getLocation(), "minecraft:sword.parry", 2.0f, pitch);
                     MineshaftApi.getInstance().getBlockingManager().removePlayerParry(player.getUniqueId());
 
-                // On block
+                // On block //TODO: add armour class modifier
                 } else if (MineshaftApi.getInstance().getBlockingManager().getBlockingType(player.getUniqueId()).equals(BlockingType.BLOCK)) {
-                    e.setDamage(e.getDamage() / 2);
+                    e.setDamage(DamageManager.calculateNewDamage(e.getDamage() / 2,PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS, player)));
+                }
+            }
+
+        } else {
+            if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001) {
+                if(ArmourManager.getArmourClass(e.getEntity())>0) {
+                    e.setDamage(DamageManager.calculateNewDamage(e.getDamage(),ArmourManager.getArmourClass(e.getEntity())));
                 }
             }
 

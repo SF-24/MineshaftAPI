@@ -48,8 +48,8 @@ A paper (formerly spigot) plugin for Minecraft servers. Build with maven, docume
 - [Plugin reloading](#plugin-reloading)
 
 # Important Copyright Information
-**This project is under the GPU Affero GPL v3 license**
-Terms of use can be found here:[ https://www.gnu.org/licenses/gpl-3.0.en.html](https://www.gnu.org/licenses/agpl-3.0.en.html)
+**This project is under the GPU Affero GPL v3 license**<br>
+Terms of use can be found [here](https://www.gnu.org/licenses/agpl-3.0.en.html)
 
 # Documentation
 Currently, the only functionality of this plugin are custom item creation, event creation and **Vault** server economy.

@@ -68,7 +68,7 @@ public class EventMechanic implements ITargetedLocationSkill {
             }
         }
 
-        eventManager.runEvent(event, loc, uuid);
+        eventManager.runEvent(event, loc, uuid,null);
 
         return SkillResult.SUCCESS;
     }

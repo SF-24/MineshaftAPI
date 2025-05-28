@@ -95,7 +95,7 @@ public class MineshaftCommand implements CommandExecutor {
 
                         Logger.logInfo(MineshaftApi.getInstance().getEventManagerInstance().getEvent(args[2]).toString());
 
-                        boolean success = MineshaftApi.getInstance().getEventManagerInstance().runEvent(MineshaftApi.getInstance().getEventManagerInstance().getEvent(args[2]), player.getLocation(), player.getUniqueId());
+                        boolean success = MineshaftApi.getInstance().getEventManagerInstance().runEvent(MineshaftApi.getInstance().getEventManagerInstance().getEvent(args[2]), player.getLocation(), player.getUniqueId(), player);
                         if(success) {
                             sendMessageToSender(sender, ChatColor.AQUA + "Event successfully executed");
                         } else {

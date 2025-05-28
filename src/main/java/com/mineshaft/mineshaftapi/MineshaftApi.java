@@ -23,6 +23,7 @@ import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
 import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicEventListener;
 import com.mineshaft.mineshaftapi.listener.*;
+import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.player.combat.BlockingManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
 import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
@@ -36,6 +37,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.UUID;
 
 public final class MineshaftApi extends JavaPlugin {
 
@@ -45,6 +48,8 @@ public final class MineshaftApi extends JavaPlugin {
     EventManager eventManager;
     DependencyInit dependencyInit = new DependencyInit();
     BlockingManager blockingManager = new BlockingManager();
+
+    HashMap<UUID, PendingAbilities> pendingAbilities = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -77,6 +82,7 @@ public final class MineshaftApi extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new DamageListener(), this);
         Bukkit.getPluginManager().registerEvents(new EquipListener(), this);
         Bukkit.getPluginManager().registerEvents(new PacketListener(), this);
+        Bukkit.getPluginManager().registerEvents(new WorldListener(), this);
 
         getCommand("mineshaft").setExecutor(new MineshaftCommand());
         getCommand("player_data").setExecutor(new PlayerDataCommand());
@@ -174,5 +180,17 @@ public final class MineshaftApi extends JavaPlugin {
     }
 
     public BlockingManager getBlockingManager() {return blockingManager;}
+
+    public PendingAbilities getPendingAbilities(UUID uuid) {
+        return pendingAbilities.get(uuid);
+    }
+
+    public void setPendingAbilities(UUID uuid, PendingAbilities pendingAbilities) {
+        this.pendingAbilities.put(uuid, pendingAbilities);
+    }
+
+    public void clearPendingAbilities(UUID uuid) {
+        this.pendingAbilities.remove(uuid);
+    }
 
 }

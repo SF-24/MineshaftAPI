@@ -18,31 +18,26 @@
 
 package com.mineshaft.mineshaftapi.manager.event.executor;
 
+import com.mineshaft.mineshaftapi.manager.event.EntityEventExecutor;
 import com.mineshaft.mineshaftapi.manager.event.Event;
-import com.mineshaft.mineshaftapi.manager.event.PlayerEventExecutor;
-import com.mineshaft.mineshaftapi.manager.event.event_subclass.VectorPlayerEvent;
-import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
-import org.bukkit.entity.Player;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.PrepareStrongAttackEntityEvent;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.UUID;
 
-public class VectorEventExecutor extends PlayerEventExecutor {
+public class PrepareStrongAttackEventExecutor extends EntityEventExecutor {
 
-    public VectorEventExecutor(Event event, Player player) {
-        super(event,player);
+    public PrepareStrongAttackEventExecutor(Event event, LivingEntity le) {
+        super(event,le);
     }
 
     @Override
     public void executeEvent(UUID casterId) {
         super.executeEvent();
 
-        if(event instanceof VectorPlayerEvent) {
-            VectorPlayerEvent vectorPlayerEvent = (VectorPlayerEvent) event;
-            if(event.getEventType().equals(EventType.PLAYER_VECTOR_LEAP)) {
-                vectorPlayerEvent.dashPlayerEvent(player);
-            } else if(event.getEventType().equals(EventType.PLAYER_VECTOR_DASH)) {
-                vectorPlayerEvent.leapPlayerEvent(player);
-            }
+        if(event instanceof PrepareStrongAttackEntityEvent) {
+            PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent = (PrepareStrongAttackEntityEvent) event;
+            prepareStrongAttackEntityEvent.prepareStrongAttack(entity);
         }
 
     }

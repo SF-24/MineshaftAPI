@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2025. Sebastian Frynas
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+package com.mineshaft.mineshaftapi.dependency.beton_quest;
+
+import com.mineshaft.mineshaftapi.dependency.DependencyInit;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.BetonEventObject;
+import com.mineshaft.mineshaftapi.util.Logger;
+import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.betonquest.betonquest.api.profile.OnlineProfile;
+import org.betonquest.betonquest.api.quest.QuestException;
+import org.betonquest.betonquest.id.EventID;
+import org.bukkit.entity.Player;
+
+public class BetonQuestManager {
+
+    public static void runBetonEvent(Player player, BetonEventObject betonEvent) {
+        if(!DependencyInit.hasBetonQuest()) return;
+        runBetonPlayerEvent(player, BetonQuest.getInstance().getPackages().get(betonEvent.getQuestPackageName()),betonEvent.getEvent());
+    }
+
+    public static void runBetonPlayerEvent(Player player, QuestPackage questPackage, String event) {
+        if(!DependencyInit.hasBetonQuest()) return;
+        final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
+        try {
+            BetonQuest.getInstance().getQuestTypeAPI().event(playerProfile,new EventID(questPackage,event));
+        } catch (QuestException e) {
+            Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
+        }
+    }
+
+}

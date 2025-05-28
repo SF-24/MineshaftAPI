@@ -18,22 +18,22 @@
 
 package com.mineshaft.mineshaftapi.manager.event;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public abstract class PlayerEventExecutor {
+public abstract class EntityEventExecutor {
 
     protected Event event;
-    protected Player player;
+    protected LivingEntity entity;
 
-    public PlayerEventExecutor(Event event, Player player) {
-        this.event=event;
-        this.player=player;
+    public EntityEventExecutor(Event event, LivingEntity entity) {
+        this.event=event; this.entity=entity;
     }
 
     public void executeEvent() {
-        event.playSound(player.getLocation());
+        event.playSound(entity.getLocation());
     }
 
     public abstract void executeEvent(UUID casterId);

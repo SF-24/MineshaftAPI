@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftapi.manager.player.json;
 
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestManager;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.BetonEventObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
@@ -207,18 +208,7 @@ public class JsonPlayerBridge {
     * QUESTS AND DISPLAY
     */
 
-    public static void runBetonEvent(Player player, BetonEventObject betonEvent) {
-        runBetonPlayerEvent(player,BetonQuest.getInstance().getPackages().get(betonEvent.getQuestPackageName()),betonEvent.getEvent());
-    }
 
-    public static void runBetonPlayerEvent(Player player, QuestPackage questPackage, String event) {
-        final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
-        try {
-            BetonQuest.getInstance().getQuestTypeAPI().event(playerProfile,new EventID(questPackage,event));
-        } catch (QuestException e) {
-            Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
-        }
-    }
 
     public static void addQuest(Player player, QuestObject questObject) {
 
@@ -232,7 +222,7 @@ public class JsonPlayerBridge {
             QuestEventsObject cancelEvent = getQuest(player,questName).getEventObject();
             if(cancelEvent!=null) {
                 final QuestPackage questPackage = (cancelEvent.getQuestPackage());
-                runBetonPlayerEvent(player,questPackage,questName);
+                BetonQuestManager.runBetonPlayerEvent(player,questPackage,questName);
             }
         } else {
             Logger.logError("Attempted to use quest display API while BetonQuest is not enabled. Quest functionality is unavailable without this plugin!");

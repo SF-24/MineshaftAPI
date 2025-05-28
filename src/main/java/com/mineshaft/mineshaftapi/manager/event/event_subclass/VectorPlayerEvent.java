@@ -26,11 +26,6 @@ import org.bukkit.util.Vector;
 
 public class VectorPlayerEvent extends Event {
 
-    private String sound = null;
-
-    public void setSound(String sound) {this.sound = sound;}
-    public String getSound() {return sound;}
-
     public void dashPlayerEvent(Player player) {
         Vector dir = player.getLocation().getDirection().normalize();
 

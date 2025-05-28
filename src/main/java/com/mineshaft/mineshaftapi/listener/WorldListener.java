@@ -16,11 +16,25 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event.event_subclass;
+package com.mineshaft.mineshaftapi.listener;
 
-public enum VectorPlayerEventType {
+import com.mineshaft.mineshaftapi.MineshaftApi;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.ChunkUnloadEvent;
+import org.jetbrains.annotations.NotNull;
 
-    DASH,
-    LEAP;
+public class WorldListener implements Listener {
+
+    @EventHandler
+    void onChunkUnloaded(ChunkUnloadEvent e) {
+        for(@NotNull Entity en : e.getChunk().getEntities()) {
+            if(en instanceof LivingEntity && MineshaftApi.getInstance().getPendingAbilities(en.getUniqueId())!=null) {
+                MineshaftApi.getInstance().clearPendingAbilities(en.getUniqueId());
+            }
+        }
+    }
 
 }

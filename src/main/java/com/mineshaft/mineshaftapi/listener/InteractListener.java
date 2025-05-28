@@ -142,7 +142,7 @@ public class InteractListener implements Listener {
                         player.getLocation().getWorld().playSound(player.getLocation(), sound, 5.0f, 1.0f);
                     }
                 }
-                eventManager.runEvent(executableEvent, player.getLocation(), player.getUniqueId());
+                eventManager.runEvent(executableEvent, player.getLocation(), player.getUniqueId(),player);
             }
         }
     }

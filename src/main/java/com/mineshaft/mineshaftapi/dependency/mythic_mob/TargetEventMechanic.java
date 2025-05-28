@@ -77,7 +77,7 @@ public class TargetEventMechanic implements ITargetedEntitySkill {
             }
         }
 
-        eventManager.runEvent(event, loc, uuid);
+        eventManager.runEvent(event, loc, uuid,null);
 
         return SkillResult.SUCCESS;
     }

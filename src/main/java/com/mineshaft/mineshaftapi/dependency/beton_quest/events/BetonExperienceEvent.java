@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.dependency.beton_quest;
+package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.betonquest.betonquest.api.profile.OnlineProfile;

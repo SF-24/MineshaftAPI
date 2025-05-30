@@ -20,7 +20,6 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.mineshaft.mineshaftapi.util.QuickFunction;
 import de.tr7zw.changeme.nbtapi.NBT;
 import jdk.jfr.Description;
 import org.bukkit.Bukkit;
@@ -89,7 +88,7 @@ public class ItemManagerAccessUtility {
                 ItemStack nextItem = new ItemStack(Material.ARROW);
                 ItemMeta nextMeta = nextItem.getItemMeta();
                 nextMeta.setDisplayName("Next Page");
-                nextMeta=QuickFunction.setLocalisedName(nextMeta,"next"+page);
+                //nextMeta=QuickFunction.setLocalisedName(nextMeta,"next"+page);
                 nextItem.setItemMeta(nextMeta);
                 itemInventory.setItem(53, nextItem);
             }
@@ -97,7 +96,7 @@ public class ItemManagerAccessUtility {
                 ItemStack backItem = new ItemStack(Material.ARROW);
                 ItemMeta backMeta = backItem.getItemMeta();
                 backMeta.setDisplayName("Previous Page");
-                backMeta=QuickFunction.setLocalisedName(backMeta,"back"+page);
+                //backMeta=QuickFunction.setLocalisedName(backMeta,"back"+page);
                 backItem.setItemMeta(backMeta);
                 itemInventory.setItem(45,backItem);
             }

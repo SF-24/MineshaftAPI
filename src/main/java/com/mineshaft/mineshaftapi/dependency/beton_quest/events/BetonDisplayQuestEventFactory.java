@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.dependency.beton_quest;
+package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;

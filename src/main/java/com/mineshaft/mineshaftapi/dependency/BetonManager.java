@@ -16,9 +16,8 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.dependency.beton_quest;
+package com.mineshaft.mineshaftapi.dependency;
 
-import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.BetonEventObject;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;
@@ -28,7 +27,7 @@ import org.betonquest.betonquest.api.quest.QuestException;
 import org.betonquest.betonquest.id.EventID;
 import org.bukkit.entity.Player;
 
-public class BetonQuestManager {
+public class BetonManager {
 
     public static void runBetonEvent(Player player, BetonEventObject betonEvent) {
         if(!DependencyInit.hasBetonQuest()) return;

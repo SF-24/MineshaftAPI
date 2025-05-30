@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.dependency.beton_quest;
+package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.PlayerQuestManagment;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;

@@ -19,14 +19,13 @@
 package com.mineshaft.mineshaftapi.dependency;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonDisplayQuestEventFactory;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonExperienceEventFactory;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonDisplayQuestEventFactory;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonExperienceEventFactory;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.quest.PrimaryServerThreadData;
 import org.bukkit.Bukkit;
-import org.slf4j.LoggerFactory;
 
 public class DependencyInit {
 

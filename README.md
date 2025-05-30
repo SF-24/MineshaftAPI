@@ -203,19 +203,19 @@ stats:
 
 ### List of item attributes
 
-| Value                        | Stat                             | Description                                                             |                                                                        Notes |
-|:-----------------------------|----------------------------------|:------------------------------------------------------------------------|-----------------------------------------------------------------------------:|
-| `damage`                     | Attack damage                    | Increases damage dealt via ranged and melee                             |                           WIP -> extremely glitchy when using ranged weapons |
-| `ranged_damage`              | Ranged attack damage             | Increases ranged damage                                                 |     WIP -> currently only applies to beam events triggered using this weapon |
-| `speed`                      | Health                           | Increases maximum health when equipped                                  |                                                                              |
-| `speed`                      | Speed                            | Will increase movement speed when implemented                           | Stat is applied to items, however functionality has not yet been implemented |
-| `reach`                      | Reach                            | Affects block and entity interaction reach distance                     |                                                                              | 
+| Value                        | Stat                             | Description                                                             |                                                                                              Notes |
+|:-----------------------------|----------------------------------|:------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------:|
+| `damage`                     | Attack damage                    | Increases damage dealt via ranged and melee                             |                                                 WIP -> extremely glitchy when using ranged weapons |
+| `ranged_damage`              | Ranged attack damage             | Increases ranged damage                                                 |                           WIP -> currently only applies to beam events triggered using this weapon |
+| `health`                     | Health                           | Increases maximum health when equipped                                  |                                                                                                    |
+| `speed`                      | Speed                            | Will increase movement speed when implemented                           |                       Stat is applied to items, however functionality has not yet been implemented |
+| `reach`                      | Reach                            | Affects block and entity interaction reach distance                     |                                                                                                    | 
 | `mining_reach`               | Block Interaction Reach          | Affects block interaction reach distance                                |
-| `attack_reach`               | Entity Interaction Reach         | Affects entity interaction reach distance                               |                                                                              |
-| `attack_speed`               | Attack Speed                     | The attack speed of an item.                                            |                                       Work in progress. Do not use on armour | 
-| `armour`                     | Armour                           | The default Minecraft armour stat                                       |                                                                              |
-| `armour_class`               | Armour Class (WIP)               | Reduces damage taken (excluding certain sources like drowning)          |                                    Armour Class scalability will be modified |
-| `maximum_added_dex_modifier` | Maximum added dexterity modifier | Modifies the maximum MineshaftRpg dexterity bonus added to armour class |   Only works in conjunction with MineshaftRpg (WIP). Does nothing on its own |
+| `attack_reach`               | Entity Interaction Reach         | Affects entity interaction reach distance                               |                                                                                                    |
+| `attack_speed`               | Attack Speed                     | The attack speed of an item.                                            |                                                             Work in progress. Do not use on armour | 
+| `armour`                     | Armour                           | The default Minecraft armour stat                                       |                                                                                                    |
+| `armour_class`               | Armour Class (WIP)               | Reduces damage taken (excluding certain sources like drowning)          |                                                          Armour Class scalability will be modified |
+| `maximum_added_dex_modifier` | Maximum added dexterity modifier | Modifies the maximum MineshaftRpg dexterity bonus added to armour class | Set to -1 for infinite. Only works in conjunction with MineshaftRpg (WIP). Does nothing on its own |
 
 
 ### Food
@@ -280,6 +280,17 @@ consumable:
 | `has_consume_particles` | Consumption Particles | Whether particles are played during consumption              |   Boolean |                                                                                                                           |
 | `potion_effects`        | Potion effects        | Potion effects given to the player when the item is consumed |   Complex |                                                                                                                           |
 
+
+### Potion effect parameters
+| Value                | Stat               | Description                                 | Data Type |                                                                                                Notes |
+|:---------------------|--------------------|:--------------------------------------------|----------:|-----------------------------------------------------------------------------------------------------:|
+| `potion-effect-name` | Potion effect name | Replace with the potion effect type name    |      Enum | [1.21 effect list](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html) |
+| `duration`           | Duration           | Duration in ticks of the effect             |   Integer |                                                                                                      |
+| `amplifier`          | Amplifier          | Level of the effect - starting with 0       |   Integer |                                                                                                      |
+| `ambient`            | Ambient            | Whether the displayed particles are ambient |   Boolean |                                                                                                      |
+| `particles`          | Show particles     | Whether the effect particles are displayed  |   Boolean |                                                                                                      |
+| `icon`               | Show icon          | Whether the effect icon is displayed        |   Boolean |                                                                                                      |
+
 ### Potion effects
 This section controls the potion effect which are applied when the item is consumed
 Adding "clear" as seen below clears the potion effects
@@ -314,20 +325,13 @@ armour:
     b: 255
 ```
 
-| Value    | Stat        | Description                                           |     Data Type |                    Notes |
-|:---------|-------------|:------------------------------------------------------|--------------:|-------------------------:|
-| `colour` | Colour      | The colour of the armour (leather only) in RGB format | Complex (RGB) |                          |
-| `type`   | Armour Type | The armour type                                       |          Enum | Applied as a description |
-
-### Potion effect parameters
-| Value                | Stat               | Description                                 | Data Type |                                                                                                Notes |
-|:---------------------|--------------------|:--------------------------------------------|----------:|-----------------------------------------------------------------------------------------------------:|
-| `potion-effect-name` | Potion effect name | Replace with the potion effect type name    |      Enum | [1.21 effect list](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html) |
-| `duration`           | Duration           | Duration in ticks of the effect             |   Integer |                                                                                                      |
-| `amplifier`          | Amplifier          | Level of the effect - starting with 0       |   Integer |                                                                                                      |
-| `ambient`            | Ambient            | Whether the displayed particles are ambient |   Boolean |                                                                                                      |
-| `particles`          | Show particles     | Whether the effect particles are displayed  |   Boolean |                                                                                                      |
-| `icon`               | Show icon          | Whether the effect icon is displayed        |   Boolean |                                                                                                      |
+| Value            | Name           | Description                                                           |     Data Type |                    Notes |
+|:-----------------|----------------|:----------------------------------------------------------------------|--------------:|-------------------------:|
+| `colour`         | Colour         | The colour of the armour (leather only) in RGB format                 | Complex (RGB) |                          |
+| `type`           | Armour Type    | The armour type                                                       |          Enum | Applied as a description |
+| `equip_sound`    | Equip Sound    | The equipping sound                                                   |        String |                          |
+| `model`          | Model          | The armour model                                                      |        String |                          |
+| `damage_on_hurt` | Damage on hurt | Whether the armour durability is lowered when the player takes damage |       Boolean |                          |
 
 
 #### Armour Types (WIP)

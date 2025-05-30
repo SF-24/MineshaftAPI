@@ -16,8 +16,9 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.dependency;
+package com.mineshaft.mineshaftapi.dependency.beton_quest;
 
+import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.BetonEventObject;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;
@@ -27,7 +28,7 @@ import org.betonquest.betonquest.api.quest.QuestException;
 import org.betonquest.betonquest.id.EventID;
 import org.bukkit.entity.Player;
 
-public class BetonManager {
+public class BetonQuestManager {
 
     public static void runBetonEvent(Player player, BetonEventObject betonEvent) {
         if(!DependencyInit.hasBetonQuest()) return;
@@ -43,5 +44,26 @@ public class BetonManager {
             Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
         }
     }
+
+    public static BetonEventObject getBetonQuestEventObject(String packageName, String name, boolean isPlayerEvent) {
+        if(!DependencyInit.hasBetonQuest()) return null;
+        return new BetonEventObject(isPlayerEvent,packageName,name);
+    }
+
+    public static void runBetonPlayerEvent(Player player, String questPackage, String event) {
+        if(!DependencyInit.hasBetonQuest() || getPackage(questPackage) == null) return;
+        final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
+        try {
+            BetonQuest.getInstance().getQuestTypeAPI().event(playerProfile,new EventID(getPackage(questPackage),event));
+        } catch (QuestException e) {
+            Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
+        }
+    }
+
+    public static QuestPackage getPackage(String packageName) {
+        if(!DependencyInit.hasBetonQuest()) return null;
+        return BetonQuest.getInstance().getPackages().get(packageName);
+    }
+
 
 }

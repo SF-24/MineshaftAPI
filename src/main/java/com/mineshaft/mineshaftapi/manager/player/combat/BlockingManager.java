@@ -51,8 +51,10 @@ public class BlockingManager {
     }
 
     public void removePlayerBlocking(UUID uuid) {
-        this.playersBlocking.remove(uuid);
-        addCooldown(Bukkit.getPlayer(uuid));
+        if(playersBlocking.contains(uuid)) {
+            this.playersBlocking.remove(uuid);
+            addCooldown(Bukkit.getPlayer(uuid));
+        }
         Logger.logInfo("Removed blocking player: " + uuid);
     }
 

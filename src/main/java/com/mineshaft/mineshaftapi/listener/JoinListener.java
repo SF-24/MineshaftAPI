@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.manager.ui.SidebarManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerManager;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class JoinListener implements Listener {
         Player player = e.getPlayer();
 
         // Make a new json player manager
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player);
+        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
 
         if(MineshaftApi.getInstance().getConfigManager().getSidebarEnabled()) {
             SidebarManager.displayScoreboard(player);

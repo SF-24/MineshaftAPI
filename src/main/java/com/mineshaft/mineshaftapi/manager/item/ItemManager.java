@@ -20,15 +20,15 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.ToolRuleExtended;
+import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.item.fields.*;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.TextFormatter;
 import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTCompoundList;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
@@ -38,9 +38,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -55,6 +53,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static org.bukkit.inventory.RecipeChoice.MaterialChoice;
+
 public class ItemManager {
 
     HashMap<UUID, String> items = new HashMap<>();
@@ -65,6 +65,7 @@ public class ItemManager {
     }
 
     String path = MineshaftApi.getInstance().getItemPath();
+
 
     public void initialiseItems() {
         items = new HashMap<>();
@@ -107,6 +108,14 @@ public class ItemManager {
         if(items.containsValue(fileName)) {
             Logger.logWarning("Conflicting item names: '" + fileName + "'. This may result in errors due to items containing the same name. This may be fixed in a future release.");
         }
+        if(ItemRepairManager.getRepairMaterials(fileName)!=null && DependencyInit.hasCustomCrafting()) {
+            for(Material material : ItemRepairManager.getRepairMaterials(fileName).keySet()) {
+                ItemStack item = MineshaftApi.getInstance().getItemManagerInstance().getItem(fileName);
+                SmithingRecipe recipe = new SmithingTransformRecipe(new NamespacedKey("mineshaft","mineshaft1"),
+                        item,new RecipeChoice.MaterialChoice(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE), new RecipeChoice.ExactChoice(item), new RecipeChoice.MaterialChoice(material) );
+                Bukkit.addRecipe(recipe);
+            }
+        }
 
         File fileYaml = new File(path, fileName);
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
@@ -146,6 +155,7 @@ public class ItemManager {
         }
         return null;
     }
+
 
     @SuppressWarnings({"deprecation","removal"})
     public ItemStack getItem(String itemName) {
@@ -274,6 +284,8 @@ public class ItemManager {
             }
         }
 
+        boolean coldProtect = false;
+
         if (category == ItemCategory.ARMOUR_HELMET || category == ItemCategory.ARMOUR_BOOTS || category == ItemCategory.ARMOUR_CHESTPLATE || category == ItemCategory.ARMOUR_LEGGINGS) {
             if (yamlConfiguration.contains("armour.type")) {
                 armourType = ArmourType.valueOf(yamlConfiguration.getString("armour.type"));
@@ -281,6 +293,9 @@ public class ItemManager {
                 armourType = ArmourType.valueOf(yamlConfiguration.getString("armor.type"));
             } else {
                 armourType = ArmourType.NONE;
+            }
+            if(yamlConfiguration.contains("armour.cold_protection")) {
+                coldProtect=yamlConfiguration.getBoolean("armour.cold_protection");
             }
             if (yamlConfiguration.contains("armour.colour")) {
                 if (yamlConfiguration.contains("armour.colour.g")) {
@@ -333,17 +348,25 @@ public class ItemManager {
             }
 
             if (MineshaftApi.getInstance().getConfigManager().useItalicItemRarity()) {
-                lore.add(rarity.getColourCode() + ChatColor.ITALIC.toString() + rarity.getName() + " " + itemDisplay);
+                String italic = ChatColor.ITALIC.toString();
+                lore.add(rarity.getSecondaryColourCode() + italic + rarity.getName() + " " + itemDisplay);
             } else {
-                lore.add(rarity.getColourCode() + rarity.getName() + " " + itemDisplay);
+                lore.add(rarity.getSecondaryColourCode() + rarity.getName() + " " + itemDisplay);
             }
-
-            if (!armourType.equals(ArmourType.NONE)) {
-                lore.add(ChatColor.GRAY + armourType.getName());
+        }
+        if (!armourType.equals(ArmourType.NONE)) {
+            lore.add(ChatColor.GRAY + armourType.getName());
+            if(coldProtect) {
+                lore.add(ChatColor.GRAY + "Frost Protection");
             }
-
+            lore.add("");
+        } else if(!rarity.equals(ItemRarity.STANDARD)) {
+            if(coldProtect) {
+                lore.add(ChatColor.GRAY + "Frost Protection");
+            }
             lore.add("");
         }
+
 
         // Load file stats, append to lore and add them to the item
 
@@ -557,7 +580,7 @@ public class ItemManager {
             }
         }
 
-        if(hasStats) {
+        if(!rangedStatMap.isEmpty()) {
             lore.add("");
         }
 
@@ -575,7 +598,7 @@ public class ItemManager {
         if (hideAttributes) {
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }
-
+        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         meta.addItemFlags(ItemFlag.HIDE_DYE);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -636,12 +659,14 @@ public class ItemManager {
         // final variant meta above here. No more after this.
 
         // Apply NBT tag with item
+        final boolean finalColdProtect = coldProtect;
         NBT.modify(item, nbt -> {
             nbt.setString("uuid", uuid);
             if(!armourType.equals(ArmourType.NONE)) {
                 nbt.setString("ArmourType",armourType.name().toLowerCase());
             }
             // More are available! Ask your IDE, or see Javadoc for suggestions!
+            nbt.setBoolean("ColdProtection", finalColdProtect);
         });
 
         // Custom stats.
@@ -913,9 +938,9 @@ public class ItemManager {
             }
         } else if(stat.equals(ItemStats.ARMOUR_CLASS)) {
             if(arg>0) {
-                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + "+ DEX" + ChatColor.WHITE + "(" + arg + ")";
+                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + " + DEX" + ChatColor.WHITE + "(" + arg + ")";
             } else if(arg<0) {
-                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + "+ DEX";
+                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + " + DEX";
             }
         }
         return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + "+" + NumericFormatter.formatNumberAdvanced(value);

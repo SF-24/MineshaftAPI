@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.manager.player.json;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class JsonProfileBridge {
 
@@ -28,6 +29,18 @@ public class JsonProfileBridge {
         if(player==null) return null;
         JsonProfileManager jpm = new JsonProfileManager(player);
         return jpm.getCurrentProfile();
+    }
+
+    public static List<String> getUnlockedCultures(Player player) {
+        if(player==null) return List.of();
+        JsonProfileManager jpm = new JsonProfileManager(player);
+        return jpm.getUnlockedCultures();
+    }
+
+    public static void addUnlockedCulture(Player player, String culture) {
+        if(player==null) return;
+        JsonProfileManager jpm = new JsonProfileManager(player);
+        jpm.addUnlockedCulture(culture);
     }
 
     public static void setCurrentProfile(Player player, String profile) {

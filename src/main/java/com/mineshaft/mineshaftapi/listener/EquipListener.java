@@ -18,8 +18,11 @@
 
 package com.mineshaft.mineshaftapi.listener;
 
+import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.player.ArmourEquipManager;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,25 +55,83 @@ public class EquipListener implements Listener {
         } catch (Exception npe) {
             System.out.println("Could not execute interact debug.");
         }
-        if (e.getInventory().getHolder() != null) {
-            if (e.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
+        if (e.getInventory().getHolder() != null && e.getView().getType().equals(InventoryType.PLAYER)) {
+            if(e.getClick().equals(ClickType.NUMBER_KEY)) {
+                e.setCancelled(true);
+            } else if (e.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
                 // if player clicks on armour slot
                 ItemStack cursor = e.getCursor();
                 if (ArmourEquipManager.tryEquip((Player) e.getWhoClicked(), e.getCursor())) e.setCancelled(true);
+                JsonPlayerBridge.getTempArmourClass((Player) e.getWhoClicked());
             } else if (e.getClick().equals(ClickType.SHIFT_LEFT) || e.getClick().equals(ClickType.SHIFT_RIGHT)) {
                 // if player shift clicks to equip armour
-
-                if(!hasEquippedItem((Player) e.getWhoClicked(),e.getCurrentItem()) && isArmour(e.getCurrentItem())) {
-                    e.setCancelled(ArmourEquipManager.tryEquip((Player) e.getWhoClicked(), e.getCurrentItem()));
+                //if(!hasEquippedItem((Player) e.getWhoClicked(),e.getCurrentItem()) && isArmour(e.getCurrentItem())) {
+                if(ArmourEquipManager.tryEquip((Player) e.getWhoClicked(),e.getCurrentItem())) { //ArmourEquipManager.tryEquip((Player) e.getWhoClicked(),e.getCurrentItem())) {
+                    e.setCancelled(true);
+                    //e.setCancelled(ArmourEquipManager.tryEquip((Player) e.getWhoClicked(), e.getCurrentItem()));
                 }
+                JsonPlayerBridge.getTempArmourClass((Player) e.getWhoClicked());
+
                 // If the player swaps with the hotbar slot to equip armour
-            } else if(e.getAction().equals(InventoryAction.HOTBAR_SWAP) && e.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
+            } else if(e.getAction().equals(InventoryAction.HOTBAR_SWAP) /*&& e.getSlotType().equals(InventoryType.SlotType.ARMOR)*/) {
                 e.setCancelled(true);
                 if(isArmour(e.getWhoClicked().getInventory().getItem(e.getHotbarButton()))) {
                     e.setCancelled(ArmourEquipManager.tryEquip((Player) e.getWhoClicked(), e.getWhoClicked().getInventory().getItem(e.getHotbarButton())));
                 }
+                JsonPlayerBridge.getTempArmourClass((Player) e.getWhoClicked());
+
             }
         }
+
+        Bukkit.getScheduler().runTaskLaterAsynchronously(MineshaftApi.getInstance(),()->{
+            // post equip armour check
+            Player player = (Player) e.getWhoClicked();
+            for(int i = 0; i<4; i++) {
+                boolean forbidden=false;
+                ItemStack item = new ItemStack(Material.AIR);
+                switch (i) {
+                    case 0 -> {
+                        forbidden = ArmourEquipManager.tryEquip(player, player.getInventory().getBoots());
+                        item=player.getInventory().getBoots();
+                        break;
+                    }
+                    case 1 -> {
+                        forbidden = ArmourEquipManager.tryEquip(player, player.getInventory().getLeggings());
+                        item=player.getInventory().getLeggings();
+                        break;
+                    }
+                    case 2 -> {
+                        forbidden = ArmourEquipManager.tryEquip(player, player.getInventory().getChestplate());
+                        item=player.getInventory().getChestplate();
+                        break;
+                    }
+                    case 3 -> {
+                        forbidden = ArmourEquipManager.tryEquip(player, player.getInventory().getHelmet());
+                        item=player.getInventory().getHelmet();
+                        break;
+                    }
+                }
+                if(forbidden) {
+                    switch(i) {
+                        case 0 -> {
+                            player.getInventory().setBoots(new ItemStack(Material.AIR));
+                        }
+                        case 1 -> {
+                            player.getInventory().setLeggings(new ItemStack(Material.AIR));
+                        }
+                        case 2 -> {
+                            player.getInventory().setChestplate(new ItemStack(Material.AIR));
+                        }
+                        case 3 -> {
+                            player.getInventory().setHelmet(new ItemStack(Material.AIR));
+                        }
+                    }
+                    if(hasInventorySpace(player) && item!=null) {player.getInventory().addItem(item);}
+                    else if(item!=null) {player.getWorld().dropItem(player.getLocation(),item);}
+                }
+            }
+            JsonPlayerBridge.getTempArmourClass((Player) e.getWhoClicked());
+        },1/20);
     }
 
     @EventHandler
@@ -132,14 +193,16 @@ public class EquipListener implements Listener {
 
     @EventHandler
     void closeInventory(InventoryCloseEvent e) {
-        for(int i=36; i<40; i++) {
-            if(e.getPlayer().getInventory().getItem(i)!=null && hasArmourInSlot((Player) e.getPlayer(),i)) {
-                if(ArmourEquipManager.tryEquip((Player) e.getPlayer(), e.getPlayer().getInventory().getItem(i))) {
-                    e.getPlayer().getWorld().dropItem(e.getPlayer().getLocation(), (e.getPlayer().getInventory().getItem(i)));
-                    e.getPlayer().getInventory().setItem(i, new ItemStack(Material.AIR));
-                }
-            }
-        }
+//        for(int i=36; i<40; i++) {
+//            if(e.getPlayer().getInventory().getItem(i)!=null && hasArmourInSlot((Player) e.getPlayer(),i)) {
+//                if(ArmourEquipManager.tryEquip((Player) e.getPlayer(), e.getPlayer().getInventory().getItem(i))) {
+//                    e.getPlayer().getWorld().dropItem(e.getPlayer().getLocation(), (e.getPlayer().getInventory().getItem(i)));
+//                    e.getPlayer().getInventory().setItem(i, new ItemStack(Material.AIR));
+//                }
+//            }
+//        }
+
+
     }
 
 
@@ -151,5 +214,12 @@ public class EquipListener implements Listener {
                 || typeNameString.endsWith("_CHESTPLATE")
                 || typeNameString.endsWith("_LEGGINGS")
                 || typeNameString.endsWith("_BOOTS");
+    }
+
+    public static boolean hasInventorySpace(Player player) {
+        for(int i = 0; i<36;i++) {
+            if(player.getInventory().getItem(i)==null || player.getInventory().getItem(i).getType().equals(Material.AIR)) return true;
+        }
+        return false;
     }
 }

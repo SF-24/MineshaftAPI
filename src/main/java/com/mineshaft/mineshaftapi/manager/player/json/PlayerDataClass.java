@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.manager.player.json;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.SkillClass;
+import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,13 @@ import java.util.List;
 public class PlayerDataClass {
 
     // Character Data
+
+    double x = 0;
+    double y = 64;
+    double z = 0;
+    float pitch = 0;
+    float yaw = 0;
+    String world = null;
 
     HashMap<PlayerSkills, SkillClass> skills = new HashMap<>();
     HashMap<String, Integer> playerAttributes = new HashMap<>();
@@ -43,6 +51,8 @@ public class PlayerDataClass {
     // Saved Inventory
 
     HashMap<Integer, String> inventory = null;
+
+//    ArrayList<PotionEffect> effects;
 
     // Reputation
 
@@ -75,8 +85,24 @@ public class PlayerDataClass {
      * Inventory
      * */
 
+    public void setLocation(Location location) {
+        this.world=location.getWorld().getName();
+        this.x = location.getX();
+        this.y = location.getY();
+        this.z = location.getZ();
+        this.pitch=location.getPitch();
+        this.yaw=location.getYaw();
+    }
     public void setInventory(HashMap<Integer, String> inventory) { this.inventory = inventory; }
+    //public void setEffects(ArrayList<PotionEffect> effects) { this.effects = effects; }
     public HashMap<Integer, String> getInventory() { return inventory;}
+    public String getLocWorld() { return world;}
+    public double getLocX() { return x;}
+    public double getLocY() { return y;}
+    public double getLocZ() { return z;}
+    public float getLocPitch() {return pitch;}
+    public float getLocYaw() {return yaw;}
+    //public ArrayList<PotionEffect> getEffects() { return effects;}
 
     public void setTempArmourClass(double value) {this.tempArmourClass = value;}
     public double getTempArmourClass() {return tempArmourClass;}

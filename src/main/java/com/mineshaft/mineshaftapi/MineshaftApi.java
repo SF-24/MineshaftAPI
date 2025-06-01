@@ -83,6 +83,8 @@ public final class MineshaftApi extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EquipListener(), this);
         Bukkit.getPluginManager().registerEvents(new PacketListener(), this);
         Bukkit.getPluginManager().registerEvents(new WorldListener(), this);
+        Bukkit.getPluginManager().registerEvents(new RepairListener(), this);
+//        Bukkit.getPluginManager().registerEvents(new UIListener(), this);
 
         getCommand("mineshaft").setExecutor(new MineshaftCommand());
         getCommand("player_data").setExecutor(new PlayerDataCommand());

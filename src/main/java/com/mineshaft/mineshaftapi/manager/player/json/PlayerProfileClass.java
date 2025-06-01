@@ -24,6 +24,7 @@ public class PlayerProfileClass {
 
     String currentProfile = "Default";
     ArrayList<String> profiles = new ArrayList<>();
+    ArrayList<String> unlockedCultures = new ArrayList<>();
 
     public void setCurrentProfile(String currentProfile) {this.currentProfile=currentProfile;}
     public String getCurrentProfile() {return this.currentProfile;}
@@ -33,4 +34,7 @@ public class PlayerProfileClass {
 
     public void addProfile(String profile) {this.profiles.add(profile);}
     public void removeProfile(String profile) {this.profiles.remove(profile);}
+    
+    public void setUnlockedCultures(ArrayList<String> unlockedCultures) {this.unlockedCultures=unlockedCultures;}
+    public ArrayList<String> getUnlockedCultures() {return this.unlockedCultures;}
 }

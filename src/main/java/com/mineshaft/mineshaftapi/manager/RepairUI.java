@@ -18,15 +18,30 @@
 
 package com.mineshaft.mineshaftapi.manager;
 
-public class DamageManager {
 
-    // Change this to modify how much armour class protects the user
-    static final double baseDamageCalculationValue = 14;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-    public static double calculateNewDamage(double damage, double armourClass) {
-        double damageReduction = armourClass / (armourClass +
-                baseDamageCalculationValue);
-        return damage * (1 - damageReduction);
+public class RepairUI {
+
+    public static void openRepairUI(Player player) {
+        ItemStack empty = new ItemStack(Material.PEONY);
+        ItemMeta meta = empty.getItemMeta();
+        meta.setDisplayName(" ");
+        meta.setCustomModelData(1);
+        empty.setItemMeta(meta);
+        Inventory repair = Bukkit.createInventory(null, 27, ChatColor.BLACK + "Item Repair");
+        for(int i = 0; i<27; i++) {
+            if(i!=10&&i!=13&&i!=16) {
+                repair.setItem(i, empty);
+            }
+        }
+        player.openInventory(repair);
     }
 
 }

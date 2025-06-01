@@ -66,6 +66,10 @@ public class DependencyInit {
         return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
     }
 
+    public static boolean hasCustomCrafting() {
+        return Bukkit.getPluginManager().getPlugin("CustomCrafting") != null && Bukkit.getPluginManager().isPluginEnabled("CustomCrafting");
+    }
+
     public static boolean hasVault() {
         return Bukkit.getPluginManager().getPlugin("Vault") != null && Bukkit.getPluginManager().isPluginEnabled("Vault");
     }

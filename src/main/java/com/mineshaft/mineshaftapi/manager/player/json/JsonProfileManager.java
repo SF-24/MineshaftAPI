@@ -173,8 +173,25 @@ public class JsonProfileManager {
         saveFile(ppc);
     }
 
+    public void setUnlockedCultures(ArrayList<String> unlockedCultures) {
+        PlayerProfileClass ppc = loadData(player);
+        ppc.setUnlockedCultures(unlockedCultures);
+        saveFile(ppc);
+    }
+
+    public void addUnlockedCulture(String culture) {
+        ArrayList<String> unlockedCultures = getUnlockedCultures();
+        unlockedCultures.add(culture);
+        setUnlockedCultures(unlockedCultures);
+    }
+
     public ArrayList<String> getProfiles() {
         PlayerProfileClass ppc = loadData(player);
         return ppc.getProfiles();
+    }
+
+    public ArrayList<String> getUnlockedCultures() {
+        PlayerProfileClass ppc = loadData(player);
+        return ppc.getUnlockedCultures();
     }
 }

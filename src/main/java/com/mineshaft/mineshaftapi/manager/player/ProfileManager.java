@@ -45,6 +45,10 @@ public class ProfileManager {
         return getDataPathOfPlayer(playerId) + File.separator + JsonProfileBridge.getCurrentProfile(Bukkit.getPlayer(playerId));
     }
 
+    public static String getProfilePathOfPlayer(UUID playerId, String profile) {
+        return getDataPathOfPlayer(playerId) + File.separator + profile;
+    }
+
     public static String getDataPathOfPlayer(UUID uuid) {
         return MineshaftApi.getInstance().getPlayerDataPath() + File.separator + uuid;
     }

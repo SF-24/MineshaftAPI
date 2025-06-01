@@ -23,8 +23,8 @@ public enum ArmourType {
     NONE("",0),
     CLOTHES("Clothes", 0),
     LIGHT_ARMOUR("Light Armour", 0),
-    MEDIUM_ARMOUR("Medium Armour", 13),
-    HEAVY_ARMOUR("Heavy Armour", 15),;
+    MEDIUM_ARMOUR("Medium Armour", 10),
+    HEAVY_ARMOUR("Heavy Armour", 13),;
 
     private final String name;
     private final int strRequirement;

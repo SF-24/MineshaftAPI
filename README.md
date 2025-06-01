@@ -325,13 +325,14 @@ armour:
     b: 255
 ```
 
-| Value            | Name           | Description                                                           |     Data Type |                    Notes |
-|:-----------------|----------------|:----------------------------------------------------------------------|--------------:|-------------------------:|
-| `colour`         | Colour         | The colour of the armour (leather only) in RGB format                 | Complex (RGB) |                          |
-| `type`           | Armour Type    | The armour type                                                       |          Enum | Applied as a description |
-| `equip_sound`    | Equip Sound    | The equipping sound                                                   |        String |                          |
-| `model`          | Model          | The armour model                                                      |        String |                          |
-| `damage_on_hurt` | Damage on hurt | Whether the armour durability is lowered when the player takes damage |       Boolean |                          |
+| Value             | Name            | Description                                                           |     Data Type |                    Notes |
+|:------------------|-----------------|:----------------------------------------------------------------------|--------------:|-------------------------:|
+| `colour`          | Colour          | The colour of the armour (leather only) in RGB format                 | Complex (RGB) |                          |
+| `type`            | Armour Type     | The armour type                                                       |          Enum | Applied as a description |
+| `equip_sound`     | Equip Sound     | The equipping sound                                                   |        String |                          |
+| `model`           | Model           | The armour model                                                      |        String |                          |
+| `damage_on_hurt`  | Damage on hurt  | Whether the armour durability is lowered when the player takes damage |       Boolean |                          |
+| `cold_protection` | Cold Protection | Coming soon...                                                        |       Boolean |                          |
 
 
 #### Armour Types (WIP)

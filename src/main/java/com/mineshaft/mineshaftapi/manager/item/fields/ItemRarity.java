@@ -22,21 +22,24 @@ import org.bukkit.ChatColor;
 
 public enum ItemRarity {
 
-    STANDARD(ChatColor.WHITE.toString(), ""),
-    COMMON(ChatColor.WHITE.toString(), "Common"),
-    UNCOMMON(ChatColor.GREEN.toString(), "Uncommon"),
-    RARE(ChatColor.BLUE.toString(), "Rare"),
-    EXOTIC(ChatColor.DARK_PURPLE.toString(), "Exotic"),
-    LEGENDARY(ChatColor.GOLD.toString(), "Legendary");
+    STANDARD(ChatColor.WHITE.toString(),ChatColor.GRAY.toString(), ""),
+    COMMON(ChatColor.WHITE.toString(), ChatColor.GRAY.toString(), "Common"),
+    UNCOMMON(ChatColor.GREEN.toString(),ChatColor.DARK_GREEN.toString(), "Uncommon"),
+    RARE(ChatColor.BLUE.toString(), ChatColor.DARK_AQUA.toString(), "Rare"),
+    EXOTIC(ChatColor.DARK_PURPLE.toString(),ChatColor.DARK_PURPLE.toString(), "Exotic"),
+    LEGENDARY(ChatColor.GOLD.toString(),ChatColor.GOLD.toString(), "Legendary");
 
     private final String colourCode;
     private final String name;
+    private final String secondaryColourCode;
 
-    ItemRarity(String colourCode, String name) {
+    ItemRarity(String colourCode, String secondaryColourCode, String name) {
         this.colourCode = colourCode;
+        this.secondaryColourCode=secondaryColourCode;
         this.name = name;
     }
 
     public String getName() {return name;}
     public String getColourCode() {return colourCode;}
+    public String getSecondaryColourCode() {return secondaryColourCode;}
 }

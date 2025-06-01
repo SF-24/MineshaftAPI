@@ -29,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 public class ArmourEquipManager {
 
     public static boolean tryEquip(Player player, ItemStack itemStack) {
+        if(itemStack==null) return false;
         final boolean[] returnValue = {false};
         if(JsonPlayerBridge.hasAttribute(player, "str") && !itemStack.getType().equals(Material.AIR) && itemStack.getItemMeta()!=null) {
             try {

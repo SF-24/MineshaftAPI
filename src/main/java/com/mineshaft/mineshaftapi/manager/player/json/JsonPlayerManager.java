@@ -29,7 +29,9 @@ import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import io.lumine.mythic.bukkit.utils.serialize.InventorySerialization;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -40,19 +42,21 @@ import java.util.UUID;
 public class JsonPlayerManager {
 
     Player player;
+    String profile;
 
-    public JsonPlayerManager(Player player) {
+    public JsonPlayerManager(Player player, String profile) {
         this.player=player;
+        this.profile=profile;
         try {
-            initiateFile(player.getUniqueId());
+            initiateFile(player.getUniqueId(), profile);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void initiateFile(UUID uuid) throws Exception {
+    private void initiateFile(UUID uuid, String profile) throws Exception {
 
-        String path = ProfileManager.getProfilePathOfPlayer(uuid);
+        String path = ProfileManager.getProfilePathOfPlayer(uuid,profile);
         File file = new File(path, "player_data.json");
 
         if(!file.exists()) {
@@ -61,10 +65,10 @@ public class JsonPlayerManager {
     }
 
     // gets player data json file
-    public static File getFile(Player player) {
+    public static File getFile(Player player, String profile) {
         String id = "player_data";
 
-        String path = ProfileManager.getProfilePathOfPlayer(player.getUniqueId());
+        String path = ProfileManager.getProfilePathOfPlayer(player.getUniqueId(),profile);
         File file = new File(path,id + ".json");
 
         if(!file.exists()) {
@@ -124,7 +128,7 @@ public class JsonPlayerManager {
 
     //loads player json data file
     public PlayerDataClass loadData(Player player) {
-        File file = getFile(player);
+        File file = getFile(player,profile);
         Gson gson = new Gson();
         Reader reader = null;
 
@@ -153,7 +157,7 @@ public class JsonPlayerManager {
     public void saveFile(PlayerDataClass data, UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
         assert player != null;
-        writeData(data, getFile(player));
+        writeData(data, getFile(player,profile));
     }
 
     /**
@@ -167,7 +171,7 @@ public class JsonPlayerManager {
 
 
     public void saveFile(PlayerDataClass data) {
-        writeData(data, getFile(player));
+        writeData(data, getFile(player,profile));
     }
 
     public void addSkillLevels(PlayerSkills skill, int amount) {
@@ -472,6 +476,23 @@ public class JsonPlayerManager {
         saveFile(data);
     }
 
+    public void setEffects(Player player) {
+        PlayerDataClass data = loadData(player);
+
+        ArrayList<PotionEffect> eff = new ArrayList<>();
+        eff.addAll(player.getActivePotionEffects());
+        //data.setEffects(eff);
+        saveFile(data);
+    }
+
+
+    public void setLocation(Player player) {
+        PlayerDataClass data = loadData(player);
+
+        data.setLocation(player.getLocation());
+        saveFile(data);
+    }
+
     public void getInventory(Player player) {
         PlayerDataClass data = loadData(player);
         HashMap<Integer, String> inv = data.getInventory();
@@ -482,6 +503,26 @@ public class JsonPlayerManager {
             }
         }
     }
+
+    public void getLocation(Player player) {
+        PlayerDataClass data = loadData(player);
+        if(data.getLocWorld()!=null) {
+            Bukkit.getScheduler().runTask(MineshaftApi.getInstance(),()->{
+                player.teleport(new Location(Bukkit.getWorld(data.getLocWorld()),data.getLocX(),data.getLocY(),data.getLocZ(),data.getLocYaw(),data.getLocPitch()));
+            });
+        }
+    }
+
+    public void getEffects(Player player) {
+        PlayerDataClass data = loadData(player);
+//        if(data.getEffects()!=null) {
+//            for(PotionEffect effect : data.getEffects()) {
+//                player.addPotionEffect(effect);
+//            }
+//        }
+    }
+
+
 
     public double getPlayerTempArmourClass() {
         PlayerDataClass data = loadData(player);

@@ -535,11 +535,12 @@ The following parameters are available for all events. Each event type has uniqu
 | `offset`     | The offset of the event. These values are added to the location where the event is executed | Complex   |
 | `sound`      | The sound which plays when the event triggers                                               | String    |
 
-| Event Type           | Description                                            |
-|:---------------------|--------------------------------------------------------|
-| `BEAM`               | Shoots a beam from the target location                 | 
-| `PLAYER_VECTOR_DASH` | Makes the player dash forwards                         | 
-| `PLAYER_VECTOR_LEAP` | Makes the player leap in the direction they are facing | 
+| Event Type              | Description                                            |
+|:------------------------|--------------------------------------------------------|
+| `BEAM`                  | Shoots a beam from the target location                 | 
+| `PLAYER_VECTOR_DASH`    | Makes the player dash forwards                         | 
+| `PLAYER_VECTOR_LEAP`    | Makes the player leap in the direction they are facing | 
+| `PREPARE_STRONG_ATTACK` | Makes the next attack stronger                         | 
 
 
 ### Beam event type
@@ -574,6 +575,14 @@ on_hit:
 | `damage`    | Damage the entity or player          | Double    |
 | `explode`   | Trigger an explosion                 | Integer   |
 | `set_block` | Set the block at the target location | Material  |
+
+#### Strong attack preparation
+
+*Work in progress. Has not been tested.*
+
+The next attack dealt after this attack is modified according to the parameters.
+
+
 
 ### Vector player event type
 

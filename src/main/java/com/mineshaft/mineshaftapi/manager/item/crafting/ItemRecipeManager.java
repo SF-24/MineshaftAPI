@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftapi.manager.item.crafting;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -43,7 +44,7 @@ public class ItemRecipeManager {
             if(yamlConfiguration.getString("hardcoded-recipe")==null) return null;
             try {
                 // Get the crafting recipe.
-                craftingRecipe= HardcodedRecipe.valueOf(Objects.requireNonNull(yamlConfiguration.getString("hardcoded-recipe")).toLowerCase());
+                craftingRecipe= HardcodedRecipe.valueOf((yamlConfiguration.getString("hardcoded-recipe")).toUpperCase());
             } catch (IllegalArgumentException e) {
                 // If illegal argument, return null
                 return null;
@@ -79,9 +80,8 @@ public class ItemRecipeManager {
             }
         }
         if(yamlConfiguration.contains("craft-materials")) {
-            for(String key : yamlConfiguration.getConfigurationSection("repair-materials").getKeys(false)) {
-                int v = yamlConfiguration.getInt("craft-materials." + key);
-                craftItems.put(key, Material.valueOf(yamlConfiguration.getString("craft-materials." + key)));
+            for(String key : yamlConfiguration.getConfigurationSection("craft-materials").getKeys(false)) {
+                craftItems.put(key, Material.valueOf(yamlConfiguration.getString("craft-materials." + key).toUpperCase()));
             }
         }
         return craftItems;
@@ -91,6 +91,9 @@ public class ItemRecipeManager {
     public static void registerRecipe(String itemName) {
         // register item recipes
         if(getCraftingMaterials(itemName)==null || getHardcodedCraftingRecipe(itemName)==null)return;
+
+        // Correct up to here.
+
         if(!getCraftingMaterials(itemName).containsKey("c1")||getCraftingMaterials(itemName).containsKey("c2")) {return;}
         RecipeRegistrar.addHardcodedRecipe(MineshaftApi.getInstance().getItemManagerInstance().getItem(itemName),getHardcodedCraftingRecipe(itemName),getCraftingMaterials(itemName).get("c1"),getCraftingMaterials(itemName).get("c2"));
     }

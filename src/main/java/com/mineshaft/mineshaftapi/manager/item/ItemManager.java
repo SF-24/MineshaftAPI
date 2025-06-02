@@ -109,14 +109,6 @@ public class ItemManager {
         if(items.containsValue(fileName)) {
             Logger.logWarning("Conflicting item names: '" + fileName + "'. This may result in errors due to items containing the same name. This may be fixed in a future release.");
         }
-        if(ItemRepairManager.getRepairMaterials(fileName)!=null && DependencyInit.hasCustomCrafting()) {
-            for(Material material : ItemRepairManager.getRepairMaterials(fileName).keySet()) {
-                ItemStack item = MineshaftApi.getInstance().getItemManagerInstance().getItem(fileName);
-                SmithingRecipe recipe = new SmithingTransformRecipe(new NamespacedKey("mineshaft","mineshaft1"),
-                        item,new RecipeChoice.MaterialChoice(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE), new RecipeChoice.ExactChoice(item), new RecipeChoice.MaterialChoice(material) );
-                Bukkit.addRecipe(recipe);
-            }
-        }
 
         File fileYaml = new File(path, fileName);
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
@@ -134,8 +126,8 @@ public class ItemManager {
         }
 
         // Register item crafting recipe, if exists.
-        ItemRecipeManager.registerRecipe(fileName);
-        ItemDeconstructManager.registerMeltingRecipes(fileName);
+        ItemRecipeManager.registerRecipe(name);
+        ItemDeconstructManager.registerMeltingRecipes(name);
 
         items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
@@ -206,7 +198,7 @@ public class ItemManager {
 
         if (yamlConfiguration.contains("material")) {
             try {
-                item = new ItemStack(Material.valueOf(yamlConfiguration.getString("material")));
+                item = new ItemStack(Material.valueOf(yamlConfiguration.getString("material").toUpperCase()));
             } catch (Exception e) {
                 if (!hasParent) {
                     Logger.logError("ERROR! Could not load item '" + itemName + "' invalid material");

@@ -32,6 +32,10 @@ public class Logger {
         log(Level.INFO, text);
     }
 
+    public static void logDebug(String text) {
+        log(Level.INFO, text);
+    }
+
     public static void logWarning(String text) {
         log(Level.WARNING, text);
     }

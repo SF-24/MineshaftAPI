@@ -53,7 +53,7 @@ public class ConfigManager {
             if(mat.equalsIgnoreCase(material.name())) {
                  try {
                     int number = Integer.parseInt(Objects.requireNonNull(getConfig().getString("materials." + material.name().toLowerCase() + mat)));
-                    Material alias = Material.valueOf(mat);
+                    Material alias = Material.valueOf(mat.toUpperCase());
                     itemAliases.put(alias, number);
                  } catch (NumberFormatException ex) {
                      Logger.logError("Invalid number key declared in configuration for material: " + mat);

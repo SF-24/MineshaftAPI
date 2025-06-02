@@ -254,7 +254,6 @@ public class EventManager {
 
             PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent = new PrepareStrongAttackEntityEvent();
 
-
         } else if(eventType.equals(EventType.BEAM)) {
             BeamEvent beamEvent = new BeamEvent();
             beamEvent.setName(eventClass.getName());

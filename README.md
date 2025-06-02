@@ -358,14 +358,14 @@ Allows to modify tool properties or set any other item as a tool
 
 ```yaml
 tool:
-	damage_per_block: 1
-	mining_speed: 2
-	block_rules:
-		incorrect_for_wooden_tool:
-			correct_for_drops: false
-	mineable_pickaxe:
-		correct_for_drops: true
-		mining_speed: 2
+  damage_per_block: 1
+  mining_speed: 2
+  block_rules:
+    incorrect_for_wooden_tool:
+    correct_for_drops: false
+  mineable_pickaxe:
+    correct_for_drops: true
+    mining_speed: 2
 ```
 | Value              | Description                                 | Data Type |
 |:-------------------|---------------------------------------------|:----------|

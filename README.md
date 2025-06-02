@@ -591,6 +591,8 @@ Takes no extra parameters.
 # Configuration
 
 Functionality of the plugin can be modified via the `config.yml` file in the plugin folder. The currency name parameter does not yet work.
+<br><br>
+The `materials` section does not yet do anything.
 
 ```yaml
 # Whether vault compatibility is enabled
@@ -606,6 +608,33 @@ italic-item-rarity: true
 # Singular and plural form of the currency name
 currency-singular: Credit
 currency-plural: Credits
+
+# Controls what crafting stations the un-smelting recipes are added to
+# Un-smelting recipes are specified in item creation
+add-unsmelting-recipes-to-furnace: false
+add-unsmelting-recipes-to-smoker: false
+add-unsmelting-recipes-to-blast-furnace: true
+add-unsmelting-recipes-to-campfire: false
+
+# Whether nuggets are used in cases where a whole ingot would not be given
+use-smelting-nuggets: true
+
+# Default unsmelting time in ticks
+default-unsmelting-time: 200;
+
+# Material Registry
+# Used alongside use-smelting-nuggets
+# Usage: <item>:
+#          <material>: <number>
+#
+# Where item is the main material name,
+# the number represents how many of the material constitute to the item
+# and the material is the material
+materials:
+  iron_ingot:
+    iron_nugget: 9
+  gold_ingot:
+    gold_nugget: 9
 ```
 
 # Integrations

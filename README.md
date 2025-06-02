@@ -25,9 +25,14 @@ A paper (formerly spigot) plugin for Minecraft servers. Build with maven, docume
 		-  [Tools](#tool-component)
             - [Default Mining Speed Values](#default-mining-speed-values)
             - [Block Rules](#block-rules)
+      - [Crafting Mechanics](#crafting-mechanics)
+        - [Item Repair](#item-repair) 
+        - [Crafting](#crafting) 
+        - [Hardcoded Recipe Types](#hardcoded-recipe-types) 
+        - [Deconstruction Recipes](#deconstruction-recipes) 
       - [Item events](#item-events)
-          - [Hardcoded events](#hardcoded-events) 
-          - [Item event parameters](#item-event-parameters)
+        - [Hardcoded events](#hardcoded-events) 
+        - [Item event parameters](#item-event-parameters)
 	- [Obtaining custom items](#obtaining-custom-items)
 - [Event creation](#event-creation)
   - [Event example](#event-example)
@@ -395,7 +400,7 @@ block_rules:
 | `correct_for_drops` | Whether item drops will be obtained from blocks in this list              | Boolean   |                                                                                  |
 | `mining_speed`      | The mining speed of blocks in this list                                   | Double    |                                                                                  |
 
-### Item crafting interaction
+### Crafting Mechanics
 
 #### Item repair
 
@@ -406,7 +411,7 @@ repair-materials:
   iron_ingot: 115
 ```
 
-#### Crafting and Deconstruction
+#### Crafting
 
 *Work in progress. Documentation coming soon...*
 
@@ -420,7 +425,7 @@ craft-materials:
 hardcoded-recipe: shortsword
 ```
 
-Hardcoded recipe types:
+#### Hardcoded recipe types:
 
 | Event               | Description                                     | Pattern                                                                                                                                                                                                                                                                                    |
 |:--------------------|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -435,7 +440,7 @@ Hardcoded recipe types:
 | `leggings_simple`   |                                                 | <table><tr><td>c1</td><td>c1</td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr></tbody></table>                                                                                                                                          |
 | `boots_simple`      |                                                 | <table><tr><td></td><td></td><td></td></tr><tr><td>c1</td><td></td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr></tbody></table>                                                                                                                                                |
 
-### Deconstruction recipes
+#### Deconstruction recipes
 
 ```yaml
 craft-materials:

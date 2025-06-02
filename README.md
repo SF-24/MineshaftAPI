@@ -435,6 +435,18 @@ Hardcoded recipe types:
 | `leggings_simple`   |                                                 | <table><tr><td>c1</td><td>c1</td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr></tbody></table>                                                                                                                                          |
 | `boots_simple`      |                                                 | <table><tr><td></td><td></td><td></td></tr><tr><td>c1</td><td></td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr></tbody></table>                                                                                                                                                |
 
+### Deconstruction recipes
+
+```yaml
+craft-materials:
+  melting: diamond
+hardcoded-recipe: helmet_simple
+```
+
+When melting an item, the obtained number of items is based upon the durability, with the maximum equal to the number of `c1` items used in the hardcoded recipe.
+<br><br>
+The type of item obtained is based upon the `craft-material` with the `melting` tag.
+
 ### Item events
 This section controls what events are triggered when the player executes a certain action. This includes the item being right or left-clicked.
 

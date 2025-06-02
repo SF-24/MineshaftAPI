@@ -32,9 +32,9 @@ public class ItemDeconstructManager {
     // Register recipes for melting down items
     public static void registerMeltingRecipes(String itemName) {
         if(itemName==null || ItemRecipeManager.getHardcodedCraftingRecipe(itemName)==null) return;
-        if(ItemRecipeManager.getCraftingMaterials(itemName)==null || !ItemRecipeManager.getCraftingMaterials(itemName).containsKey("c1")) return;
+        if(ItemRecipeManager.getCraftingMaterials(itemName)==null || !ItemRecipeManager.getCraftingMaterials(itemName).containsKey("melting")) return;
 
-        ItemStack result = new ItemStack(ItemRecipeManager.getCraftingMaterials(itemName).get("c1"));
+        ItemStack result = new ItemStack(ItemRecipeManager.getCraftingMaterials(itemName).get("melting"));
         if(result.getType().equals(Material.AIR)) return;
 
         result.setAmount(RecipeRegistrar.getHardcodedRecipeItemNumber(ItemRecipeManager.getHardcodedCraftingRecipe(itemName),true));
@@ -59,9 +59,9 @@ public class ItemDeconstructManager {
     public static ItemStack getMeltingRecipeResult(ItemStack item) {
         String itemName = MineshaftApi.getInstance().getItemManagerInstance().getItemNameFromItem(item);
         if(itemName==null || ItemRecipeManager.getHardcodedCraftingRecipe(itemName)==null) return new ItemStack(Material.AIR);
-        if(ItemRecipeManager.getCraftingMaterials(itemName)==null || !ItemRecipeManager.getCraftingMaterials(itemName).containsKey("c1")) return new ItemStack(Material.AIR);
+        if(ItemRecipeManager.getCraftingMaterials(itemName)==null || !ItemRecipeManager.getCraftingMaterials(itemName).containsKey("melting")) return new ItemStack(Material.AIR);
 
-        ItemStack result = new ItemStack(ItemRecipeManager.getCraftingMaterials(itemName).get("c1"));
+        ItemStack result = new ItemStack(ItemRecipeManager.getCraftingMaterials(itemName).get("melting"));
         if(result.getType().equals(Material.AIR)) return new ItemStack(Material.AIR);
 
         int newAmount = (int) ((

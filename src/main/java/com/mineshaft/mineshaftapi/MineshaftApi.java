@@ -34,7 +34,9 @@ import com.mineshaft.mineshaftapi.util.Language;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -83,7 +85,7 @@ public final class MineshaftApi extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EquipListener(), this);
         Bukkit.getPluginManager().registerEvents(new PacketListener(), this);
         Bukkit.getPluginManager().registerEvents(new WorldListener(), this);
-        Bukkit.getPluginManager().registerEvents(new RepairListener(), this);
+        Bukkit.getPluginManager().registerEvents(new CraftListener(), this);
 //        Bukkit.getPluginManager().registerEvents(new UIListener(), this);
 
         getCommand("mineshaft").setExecutor(new MineshaftCommand());
@@ -194,5 +196,7 @@ public final class MineshaftApi extends JavaPlugin {
     public void clearPendingAbilities(UUID uuid) {
         this.pendingAbilities.remove(uuid);
     }
+
+    public static @Nullable Plugin getPlugin() {return Bukkit.getPluginManager().getPlugin("MineshaftApi");}
 
 }

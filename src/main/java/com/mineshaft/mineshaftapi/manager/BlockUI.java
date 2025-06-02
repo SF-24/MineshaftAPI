@@ -27,9 +27,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class RepairUI {
+public class BlockUI {
 
-    public static void openRepairUI(Player player) {
+
+    public static void openAlloyForgeUi(Player player) {
         ItemStack empty = new ItemStack(Material.PEONY);
         ItemMeta meta = empty.getItemMeta();
         meta.setDisplayName(" ");

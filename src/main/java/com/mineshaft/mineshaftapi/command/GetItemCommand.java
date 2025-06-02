@@ -19,7 +19,7 @@
 package com.mineshaft.mineshaftapi.command;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.RepairUI;
+import com.mineshaft.mineshaftapi.manager.BlockUI;
 import com.mineshaft.mineshaftapi.manager.item.ItemManagerAccessUtility;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.ChatColor;
@@ -40,8 +40,6 @@ public class GetItemCommand implements CommandExecutor {
 
         if(args.length==0) {
             sendItemList(player);
-        }else if(args[0].equals("repair")) {
-            RepairUI.openRepairUI(player);
         } else if(args.length==1) {
 
             String item = args[0];

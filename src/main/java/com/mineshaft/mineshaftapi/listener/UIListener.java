@@ -18,8 +18,7 @@
 
 package com.mineshaft.mineshaftapi.listener;
 
-import com.mineshaft.mineshaftapi.manager.item.ItemRepairManager;
-import de.tr7zw.changeme.nbtapi.NBT;
+import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRepairManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;

@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item;
+package com.mineshaft.mineshaftapi.manager.item.crafting;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import org.bukkit.Material;
@@ -32,6 +32,11 @@ public class ItemRepairManager {
     public static double getDamage(ItemStack itemStack) {
         Damageable damageableMeta = (Damageable) itemStack.getItemMeta();
         return damageableMeta.getDamage();
+    }
+
+    public static double getMaximumDamage(ItemStack itemStack) {
+        Damageable damageableMeta = (Damageable) itemStack.getItemMeta();
+        return damageableMeta.getMaxDamage();
     }
 
     public static int getRepairForItem(ItemStack itemStack, Material repairMaterial) {

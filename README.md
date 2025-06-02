@@ -395,6 +395,46 @@ block_rules:
 | `correct_for_drops` | Whether item drops will be obtained from blocks in this list              | Boolean   |                                                                                  |
 | `mining_speed`      | The mining speed of blocks in this list                                   | Double    |                                                                                  |
 
+### Item crafting interaction
+
+#### Item repair
+
+Allows for items to be repaired on an anvil, regaining the specified durability.
+
+```yaml
+repair-materials:
+  iron_ingot: 115
+```
+
+#### Crafting and Deconstruction
+
+*Work in progress. Documentation coming soon...*
+
+Allows for items to be crafted using a hardcoded recipe and specified materials.
+
+Examples: 
+```yaml
+craft-materials:
+  c1: iron_ingot
+  c2: stick
+hardcoded-recipe: shortsword
+```
+
+Hardcoded recipe types:
+
+| Event               | Description                      | Pattern                                                                                                                                                                                                                                                                                    |
+|:--------------------|----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `sword`             | The minecraft sword recipe.      | <table><tr><td></td><td>c1</td><td></td></tr><tr><td></td><td>c1</td></tr><tr><td></td><td>c2</td></tr></tbody></table>                                                                                                                                                                    |
+| `longsword`         | A custom sword recipe            | <table><tr><td></td><td>c1</td><td></td></tr><tr><td></td><td>c1</td></tr><tr><td>c1</td><td>c2</td><td>c1</td></tr></tbody></table>                                                                                                                                                       |
+| `pickaxe`           |                                  | <table><tr><td>c1</td><td>c1</td><td>c1</td></tr><tr><td></td><td>c2</td><td></td></tr><tr><td></td><td>c2</td><td></td></tr></tbody></table>                                                                                                                                              |
+| `axe`               | Has two interchangeable patterns | <table><tr><td>c1</td><td>c1</td><td></td></tr><tr><td>c1</td><td>c2</td><td></td></tr><tr><td></td><td>c2</td><td></td></tr></tbody></table><table><tr><td></td><td>c1</td><td>c1</td></tr><tr><td></td><td>c2</td><td>c1</td></tr><tr><td></td><td>c2</td><td></td></tr></tbody></table> |
+| `shovel`            |                                  | <table><tr><td></td><td>c1</td><td></td></tr><tr><td></td><td>c2</td><td></td></tr><tr><td></td><td>c2</td><td></td></tr></tbody></table>                                                                                                                                                  |
+| `hoe`               |                                  | <table><tr><td>c1</td><td>c1</td><td></td></tr><tr><td></td><td>c2</td><td></td></tr><tr><td></td><td>c2</td><td></td></tr></tbody></table> <table><tr><td></td><td>c1</td><td>c1</td></tr><tr><td></td><td>c2</td><td></td></tr><tr><td></td><td>c2</td><td></td></tr></tbody></table>    |
+| `helmet_simple`     |                                  | <table><tr><td>c1</td><td>c1</td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr><tr><td></td><td></td><td></td></tr></tbody></table>                                                                                                                                              |
+| `chestplate_simple` |                                  | <table><tr><td>c1</td><td></td><td>c1</td></tr><tr><td>c1</td><td>c1</td><td>c1</td></tr><tr><td>c1</td><td>c1</td><td>c1</td></tr></tbody></table>                                                                                                                                        |
+| `leggings_simple`   |                                  | <table><tr><td>c1</td><td>c1</td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr></tbody></table>                                                                                                                                          |
+| `boots_simple`      |                                  | <table><tr><td></td><td></td><td></td></tr><tr><td>c1</td><td></td><td>c1</td></tr><tr><td>c1</td><td></td><td>c1</td></tr></tbody></table>                                                                                                                                                |
+
 ### Item events
 This section controls what events are triggered when the player executes a certain action. This includes the item being right or left-clicked.
 

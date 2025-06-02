@@ -18,33 +18,25 @@
 
 package com.mineshaft.mineshaftapi.listener;
 
-import com.mineshaft.mineshaftapi.manager.item.ItemRepairManager;
-import org.bukkit.ChatColor;
+import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.item.crafting.ItemDeconstructManager;
+import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRepairManager;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class RepairListener implements Listener {
+public class CraftListener implements Listener {
 
-    void onCraft(PrepareItemCraftEvent e) {
-        if(ChatColor.translateAlternateColorCodes('&',e.getView().getTitle()).equalsIgnoreCase(ChatColor.BLACK + "Item Repair")) {
-
-            int items = 0;
-            for(int i = 0; i<9; i++) {
-                if(e.getInventory().getItem(i)!=null) items++;
-            }
-            if(items==2) {
-                e.getView().setItem(9, new ItemStack(Material.DIAMOND_BLOCK));
-
-            } else {
-                e.getView().setItem(9, new ItemStack(Material.AIR));
-            }
+    @EventHandler
+    void onSmelt(BlockCookEvent e) {
+        if(MineshaftApi.getInstance().getItemManagerInstance().getItemNameFromItem(e.getSource())!=null) {
+            String itemName = MineshaftApi.getInstance().getItemManagerInstance().getItemNameFromItem(e.getSource());
+            e.setResult(ItemDeconstructManager.getMeltingRecipeResult(e.getSource()));
         }
     }
-
 
     @EventHandler
     void onAnvilRepair(PrepareAnvilEvent e) {

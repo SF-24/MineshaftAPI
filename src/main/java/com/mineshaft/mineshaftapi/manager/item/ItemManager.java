@@ -22,6 +22,9 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.ToolRuleExtended;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
+import com.mineshaft.mineshaftapi.manager.item.crafting.ItemDeconstructManager;
+import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRecipeManager;
+import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRepairManager;
 import com.mineshaft.mineshaftapi.manager.item.fields.*;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
@@ -52,8 +55,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static org.bukkit.inventory.RecipeChoice.MaterialChoice;
 
 public class ItemManager {
 
@@ -131,6 +132,11 @@ public class ItemManager {
                 e.printStackTrace();
             }
         }
+
+        // Register item crafting recipe, if exists.
+        ItemRecipeManager.registerRecipe(fileName);
+        ItemDeconstructManager.registerMeltingRecipes(fileName);
+
         items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
     }

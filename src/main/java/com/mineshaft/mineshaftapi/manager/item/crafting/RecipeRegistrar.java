@@ -210,8 +210,6 @@ public class RecipeRegistrar {
                 }
             }
 
-            System.out.println("recipe pattern: " + recipeString + ", key: " + ingredients);
-
             switch (height) {
                 case 1 -> recipe.shape(
                         recipeString.substring(0,width).replace('_', ' '));

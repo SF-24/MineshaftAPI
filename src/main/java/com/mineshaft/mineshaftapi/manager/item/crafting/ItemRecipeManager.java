@@ -19,13 +19,11 @@
 package com.mineshaft.mineshaftapi.manager.item.crafting;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class ItemRecipeManager {
 

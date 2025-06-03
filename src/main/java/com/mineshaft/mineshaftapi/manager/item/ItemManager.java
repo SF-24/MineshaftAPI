@@ -846,7 +846,7 @@ public class ItemManager {
         @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
 
         if (!yamlConfiguration.contains(statPath)) {
-            Logger.logError("could not find " + statPath + " in: " + path + "/" + name + ".yml");
+//            Logger.logError("could not find " + statPath + " in: " + path + "/" + name + ".yml");
             return statMap;
         }
 
@@ -878,7 +878,7 @@ public class ItemManager {
         @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
 
         if (!yamlConfiguration.contains(statPath)) {
-            Logger.logError("could not find " + statPath + " in: " + path + "/" + name + ".yml");
+//            Logger.logError("could not find " + statPath + " in: " + path + "/" + name + ".yml");
             return statMap;
         }
 
@@ -909,7 +909,7 @@ public class ItemManager {
         @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
 
         if (!yamlConfiguration.contains(rangedStatPath)) {
-            Logger.logError("could not find " + rangedStatPath + " in: " + path + "/" + name + ".yml");
+//            Logger.logError("could not find " + rangedStatPath + " in: " + path + "/" + name + ".yml");
             return statMap;
         }
 

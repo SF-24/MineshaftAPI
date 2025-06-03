@@ -53,7 +53,7 @@ public class EquipListener implements Listener {
 //            Logger.logInfo("hotbar item: " + e.getWhoClicked().getInventory().getItem(e.getHotbarButton()).getType());
 //        }
         } catch (Exception npe) {
-            System.out.println("Could not execute interact debug.");
+            Logger.logDebug("Could not execute interact debug.");
         }
         if (e.getInventory().getHolder() != null && e.getView().getType().equals(InventoryType.PLAYER)) {
             if(e.getClick().equals(ClickType.NUMBER_KEY)) {

@@ -184,6 +184,7 @@ public class RecipeRegistrar {
 
     // register a recipe
     public static void registerCraftingRecipe(ItemStack item, List<Material> components, CraftingBookCategory category, boolean isShaped, int width, int height) {
+        if(width>3)width=3;
 
         if(isShaped) {
             while(components.size() < width*height) {
@@ -194,31 +195,45 @@ public class RecipeRegistrar {
             ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(MineshaftApi.getInstance(), key), item);
             recipe.setCategory(category);
 
-            HashMap<Material, String> ingredients = new HashMap<>();
+            HashMap<Material, Character> ingredients = new HashMap<>();
 
             StringBuilder recipeString = new StringBuilder();
             for(Material m : components) {
-                String randomChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-=_+,./;'[]<>?:{}|".substring(recipeString.length(),recipeString.length()+1);
-                if (!ingredients.containsKey(m)) {
-                    ingredients.put(m,randomChar);
-                    recipe.setIngredient(randomChar.charAt(0),m);
+                if(m.equals(Material.AIR)) {
+                    recipeString.append("_");
+                } else if (!ingredients.containsKey(m)) {
+                    String randomChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()=+,./;'[]<>?:{}|".substring(recipeString.length(),recipeString.length()+1);
+                    ingredients.put(m,randomChar.charAt(0));
+                    recipeString.append(randomChar);
+                } else {
+                    String keyChar = ingredients.get(m).toString();
+                    ingredients.put(m,keyChar.charAt(0));
+                    recipeString.append(keyChar);
                 }
-                recipeString.append(randomChar);
             }
 
             System.out.println("recipe pattern: " + recipeString + ", key: " + ingredients);
 
             switch (height) {
                 case 1 -> recipe.shape(
-                        recipeString.substring(0,width));
+                        recipeString.substring(0,width).replace('_', ' '));
                 case 2 -> recipe.shape(
-                        recipeString.substring(0,width),
-                        recipeString.substring(3,width*2));
+                        recipeString.substring(0,width).replace('_', ' '),
+                        recipeString.substring(width,width*2).replace('_', ' '));
                 case 3 -> recipe.shape(
-                        recipeString.substring(0,width),
-                        recipeString.substring(3,width*2),
-                        recipeString.substring(6,width*3));
+                        recipeString.substring(0,width).replace('_', ' '),
+                        recipeString.substring(width,width*2).replace('_', ' '),
+                        recipeString.substring(width*2,width*3).replace('_', ' '));
             }
+
+            for(Material m : ingredients.keySet()) {
+                if (!m.equals(Material.AIR)) {
+                    recipe.setIngredient(ingredients.get(m), m);
+                } else {
+//                    recipe.setIngredient(ingredients.get(m),RecipeChoice.empty());
+                }
+            }
+
             Bukkit.getServer().addRecipe(recipe);
         } else {
             String key = UUID.randomUUID().toString();

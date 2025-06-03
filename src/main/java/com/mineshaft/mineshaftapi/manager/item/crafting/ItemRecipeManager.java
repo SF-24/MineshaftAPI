@@ -94,7 +94,7 @@ public class ItemRecipeManager {
 
         // Correct up to here.
 
-        if(!getCraftingMaterials(itemName).containsKey("c1")||getCraftingMaterials(itemName).containsKey("c2")) {return;}
+        if(!getCraftingMaterials(itemName).containsKey("c1")||!getCraftingMaterials(itemName).containsKey("c2")) {return;}
         RecipeRegistrar.addHardcodedRecipe(MineshaftApi.getInstance().getItemManagerInstance().getItem(itemName),getHardcodedCraftingRecipe(itemName),getCraftingMaterials(itemName).get("c1"),getCraftingMaterials(itemName).get("c2"));
     }
 

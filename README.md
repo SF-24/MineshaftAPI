@@ -442,6 +442,9 @@ hardcoded-recipe: shortsword
 
 #### Deconstruction recipes
 
+***Currently, do not work! Items yield nothing when smelted.***
+<br>*Work in progress coming soon...*
+
 ```yaml
 craft-materials:
   melting: diamond

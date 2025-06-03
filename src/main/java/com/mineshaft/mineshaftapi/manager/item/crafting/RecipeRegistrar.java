@@ -19,7 +19,6 @@
 package com.mineshaft.mineshaftapi.manager.item.crafting;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -36,7 +35,6 @@ public class RecipeRegistrar {
     public static final Material air = Material.AIR;
 
     public static void addHardcodedRecipe(ItemStack item, HardcodedRecipe recipe, Material m1, Material m2) {
-        Logger.logDebug("adding hardcoded recipe " + recipe + " to " + item);
 
         switch(recipe) {
             case SWORD,SHORTSWORD -> registerCraftingRecipe(item,

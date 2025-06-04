@@ -1,0 +1,10 @@
+# A list of regions
+# Regions for towns are specified in brackets
+# Region functionality depends on WorldGuard to work
+# Without WorldGuard, this functionality is disabled
+
+Bree-land:
+  towns:
+    Bree: [ bree ]
+    Archet: [ archet ]
+    Staddle: [ staddle ]

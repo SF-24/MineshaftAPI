@@ -53,7 +53,7 @@ public class DependencyInit {
         if (MineshaftApi.getInstance().getConfigManager().useVault() && hasVault()) {
             vaultDependency = new VaultDependency();
         } else {
-            if (!MineshaftApi.getInstance().getConfigManager().useVault()) {
+            if (MineshaftApi.getInstance().getConfigManager().disableDependencyWarnings() || !MineshaftApi.getInstance().getConfigManager().useVault()) {
                 Logger.logInfo("Vault has been disabled in the config. Due to this, some functionality and compatibility features will be disabled");
             } else {
                 // Log warning
@@ -80,6 +80,10 @@ public class DependencyInit {
 
     public static boolean hasBetonQuest() {
         return Bukkit.getPluginManager().getPlugin("BetonQuest") != null || Bukkit.getPluginManager().isPluginEnabled("BetonQuest");
+    }
+
+    public static boolean hasWorldGuard() {
+        return Bukkit.getPluginManager().getPlugin("WorldGuard") != null || Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
     }
 
     public VaultDependency getVault() {return vaultDependency;}

@@ -21,7 +21,8 @@ package com.mineshaft.mineshaftapi;
 import com.mineshaft.mineshaftapi.command.*;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
-import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicEventListener;
+import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
+import com.mineshaft.mineshaftapi.dependency.world_guard.RegionManager;
 import com.mineshaft.mineshaftapi.listener.*;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.player.combat.BlockingManager;
@@ -45,6 +46,7 @@ import java.util.UUID;
 public final class MineshaftApi extends JavaPlugin {
 
     ConfigManager configManager = new ConfigManager(this);
+    RegionManager regionManager = new RegionManager(this);
     CooldownManager cooldownManager = new CooldownManager();
     ItemManager itemManager;
     EventManager eventManager;
@@ -73,7 +75,7 @@ public final class MineshaftApi extends JavaPlugin {
 
         if (DependencyInit.hasMythicMobs()) {
             // Register placeholders
-            Bukkit.getPluginManager().registerEvents(new MythicEventListener(), MineshaftApi.getInstance());
+            Bukkit.getPluginManager().registerEvents(new MythicListener(), MineshaftApi.getInstance());
         } else {
             // Log warning
             Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
@@ -149,6 +151,8 @@ public final class MineshaftApi extends JavaPlugin {
 
     public ConfigManager getConfigManager() {return configManager;}
 
+    public RegionManager getRegionManager() {return regionManager;}
+
     public boolean hasVaultDependency() { return DependencyInit.hasVault(); }
 
     public VaultDependency getVault() {return dependencyInit.getVault();}
@@ -171,6 +175,7 @@ public final class MineshaftApi extends JavaPlugin {
 
     public static void reloadConfigs() {
         MineshaftApi.getInstance().getConfigManager().reloadConfigs();
+        MineshaftApi.getInstance().getRegionManager().reload();
     }
 
     public static Player getAnyPlayer() {

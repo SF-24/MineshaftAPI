@@ -19,12 +19,24 @@
 package com.mineshaft.mineshaftapi.dependency.mythic_mob;
 
 import com.mineshaft.mineshaftapi.util.Logger;
+import io.lumine.mythic.bukkit.events.MythicConditionLoadEvent;
 import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class MythicEventListener implements Listener {
+public class MythicListener implements Listener {
 
+    // Registers MythicMobs conditions
+    @EventHandler
+    public void onMythicConditionLoad(MythicConditionLoadEvent condition)	{
+        Logger.logInfo("MythicConditionLoadEvent called for condition " + condition.getConditionName());
+
+        if(condition.getConditionName().equalsIgnoreCase("mineshaft_isintown") || condition.getConditionName().equalsIgnoreCase("mineshaft_istown") || condition.getConditionName().equalsIgnoreCase("mineshaft_town"))	{
+            condition.register(new MythicTownCondition(condition.getConfig()));
+        }
+    }
+
+    // Registers MythicMobs events
     @EventHandler
     public void onMythicMechanicLoad(MythicMechanicLoadEvent event)	{
         Logger.logInfo("MythicMechanicLoadEvent called for mechanic " + event.getMechanicName());

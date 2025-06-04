@@ -16,11 +16,22 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.util;
+package com.mineshaft.mineshaftapi.dependency.world_guard;
 
-public enum Language {
+import org.jetbrains.annotations.NotNull;
 
-    POLISH,
-    SPANISH,
-    ENGLISH
+import java.util.List;
+
+public class Town {
+
+    String name;
+    @NotNull List<String> regions;
+
+    public Town(String name, @NotNull List<String> regions) {
+        this.name=name;
+        this.regions=regions;
+    }
+
+    public String getName() {return name;}
+    public @NotNull List<String> getRegions() {return regions;}
 }

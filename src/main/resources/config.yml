@@ -1,6 +1,9 @@
 # Whether vault compatibility is enabled
 enable-vault: true
 
+# Whether warnings about an optional dependency not being installed are ignored
+disable-dependency-warnings: false
+
 # Whether items have a cooldown animation
 enable-cooldown-animation: true
 # Whether the sidebar is enabled

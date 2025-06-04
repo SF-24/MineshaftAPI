@@ -23,9 +23,16 @@ import org.bukkit.Color;
 public class ColourFormatter {
 
     public static Color getColourFromString(String colour) {
+        if(!(colour.length() == 9||colour.length() == 12)) {
+            return Color.fromRGB(0,0,0);
+        }
         int r= Integer.parseInt(colour.substring(0,3));
         int g = Integer.parseInt(colour.substring(3,6));
         int b = Integer.parseInt(colour.substring(6,9));
+        if(colour.length() == 12) {
+            int a = Integer.parseInt(colour.substring(9,12));
+            return Color.fromARGB(a,r,g,b);
+        }
         return Color.fromRGB(r,g,b);
     }
 

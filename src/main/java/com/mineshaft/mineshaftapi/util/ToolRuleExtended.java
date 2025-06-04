@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi;
+package com.mineshaft.mineshaftapi.util;
 
 import org.bukkit.Material;
 import org.bukkit.Tag;

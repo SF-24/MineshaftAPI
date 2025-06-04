@@ -29,7 +29,7 @@ import java.util.Objects;
 public class ConfigManager {
 
     public ConfigManager(MineshaftApi mineshaftApi) {
-        mineshaftApi.getConfig().options().copyDefaults();
+        mineshaftApi.getConfig().options().copyDefaults();;
         mineshaftApi.saveDefaultConfig();
     }
 
@@ -39,6 +39,10 @@ public class ConfigManager {
 
     public boolean getSidebarEnabled() {
         return getConfig().getBoolean("enable-sidebar");
+    }
+
+    public boolean disableDependencyWarnings() {
+        return getConfig().getBoolean("disable-dependency-warnings");
     }
 
     public HashMap<Material, Integer> getItemConstituents(Material material) {
@@ -99,5 +103,6 @@ public class ConfigManager {
     public void reloadConfigs() {
         MineshaftApi.getInstance().reloadConfig();
     }
+
 
 }

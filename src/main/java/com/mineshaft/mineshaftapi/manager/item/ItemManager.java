@@ -19,14 +19,11 @@
 package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.ToolRuleExtended;
-import com.mineshaft.mineshaftapi.dependency.DependencyInit;
+import com.mineshaft.mineshaftapi.util.ToolRuleExtended;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemDeconstructManager;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRecipeManager;
-import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRepairManager;
 import com.mineshaft.mineshaftapi.manager.item.fields.*;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.NumericFormatter;
@@ -41,7 +38,9 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;

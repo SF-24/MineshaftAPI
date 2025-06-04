@@ -252,8 +252,13 @@ public class ItemManager {
                 case "custom_model_data":
                     meta.setCustomModelData(yamlConfiguration.getInt("custom_model_data"));
                     break;
+                case "tooltip_style":
+                    meta.setTooltipStyle(NamespacedKey.minecraft(yamlConfiguration.getString("tooltip_style")));
+                    break;
                 case "item_model":
-                    meta.setItemModel(NamespacedKey.minecraft("item_model"));
+                    // TODO: FIX
+                    meta.setItemModel(NamespacedKey.minecraft(yamlConfiguration.getString("item_model")));
+                    break;
                 case "name":
                     displayName = yamlConfiguration.getString("name");
                     break;
@@ -363,7 +368,13 @@ public class ItemManager {
                 lore.add(ChatColor.GRAY + "Frost Protection");
             }
             lore.add("");
+        } else {
+            if(coldProtect) {
+                lore.add(ChatColor.GRAY + "Frost Protection");
+            }
+            lore.add("");
         }
+
 
 
         // Load file stats, append to lore and add them to the item

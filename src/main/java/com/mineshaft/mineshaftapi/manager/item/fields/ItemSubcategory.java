@@ -18,68 +18,82 @@
 
 package com.mineshaft.mineshaftapi.manager.item.fields;
 
+import java.util.List;
+
 public enum ItemSubcategory {
 
     // W.I.P -> more coming soon...
 
     // TOOLS
 
-    TOOL /*generic*/ (ItemSubcategoryType.TOOL),
+    TOOL /*generic*/ (ItemSubcategoryType.TOOL, List.of()),
 
-    AXE(ItemSubcategoryType.TOOL),
-    PICKAXE(ItemSubcategoryType.TOOL),
-    SHOVEL(ItemSubcategoryType.TOOL),
-    HOE(ItemSubcategoryType.TOOL),
-    DRILL(ItemSubcategoryType.TOOL),
-    PIPE(ItemSubcategoryType.TOOL),
+    AXE(ItemSubcategoryType.TOOL, List.of()),
+    PICKAXE(ItemSubcategoryType.TOOL,List.of()),
+    SHOVEL(ItemSubcategoryType.TOOL,List.of()),
+    HOE(ItemSubcategoryType.TOOL,List.of()),
+    DRILL(ItemSubcategoryType.TOOL,List.of()),
+    PIPE(ItemSubcategoryType.TOOL,List.of()),
 
-    MEDKIT(ItemSubcategoryType.TOOL),
-    CONSUMABLE(ItemSubcategoryType.CONSUMABLE),
+    MEDKIT(ItemSubcategoryType.TOOL,List.of()),
+    CONSUMABLE(ItemSubcategoryType.CONSUMABLE,List.of()),
 
     // WEAPONS
-    DAGGER(ItemSubcategoryType.WEAPON_SIMPLE),
-    STAFF(ItemSubcategoryType.WEAPON_SIMPLE),
+    CLUB(ItemSubcategoryType.WEAPON_SIMPLE,List.of(ItemSubcategoryProperty.LIGHT)),
+    DAGGER(ItemSubcategoryType.WEAPON_SIMPLE,List.of(ItemSubcategoryProperty.FINESSE, ItemSubcategoryProperty.LIGHT)),
+    GREAT_CLUB(ItemSubcategoryType.WEAPON_SIMPLE,List.of(ItemSubcategoryProperty.HEAVY)),
+    HAND_AXE(ItemSubcategoryType.WEAPON_SIMPLE,List.of()),
+    HAMMER(ItemSubcategoryType.WEAPON_SIMPLE,List.of()),
+    MACE(ItemSubcategoryType.WEAPON_SIMPLE,List.of()),
+    STAFF(ItemSubcategoryType.WEAPON_SIMPLE,List.of()),
+    SPEAR(ItemSubcategoryType.WEAPON_SIMPLE,List.of()),
 
-    SHORTSWORD(ItemSubcategoryType.WEAPON_MARTIAL),
-    LONGSWORD(ItemSubcategoryType.WEAPON_MARTIAL),
-    GLAIVE(ItemSubcategoryType.WEAPON_MARTIAL),
+    GREAT_AXE(ItemSubcategoryType.WEAPON_MARTIAL,List.of(ItemSubcategoryProperty.HEAVY)),
+    SCIMITAR(ItemSubcategoryType.WEAPON_MARTIAL,List.of()),
+    SHORTSWORD(ItemSubcategoryType.WEAPON_MARTIAL,List.of(ItemSubcategoryProperty.LIGHT,ItemSubcategoryProperty.FINESSE)),
+    LONGSWORD(ItemSubcategoryType.WEAPON_MARTIAL,List.of()),
+    GLAIVE(ItemSubcategoryType.WEAPON_MARTIAL,List.of(ItemSubcategoryProperty.HEAVY)),
+    MATTOCK(ItemSubcategoryType.WEAPON_MARTIAL,List.of(ItemSubcategoryProperty.HEAVY)),
 
     // RANGED WEAPONS
-    LIGHT_CROSSBOW(ItemSubcategoryType.WEAPON_SIMPLE),
-    HEAVY_CROSSBOW(ItemSubcategoryType.WEAPON_MARTIAL),
-    SHORTBOW(ItemSubcategoryType.WEAPON_SIMPLE),
-    LONGBOW(ItemSubcategoryType.WEAPON_MARTIAL),
+    LIGHT_CROSSBOW(ItemSubcategoryType.WEAPON_SIMPLE,List.of()),
+    HEAVY_CROSSBOW(ItemSubcategoryType.WEAPON_MARTIAL,List.of(ItemSubcategoryProperty.HEAVY)),
+    SHORTBOW(ItemSubcategoryType.WEAPON_SIMPLE,List.of()),
+    LONGBOW(ItemSubcategoryType.WEAPON_MARTIAL,List.of()),
 
     // OTHER WEAPONS
-    LIGHTSABER(ItemSubcategoryType.WEAPON_LIGHT),
-    VIBROWEAPON(ItemSubcategoryType.WEAPON_LIGHT),
-    ELECTROSTAFF(ItemSubcategoryType.WEAPON_LIGHT),
+    LIGHTSABER(ItemSubcategoryType.WEAPON_LIGHT,List.of()),
+    VIBROWEAPON(ItemSubcategoryType.WEAPON_LIGHT,List.of()),
+    ELECTROSTAFF(ItemSubcategoryType.WEAPON_LIGHT,List.of()),
 
     // GUNS
-    GUN(ItemSubcategoryType.WEAPON_BLASTER),
-    BLASTER(ItemSubcategoryType.WEAPON_BLASTER),
-    RIFLE(ItemSubcategoryType.WEAPON_BLASTER),
-    LASGUN(ItemSubcategoryType.WEAPON_BLASTER),
+    GUN(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
+    BLASTER(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
+    RIFLE(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
+    LASGUN(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
 
     // ARMOUR
-    HELMET(ItemSubcategoryType.ARMOUR),
-    HAT(ItemSubcategoryType.ARMOUR),
-    HOOD(ItemSubcategoryType.ARMOUR),
-    TUNIC(ItemSubcategoryType.ARMOUR),
-    CHESTPLATE(ItemSubcategoryType.ARMOUR),
-    TROUSERS(ItemSubcategoryType.ARMOUR),
-    LEGGINGS(ItemSubcategoryType.ARMOUR),
-    BOOTS(ItemSubcategoryType.ARMOUR),
+    HELMET(ItemSubcategoryType.ARMOUR,List.of()),
+    HAT(ItemSubcategoryType.ARMOUR,List.of()),
+    HOOD(ItemSubcategoryType.ARMOUR,List.of()),
+    TUNIC(ItemSubcategoryType.ARMOUR,List.of()),
+    CHESTPLATE(ItemSubcategoryType.ARMOUR,List.of()),
+    TROUSERS(ItemSubcategoryType.ARMOUR,List.of()),
+    LEGGINGS(ItemSubcategoryType.ARMOUR,List.of()),
+    BOOTS(ItemSubcategoryType.ARMOUR,List.of()),
 
-    DEFAULT(ItemSubcategoryType.NONE);
+    DEFAULT(ItemSubcategoryType.NONE,List.of());
 
     ;
     private final ItemSubcategoryType type;
+    private final List<ItemSubcategoryProperty> propertyList;
 
-    ItemSubcategory(ItemSubcategoryType type) {
+    ItemSubcategory(ItemSubcategoryType type, List<ItemSubcategoryProperty> propertyList) {
         this.type=type;
+        this.propertyList=propertyList;
     }
 
     public ItemSubcategoryType getType() {return type;}
+    public List<ItemSubcategoryProperty> getPropertyList() {return propertyList;}
 
 }

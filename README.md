@@ -106,7 +106,7 @@ The following features are not yet explained in the documentation
 - More MythicMobs features
 - ~~FreeMinecraftModels integration with MythicMobs compatibility~~ **Use BetterModels for now instead**
 - ~~Custom crafting system~~ (Partially implemented.)
-- Add more customisability to the custom crafting system 
+- Add more customizability to the custom crafting system 
 - ~~Skills~~ (Look at MineshaftRpg instead)
 - Item customisation (replacing parts, etc.)
 - In-built mob support (similar to MythicMobs or EliteMobs)

@@ -18,6 +18,8 @@
 
 package com.mineshaft.mineshaftapi.command;
 
+import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -59,6 +61,13 @@ public class PlayerDataCommand implements CommandExecutor {
                 sendUsageMessage(sender);
                 return false;
             }
+            if (args[2].equals("ac")||args[2].equals("armour_class")) {
+                if(args[1].equalsIgnoreCase("get")) {
+                    sender.sendMessage(player.getName() + " has an Armour Class of " + ChatColor.GREEN + PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS,player));
+                } else {
+                    sendUsageMessage(sender);
+                }
+            }
         }
         sendUsageMessage(sender);
         return false;
@@ -68,5 +77,6 @@ public class PlayerDataCommand implements CommandExecutor {
         sender.sendMessage(ChatColor.RED + "USAGE:");
         sender.sendMessage(ChatColor.RED + "/player_data <player> <set|add> experience <amount>");
         sender.sendMessage(ChatColor.RED + "/player_data <player> get experience");
+        sender.sendMessage(ChatColor.RED + "/player_data <player> get <armour_class|ac>");
     }
 }

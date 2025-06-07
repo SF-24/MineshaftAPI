@@ -130,7 +130,7 @@ public class EquipListener implements Listener {
                     else if(item!=null) {player.getWorld().dropItem(player.getLocation(),item);}
                 }
             }
-            JsonPlayerBridge.getTempArmourClass((Player) e.getWhoClicked());
+            JsonPlayerBridge.setTempArmourClass((Player) e.getWhoClicked());
         },1/20);
     }
 

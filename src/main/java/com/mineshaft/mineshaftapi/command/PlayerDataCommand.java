@@ -64,6 +64,7 @@ public class PlayerDataCommand implements CommandExecutor {
             if (args[2].equals("ac")||args[2].equals("armour_class")) {
                 if(args[1].equalsIgnoreCase("get")) {
                     sender.sendMessage(player.getName() + " has an Armour Class of " + ChatColor.GREEN + PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS,player));
+                    JsonPlayerBridge.setTempArmourClass(player);
                 } else {
                     sendUsageMessage(sender);
                 }

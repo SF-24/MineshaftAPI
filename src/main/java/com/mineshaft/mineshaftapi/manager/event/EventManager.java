@@ -111,8 +111,9 @@ public class EventManager {
             yamlConfiguration.set("offset.z",0);
 
             // Create on hit event section
-            yamlConfiguration.createSection("on_hit.entity.damage");
-            yamlConfiguration.set("on_hit.entity.damage",8);
+            yamlConfiguration.createSection("on_hit.entity.event1");
+            yamlConfiguration.set("on_hit.entity.event1.damage",8);
+            yamlConfiguration.set("on_hit.entity.event1.event_type","DAMAGE");
 
             // Save demo event
             try {
@@ -124,10 +125,13 @@ public class EventManager {
     }
 
     public boolean runEvent(Event event, Location loc, UUID casterId, Object targetEntity) {
+//        Logger.logDebug("Running event: " + event.getClass().getName() + " " + event.getEventType());
         switch (event.getEventType()) {
             case NULL:
+//                Logger.logDebug("Found null event");
                 return false;
             case DAMAGE:
+//                Logger.logDebug("Entity damage event: ");
                 if(!(event instanceof EntityDamageEvent) || !(targetEntity instanceof LivingEntity)) return false;
                 new EntityDamageExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
                 return true;
@@ -176,7 +180,9 @@ public class EventManager {
 
 
     // parent bit not working
-    public Event getEvent(String eventName, ItemStack executingItem, ConfigurationSection section) {
+    public Event getEvent(String eventName, ItemStack executingItem, ConfigurationSection sectionBase) {
+
+        ConfigurationSection section = sectionBase;
 
         if (section == null) {
             File fileYaml = new File(path, eventName + ".yml");
@@ -184,10 +190,8 @@ public class EventManager {
             // return null if file does not exist
             if (!fileYaml.exists()) return null;
 
-            YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
-            section = yamlConfiguration.getDefaultSection();
+            section = YamlConfiguration.loadConfiguration(fileYaml);
         }
-        assert section != null;
 
         // Whether the item has a parent item
         boolean hasParent = false;
@@ -215,6 +219,7 @@ public class EventManager {
         // Check the event type
         if (section.contains("event_type")) {
             eventType = EventType.valueOf(section.getString("event_type").toUpperCase(Locale.ROOT));
+//            Logger.logDebug("type " + eventType);
         }
 
         boolean isEventsList = false;

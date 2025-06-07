@@ -104,6 +104,10 @@
       <name>MagmaGuy's Repository</name>
       <url>https://repo.magmaguy.com/releases</url>
     </repository>
+    <repository>
+      <id>sk89q-repo</id>
+      <url>https://maven.enginehub.org/repo/</url>
+    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
@@ -140,6 +144,18 @@
       <groupId>org.betonquest</groupId>
       <artifactId>betonquest</artifactId>
       <version>3.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sk89q.worldguard</groupId>
+      <artifactId>worldguard-bukkit</artifactId>
+      <version>7.0.13</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>eu.asangarin.arikeys</groupId>
+      <artifactId>AriKeysPlugin</artifactId>
+      <version>3.1</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

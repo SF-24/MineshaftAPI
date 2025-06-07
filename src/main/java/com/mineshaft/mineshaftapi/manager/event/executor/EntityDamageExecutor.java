@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftapi.manager.event.executor;
 
 import com.mineshaft.mineshaftapi.manager.event.EntityEventExecutor;
 import com.mineshaft.mineshaftapi.manager.event.Event;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.EntityDamageEvent;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.UUID;
@@ -33,6 +34,8 @@ public class EntityDamageExecutor extends EntityEventExecutor {
     @Override
     public void executeEvent(UUID casterId) {
         super.executeEvent();
-        event.
+        if(event instanceof EntityDamageEvent) {
+            ((EntityDamageEvent) event).damageEntity(entity);
+        }
     }
 }

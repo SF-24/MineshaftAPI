@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
+import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
@@ -38,7 +39,7 @@ public class EventLoader {
     public static Event loadDamageEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
         EntityDamageEvent loadedEvent = new EntityDamageEvent();
         loadedEvent.setName(eventClass.getName());
-        loadedEvent.setEventType(eventClass.getEventType());
+        loadedEvent.setEventType(EventType.DAMAGE);
         loadedEvent.setOffset(eventClass.getOffset());
         loadedEvent.setTarget(eventClass.getTarget());
         loadedEvent.customParameters = eventClass.getParameters();
@@ -62,7 +63,7 @@ public class EventLoader {
     public static Event loadStrongAttackEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
         PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent = new PrepareStrongAttackEntityEvent();
         prepareStrongAttackEntityEvent.setName(eventClass.getName());
-        prepareStrongAttackEntityEvent.setEventType(eventClass.getEventType());
+        prepareStrongAttackEntityEvent.setEventType(EventType.PREPARE_STRONG_ATTACK);
         prepareStrongAttackEntityEvent.setOffset(eventClass.getOffset());
         prepareStrongAttackEntityEvent.setTarget(eventClass.getTarget());
         prepareStrongAttackEntityEvent.customParameters = eventClass.getParameters();
@@ -80,7 +81,7 @@ public class EventLoader {
     public static Event loadBeamEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
         BeamEvent beamEvent = new BeamEvent();
         beamEvent.setName(eventClass.getName());
-        beamEvent.setEventType(eventClass.getEventType());
+        beamEvent.setEventType(EventType.BEAM);
         beamEvent.setOffset(eventClass.getOffset());
         beamEvent.setTarget(eventClass.getTarget());
         beamEvent.customParameters = eventClass.getParameters();
@@ -117,35 +118,36 @@ public class EventLoader {
         }
 
         if (section.contains("on_hit")) {
+//            Logger.logDebug("on hit detected");
             for (String subSection : section.getConfigurationSection("on_hit").getKeys(false)) {
+//                Logger.logDebug("Subsection: " + subSection);
                 for (String element : section.getConfigurationSection("on_hit." + subSection).getKeys(false)) {
                     String path = "on_hit." + subSection + "." + element;
 
+//                    Logger.logDebug("element");
+
                     Event localEvent = null;
                     try {
+//                        Logger.logDebug("Loading local event");
                         // localEvent = LocalEvent.valueOf(element.toUpperCase(Locale.ROOT).toUpperCase(Locale.ROOT));
-                        localEvent = MineshaftApi.getInstance().getEventManagerInstance().getEvent("local_event_" + UUID.randomUUID().toString(), executingItem, section.getConfigurationSection("on_hit." + subSection));
+                        localEvent = MineshaftApi.getInstance().getEventManagerInstance().getEvent("local_event_" + UUID.randomUUID(), executingItem, section.getConfigurationSection("on_hit." + subSection + "." + element));
                     } catch (Exception e) {
                         Logger.logError("Could not load local event " + element + " for yaml event: " + beamEvent.getName());
                         break;
                     }
 
-                    Object object = null;
+//                    Logger.logDebug(localEvent.toString());
 
-
-                    if (object != null) {
-                        switch (subSection) {
-                            case "entity":
-                                beamEvent.setOnHitEntity(localEvent);
-                                break;
-                            case "player":
-                                beamEvent.setOnHitPlayer(localEvent);
-                                break;
-                            case "block":
-                                beamEvent.setOnHitBlock(localEvent);
-                                break;
-
-                        }
+                    switch (subSection) {
+                        case "entity":
+                            beamEvent.setOnHitEntity(localEvent);
+                            break;
+                        case "player":
+                            beamEvent.setOnHitPlayer(localEvent);
+                            break;
+                        case "block":
+                            beamEvent.setOnHitBlock(localEvent);
+                            break;
                     }
                 }
             }
@@ -173,6 +175,7 @@ public class EventLoader {
                 beamEvent.removeOnHitEntity(eventIteration);
                 EntityDamageEvent damageEvent = new EntityDamageEvent();
                 damageEvent.damage=damage;
+                damageEvent.setEventType(EventType.DAMAGE);
                 beamEvent.setOnHitEntity(damageEvent);
             }
         }
@@ -180,6 +183,7 @@ public class EventLoader {
             if (eventIteration instanceof EntityDamageEvent) {
                 beamEvent.removeOnHitPlayer(eventIteration);
                 EntityDamageEvent damageEvent = new EntityDamageEvent();
+                damageEvent.setEventType(EventType.DAMAGE);
                 damageEvent.damage=damage;
                 beamEvent.setOnHitEntity(damageEvent);
             }

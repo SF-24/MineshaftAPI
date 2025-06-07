@@ -21,6 +21,8 @@ package com.mineshaft.mineshaftapi.manager.event.game_objects;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.TargeterEvent;
+import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -34,16 +36,21 @@ import java.util.UUID;
 public class HitManager {
 
     // When a block is hit
-    public static HitResponse triggerBlockHit(TargeterEvent event, UUID casterId, Location hitLocation, Location previousLocation, boolean hitParticles) {
+    public static HitResponse triggerBlockHit(TargeterEvent event, UUID casterId, Location hitLocation, Location previousLocation, boolean hideParticles) {
+        Logger.logDebug("Block hit " + hitLocation);
+
         HitResponse hitResponse = new HitResponse();
         //PLAY FIZZLE SOUND
         if(hitLocation.getBlock().getBoundingBox().contains(hitLocation.getX(),hitLocation.getY(),hitLocation.getZ())) {
-            if(hitParticles) {
-                hitLocation.getWorld().playSound(hitLocation, Sound.BLOCK_FIRE_EXTINGUISH, 0.75f, 1.0f);
+            if(!hideParticles) {
+
+                // Pitch, then volume
+                hitLocation.getWorld().playSound(hitLocation, Sound.BLOCK_FIRE_EXTINGUISH, 1.0F /*volume, was 0.75*/, 1.0f);
                 hitLocation.getWorld().spawnParticle(Particle.SMOKE, hitLocation, 50, 0, 0, 0, 0);
+                Logger.logDebug("Block hit particles");
             }
             hitResponse.isCancelled=true;
-            onHitBlock(event.getOnHitBlock(),casterId,hitLocation.getBlock(),null);
+            //onHitBlock(event.getOnHitBlock(),casterId,hitLocation.getBlock(),null);
         }
         return hitResponse;
     }
@@ -53,10 +60,11 @@ public class HitManager {
         HitResponse hitResponse = new HitResponse();
 
         // get onHit stuff
-        if(event.getOnHitPlayer()!=null && livingEntityTarget instanceof Player) {
+        if(event.getOnHitPlayer()!=null && !event.getOnHitPlayer().isEmpty() && livingEntityTarget instanceof Player) {
             onHitPlayer(event.getOnHitPlayer(),casterId,livingEntityTarget);
             hitResponse.affectsEntity=true;
-        } else if(event.getOnHitEntity()!=null) {
+        }
+        if(event.getOnHitEntity()!=null) {
             HitManager.onHitEntity(event.getOnHitEntity(),casterId,livingEntityTarget);
             hitResponse.affectsEntity=true;
         }
@@ -78,19 +86,32 @@ public class HitManager {
 
     public static void onHitBlock(List<Event> blockHitEvent, UUID casterId, Block block, Block previousBlock) {
         for(Event event : blockHitEvent) {
-            MineshaftApi.getInstance().getEventManagerInstance().runEvent(event, block.getLocation(),casterId,previousBlock);
+            if (!event.getEventType().equals(EventType.BEAM)) {
+                MineshaftApi.getInstance().getEventManagerInstance().runEvent(event, block.getLocation(), casterId, previousBlock);
+            }
         }
     }
 
     public static void onHitEntity(List<Event> entityHitEvent, UUID casterId, LivingEntity targetEntity) {
+//        Logger.logDebug("entity hit onhitmanager");
         for(Event event : entityHitEvent) {
-            MineshaftApi.getInstance().getEventManagerInstance().runEvent(event, targetEntity.getLocation(),casterId,targetEntity);
+            if (!event.getEventType().equals(EventType.BEAM)) {
+
+                Logger.logDebug("Event: " + event.getClass().getName());
+                MineshaftApi.getInstance().getEventManagerInstance().runEvent(event, targetEntity.getLocation(), casterId, targetEntity);
+            } else {
+                Logger.logDebug("nested beam event");
+            }
         }
     }
 
     public static void onHitPlayer(List<Event> playerHitEvent, UUID casterId, LivingEntity targetPlayer) {
         for(Event event : playerHitEvent) {
-            MineshaftApi.getInstance().getEventManagerInstance().runEvent(event, targetPlayer.getLocation(),casterId,targetPlayer);
+            if (!event.getEventType().equals(EventType.BEAM)) {
+                MineshaftApi.getInstance().getEventManagerInstance().runEvent(event, targetPlayer.getLocation(), casterId, targetPlayer);
+            } else {
+                Logger.logDebug("nested beam event");
+            }
         }
     }
 

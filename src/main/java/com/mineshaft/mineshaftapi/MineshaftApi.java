@@ -46,12 +46,13 @@ import java.util.UUID;
 public final class MineshaftApi extends JavaPlugin {
 
     ConfigManager configManager = new ConfigManager(this);
-    RegionManager regionManager = new RegionManager(this);
     CooldownManager cooldownManager = new CooldownManager();
     ItemManager itemManager;
     EventManager eventManager;
     DependencyInit dependencyInit = new DependencyInit();
     BlockingManager blockingManager = new BlockingManager();
+
+    RegionManager regionManager;
 
     HashMap<UUID, PendingAbilities> pendingAbilities = new HashMap<>();
 
@@ -79,6 +80,9 @@ public final class MineshaftApi extends JavaPlugin {
         } else {
             // Log warning
             Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
+        }
+        if(DependencyInit.hasWorldGuard()) {
+            regionManager = new RegionManager();
         }
 
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);

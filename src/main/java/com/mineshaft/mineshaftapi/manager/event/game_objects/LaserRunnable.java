@@ -125,7 +125,7 @@ public class LaserRunnable extends BukkitRunnable {
             }
 
             if (/*!hideParticles &&*/ !loc.getBlock().getType().equals(Material.AIR) && !event.getIgnoredBlocks().contains(loc.getBlock().getType())) {
-                HitResponse hitResponse = HitManager.triggerBlockHit(event,casterId,loc,loc.subtract(x,y,z),!hideParticles);
+                HitResponse hitResponse = HitManager.triggerBlockHit(event,casterId,loc.clone(),loc.clone().subtract(x,y,z),hideParticles);
                 if(hitResponse.isCancelled) {
                     this.cancel();
                 }

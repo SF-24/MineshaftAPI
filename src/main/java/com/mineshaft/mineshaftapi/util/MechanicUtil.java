@@ -27,7 +27,12 @@ import org.jetbrains.annotations.NotNull;
 public class MechanicUtil {
 
     public static @NotNull DamageType getDamageType(@NotNull String key) {
-        return (DamageType) RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE).getOrThrow(NamespacedKey.minecraft(key));
+        try {
+            return (DamageType) RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE).getOrThrow(NamespacedKey.minecraft(key));
+        } catch (Exception e) {
+            Logger.logError("Invalid damage type: " + key);
+        }
+        return DamageType.GENERIC;
     }
 
 }

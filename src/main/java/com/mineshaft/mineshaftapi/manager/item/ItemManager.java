@@ -593,7 +593,7 @@ public class ItemManager {
         }
 
         // get ranged stat strings
-        Logger.logInfo(rangedStatMap.toString());
+//        Logger.logInfo(rangedStatMap.toString());
         for(int i = lowestPriority; i<=highestPriority; i++) {
             for(RangedItemStats stat : rangedStatMap.keySet()) {
                 if (i == stat.getPriority() && statMap.get(stat)!=null) {

@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
 import com.mineshaft.mineshaftapi.manager.event.Event;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
@@ -38,8 +39,10 @@ public class EntityDamageEvent extends Event {
         if(entity instanceof LivingEntity) {
             if(damager!=null) {
                 ((LivingEntity) entity).damage(damage, entity);
-            } else {
+            } else if(source!=null) {
                 ((LivingEntity) entity).damage(damage, source);
+            } else {
+                ((LivingEntity) entity).damage(damage);
             }
         }
     }

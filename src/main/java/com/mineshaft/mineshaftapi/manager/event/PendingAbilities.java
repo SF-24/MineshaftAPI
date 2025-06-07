@@ -40,16 +40,16 @@ public class PendingAbilities {
         return pendingAbilities;
     }
 
-    public void addStrongAttackAbility(int damageMultiplier,int knockbackPower, String attackSound, boolean particles) {
+    public void addStrongAttackAbility(double damageMultiplier,double knockbackPower, String attackSound, boolean particles) {
         PendingAbility ability = new PendingAbility();
-        ability.intParams.put("DamageMultiplier", damageMultiplier);
-        ability.intParams.put("KnockbackPower", knockbackPower);
+        ability.doubleParams.put("DamageMultiplier", damageMultiplier);
+        ability.doubleParams.put("KnockbackPower", knockbackPower);
         ability.stringParams.put("Particles", String.valueOf(particles));
         ability.stringParams.put("AttackSound", attackSound);
     }
 
     public class PendingAbility {
-        public HashMap<String, Integer> intParams;
+        public HashMap<String, Double> doubleParams;
         public HashMap<String, String> stringParams;
     }
 

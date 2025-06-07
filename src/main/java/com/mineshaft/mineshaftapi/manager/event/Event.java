@@ -35,7 +35,7 @@ public class Event {
     protected TriggerType target = TriggerType.ANY;
     protected String sound = null;
 
-    protected HashMap<String, Object> customParameters = new HashMap<>();
+    public HashMap<String, Object> customParameters = new HashMap<>();
 
     public void setSound(String sound) {this.sound=sound;}
     public void setTarget(TriggerType target) {this.target = target;}

@@ -18,25 +18,29 @@
 
 package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
-import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
-import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
-public class PrepareStrongAttackEntityEvent extends Event {
+public class EntityDamageEvent extends Event {
 
-    public double damageMultiplier = 1;
-    public double knockbackPower = 1;
-    public boolean particles = false;
-    public String attackSound = null;
+    public double damage = 5;
+    public DamageSource source = DamageSource.builder(DamageType.GENERIC).build();
+    public Entity damager = null;
 
-    public void prepareStrongAttack(Entity entity) {
-        PendingAbilities pendingAbilities = MineshaftApi.getInstance().getPendingAbilities(entity.getUniqueId());
-        pendingAbilities.addStrongAttackAbility(damageMultiplier,knockbackPower,attackSound,particles);
-        MineshaftApi.getInstance().setPendingAbilities(entity.getUniqueId(), pendingAbilities);
+    public void setDamageType(DamageType type) {
+        source = DamageSource.builder(type).build();
+    }
 
-        if(attackSound!=null) {
-            entity.getWorld().playSound(entity.getLocation(),attackSound, 1.0f, 1.0f);
+    public void damageEntity(Entity entity) {
+        if(entity instanceof LivingEntity) {
+            if(damager!=null) {
+                ((LivingEntity) entity).damage(damage, entity);
+            } else {
+                ((LivingEntity) entity).damage(damage, source);
+            }
         }
     }
 }

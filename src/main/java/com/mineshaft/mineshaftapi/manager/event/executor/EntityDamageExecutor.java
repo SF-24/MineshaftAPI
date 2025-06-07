@@ -16,17 +16,23 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event.fields;
+package com.mineshaft.mineshaftapi.manager.event.executor;
 
-public enum EventType {
+import com.mineshaft.mineshaftapi.manager.event.EntityEventExecutor;
+import com.mineshaft.mineshaftapi.manager.event.Event;
+import org.bukkit.entity.LivingEntity;
 
-    NULL,
-    BEAM,
-    PLAY_SOUND,
-    BETONQUEST,
-    PLAYER_VECTOR_DASH,
-    PLAYER_VECTOR_LEAP,
-    PREPARE_STRONG_ATTACK,
-    DAMAGE,
-    ITEM_PURCHASE
+import java.util.UUID;
+
+public class EntityDamageExecutor extends EntityEventExecutor {
+
+    public EntityDamageExecutor(Event event, LivingEntity entity) {
+        super(event, entity);
+    }
+
+    @Override
+    public void executeEvent(UUID casterId) {
+        super.executeEvent();
+        event.
+    }
 }

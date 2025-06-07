@@ -20,24 +20,16 @@ package com.mineshaft.mineshaftapi.manager.event;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
-import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
-import com.mineshaft.mineshaftapi.manager.event.event_subclass.PrepareStrongAttackEntityEvent;
-import com.mineshaft.mineshaftapi.manager.event.event_subclass.VectorPlayerEvent;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.*;
 import com.mineshaft.mineshaftapi.manager.event.executor.BeamExecutor;
+import com.mineshaft.mineshaftapi.manager.event.executor.EntityDamageExecutor;
 import com.mineshaft.mineshaftapi.manager.event.executor.PrepareStrongAttackEventExecutor;
 import com.mineshaft.mineshaftapi.manager.event.executor.VectorEventExecutor;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventFields;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
-import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.UniqueEventFields;
-import com.mineshaft.mineshaftapi.manager.item.ItemManager;
-import com.mineshaft.mineshaftapi.manager.item.ItemStats;
-import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
-import com.mineshaft.mineshaftapi.util.ColourFormatter;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
@@ -47,8 +39,6 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static com.mineshaft.mineshaftapi.manager.item.ItemStats.DAMAGE;
 
 public class EventManager {
 
@@ -133,23 +123,26 @@ public class EventManager {
         }
     }
 
-    public boolean runEvent(Event event, Location loc, UUID casterId, Object caster) {
+    public boolean runEvent(Event event, Location loc, UUID casterId, Object targetEntity) {
         switch (event.getEventType()) {
             case NULL:
                 return false;
+            case DAMAGE:
+                if(!(event instanceof EntityDamageEvent) || !(targetEntity instanceof LivingEntity)) return false;
+                new EntityDamageExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
+                return true;
             case PREPARE_STRONG_ATTACK:
-                if(!(event instanceof PrepareStrongAttackEntityEvent) || !(caster instanceof LivingEntity)) return false;
-                new PrepareStrongAttackEventExecutor(event, (LivingEntity) caster).executeEvent(casterId);
+                if(!(event instanceof PrepareStrongAttackEntityEvent) || !(targetEntity instanceof LivingEntity)) return false;
+                new PrepareStrongAttackEventExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
                 return true;
             case BEAM:
                 if(!(event instanceof BeamEvent)) return false;
                 new BeamExecutor((BeamEvent) event,loc).executeEvent(casterId);
                 return true;
             case PLAYER_VECTOR_DASH,PLAYER_VECTOR_LEAP:
-                if(!(event instanceof VectorPlayerEvent) || !(caster instanceof Player)) return false;
-                new VectorEventExecutor(event, (Player) caster).executeEvent(casterId);
+                if(!(event instanceof VectorPlayerEvent) || !(targetEntity instanceof Player)) return false;
+                new VectorEventExecutor(event, (Player) targetEntity).executeEvent(casterId);
                 return true;
-
             case PLAY_SOUND:
                 if(loc.getWorld()==null) return false;
                 String sound = "";
@@ -183,17 +176,21 @@ public class EventManager {
 
 
     // parent bit not working
-    public Event getEvent(String eventName, ItemStack executingItem, ConfigurationSection placeholder) {
+    public Event getEvent(String eventName, ItemStack executingItem, ConfigurationSection section) {
 
-        File fileYaml = new File(path, eventName +".yml");
+        if (section == null) {
+            File fileYaml = new File(path, eventName + ".yml");
 
-        // return null if file does not exist
-        if(!fileYaml.exists()) return null;
+            // return null if file does not exist
+            if (!fileYaml.exists()) return null;
 
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+            YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+            section = yamlConfiguration.getDefaultSection();
+        }
+        assert section != null;
 
         // Whether the item has a parent item
-        boolean hasParent=false;
+        boolean hasParent = false;
 
         Event eventClass = new Event();
         eventClass.setName(eventName);
@@ -201,176 +198,77 @@ public class EventManager {
 
         List<String> uniqueFields = new ArrayList<>();
 
-        for(UniqueEventFields field : UniqueEventFields.values()) {
+        for (UniqueEventFields field : UniqueEventFields.values()) {
             uniqueFields.add(field.name().toLowerCase());
         }
 
-        if(yamlConfiguration.contains("parent")) {
+        if (section.contains("parent")) {
             // TODO: fix parent inheritance
 
-            String parentName = yamlConfiguration.getString( "parent");
-            if(parentName!=null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
+            String parentName = section.getString("parent");
+            if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
                 eventClass = getEvent(parentName);
-                hasParent=true;
+                hasParent = true;
             }
         }
 
-        if(yamlConfiguration.contains("event_type")) {
-//            MineshaftApi.getAnyPlayer().sendMessage("e type: " + yamlConfiguration.getString("event_type"));
-            eventType = EventType.valueOf(yamlConfiguration.getString( "event_type").toUpperCase(Locale.ROOT));
+        // Check the event type
+        if (section.contains("event_type")) {
+            eventType = EventType.valueOf(section.getString("event_type").toUpperCase(Locale.ROOT));
         }
 
         boolean isEventsList = false;
         ArrayList<String> nestedEvents = new ArrayList<>();
 
         // get keys
-        for(String field : yamlConfiguration.getKeys(false)) {
-            if(field.equalsIgnoreCase("sound")) {
-                eventClass.setSound(yamlConfiguration.getString("sound"));
-            } else if(uniqueFields.contains(field)) {
-                eventClass.addParameter(field, yamlConfiguration.get(field));
-            } else if(field.equals("offset")) {
+        for (String field : section.getKeys(false)) {
+
+            // Get the accompanied sound
+            if (field.equalsIgnoreCase("sound")) {
+                eventClass.setSound(section.getString("sound"));
+
+            // Load general fields
+            } else if (uniqueFields.contains(field)) {
+                eventClass.addParameter(field, section.get(field));
+
+            // Get the event offset
+            } else if (field.equals("offset")) {
                 // Set offset vector
                 int x = 0;
                 int y = 0;
                 int z = 0;
 
-                if(yamlConfiguration.contains("offset.x")) {
-                    x = yamlConfiguration.getInt("offset.x");
+                if (section.contains("offset.x")) {
+                    x = section.getInt("offset.x");
                 }
-                if(yamlConfiguration.contains("offset.y")) {
-                    y = yamlConfiguration.getInt("offset.y");
+                if (section.contains("offset.y")) {
+                    y = section.getInt("offset.y");
                 }
-                if(yamlConfiguration.contains("offset.z")) {
-                    z = yamlConfiguration.getInt("offset.z");
+                if (section.contains("offset.z")) {
+                    z = section.getInt("offset.z");
                 }
-                eventClass.setOffset(x,y,z);
-            } else if(field.equals("list_events")) {
-                nestedEvents.addAll(yamlConfiguration.getStringList("list_events"));
+                eventClass.setOffset(x, y, z);
+
+            // Get a list of nested events
+            } else if (field.equals("list_events")) {
+                nestedEvents.addAll(section.getStringList("list_events"));
             }
         }
 
-        if(eventType.equals(EventType.PREPARE_STRONG_ATTACK)) {
-
-            PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent = new PrepareStrongAttackEntityEvent();
-
-        } else if(eventType.equals(EventType.BEAM)) {
-            BeamEvent beamEvent = new BeamEvent();
-            beamEvent.setName(eventClass.getName());
-            beamEvent.setEventType(eventClass.getEventType());
-            beamEvent.setOffset(eventClass.getOffset());
-            beamEvent.setTarget(eventClass.getTarget());
-            beamEvent.customParameters=eventClass.getParameters();
-
-            for(String key : yamlConfiguration.getKeys(false)) {
-                switch (key) {
-                    case "speed":
-                        beamEvent.setSpeed(yamlConfiguration.getInt(key));
-                        break;
-                    case "size":
-                        beamEvent.setSize(yamlConfiguration.getInt(key));
-                        break;
-                    case "colour":
-                        if(yamlConfiguration.getString("colour")!=null) {
-                            beamEvent.setColour(ColourFormatter.getColourFromString(yamlConfiguration.getString("colour")));
-                        }
-                        break;
-                    case "particle_count":
-                        beamEvent.setParticleCount(yamlConfiguration.getInt(key));
-                        break;
-                    case "particle_type":
-                        beamEvent.setParticleType(Particle.valueOf(yamlConfiguration.getString(key).toUpperCase()));
-                        break;
-                    case "fly_distance":
-                        beamEvent.setFlyDistance(yamlConfiguration.getInt(key));
-                        break;
-                    case "power":
-                        beamEvent.setPower(yamlConfiguration.getInt(key));
-                        break;
-                    case "projectile":
-                        beamEvent.setProjectile(true);
-                        break;
-                }
+        switch (eventType) {
+            case BEAM -> eventClass = EventLoader.loadBeamEvent(section,eventClass,executingItem);
+            case PREPARE_STRONG_ATTACK -> eventClass = EventLoader.loadStrongAttackEvent(section,eventClass,executingItem);
+            case DAMAGE -> eventClass = EventLoader.loadDamageEvent(section,eventClass,executingItem);
+            case BETONQUEST -> {
+                // TODO:
             }
-
-            if(yamlConfiguration.contains("on_hit")) {
-
-                for(String section : yamlConfiguration.getConfigurationSection("on_hit").getKeys(false)) {
-                    for(String element : yamlConfiguration.getConfigurationSection("on_hit." + section).getKeys(false)) {
-                        String path = "on_hit."+section+"."+element;
-
-                        LocalEvent localEvent = null;
-                        try {
-                            localEvent = LocalEvent.valueOf(element.toUpperCase(Locale.ROOT).toUpperCase(Locale.ROOT));
-                        } catch (Exception e) {
-                            Logger.logError("Could not load local event " + element  + " for yaml event: " + eventName);
-                            break;
-                        }
-
-                        Object object = null;
-
-                        switch (localEvent) {
-                            case DAMAGE:
-                                object = yamlConfiguration.getDouble(path);
-                                break;
-                            case EXPLODE:
-                                object = yamlConfiguration.getInt(path);
-                                break;
-                            case SET_BLOCK:
-                                object = Material.valueOf(yamlConfiguration.getString(path).toUpperCase());
-                                break;
-                        }
-
-                        if(object != null) {
-                            switch (section) {
-                                case "entity":
-                                    beamEvent.setOnHitEntity(localEvent,object);
-                                    break;
-                                case "player":
-                                    beamEvent.setOnHitPlayer(localEvent,object);
-                                    break;
-                                case "block":
-                                    beamEvent.setOnHitBlock(localEvent,object);
-                                    break;
-
-                            }
-                        }
-                    }
-                }
-
-
-            } else {
-                beamEvent.setOnHitEntity(LocalEvent.DAMAGE, 10.0);
-            }
-
-            if(executingItem!=null) {
-                // Override damage via weapon stat
-
-                double damage = ItemManager.getItemNbtStat(executingItem, ItemStats.RANGED_DAMAGE);
-
-                int range = (int) ItemManager.getItemNbtRangedStat(executingItem, RangedItemStats.FIRING_RANGE_CUSTOM);
-
-                if(range<0) range = 0;
-
-                beamEvent.setFlyDistance(range);
-
-                if(damage<=0) return beamEvent;
-
-                if(beamEvent.getOnHitEntity().contains(LocalEvent.DAMAGE)) {
-                    beamEvent.setOnHitEntity(LocalEvent.DAMAGE, damage);
-                }
-                if(beamEvent.getOnHitPlayer().contains(DAMAGE)) {
-                    beamEvent.setOnHitPlayer(LocalEvent.DAMAGE,damage);
-                }
-            }
-
-            return beamEvent;
+        }
+            return eventClass;
         }
 
-        return eventClass;
-    }
 
-    public static boolean isHardcoded(String event) {
+
+    public static boolean isHardcoded (String event){
         return event.equalsIgnoreCase("parry");
     }
 

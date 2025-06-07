@@ -16,17 +16,18 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event.fields;
+package com.mineshaft.mineshaftapi.util;
 
-public enum EventType {
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+import org.bukkit.NamespacedKey;
+import org.bukkit.damage.DamageType;
+import org.jetbrains.annotations.NotNull;
 
-    NULL,
-    BEAM,
-    PLAY_SOUND,
-    BETONQUEST,
-    PLAYER_VECTOR_DASH,
-    PLAYER_VECTOR_LEAP,
-    PREPARE_STRONG_ATTACK,
-    DAMAGE,
-    ITEM_PURCHASE
+public class MechanicUtil {
+
+    public static @NotNull DamageType getDamageType(@NotNull String key) {
+        return (DamageType) RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE).getOrThrow(NamespacedKey.minecraft(key));
+    }
+
 }

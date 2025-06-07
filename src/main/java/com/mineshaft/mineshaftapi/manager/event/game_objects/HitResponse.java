@@ -16,17 +16,11 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event.fields;
+package com.mineshaft.mineshaftapi.manager.event.game_objects;
 
-public enum EventType {
+public class HitResponse {
 
-    NULL,
-    BEAM,
-    PLAY_SOUND,
-    BETONQUEST,
-    PLAYER_VECTOR_DASH,
-    PLAYER_VECTOR_LEAP,
-    PREPARE_STRONG_ATTACK,
-    DAMAGE,
-    ITEM_PURCHASE
+    public boolean isReflected;
+    public boolean isCancelled;
+    public boolean affectsEntity;
 }

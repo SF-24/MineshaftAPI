@@ -22,16 +22,17 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.entity.display.DisplayManager;
 import com.mineshaft.mineshaftapi.manager.entity.display.DisplayType;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
-import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.TriggerType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class LaserRunnable extends BukkitRunnable {
@@ -123,168 +124,40 @@ public class LaserRunnable extends BukkitRunnable {
                 projectile=DisplayManager.generateDisplay(displayType,stack,loc);
             }
 
-            ArrayList<Material> ignoredBlocks = new ArrayList<>();
-            ignoredBlocks.add(Material.VINE);
-            ignoredBlocks.add(Material.TALL_GRASS);
-            ignoredBlocks.add(Material.SHORT_GRASS);
-            ignoredBlocks.add(Material.ROSE_BUSH);
-            ignoredBlocks.add(Material.LILAC);
-            ignoredBlocks.add(Material.PEONY);
-            ignoredBlocks.add(Material.OXEYE_DAISY);
-            ignoredBlocks.add(Material.POPPY);
-            ignoredBlocks.add(Material.DANDELION);
-            ignoredBlocks.add(Material.BLUE_ORCHID);
-            ignoredBlocks.add(Material.ALLIUM);
-            ignoredBlocks.add(Material.AZURE_BLUET);
-            ignoredBlocks.add(Material.ORANGE_TULIP);
-            ignoredBlocks.add(Material.RED_TULIP);
-            ignoredBlocks.add(Material.PINK_TULIP);
-            ignoredBlocks.add(Material.WHITE_TULIP);
-            ignoredBlocks.add(Material.CORNFLOWER);
-            ignoredBlocks.add(Material.LILY_OF_THE_VALLEY);
-            ignoredBlocks.add(Material.TORCHFLOWER);
-            ignoredBlocks.add(Material.WITHER_ROSE);
-            ignoredBlocks.add(Material.PINK_PETALS);
-            ignoredBlocks.add(Material.SUNFLOWER);
-            ignoredBlocks.add(Material.PITCHER_PLANT);
-            ignoredBlocks.add(Material.ACACIA_SAPLING);
-            ignoredBlocks.add(Material.BAMBOO_SAPLING);
-            ignoredBlocks.add(Material.OAK_SAPLING);
-            ignoredBlocks.add(Material.CHERRY_SAPLING);
-            ignoredBlocks.add(Material.JUNGLE_SAPLING);
-            ignoredBlocks.add(Material.SPRUCE_SAPLING);
-            ignoredBlocks.add(Material.DARK_OAK_SAPLING);
-            ignoredBlocks.add(Material.BIRCH_SAPLING);
-            ignoredBlocks.add(Material.MANGROVE_PROPAGULE);
-            ignoredBlocks.add(Material.FERN);
-            ignoredBlocks.add(Material.LARGE_FERN);
-            ignoredBlocks.add(Material.CAVE_VINES);
-            ignoredBlocks.add(Material.TWISTING_VINES);
-            ignoredBlocks.add(Material.WEEPING_VINES);
-            ignoredBlocks.add(Material.DEAD_BUSH);
-            ignoredBlocks.add(Material.SWEET_BERRY_BUSH);
-            ignoredBlocks.add(Material.GLOW_BERRIES);
-            ignoredBlocks.add(Material.BIG_DRIPLEAF);
-            ignoredBlocks.add(Material.SMALL_DRIPLEAF);
-            ignoredBlocks.add(Material.BIG_DRIPLEAF_STEM);
-            ignoredBlocks.add(Material.BLACK_CARPET);
-/*            ignoredBlocks.add(Material.YELLOW_CARPET);
-            ignoredBlocks.add(Material.PURPLE_CARPET);
-            ignoredBlocks.add(Material.LIGHT_GRAY_CARPET);
-            ignoredBlocks.add(Material.RED_CARPET);
-            ignoredBlocks.add(Material.WHITE_CARPET);
-            ignoredBlocks.add(Material.ORANGE_CARPET);
-            ignoredBlocks.add(Material.PINK_CARPET);
-            ignoredBlocks.add(Material.MAGENTA_CARPET);
-            ignoredBlocks.add(Material.LIGHT_BLUE_CARPET);
-            ignoredBlocks.add(Material.MOSS_CARPET);
-            ignoredBlocks.add(Material.LIME_CARPET);
-            ignoredBlocks.add(Material.GREEN_CARPET);
-            ignoredBlocks.add(Material.BROWN_CARPET);
-            ignoredBlocks.add(Material.GRAY_CARPET);
-            ignoredBlocks.add(Material.BLUE_CARPET);
-            ignoredBlocks.add(Material.CYAN_CARPET);*/
-            ignoredBlocks.add(Material.TORCH);
-            ignoredBlocks.add(Material.WALL_TORCH);
-            ignoredBlocks.add(Material.REDSTONE_TORCH);
-            ignoredBlocks.add(Material.REDSTONE_WALL_TORCH);
-            ignoredBlocks.add(Material.SOUL_TORCH);
-            ignoredBlocks.add(Material.SOUL_WALL_TORCH);
-
-            // flip on hit barrier
-            if(loc.getBlock().getType().equals(Material.BARRIER)) {
-                flipped = true;
-            } else if (!hideParticles && !loc.getBlock().getType().equals(Material.AIR) && !ignoredBlocks.contains(loc.getBlock().getType())) {
-                //PLAY FIZZLE SOUND
-                if(loc.getBlock().getBoundingBox().contains(loc.getX(),loc.getY(),loc.getZ())) {
-
-                    loc.getWorld().playSound(loc, Sound.BLOCK_FIRE_EXTINGUISH, 0.75f, 1.0f);
-                    loc.getWorld().spawnParticle(Particle.SMOKE, loc, 50, 0, 0, 0, 0);
+            if (/*!hideParticles &&*/ !loc.getBlock().getType().equals(Material.AIR) && !event.getIgnoredBlocks().contains(loc.getBlock().getType())) {
+                HitResponse hitResponse = HitManager.triggerBlockHit(event,casterId,loc,loc.subtract(x,y,z),!hideParticles);
+                if(hitResponse.isCancelled) {
                     this.cancel();
-                    break;
                 }
-                // if hits barrier block or air
             } else {
 
-                LivingEntity e = null;
+                LivingEntity livingEntityTarget = null;
                 boolean foundEntity = false;
 
                 double distance = 10;
                 // IF SPELL HITS ENTITY
-                for (Entity en : loc.getWorld().getNearbyEntities(loc, 1.75, 2.0, 1.75)) { //getChunk().getEntities()) {
+                for (Entity entityIteration : loc.getWorld().getNearbyEntities(loc, 1.75, 2.0, 1.75)) { //getChunk().getEntities()) {
 
-                    BoundingBox boundingBox = en.getBoundingBox();
+                    BoundingBox boundingBox = entityIteration.getBoundingBox();
                     boundingBox.expand(0.1,0.1,0.1,0.1,0.1,0.1);
-                    if((!flipped && !en.getUniqueId().equals(casterId)) && boundingBox.contains(loc.getX(),loc.getY(),loc.getZ())) {
-                        if (en instanceof LivingEntity && !(en instanceof ItemFrame)) {
+                    if((!flipped && !entityIteration.getUniqueId().equals(casterId)) && boundingBox.contains(loc.getX(),loc.getY(),loc.getZ())) {
+                        if (entityIteration instanceof LivingEntity && !(entityIteration instanceof ItemFrame)) {
                             foundEntity = true;
                             // entity detected
-                            if (distance>en.getLocation().distance(loc)) {
-                                distance = en.getLocation().distance(loc);
-                                e=(LivingEntity)en;
+                            if (distance>entityIteration.getLocation().distance(loc)) {
+                                distance = entityIteration.getLocation().distance(loc);
+                                livingEntityTarget=(LivingEntity)entityIteration;
                             }
                         }
                     }
                 }
 
-                if(foundEntity && e != null) {
+                if(foundEntity && livingEntityTarget != null) {
                     // IF ENTITY IS NOT CASTER OR WAS CASTER BUT SPELL BOUNCED OFF SHIELD
                     if (t>0.5) {
-                        boolean affectsEntity = false;
-                        LocalEvent localEvent = null;
-                        LocalEvent playerEvent = null;
-                        Object param = null;
-                        Object playerParam = null;
-
-                        // get onHit stuff
-                        if(event.getOnHitEntity()!=null) {
-                            localEvent=event.getOnHitEntity().get(0);
-                            param=event.getOnHitEntityObject(LocalEvent.DAMAGE);
-                            playerEvent=event.getOnHitEntity().get(0);
-                            playerParam=event.getOnHitEntityObject(LocalEvent.DAMAGE);
-                            affectsEntity=true;
-                        }
-                        if(event.getOnHitPlayer()!=null && e instanceof Player) {
-                            playerEvent=event.getOnHitPlayer().get(0);
-                            playerParam=event.getOnHitPlayerObject(LocalEvent.DAMAGE);
-                            affectsEntity=true;
-                        }
-
-                        // test if entity has a shield or similar
-                        boolean isReflected = false;
-
-                        // TEST IF ENTITY IS TARGET
-                        if (affectsEntity && !isReflected) {
-
+                        HitResponse hitResponse = HitManager.triggerEntityHit(event, casterId, livingEntityTarget);
+                        if(hitResponse.isCancelled) {
                             this.cancel();
-
-                            Object switchParam = param;
-                            LocalEvent switchEvent = localEvent;
-                            if(e instanceof Player) {
-                                switchParam=playerParam;
-                                switchEvent=playerEvent;
-                            }
-
-                            switch (switchEvent) {
-                                case DAMAGE:
-                                    double damage = 5;
-                                    if(switchParam instanceof Double ) {
-                                        damage = (double) switchParam;
-                                    } else if(switchParam instanceof Integer) {
-                                        damage = (int) switchParam;
-                                    }
-
-                                    if(Bukkit.getPlayer(casterId)!=null) {
-                                        e.damage(damage, Bukkit.getPlayer(casterId));
-                                    } else {
-                                        e.damage(damage);
-                                    }
-                                    break;
-                                case EXPLODE:
-                                    break;
-                                case SET_BLOCK:
-                                    break;
-                            }
                         }
                     }
                 }

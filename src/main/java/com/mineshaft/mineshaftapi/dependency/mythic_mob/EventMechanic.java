@@ -22,6 +22,7 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.EventLoader;
 import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import io.lumine.mythic.api.adapters.AbstractLocation;
 import io.lumine.mythic.api.config.MythicLineConfig;
@@ -60,12 +61,7 @@ public class EventMechanic implements ITargetedLocationSkill {
         Event event = eventManager.getEvent(eventName);
 
         if(event instanceof BeamEvent) {
-            if (((BeamEvent) event).getOnHitEntity().contains(LocalEvent.DAMAGE)) {
-                ((BeamEvent) event).setOnHitEntity(LocalEvent.DAMAGE,damage);
-            }
-            if (((BeamEvent) event).getOnHitPlayer().contains(LocalEvent.DAMAGE)) {
-                ((BeamEvent) event).setOnHitPlayer(LocalEvent.DAMAGE,damage);
-            }
+            EventLoader.setBeamEventDamage((BeamEvent) event,damage);
         }
 
         eventManager.runEvent(event, loc, uuid,null);

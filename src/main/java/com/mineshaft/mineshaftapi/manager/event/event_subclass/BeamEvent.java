@@ -18,16 +18,10 @@
 
 package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
-import com.mineshaft.mineshaftapi.manager.event.Event;
-import com.mineshaft.mineshaftapi.manager.event.fields.LocalEvent;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-public class BeamEvent extends Event {
+public class BeamEvent extends TargeterEvent {
 
     boolean hasProjectile=false;
     int size = 2;
@@ -38,9 +32,6 @@ public class BeamEvent extends Event {
     int particleCount = 0;
     org.bukkit.Particle particleType= org.bukkit.Particle.DRAGON_BREATH;
 
-    HashMap<LocalEvent, Object> onHitEntity = new HashMap<>();
-    HashMap<LocalEvent, Object> onHitBlock = new HashMap<>();
-    HashMap<LocalEvent, Object> onHitPlayer = new HashMap<>();
 //    private String sound;
 
     public void setSpeed(int speed) {this.speed = speed;}
@@ -63,54 +54,4 @@ public class BeamEvent extends Event {
     public int getSize() {return size;}
 //    public String getSound() {return sound;}
 
-    public void setOnHitEntity(LocalEvent event, Object value) {
-        onHitEntity.clear();
-        onHitEntity.put(event, value);
-    }
-
-    public void setOnHitPlayer(LocalEvent event, Object value) {
-        onHitPlayer.clear();
-        onHitPlayer.put(event, value);
-    }
-
-    public void setOnHitBlock(LocalEvent event, Object value) {
-        onHitBlock.clear();
-        onHitBlock.put(event, value);
-    }
-
-    public List<LocalEvent> getOnHitBlock() {
-        List<LocalEvent> events = new ArrayList<>();
-        for(LocalEvent event : onHitBlock.keySet()) {
-            events.add(event);
-        }
-        return events;
-    }
-
-    public List<LocalEvent> getOnHitEntity() {
-        List<LocalEvent> events = new ArrayList<>();
-        for(LocalEvent event : onHitEntity.keySet()) {
-            events.add(event);
-        }
-        return events;
-    }
-
-    public List<LocalEvent> getOnHitPlayer() {
-        List<LocalEvent> events = new ArrayList<>();
-        for(LocalEvent event : onHitPlayer.keySet()) {
-            events.add(event);
-        }
-        return events;
-    }
-
-    public Object getOnHitBlockObject(LocalEvent event) {
-        return onHitBlock.get(event);
-    }
-
-    public Object getOnHitPlayerObject(LocalEvent event) {
-        return onHitPlayer.get(event);
-    }
-
-    public Object getOnHitEntityObject(LocalEvent event) {
-        return onHitEntity.get(event);
-    }
 }

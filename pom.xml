@@ -208,5 +208,11 @@
             <version>7.0.13</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>eu.asangarin.arikeys</groupId>
+            <artifactId>AriKeysPlugin</artifactId>
+            <version>3.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

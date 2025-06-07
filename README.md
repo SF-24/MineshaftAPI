@@ -42,6 +42,8 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
     - [Beam event type](#beam-event-type)
       - [On-hit local events](#on-hit-local-events)
     - [Vector player event type](#vector-player-event-type)
+    - [Prepare strong attack event type](#prepare-strong-attack-event-type)
+    - [Entity damage event type](#entity-damage-event-type)
 - [Configuration](#configuration)
 - [Integrations](#integrations)
     - [Mythic Mobs](#mythic-mobs)
@@ -90,26 +92,27 @@ The following features are not yet explained in the documentation
 *List elements in italic will definitely be added*
 
 - *[important!] Completing the README file and adding all documentation*
-- *[important!] Working armour support*
+- ~~*[important!] Working armour support*~~ (mostly implemented)
 - *More configuration: item rarities, etc.*
 - *Extendable weapons (lightsaber creation, etc.)*
 - *Customisable weapon cooldown*
-- *Player attributes: Strength, intelligence, etc.*
+- ~~*Player attributes: Strength, intelligence, etc.*~~ (Part of MineshaftRpg plugin)
 - Ammunition feature for ranged weapons (with reloading)
-- Customisable sidebar
-- More Placeholders
+- Customisable sidebar (Shelved for now)
+- More Placeholders (Partially implemented)
 - Custom menus and shops
-- BetonQuest integration
+- BetonQuest integration (Partially implemented)
 - BetonQuest quest tracker
 - More MythicMobs features
-- FreeMinecraftModels integration with MythicMobs compatibility
-- Custom crafting system
-- Skills
+- ~~FreeMinecraftModels integration with MythicMobs compatibility~~ **Use BetterModels for now instead**
+- ~~Custom crafting system~~ (Partially implemented.)
+- Add more customisability to the custom crafting system 
+- ~~Skills~~ (Look at MineshaftRpg instead)
 - Item customisation (replacing parts, etc.)
 - In-built mob support (similar to MythicMobs or EliteMobs)
 - Dungeons
-- More events
-- Replacing local events with events
+- More events (Working on it)
+- ~~Replacing local events with events~~ (Added, but untested)
 - NPCs
 - Better API and JavaDocs
 
@@ -547,6 +550,7 @@ The following parameters are available for all events. Each event type has uniqu
 | `PLAYER_VECTOR_DASH`    | Makes the player dash forwards                         | 
 | `PLAYER_VECTOR_LEAP`    | Makes the player leap in the direction they are facing | 
 | `PREPARE_STRONG_ATTACK` | Makes the next attack stronger                         | 
+| `DAMAGE`                | Inflicts damage upon an entity or player               | 
 
 
 ### Beam event type
@@ -565,41 +569,69 @@ The beam event fires off a beam in the direction in which the entity that execut
 
 #### On hit local events
 
+***Completely redone to support inline event declaration***
+
+*Work in progress. Not yet tested*
+
 On hit example:
 ```yaml
 on_hit:
   player:
-    explode: 1
+    event_type: PLAYER_VECTOR_LEAP
   entity:
-    damage: 2.0
+    event_type: DAMAGE
+    damage: 10
+    damage_type: FREEZE
   block:
-    set_block: diamond_block
 ```
-
-| Value       | Description                          | Data Type |
-|:------------|--------------------------------------|:----------|
-| `damage`    | Damage the entity or player          | Double    |
-| `explode`   | Trigger an explosion                 | Integer   |
-| `set_block` | Set the block at the target location | Material  |
-
-#### Strong attack preparation
-
-*Work in progress. Has not been tested.*
-
-The next attack dealt after this attack is modified according to the parameters.
-
-
 
 ### Vector player event type
 
-Includes the `PLAYER_DASH_EVENT` and `PLAYER_LEAP_EVENT`.
+*Work in progress. Has not yet been tested*
+
+Includes the `PLAYER_VECTOR_DASH` and `PLAYER_VECTOR_LEAP`.
 
 ```yaml
 parent: 'null'
-event_type: PLAYER_DASH_EVENT
+event_type: PLAYER_VECTOR_DASH
+```
+
+```yaml
+parent: 'null'
+event_type: PLAYER_VECTOR_LEAP
 ```
 
 Takes no extra parameters.
+
+### Prepare strong attack event type
+
+*Work in progress. Has not been tested.*
+
+The next attack dealt after this attack is modified according to the parameters.<br>
+The particles are shown and the sound is played when the attack is triggered.
+
+```yaml
+parent: 'null'
+event_type: PREPARE_STRONG_ATTACK
+damage_multiplier: 2.0
+knockback_power: 1.2
+attack_sound: block.stone.hit
+particles: false
+```
+
+### Entity damage event type
+
+*Work in progress. Has not been tested.*
+
+Damage type is the [damage type](https://jd.papermc.io/paper/1.21.5/org/bukkit/damage/DamageType.html).<br>
+Damage is the amount of damage inflicted
+
+```yaml
+parent: 'null'
+event_type: DAMAGE
+damage: 5
+damage_type: FREEZE
+```
 
 ### ***TODO: coming soon***
 

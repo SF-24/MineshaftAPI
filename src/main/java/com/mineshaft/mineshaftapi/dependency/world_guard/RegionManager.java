@@ -29,6 +29,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -38,16 +39,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class RegionManager {
 
     YamlConfiguration config;
     File file;
 
-    ArrayList<String> townRegionList = new ArrayList<>();
+    // Format: Wg Region ID | Town Name
+    HashMap<String, String> worldGuardTownRegionList = new HashMap<>();
 
-    // Town cache in the form: "Region/Country" : "Town"
-    HashMap<String, ArrayList<Town>> townCache = new HashMap<>();
+    // Format: Town ID | Town Class
+    HashMap<String, Town> townClassCache = new HashMap<>();
+
+    // Town cache in the form: "Region Name" : "Town Name"
+    @Getter
+    HashMap<String, ArrayList<String>> townIdCache = new HashMap<>();
 
     public RegionManager() {
         file = new File(MineshaftApi.getInstance().getDataFolder(), "regions.yml");
@@ -55,6 +62,14 @@ public class RegionManager {
             file.getParentFile().mkdir();
             try {
                 file.createNewFile();
+                YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
+                yamlConfiguration.set("Bree-land.towns.Bree.size",2);
+                yamlConfiguration.set("Bree-land.towns.Bree.regions", List.of("bree"));
+                yamlConfiguration.set("Bree-land.towns.Archet.size", 1);
+                yamlConfiguration.set("Bree-land.towns.Bree.regions", List.of("archet"));
+                yamlConfiguration.set("Bree-land.towns.Staddle.size", 1);
+                yamlConfiguration.set("Bree-land.towns.Staddle.regions", List.of("staddle"));
+                yamlConfiguration.save(file);
             } catch (IOException e) {
                 Logger.logError("Could not create file regions.yml");
             }
@@ -67,7 +82,7 @@ public class RegionManager {
         if (defConfigStream != null) {
             this.config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
         }
-        townCache.clear();
+        townIdCache.clear();
         initialiseRegions();
     }
 
@@ -85,29 +100,54 @@ public class RegionManager {
 
         // Detects main regions
         for(String region : config.getDefaultSection().getKeys(false)) {
-            ArrayList<Town> towns = new ArrayList<>();
+            ArrayList<String> towns = new ArrayList<>();
             // Detects towns
-            for(String town : config.getConfigurationSection(region+".towns").getKeys(false)) {
-                towns.add(new Town(town.replace("_","").replace("-",""),config.getStringList(region + ".towns." + town)));
-                townRegionList.addAll(config.getStringList(region + ".towns." + town));
+            for(String townId : config.getConfigurationSection(region+".towns").getKeys(false)) {
+                try {
+                    int size = config.getInt(region + ".towns." + townId + ".size");
+                    townClassCache.put(townId, new Town(townId,region,config.getStringList(region + ".towns." + townId + ".regions"),size));
+                } catch (NumberFormatException e) {
+                    townClassCache.put(townId, new Town(townId,region,config.getStringList(region + ".towns." + townId + ".regions")));
+                }
+
+
+                towns.add(townId);
+                for(String wgRegionId : config.getStringList(region + ".towns." + townId)) {
+                    worldGuardTownRegionList.put(wgRegionId, townId);
+                }
             }
-            townCache.put(region, towns);
+            townIdCache.put(region, towns);
         }
     }
 
     // Method to check if a location is in a town
     public boolean isInTown(Location loc) {
         if(loc.getWorld()==null || !DependencyInit.hasWorldGuard()) return false;
-        if(townRegionList.isEmpty()) return false;
+        if(worldGuardTownRegionList.isEmpty()) return false;
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        ApplicableRegionSet applicableRegions = container.get(BukkitAdapter.adapt(loc.getWorld())).getApplicableRegions(new BlockVector3((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()), RegionQuery.QueryOption.NONE);
+        ApplicableRegionSet applicableRegions = container.get(BukkitAdapter.adapt(loc.getWorld())).getApplicableRegions(BlockVector3.at((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()), RegionQuery.QueryOption.NONE);
         for (ProtectedRegion region : applicableRegions.getRegions()) {
-            if(townRegionList.contains(region.getId())) {
-                return true;
-            }
+            return isRegionInTown(region);
         }
         return false;
+    }
+
+    public Town getTown(ProtectedRegion region) {
+        if(!isRegionInTown(region)) return null;
+        if(worldGuardTownRegionList.containsKey(region.getId())) {
+            return townClassCache.get(worldGuardTownRegionList.get(region.getId()));
+        }
+
+        return null;
+    }
+
+    public boolean isRegionInTown(ProtectedRegion region) {
+        return worldGuardTownRegionList.containsKey(region.getId());
+    }
+
+    public int getTownCount() {
+        return townClassCache.size();
     }
 
 }

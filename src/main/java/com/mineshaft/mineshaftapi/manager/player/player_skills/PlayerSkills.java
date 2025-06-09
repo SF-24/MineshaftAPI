@@ -19,31 +19,53 @@
 package com.mineshaft.mineshaftapi.manager.player.player_skills;
 
 public enum PlayerSkills {
+
+    // ??? Decreases cost of strength related abilities?
     ATHLETICS("Athletics", "STR"),
 
+    // Decreases dodge, dash and leap skill cost. Decreases fall damage
     ACROBATICS("Acrobatics", "DEX"),
-    SLEIGHT_OF_HAND("Sleight of Hand", "DEX"),
+
+    // TODO: Implement stealth mechanics
     STEALTH("Stealth", "DEX"),
 
-    HISTORY("History", "DEX"),
-    INVESTIGATION("Investigation", "DEX"),
-    NATURE("Nature", "DEX"),
-
+    // Will work with upcoming discovery system.
+    // Double lore discovery EXP
     LORE("Lore", "INT"),
-    SHADOW_LORE("Shadow Lore", "INT"),
-    TRADITIONS("Traditions", "INT"),
-    //RIDDLES("Riddles", "INT")
 
-    ANIMAL_HANDLING("Animal Handling", "WIS"),
-    INSIGHT("Insight", "WIS"),
-    MEDICINE("Medicine", "WIS"),
+    // ??? Some form of discoveries
+    // Double shadow-lore discovery EXP
+    SHADOW_LORE("Shadow Lore", "INT"),
+
+    // Will work with upcoming discovery system
+    // Double nature discovery EXP
+    NATURE("Nature", "INT"),
+
+    // ??? To do with finding stuff?
     PERCEPTION("Perception", "WIS"),
+
+    // Will somehow work with discoveries and crafting
     SURVIVAL("Survival", "WIS"),
 
-    DECEPTION("Deception", "CHA"),
-    INTIMIDATION("Intimidation", "CHA"),
-    PERFORMANCE("Performance", "CHA"),
-    PERSUASION("Persuasion", "CHA")
+    // Will work with npc interactions
+    PERSUASION("Persuasion", "CHA"),
+
+//    MEDICINE("Medicine", "WIS"),
+
+
+//    TRADITIONS("Traditions", "INT"),
+//
+//    ANIMAL_HANDLING("Animal Handling", "WIS"),
+//    INSIGHT("Insight", "WIS"),
+//
+//    DECEPTION("Deception", "CHA"),
+//    INTIMIDATION("Intimidation", "CHA"),
+//    PERFORMANCE("Performance", "CHA")
+
+//    SLEIGHT_OF_HAND("Sleight of Hand", "DEX"),
+//    RIDDLES("Riddles", "INT")
+//    HISTORY("History", "DEX"),
+//    INVESTIGATION("Investigation", "DEX"),
 
     ;
 

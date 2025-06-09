@@ -81,11 +81,8 @@ public final class MineshaftApi extends JavaPlugin {
             // Log warning
             Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
         }
-        if(DependencyInit.hasWorldGuard()) {
-            regionManager = new RegionManager();
-        }
 
-        Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new InteractListener(), this);
         Bukkit.getPluginManager().registerEvents(new DamageListener(), this);
         Bukkit.getPluginManager().registerEvents(new EquipListener(), this);
@@ -93,6 +90,11 @@ public final class MineshaftApi extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new WorldListener(), this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(), this);
 //        Bukkit.getPluginManager().registerEvents(new UIListener(), this);
+
+        // Load WorldGuard
+        if(DependencyInit.hasWorldGuard()) {
+            regionManager = new RegionManager();
+        }
 
         getCommand("mineshaft").setExecutor(new MineshaftCommand());
         getCommand("mineshaft").setTabCompleter(new MineshaftTabCompleter());

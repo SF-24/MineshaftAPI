@@ -100,6 +100,10 @@ public class ConfigManager {
         return getConfig().getBoolean("enable-cooldown-animation");
     }
 
+    public boolean enableExperienceNotification() {
+        return getConfig().getBoolean("send-exp-actionbar");
+    }
+
     public void reloadConfigs() {
         MineshaftApi.getInstance().reloadConfig();
     }

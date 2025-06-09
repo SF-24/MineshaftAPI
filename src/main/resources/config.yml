@@ -1,19 +1,32 @@
+# ----------------------------------------MAIN----------------------------------------
+
 # Whether vault compatibility is enabled
 enable-vault: true
 
 # Whether warnings about an optional dependency not being installed are ignored
 disable-dependency-warnings: false
 
+# ----------------------------------------UI----------------------------------------
+
 # Whether items have a cooldown animation
 enable-cooldown-animation: true
+
 # Whether the sidebar is enabled
 enable-sidebar: false
 
+# Whether the player is sent an actionbar upon receiving exp
+send-exp-actionbar: true
+
 # Whether the item rarity description will be italic
 italic-item-rarity: true
+
+# ----------------------------------------CURRENCY----------------------------------------
+
 # Singular and plural form of the currency name
 currency-singular: Credit
 currency-plural: Credits
+
+# ----------------------------------------CRAFTING----------------------------------------
 
 # Controls what crafting stations the un-smelting recipes are added to
 # Un-smelting recipes are specified in item creation
@@ -22,22 +35,3 @@ add-unsmelting-recipes-to-smoker: false
 add-unsmelting-recipes-to-blast-furnace: true
 add-unsmelting-recipes-to-campfire: false
 
-# Whether nuggets are used in cases where a whole ingot would not be given
-use-smelting-nuggets: true
-
-# Default unsmelting time in ticks
-default-unsmelting-time: 200;
-
-# Material Registry
-# Used alongside use-smelting-nuggets
-# Usage: <item>:
-#          <material>: <number>
-#
-# Where item is the main material name,
-# the number represents how many of the material constitute to the item
-# and the material is the material
-materials:
-  iron_ingot:
-    iron_nugget: 9
-  gold_ingot:
-    gold_nugget: 9

@@ -19,17 +19,20 @@
 package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.dependency.world_guard.PlayerRegionEventManager;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.manager.ui.SidebarManager;
-import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
-public class JoinListener implements Listener {
+public class PlayerListener implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void PlayerJoinEvent(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
@@ -38,6 +41,23 @@ public class JoinListener implements Listener {
 
         if(MineshaftApi.getInstance().getConfigManager().getSidebarEnabled()) {
             SidebarManager.displayScoreboard(player);
+        }
+
+        PlayerRegionEventManager.testRegions(player);
+
+//        String randomKey = UUID.randomUUID().toString();
+//        NotificationSender.sendToastPopup(player, randomKey,NotificationSender.buildAdvancement(randomKey, new ItemStack(Material.DEBUG_STICK), "Welcome", "", null, AdvancementType.TASK, true));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void PlayerTeleportEvent(PlayerTeleportEvent e) {
+        PlayerRegionEventManager.testRegions(e.getPlayer());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void PlayerMoveEvent(PlayerMoveEvent e) {
+        if (e.getTo().distanceSquared(e.getFrom()) > 0) {
+            PlayerRegionEventManager.testRegions(e.getPlayer());
         }
     }
 }

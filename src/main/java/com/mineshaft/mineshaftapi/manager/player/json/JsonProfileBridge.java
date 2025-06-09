@@ -25,42 +25,37 @@ import java.util.List;
 
 public class JsonProfileBridge {
 
+    public static JsonProfileManager getProfileJsonInstance(Player player) {return new JsonProfileManager(player);};
+
     public static String getCurrentProfile(Player player) {
         if(player==null) return null;
-        JsonProfileManager jpm = new JsonProfileManager(player);
-        return jpm.getCurrentProfile();
+        return getProfileJsonInstance(player).getCurrentProfile();
     }
 
     public static List<String> getUnlockedCultures(Player player) {
         if(player==null) return List.of();
-        JsonProfileManager jpm = new JsonProfileManager(player);
-        return jpm.getUnlockedCultures();
+        return getProfileJsonInstance(player).getUnlockedCultures();
     }
 
     public static void addUnlockedCulture(Player player, String culture) {
         if(player==null) return;
-        JsonProfileManager jpm = new JsonProfileManager(player);
-        jpm.addUnlockedCulture(culture);
+        getProfileJsonInstance(player).addUnlockedCulture(culture);
     }
 
     public static void setCurrentProfile(Player player, String profile) {
-        JsonProfileManager jpm = new JsonProfileManager(player);
-        jpm.setCurrentProfile(profile);
+        getProfileJsonInstance(player).setCurrentProfile(profile);
     }
 
     public static void addProfile(Player player, String profile) {
-        JsonProfileManager jpm = new JsonProfileManager(player);
-        jpm.addProfile(profile);
+        getProfileJsonInstance(player).addProfile(profile);
     }
 
     public static void removeProfile(Player player, String profile) {
-        JsonProfileManager jpm = new JsonProfileManager(player);
-        jpm.removeProfile(profile);
+        getProfileJsonInstance(player).removeProfile(profile);
     }
 
     public static ArrayList<String> getProfiles(Player player) {
-        JsonProfileManager jpm = new JsonProfileManager(player);
-        return jpm.getProfiles();
+        return getProfileJsonInstance(player).getProfiles();
     }
 
 

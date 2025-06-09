@@ -24,14 +24,27 @@ import java.util.List;
 
 public class Town {
 
-    String name;
+    String parentRegion;
+    String id;
+    int size = 1;
     @NotNull List<String> regions;
 
-    public Town(String name, @NotNull List<String> regions) {
-        this.name=name;
+    public Town(String id, String parentRegion, @NotNull List<String> regions) {
+        this.id =id;
+        this.parentRegion=parentRegion;
         this.regions=regions;
     }
 
-    public String getName() {return name;}
+    public Town(String id, String parentRegion, @NotNull List<String> regions, int size) {
+        this.id =id;
+        this.parentRegion=parentRegion;
+        this.regions=regions;
+        this.size=size;
+    }
+
+    public int getSize() {return size;}
+    public String getId() {return id;}
+    public String getName() {return id.replace("_","").replace("-","");}
     public @NotNull List<String> getRegions() {return regions;}
+    public String getParentRegion() {return parentRegion;}
 }

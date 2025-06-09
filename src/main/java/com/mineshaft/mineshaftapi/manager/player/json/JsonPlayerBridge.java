@@ -18,12 +18,16 @@
 
 package com.mineshaft.mineshaftapi.manager.player.json;
 
-import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestManager;
+import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestManager;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.bukkit.entity.Player;
 
@@ -33,53 +37,61 @@ import java.util.List;
 
 public class JsonPlayerBridge {
 
+    public static JsonPlayerManager getJsonInstance(Player player) { return new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));}
+
     /**
      * Basic data
      * */
 
     public static int getCoins(Player player) {
         // if vault is not installed, use built-in currency
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getCoins();
+        return getJsonInstance(player).getCoins();
     }
 
     public static void setCoins(Player player, int coins) {
         // if vault is not installed, use built-in currency
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
         if(coins<0) coins=0;
-        jsonPlayerManager.setCoins(coins);
+        getJsonInstance(player).setCoins(coins);
     }
 
     public static int getXp(Player player) {
         // if vault is not installed, use built-in currency
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getXp();
+        return getJsonInstance(player).getXp();
     }
 
     public static void setXp(Player player, int experience) {
         // if vault is not installed, use built-in currency
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
         if(experience<0) experience=0;
-        jsonPlayerManager.setXp(experience);
+        getJsonInstance(player).setXp(experience);
     }
 
     public static void addXp(Player player, int amount) {
         int xp = getXp(player) + amount;
         if(xp<0) xp=0;
+
+        // Notify EXP:
+        if(MineshaftApi.getInstance().getConfigManager().enableExperienceNotification()) {
+            String msg = "+" + amount + " EXP";
+            player.sendActionBar(Component.text(msg, TextColor.color(85,255,255), TextDecoration.BOLD));
+        }
         setXp(player, xp);
     }
 
     public static void setLevel(Player player, int level) {
         if(level<1) level=1;
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setLevel(level);
+        getJsonInstance(player).setLevel(level);
     }
 
     public static int getLevel(Player player) {
         // if vault is not installed, use built-in currency
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getLevel();
+        return getJsonInstance(player).getLevel();
     }
+
+    public static int getLevelToPower(Player player, int power) {
+        // if vault is not installed, use built-in currency
+        return (int) Math.pow(getJsonInstance(player).getLevel(), power);
+    }
+
 
     public static void addCoins(Player player, int amount) {
         int coins = getCoins(player) + amount;
@@ -97,23 +109,19 @@ public class JsonPlayerBridge {
      * */
 
     public static int getSkillLevel(Player player, PlayerSkills skills) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getSkillLevel(skills);
+        return getJsonInstance(player).getSkillLevel(skills);
     }
 
     public static void addSkillLevels(Player player, PlayerSkills skills, int amount) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.addSkillLevels(skills,amount);
+        getJsonInstance(player).addSkillLevels(skills,amount);
     }
 
     public static void addSkillXp(Player player, PlayerSkills skills, int amount) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.addXp(skills,amount);
+        getJsonInstance(player).addXp(skills,amount);
     }
 
     public static void setProficiencyLevel(Player player, PlayerSkills skill, int value) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setProficiencyLevel(skill,value);
+        getJsonInstance(player).setProficiencyLevel(skill,value);
     }
 
     public static void setProficiencyLevels(Player player, List<PlayerSkills> skills, int value) {
@@ -124,8 +132,7 @@ public class JsonPlayerBridge {
     }
 
     public static int getProficiencyLevel(Player player, PlayerSkills skill) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getProficiencyLevel(skill);
+        return getJsonInstance(player).getProficiencyLevel(skill);
     }
 
     public boolean isSkillProficient(Player player, PlayerSkills skill) {
@@ -141,23 +148,19 @@ public class JsonPlayerBridge {
      * */
 
     public static void setUnarmedDamage(Player player, double amount) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setUnarmedDamage(amount);
+        getJsonInstance(player).setUnarmedDamage(amount);
     }
 
     public static double getUnarmedDamage(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getUnarmedDamage();
+        return getJsonInstance(player).getUnarmedDamage();
     }
 
     public static void setArmourClassBonus(Player player, int amount) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setArmourClassBonus(amount);
+        getJsonInstance(player).setArmourClassBonus(amount);
     }
 
     public static int getArmourClassBonus(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getArmourClassBonus();
+        return getJsonInstance(player).getArmourClassBonus();
     }
 
     /**
@@ -169,34 +172,28 @@ public class JsonPlayerBridge {
     }
 
     public static int getSkillPoints(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getSkillPoints();
+        return getJsonInstance(player).getSkillPoints();
     }
 
     public static void setSkillPoints(Player player, int points) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setSkillPoints(points);
+        getJsonInstance(player).setSkillPoints(points);
     }
 
     public static boolean hasAttribute(Player player, String attribute) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.hasAttribute(attribute);
+        return getJsonInstance(player).hasAttribute(attribute);
     }
 
 
     public static int getAttribute(Player player, String attribute) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getAttribute(attribute);
+        return getJsonInstance(player).getAttribute(attribute);
     }
 
     public static HashMap<String, Integer> getAttributeMap(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getAttributeMap();
+        return getJsonInstance(player).getAttributeMap();
     }
 
     public static void setAttribute(Player player, String attribute, int value) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setAttribute(attribute, value);
+        getJsonInstance(player).setAttribute(attribute, value);
     }
 
     /**
@@ -222,14 +219,12 @@ public class JsonPlayerBridge {
         } else {
             Logger.logError("Attempted to use quest display API while BetonQuest is not enabled. Quest functionality is unavailable without this plugin!");
         }
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.removeQuest(player, questName);
+        getJsonInstance(player).removeQuest(player, questName);
 
     }
 
     public static ArrayList<QuestObject> getQuests(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getQuests(player);
+        return getJsonInstance(player).getQuests(player);
     }
 
     public static QuestObject getQuest(Player player, String questName) {
@@ -246,45 +241,37 @@ public class JsonPlayerBridge {
      * */
 
     public static void saveInventory(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        //jsonPlayerManager.setTempArmourClass();
-        jsonPlayerManager.setInventory(player);
+        //getJsonInstance(player).setTempArmourClass();
+        getJsonInstance(player).setInventory(player);
     }
 
     public static void saveLocation(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setLocation(player);
+        getJsonInstance(player).setLocation(player);
     }
 
     public static void saveEffects(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setEffects(player);
+        getJsonInstance(player).setEffects(player);
     }
 
     public static void setTempArmourClass(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setTempArmourClass();
+        getJsonInstance(player).setTempArmourClass();
     }
 
     public static void loadInventory(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.getInventory(player);
+        getJsonInstance(player).getInventory(player);
     }
 
     public static void loadLocation(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.getLocation(player);
+        getJsonInstance(player).getLocation(player);
     }
 
     public static void loadEffects(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.getEffects(player);
+        getJsonInstance(player).getEffects(player);
     }
 
 
     public static double getTempArmourClass(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getPlayerTempArmourClass();
+        return getJsonInstance(player).getPlayerTempArmourClass();
     }
 
     /**
@@ -294,50 +281,41 @@ public class JsonPlayerBridge {
      */
 
     public static String getCharacterDataValue(Player player, String key) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getCharacterDataValue(key);
+        return getJsonInstance(player).getCharacterDataValue(key);
     }
 
     public static void setCharacterDataValue(Player player, String key, String value) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setCharacterDataValue(key,value);
+        getJsonInstance(player).setCharacterDataValue(key,value);
     }
 
     public static HashMap<String, List<String>> getCharDataList(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getCharDataList();
+        return getJsonInstance(player).getCharDataList();
     }
 
     public static List<String> getCharDataListElement(Player player, String key) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getCharDataListElement(key);
+        return getJsonInstance(player).getCharDataListElement(key);
     }
 
     public static void setCharDataListElement(Player player, String key, List<String> value) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.setCharDataListElement(key, value);
+        getJsonInstance(player).setCharDataListElement(key, value);
     }
 
     public static void addToCharDataList(Player player, String key, String element) {
 
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.addToCharDataList(key, element);
+        getJsonInstance(player).addToCharDataList(key, element);
     }
 
     public static void addToCharDataList(Player player, String key, List<String> element) {
         if(element==null || element.isEmpty()) return;
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.addToCharDataList(key, element);
+        getJsonInstance(player).addToCharDataList(key, element);
     }
 
     public static void removeFromCharDataList(Player player, String key, String element) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.removeFromCharDataList(key, element);
+        getJsonInstance(player).removeFromCharDataList(key, element);
     }
 
     public static List<String> getInCharDataList(Player player, String key) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getInCharDataList(key);
+        return getJsonInstance(player).getInCharDataList(key);
     }
 
     /**
@@ -345,63 +323,51 @@ public class JsonPlayerBridge {
      * */
 
     public static void addAbility(Player player, String ability, int level) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.addAbility(ability,level);
+        getJsonInstance(player).addAbility(ability,level);
     }
 
     public static void addPassiveAbility(Player player, String ability, int level) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.addPassiveAbility(ability,level);
+        getJsonInstance(player).addPassiveAbility(ability,level);
     }
 
     public static void addSpell(Player player, String spell, int level) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.addSpell(spell,level);
+        getJsonInstance(player).addSpell(spell,level);
     }
 
     public static void removeAbility(Player player, String ability) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.removeAbility(ability);
+        getJsonInstance(player).removeAbility(ability);
     }
 
     public static void removePassiveAbility(Player player, String ability) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.removePassiveAbility(ability);
+        getJsonInstance(player).removePassiveAbility(ability);
     }
 
     public static void removeSpell(Player player, String spell) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        jsonPlayerManager.removeSpell(spell);
+        getJsonInstance(player).removeSpell(spell);
     }
 
     public static boolean hasAbility(Player player, String ability) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.hasAbility(ability);
+        return getJsonInstance(player).hasAbility(ability);
     }
 
     public static boolean hasPassiveAbility(Player player, String ability) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.hasPassiveAbility(ability);
+        return getJsonInstance(player).hasPassiveAbility(ability);
     }
 
     public static boolean hasSpell(Player player, String ability) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.hasSpell(ability);
+        return getJsonInstance(player).hasSpell(ability);
     }
 
     public static HashMap<String, Integer> getAbilities(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getAbilities();
+        return getJsonInstance(player).getAbilities();
     }
 
     public static HashMap<String, Integer> getPassiveAbilities(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getPassiveAbilities();
+        return getJsonInstance(player).getPassiveAbilities();
     }
 
     public static HashMap<String, Integer> getSpells(Player player) {
-        JsonPlayerManager jsonPlayerManager = new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));
-        return jsonPlayerManager.getSpells();
+        return getJsonInstance(player).getSpells();
     }
 
     /**

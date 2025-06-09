@@ -5,6 +5,12 @@
 
 Bree-land:
   towns:
-    Bree: [ bree ]
-    Archet: [ archet ]
-    Staddle: [ staddle ]
+    Bree:
+      size: 2
+      regions: [ bree ]
+    Archet:
+      size: 1
+      regions: [ archet ]
+    Staddle:
+      size: 1
+      regions: [ staddle ]

@@ -108,6 +108,12 @@
       <id>sk89q-repo</id>
       <url>https://maven.enginehub.org/repo/</url>
     </repository>
+    <repository>
+      <releases />
+      <id>central</id>
+      <name>Maven Central Repository</name>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
@@ -127,36 +133,49 @@
       <artifactId>Mythic-Dist</artifactId>
       <version>5.6.1</version>
       <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>me.clip</groupId>
       <artifactId>placeholderapi</artifactId>
       <version>2.11.6</version>
       <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.github.MilkBowl</groupId>
       <artifactId>VaultAPI</artifactId>
       <version>1.7</version>
       <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.betonquest</groupId>
       <artifactId>betonquest</artifactId>
       <version>3.0.0-SNAPSHOT</version>
       <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.sk89q.worldguard</groupId>
       <artifactId>worldguard-bukkit</artifactId>
       <version>7.0.13</version>
       <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>eu.asangarin.arikeys</groupId>
       <artifactId>AriKeysPlugin</artifactId>
       <version>3.1</version>
       <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.github.toxicity188</groupId>
+      <artifactId>BetterHud-bukkit-api</artifactId>
+      <version>1.12.2</version>
+      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
   </dependencies>
   <properties>

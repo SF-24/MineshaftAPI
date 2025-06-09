@@ -66,7 +66,7 @@ public class RegionManager {
                 yamlConfiguration.set("Bree-land.towns.Bree.size",2);
                 yamlConfiguration.set("Bree-land.towns.Bree.regions", List.of("bree"));
                 yamlConfiguration.set("Bree-land.towns.Archet.size", 1);
-                yamlConfiguration.set("Bree-land.towns.Bree.regions", List.of("archet"));
+                yamlConfiguration.set("Bree-land.towns.Archet.regions", List.of("archet"));
                 yamlConfiguration.set("Bree-land.towns.Staddle.size", 1);
                 yamlConfiguration.set("Bree-land.towns.Staddle.regions", List.of("staddle"));
                 yamlConfiguration.save(file);

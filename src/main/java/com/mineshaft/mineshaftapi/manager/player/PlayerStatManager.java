@@ -108,4 +108,8 @@ public class PlayerStatManager {
         return (int) (((double)attribute)-10.0 + (((double)attribute)-10.0<0?-0.5:0) /2.0);
     }
 
+    public static int getProficiencyBonus(int level) {
+        return (int) (1+ (level-1)*4);
+    }
+
 }

@@ -19,6 +19,9 @@
 package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.EventLoader;
+import com.mineshaft.mineshaftapi.manager.player.combat.CooldownActionType;
 import io.netty.channel.*;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -42,7 +45,19 @@ public class PacketListener implements Listener {
                 // Observer packets coming in
                 if(packet instanceof ServerboundPlayerActionPacket) {
                     if(((ServerboundPlayerActionPacket) packet).getAction().equals(ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM)) {
-                        MineshaftApi.getInstance().getBlockingManager().removePlayerBlocking(player.getUniqueId());
+                        MineshaftApi.getInstance().getActionManager().removePlayerBlocking(player.getUniqueId());
+                        if(MineshaftApi.getInstance().getActionManager().isPlayerPowerAttack(player.getUniqueId())) {
+                            // Execute a power attack
+                            PendingAbilities pendingAbilities = MineshaftApi.getInstance().getPendingAbilities(player.getUniqueId());
+                            switch (MineshaftApi.getInstance().getActionManager().getPlayerPowerAttackType(player.getUniqueId())) {
+                                case POWER_ATTACK_LIGHT -> pendingAbilities.addStrongAttackAbility(1.75,1.75,"entity.dragon_fireball.explode",true);
+                                case POWER_ATTACK -> pendingAbilities.addStrongAttackAbility(2.25,2.25,"entity.dragon_fireball.explode",true);
+                                case POWER_ATTACK_HEAVY -> pendingAbilities.addStrongAttackAbility(3.0,3.0,"entity.dragon_fireball.explode",true);
+                            }
+                            MineshaftApi.getInstance().setPendingAbilities(player.getUniqueId(), pendingAbilities);
+                            player.swingMainHand();
+                            MineshaftApi.getInstance().getActionManager().removePlayerPowerAttack(player.getUniqueId());
+                        }
                     }
                 }
 
@@ -72,7 +87,7 @@ public class PacketListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         stop(e.getPlayer());
-        MineshaftApi.getInstance().getBlockingManager().removePlayerBlocking(e.getPlayer().getUniqueId());
+        MineshaftApi.getInstance().getActionManager().removePlayerBlocking(e.getPlayer().getUniqueId());
     }
 
 

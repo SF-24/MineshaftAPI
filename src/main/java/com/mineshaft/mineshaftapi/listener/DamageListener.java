@@ -21,13 +21,20 @@ package com.mineshaft.mineshaftapi.listener;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.DamageManager;
 import com.mineshaft.mineshaftapi.manager.entity.armour_class.ArmourManager;
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryProperty;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.BlockingType;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.util.maths.VectorUtil;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,39 +56,63 @@ public class DamageListener implements Listener {
         defendableDamage.add(EntityDamageEvent.DamageCause.HOT_FLOOR);
         defendableDamage.add(EntityDamageEvent.DamageCause.MAGIC);
         if(e.getEntity() instanceof Player) {
+            // If a player is damaged
 
             if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
                 e.setCancelled(true);
             }
 
-            if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001) {
+
+            if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001 ) {
                 Player player = (Player) e.getEntity();
 
                 // If user is not blocking
-                if(MineshaftApi.getInstance().getBlockingManager().getBlockingType(player.getUniqueId())==null) {
+                if(MineshaftApi.getInstance().getActionManager().getBlockingType(player.getUniqueId())==null ||
+                        ((e.getDamageSource().getSourceLocation()!=null) && (VectorUtil.getTopDownAngle(e.getEntity().getLocation().getDirection(),e.getDamageSource().getSourceLocation().getDirection())>Math.toRadians(60)))
+                ) {
                     // Update damage depending on armour class stat
                     e.setDamage(DamageManager.calculateNewDamage(e.getDamage(),PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS, player)));
 
                 // On parry
-                } else if (MineshaftApi.getInstance().getBlockingManager().getBlockingType(player.getUniqueId()).equals(BlockingType.PARRY)) {
+
+                } else if (MineshaftApi.getInstance().getActionManager().getBlockingType(player.getUniqueId()).equals(BlockingType.PARRY)) {
                     e.setCancelled(true);
                     float pitch = 0.725f + new Random().nextFloat(0.35f);
                     player.getWorld().playSound(player.getLocation(), "minecraft:sword.parry", 2.0f, pitch);
-                    MineshaftApi.getInstance().getBlockingManager().removePlayerParry(player.getUniqueId());
+                    MineshaftApi.getInstance().getActionManager().removePlayerParry(player.getUniqueId());
 
                 // On block //TODO: add armour class modifier
-                } else if (MineshaftApi.getInstance().getBlockingManager().getBlockingType(player.getUniqueId()).equals(BlockingType.BLOCK)) {
+                } else if (MineshaftApi.getInstance().getActionManager().getBlockingType(player.getUniqueId()).equals(BlockingType.BLOCK)) {
                     e.setDamage(DamageManager.calculateNewDamage(e.getDamage() / 2,PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS, player)));
                 }
             }
 
         } else {
             if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001) {
+                int hitBonus = 0;
+                if(e instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
+                    // Check for weapon in hand
+                    ItemStack item = ((Player) ((EntityDamageByEntityEvent) e).getDamager()).getInventory().getItemInMainHand();
+                    if(!item.getType().equals(Material.AIR)) {
+                        Player player = (Player) ((EntityDamageByEntityEvent) e).getDamager();
+
+                        // If the player is proficient with the item.
+                        if (JsonPlayerBridge.getWeaponProficiencies(player).contains(ItemManager.getItemSubcategory(item).name().toLowerCase())) {
+                           // Make variable
+                            hitBonus+=2;
+                        }
+                        // The player is proficient with the given item
+                        if(ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.FINESSE)) {
+                            hitBonus+=Math.max(JsonPlayerBridge.getAttribute(player,"DEX"),JsonPlayerBridge.getAttribute(player,"STR"));
+                        } else {
+                            hitBonus+=JsonPlayerBridge.getAttribute(player,"STR");
+                        }
+                    }
+                }
                 if(ArmourManager.getArmourClass(e.getEntity())>0) {
-                    e.setDamage(DamageManager.calculateNewDamage(e.getDamage(),ArmourManager.getArmourClass(e.getEntity())));
+                    e.setDamage(DamageManager.calculateNewDamage(e.getDamage(),(ArmourManager.getArmourClass(e.getEntity())-hitBonus)));
                 }
             }
-
         }
     }
 }

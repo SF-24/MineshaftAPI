@@ -25,7 +25,7 @@ import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
 import com.mineshaft.mineshaftapi.dependency.world_guard.RegionManager;
 import com.mineshaft.mineshaftapi.listener.*;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
-import com.mineshaft.mineshaftapi.manager.player.combat.BlockingManager;
+import com.mineshaft.mineshaftapi.manager.player.combat.ActionManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
 import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
 import com.mineshaft.mineshaftapi.manager.config.ConfigManager;
@@ -50,7 +50,7 @@ public final class MineshaftApi extends JavaPlugin {
     ItemManager itemManager;
     EventManager eventManager;
     DependencyInit dependencyInit = new DependencyInit();
-    BlockingManager blockingManager = new BlockingManager();
+    ActionManager actionManager = new ActionManager();
 
     RegionManager regionManager;
 
@@ -195,7 +195,7 @@ public final class MineshaftApi extends JavaPlugin {
         return packageName.substring(packageName.lastIndexOf('.') + 1);
     }
 
-    public BlockingManager getBlockingManager() {return blockingManager;}
+    public ActionManager getActionManager() {return actionManager;}
 
     public PendingAbilities getPendingAbilities(UUID uuid) {
         return pendingAbilities.get(uuid);

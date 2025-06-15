@@ -21,6 +21,8 @@ package com.mineshaft.mineshaftapi.manager.player.combat;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryProperty;
 import com.mineshaft.mineshaftapi.util.Logger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
@@ -32,17 +34,24 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class BlockingManager {
+public class ActionManager {
 
     Long parryWindow = 340L;//320L;
-    Long cooldown = 200L;
+    Long blockingCooldown = 200L;
+    Long lightAttackCooldown = 500L;
+    Long attackCooldown = 1000L;
+    Long heavyAttackCooldown = 2500L;
 
     private ArrayList<UUID> playersBlocking = new ArrayList<>();
+    private HashMap<UUID, ItemSubcategory> powerAttackPrepare = new HashMap<>();
+    private HashMap<UUID, CooldownActionType> cooldownActions = new HashMap<>();
     private Cache<UUID, Long> parryTimer = CacheBuilder.newBuilder().expireAfterWrite(parryWindow, TimeUnit.MILLISECONDS).build();
-    private Cache<UUID, Long> blockCooldown = CacheBuilder.newBuilder().expireAfterWrite(cooldown, TimeUnit.MILLISECONDS).build();
+    private Cache<UUID, Long> blockCooldown = CacheBuilder.newBuilder().expireAfterWrite(blockingCooldown, TimeUnit.MILLISECONDS).build();
+    private Cache<UUID, Long> powerAttackCooldown = CacheBuilder.newBuilder().expireAfterWrite(heavyAttackCooldown, TimeUnit.MILLISECONDS).build();
 
     public void addPlayerBlocking(UUID uuid) {
         this.playersBlocking.add(uuid);
@@ -53,7 +62,7 @@ public class BlockingManager {
     public void removePlayerBlocking(UUID uuid) {
         if(playersBlocking.contains(uuid)) {
             this.playersBlocking.remove(uuid);
-            addCooldown(Bukkit.getPlayer(uuid));
+            addCooldown(Bukkit.getPlayer(uuid),CooldownActionType.BLOCKING);
         }
         Logger.logInfo("Removed blocking player: " + uuid);
     }
@@ -75,23 +84,81 @@ public class BlockingManager {
         this.parryTimer.put(uuid, System.currentTimeMillis());
     }
 
-    public void addCooldown(Player player) {
+    public void addCooldown(Player player, CooldownActionType type) {
         // send item cooldown animation
         if(MineshaftApi.getInstance().getConfigManager().enableItemCooldownAnimation()) {
             Item handItem = ((CraftPlayer) player).getHandle().getItemInHand(InteractionHand.MAIN_HAND).getItem();
             int cooldownTicks = 4; // 1/5 of a second
+
+            switch (type) {
+                case BLOCKING,THROW,SMOKING_PIPE -> cooldownTicks = 4;
+                case POWER_ATTACK -> {
+                    cooldownActions.put(player.getUniqueId(), type);
+                    cooldownTicks = 20;
+                }
+            }
+
             ResourceLocation cooldownGroup = BuiltInRegistries.ITEM.getKey(handItem);
             ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(cooldownGroup, (cooldownTicks)));
 //            MineshaftApi.getInstance().getServer().getScheduler().runTask(MineshaftApi.getInstance(), () -> {
 //                player.setCooldown(player.getInventory().getItemInMainHand().getType(), cooldownTicks);
 //            });
         }
-        blockCooldown.put(player.getUniqueId(), System.currentTimeMillis()+cooldown);
+        blockCooldown.put(player.getUniqueId(), System.currentTimeMillis()+ blockingCooldown);
     }
 
     public boolean canBlock(UUID uuid) {
         if(this.blockCooldown.asMap().containsKey(uuid)) return false;
         return true;
+    }
+
+    /**
+     * POWER ATTACK:
+     * */
+
+    public void addPlayerPowerAttack(UUID uuid, ItemSubcategory subcategory) {
+        this.powerAttackPrepare.put(uuid, subcategory);
+        Logger.logInfo("Adding power attack player: " + uuid);
+    }
+
+    public void removePlayerPowerAttack(UUID uuid) {
+        if(powerAttackPrepare.containsKey(uuid)) {
+            if(powerAttackPrepare.get(uuid).getPropertyList().contains(ItemSubcategoryProperty.LIGHT)) {
+                addCooldown(Bukkit.getPlayer(uuid), CooldownActionType.POWER_ATTACK_LIGHT);
+            } else if(powerAttackPrepare.get(uuid).getPropertyList().contains(ItemSubcategoryProperty.HEAVY)) {
+                addCooldown(Bukkit.getPlayer(uuid), CooldownActionType.POWER_ATTACK_HEAVY);
+            } else {
+                addCooldown(Bukkit.getPlayer(uuid), CooldownActionType.POWER_ATTACK);
+            }
+            this.powerAttackPrepare.remove(uuid);
+        }
+        Logger.logInfo("Removed power attack player: " + uuid);
+    }
+
+    public boolean isPlayerPowerAttack(UUID uuid) {
+        return this.powerAttackPrepare.containsKey(uuid);
+    }
+
+    public CooldownActionType getPlayerPowerAttackType(UUID uuid) {
+        if(this.powerAttackPrepare.get(uuid).getPropertyList().contains(ItemSubcategoryProperty.LIGHT)) {
+            return CooldownActionType.POWER_ATTACK_LIGHT;
+        } else if(this.powerAttackPrepare.get(uuid).getPropertyList().contains(ItemSubcategoryProperty.HEAVY)) {
+            return CooldownActionType.POWER_ATTACK_HEAVY;
+        } else {
+            return CooldownActionType.POWER_ATTACK;
+        }
+    }
+
+    public boolean canDoPowerAttack(UUID uuid) {
+        if(!this.powerAttackCooldown.asMap().containsKey(uuid)) return true;
+        if(cooldownActions.containsKey(uuid)) {
+            if(cooldownActions.get(uuid).equals(CooldownActionType.POWER_ATTACK_LIGHT)) {
+                return powerAttackCooldown.asMap().get(uuid) < heavyAttackCooldown-lightAttackCooldown;
+            } else if(cooldownActions.get(uuid).equals(CooldownActionType.POWER_ATTACK)) {
+                return powerAttackCooldown.asMap().get(uuid) < heavyAttackCooldown-attackCooldown;
+            }
+        }
+        return false;
     }
 
 }

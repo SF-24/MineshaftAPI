@@ -26,8 +26,8 @@ import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRecipeManager;
 import com.mineshaft.mineshaftapi.manager.item.fields.*;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.mineshaft.mineshaftapi.util.NumericFormatter;
-import com.mineshaft.mineshaftapi.util.TextFormatter;
+import com.mineshaft.mineshaftapi.util.formatter.NumericFormatter;
+import com.mineshaft.mineshaftapi.util.formatter.TextFormatter;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -791,6 +791,9 @@ public class ItemManager {
 
         if(getInteractEventsFromItem(itemName,ActionType.RIGHT_CLICK).contains("parry")) {
             Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.BLOCK).build();
+            item.setData(DataComponentTypes.CONSUMABLE, consumable);
+        } else if(getInteractEventsFromItem(itemName,ActionType.RIGHT_CLICK).contains("power_attack")) {
+            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.SPEAR).build();
             item.setData(DataComponentTypes.CONSUMABLE, consumable);
         } else if(getInteractEventsFromItem(itemName, ActionType.RIGHT_CLICK).contains("smoke_pipe") || getInteractEventsFromItem(itemName, ActionType.RIGHT_CLICK).contains("instrument")) {
             Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.TOOT_HORN).build();

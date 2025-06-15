@@ -21,7 +21,6 @@ package com.mineshaft.mineshaftapi.manager.player.json;
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
 import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
-import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -159,6 +158,8 @@ public class JsonDiscoveryManager {
     public ArrayList<Town> getDiscoveredTowns() {
         return loadData(player).getDiscoveredTowns();
     }
+
+    public ArrayList<String> getDiscoveredRegions() {return loadData(player).getDiscoveredRegions();}
 
     public boolean hasDiscoveredTown(Town town) { return loadData(player).hasDiscoveredTown(town); }
 

@@ -35,8 +35,7 @@ public class PrepareStrongAttackEventExecutor extends EntityEventExecutor {
     public void executeEvent(UUID casterId) {
         super.executeEvent();
 
-        if(event instanceof PrepareStrongAttackEntityEvent) {
-            PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent = (PrepareStrongAttackEntityEvent) event;
+        if(event instanceof PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent) {
             prepareStrongAttackEntityEvent.prepareStrongAttack(entity);
         }
 

@@ -24,7 +24,7 @@ import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
-import com.mineshaft.mineshaftapi.util.ColourFormatter;
+import com.mineshaft.mineshaftapi.util.formatter.ColourFormatter;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.MechanicUtil;
 import org.bukkit.Particle;

@@ -19,7 +19,7 @@
 package com.mineshaft.mineshaftapi.manager.ui;
 
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
-import com.mineshaft.mineshaftapi.util.NumericFormatter;
+import com.mineshaft.mineshaftapi.util.formatter.NumericFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

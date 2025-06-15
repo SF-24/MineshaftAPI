@@ -16,31 +16,19 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.player.json;
+package com.mineshaft.mineshaftapi.util.formatter;
 
-import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
+import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-
-public class PlayerDiscoveryClass {
-
-    ArrayList<Town> townDiscoveries = new ArrayList<>();
-    ArrayList<String> regionDiscoveries = new ArrayList<String>();
-
-    public void addDiscoveredTown(Town town) {
-        townDiscoveries.add(town);
-        regionDiscoveries.add(town.getParentRegion());
+public class LocationFormatter {
+    public Location applyOffset(Location loc, double x, double y, double z) {
+        return loc.add(x,y,z);
     }
 
-    public boolean hasDiscoveredTown(Town town) {
-        return townDiscoveries.contains(town);
-    }
+    public Location applyOffset(Location loc, Location offset) {return loc.add(offset);}
 
-    public ArrayList<Town> getDiscoveredTowns() {
-        return townDiscoveries;
-    }
-
-    public ArrayList<String> getDiscoveredRegions() {
-        return regionDiscoveries;
+    public Location applyOffset(Location loc, Vector offset) {
+        return loc.add(offset);
     }
 }

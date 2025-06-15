@@ -39,4 +39,8 @@ public class JsonDiscoveryBridge {
         return getInstance(player).getDiscoveredTowns();
     }
 
+    public static ArrayList<String> getDiscoveredRegions(Player player) {
+        return getInstance(player).getDiscoveredRegions();
+    }
+
 }

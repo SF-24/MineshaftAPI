@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.util;
+package com.mineshaft.mineshaftapi.util.formatter;
 
 import org.bukkit.Color;
 

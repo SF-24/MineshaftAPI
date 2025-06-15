@@ -16,19 +16,27 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.util;
+package com.mineshaft.mineshaftapi.util.formatter;
 
-import org.bukkit.Location;
-import org.bukkit.util.Vector;
+import org.apache.commons.lang.WordUtils;
 
-public class LocationFormatter {
-    public Location applyOffset(Location loc, double x, double y, double z) {
-        return loc.add(x,y,z);
+public class TextFormatter {
+
+    public static String capitaliseString(String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
-    public Location applyOffset(Location loc, Location offset) {return loc.add(offset);}
+    public static String capitaliseStringFully(String string) {
+        return WordUtils.capitalizeFully(string);
+    }
 
-    public Location applyOffset(Location loc, Vector offset) {
-        return loc.add(offset);
+    public static String addSpacesToString(String string) {
+        string = string.replace("-"," ");
+        string = string.replace("_"," ");
+        return string;
+    }
+
+    public static String convertStringToName(String string) {
+        return capitaliseStringFully(addSpacesToString(string));
     }
 }

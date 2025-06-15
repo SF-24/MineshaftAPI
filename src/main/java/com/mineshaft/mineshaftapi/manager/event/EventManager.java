@@ -42,6 +42,8 @@ import java.util.*;
 
 public class EventManager {
 
+    static List<String> hardcodedEvents = List.of("parry","power_attack","throw","smoke_pipe");
+
     ArrayList<String> events = new ArrayList<>();
 
     public ArrayList<String> getEventList() {
@@ -274,7 +276,7 @@ public class EventManager {
 
 
     public static boolean isHardcoded (String event){
-        return event.equalsIgnoreCase("parry");
+        return hardcodedEvents.contains(event);
     }
 
 }

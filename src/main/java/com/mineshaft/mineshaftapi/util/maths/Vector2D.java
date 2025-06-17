@@ -32,6 +32,10 @@ public class Vector2D {
         updateLength();
     }
 
+    public String toString() {
+        return "Vector2D [x=" + x + ", y=" + y + ", length=" + length + "]";
+    }
+
     private void updateLength() {
         this.length=Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
     }

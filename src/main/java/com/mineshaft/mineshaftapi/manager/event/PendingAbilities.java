@@ -50,6 +50,7 @@ public class PendingAbilities {
         ability.doubleParams.put("KnockbackPower", knockbackPower);
         ability.stringParams.put("Particles", String.valueOf(particles));
         ability.stringParams.put("AttackSound", attackSound);
+        pendingAbilities.put(PendingAbilityType.STRONG_ATTACK, ability);
     }
 
     public class PendingAbility {

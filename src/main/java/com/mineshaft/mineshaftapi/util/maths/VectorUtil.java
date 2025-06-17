@@ -40,6 +40,18 @@ public class VectorUtil {
         return Math.acos(dotProduct(constructTopDownVector(vector1).normalize(), constructTopDownVector(vector2).normalize()));
     }
 
+    public static double getTopDownAngleDegrees(Vector vector1, Vector vector2) {
+        return Math.toDegrees(Math.acos(dotProduct(constructTopDownVector(vector1).normalize(), constructTopDownVector(vector2).normalize())));
+    }
+
+    public static double getAngle(Vector2D vector1, Vector2D vector2) {
+        return Math.acos(dotProduct(vector1.normalize(), vector2.normalize()));
+    }
+
+    public static double getAngleDegrees(Vector2D vector1, Vector2D vector2) {
+        return Math.toDegrees(Math.acos(dotProduct(vector1.normalize(), vector2.normalize())));
+    }
+
     public static Vector2D constructVector(double x, double y) {
         return new Vector2D(x,y);
     }
@@ -52,4 +64,7 @@ public class VectorUtil {
         return new Vector2D(vector.getX(),vector.getZ());
     }
 
+    public static Vector2D getTopdownRelativeVector(Vector2D originVector, Vector2D relativeVector) {
+        return new Vector2D(relativeVector.getX()-originVector.getX(),relativeVector.getY()-originVector.getY());
+    }
 }

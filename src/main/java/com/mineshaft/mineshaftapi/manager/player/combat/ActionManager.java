@@ -51,7 +51,9 @@ public class ActionManager {
     private HashMap<UUID, CooldownActionType> cooldownActions = new HashMap<>();
     private Cache<UUID, Long> parryTimer = CacheBuilder.newBuilder().expireAfterWrite(parryWindow, TimeUnit.MILLISECONDS).build();
     private Cache<UUID, Long> blockCooldown = CacheBuilder.newBuilder().expireAfterWrite(blockingCooldown, TimeUnit.MILLISECONDS).build();
-    private Cache<UUID, Long> powerAttackCooldown = CacheBuilder.newBuilder().expireAfterWrite(heavyAttackCooldown, TimeUnit.MILLISECONDS).build();
+    private Cache<UUID, Long> powerAttackCooldown = CacheBuilder.newBuilder().expireAfterWrite(attackCooldown, TimeUnit.MILLISECONDS).build();
+    private Cache<UUID, Long> powerAttackCooldownLight = CacheBuilder.newBuilder().expireAfterWrite(lightAttackCooldown, TimeUnit.MILLISECONDS).build();
+    private Cache<UUID, Long> powerAttackCooldownHeavy = CacheBuilder.newBuilder().expireAfterWrite(heavyAttackCooldown, TimeUnit.MILLISECONDS).build();
 
     public void addPlayerBlocking(UUID uuid) {
         this.playersBlocking.add(uuid);
@@ -95,15 +97,19 @@ public class ActionManager {
                 case POWER_ATTACK -> {
                     cooldownActions.put(player.getUniqueId(), type);
                     cooldownTicks = 20;
+                    powerAttackCooldown.put(player.getUniqueId(), System.currentTimeMillis()+attackCooldown);
                 }
                 case POWER_ATTACK_HEAVY -> {
                     cooldownTicks=50;
                     cooldownActions.put(player.getUniqueId(), type);
+                    powerAttackCooldownHeavy.put(player.getUniqueId(), System.currentTimeMillis()+heavyAttackCooldown);
                 }
                 case POWER_ATTACK_LIGHT -> {
                     cooldownTicks=10;
                     cooldownActions.put(player.getUniqueId(), type);
+                    powerAttackCooldownLight.put(player.getUniqueId(), System.currentTimeMillis()+lightAttackCooldown);
                 }
+                default -> blockCooldown.put(player.getUniqueId(), System.currentTimeMillis()+ blockingCooldown);
             }
 
             ResourceLocation cooldownGroup = BuiltInRegistries.ITEM.getKey(handItem);
@@ -112,7 +118,6 @@ public class ActionManager {
 //                player.setCooldown(player.getInventory().getItemInMainHand().getType(), cooldownTicks);
 //            });
         }
-        blockCooldown.put(player.getUniqueId(), System.currentTimeMillis()+ blockingCooldown);
     }
 
     public boolean canBlock(UUID uuid) {
@@ -158,15 +163,7 @@ public class ActionManager {
     }
 
     public boolean canDoPowerAttack(UUID uuid) {
-        if(!this.powerAttackCooldown.asMap().containsKey(uuid)) return true;
-        if(cooldownActions.containsKey(uuid)) {
-            if(cooldownActions.get(uuid).equals(CooldownActionType.POWER_ATTACK_LIGHT)) {
-                return powerAttackCooldown.asMap().get(uuid) < heavyAttackCooldown-lightAttackCooldown;
-            } else if(cooldownActions.get(uuid).equals(CooldownActionType.POWER_ATTACK)) {
-                return powerAttackCooldown.asMap().get(uuid) < heavyAttackCooldown-attackCooldown;
-            }
-        }
-        return false;
+        return !this.powerAttackCooldown.asMap().containsKey(uuid) && !this.powerAttackCooldownLight.asMap().containsKey(uuid) && !this.powerAttackCooldownHeavy.asMap().containsKey(uuid);
     }
 
 }

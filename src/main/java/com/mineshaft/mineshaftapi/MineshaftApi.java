@@ -204,6 +204,12 @@ public final class MineshaftApi extends JavaPlugin {
         return new PendingAbilities();
     }
 
+    public void removePendingAility(UUID uuid, PendingAbilities.PendingAbilityType pendingAbilityType) {
+        PendingAbilities pendingAbilities = getPendingAbilities(uuid);
+        pendingAbilities.removeAbility(pendingAbilityType);
+        this.pendingAbilities.put(uuid,pendingAbilities);
+    }
+
     public void setPendingAbilities(UUID uuid, PendingAbilities pendingAbilities) {
         this.pendingAbilities.put(uuid, pendingAbilities);
     }

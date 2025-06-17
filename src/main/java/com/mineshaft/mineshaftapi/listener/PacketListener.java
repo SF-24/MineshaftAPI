@@ -61,10 +61,12 @@ public class PacketListener implements Listener {
                                 case POWER_ATTACK_HEAVY -> pendingAbilities.addStrongAttackAbility(3.0,3.0,"entity.dragon_fireball.explode",true);
                                 default -> Logger.logWarning("Cannot identify power attack type for player");
                             }
-                            MineshaftApi.getInstance().setPendingAbilities(player.getUniqueId(), pendingAbilities);
-                            PlayerAttackManager.makeAttack(player);
+                            Logger.logDebug(pendingAbilities.getPendingAbilities().toString());
 
+                            MineshaftApi.getInstance().setPendingAbilities(player.getUniqueId(), pendingAbilities);
                             MineshaftApi.getInstance().getActionManager().removePlayerPowerAttack(player.getUniqueId());
+
+                            Bukkit.getScheduler().runTaskLater(MineshaftApi.getInstance(), ()-> PlayerAttackManager.makeAttack(player),1/99);
                         }
                     }
                 }

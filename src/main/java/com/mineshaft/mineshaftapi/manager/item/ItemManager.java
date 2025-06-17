@@ -34,6 +34,7 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -355,24 +356,47 @@ public class ItemManager {
             } else {
                 lore.add(rarity.getSecondaryColourCode() + rarity.getName() + " " + itemDisplay);
             }
+            // Set rarity
         }
         if (!armourType.equals(ArmourType.NONE)) {
             lore.add(ChatColor.GRAY + armourType.getName());
             if(coldProtect) {
                 lore.add(ChatColor.GRAY + "Frost Protection");
             }
-            lore.add("");
         } else if(!rarity.equals(ItemRarity.STANDARD)) {
             if(coldProtect) {
                 lore.add(ChatColor.GRAY + "Frost Protection");
             }
-            lore.add("");
-        } else {
-            if(coldProtect) {
-                lore.add(ChatColor.GRAY + "Frost Protection");
+
+            // Item properties
+        }
+        if(!subcategory.getPropertyList().isEmpty()) {
+            String properties = "";
+
+            for (int priority = 0; priority < 6; priority++) {
+                for (ItemSubcategoryProperty property : subcategory.getPropertyList()) {
+                    if(priority == property.getPriority()) {
+                        if(!properties.isEmpty()) {
+                            properties+=", "+property.getName();
+                        } else {
+                            properties= NamedTextColor.GRAY + property.getName();
+                        }
+                    }
+                }
             }
+            lore.add(properties);
+        }
+        if(!rarity.equals(ItemRarity.STANDARD) || !armourType.equals(ArmourType.NONE) || coldProtect || !subcategory.getPropertyList().isEmpty()) {
             lore.add("");
         }
+
+
+//        else {
+//            if(coldProtect) {
+//                lore.add(ChatColor.GRAY + "Frost Protection");
+//                lore.add("");
+//            }
+//        }
 
 
 

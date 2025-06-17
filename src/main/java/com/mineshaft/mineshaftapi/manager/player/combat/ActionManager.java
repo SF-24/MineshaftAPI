@@ -96,6 +96,14 @@ public class ActionManager {
                     cooldownActions.put(player.getUniqueId(), type);
                     cooldownTicks = 20;
                 }
+                case POWER_ATTACK_HEAVY -> {
+                    cooldownTicks=50;
+                    cooldownActions.put(player.getUniqueId(), type);
+                }
+                case POWER_ATTACK_LIGHT -> {
+                    cooldownTicks=10;
+                    cooldownActions.put(player.getUniqueId(), type);
+                }
             }
 
             ResourceLocation cooldownGroup = BuiltInRegistries.ITEM.getKey(handItem);

@@ -19,12 +19,18 @@
 package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.events.MineshaftTownDiscoveryEvent;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.EventLoader;
+import com.mineshaft.mineshaftapi.manager.player.PlayerAttackManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.CooldownActionType;
+import com.mineshaft.mineshaftapi.util.Logger;
+import com.sk89q.worldguard.bukkit.event.debug.LoggingEntityDamageByEntityEvent;
 import io.netty.channel.*;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,9 +59,11 @@ public class PacketListener implements Listener {
                                 case POWER_ATTACK_LIGHT -> pendingAbilities.addStrongAttackAbility(1.75,1.75,"entity.dragon_fireball.explode",true);
                                 case POWER_ATTACK -> pendingAbilities.addStrongAttackAbility(2.25,2.25,"entity.dragon_fireball.explode",true);
                                 case POWER_ATTACK_HEAVY -> pendingAbilities.addStrongAttackAbility(3.0,3.0,"entity.dragon_fireball.explode",true);
+                                default -> Logger.logWarning("Cannot identify power attack type for player");
                             }
                             MineshaftApi.getInstance().setPendingAbilities(player.getUniqueId(), pendingAbilities);
-                            player.swingMainHand();
+                            PlayerAttackManager.makeAttack(player);
+
                             MineshaftApi.getInstance().getActionManager().removePlayerPowerAttack(player.getUniqueId());
                         }
                     }

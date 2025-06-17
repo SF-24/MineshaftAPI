@@ -24,6 +24,10 @@ public class PendingAbilities {
 
     HashMap<PendingAbilityType, PendingAbility> pendingAbilities = new HashMap<>();
 
+    public PendingAbility getPendingAbility(PendingAbilityType type) {
+        return pendingAbilities.get(type);
+    }
+
     public boolean isEmpty() {
         return pendingAbilities.isEmpty();
     }
@@ -49,8 +53,8 @@ public class PendingAbilities {
     }
 
     public class PendingAbility {
-        public HashMap<String, Double> doubleParams;
-        public HashMap<String, String> stringParams;
+        public HashMap<String, Double> doubleParams = new HashMap<>();
+        public HashMap<String, String> stringParams = new HashMap<>();
     }
 
     public enum PendingAbilityType {

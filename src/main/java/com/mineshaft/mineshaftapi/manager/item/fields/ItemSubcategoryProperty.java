@@ -20,8 +20,27 @@ package com.mineshaft.mineshaftapi.manager.item.fields;
 
 public enum ItemSubcategoryProperty {
 
-    LIGHT,
-    HEAVY,
-    FINESSE
+    LIGHT("Light", 1),
+    HEAVY("Heavy", 2),
+    FINESSE("Finesse", 5),
+    ;
+    final String name;
+    private final int priority;
 
+    ItemSubcategoryProperty(String name, int priority) {
+        this.name=name;
+        this.priority=priority;
+    }
+
+    public String getName() {return name;}
+    public int getPriority() {return priority;}
+    public int getMaxPriority() {
+        int maxPriority = 0;
+        for(ItemSubcategoryProperty property : ItemSubcategoryProperty.values()) {
+            if(property.getPriority() > maxPriority) {
+                maxPriority=property.getPriority();
+            }
+        }
+        return maxPriority;
+    }
 }

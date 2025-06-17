@@ -32,6 +32,7 @@ import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -385,7 +386,10 @@ public class JsonPlayerBridge {
     }
 
     public static List<String> getWeaponProficiencies(Player player) {
-        return getInCharDataList(player, "weaponProficiencies");
+        if(getInCharDataList(player, "weaponProficiencies")!=null) {
+            return getInCharDataList(player, "weaponProficiencies");
+        }
+        return Collections.emptyList();
     }
 
     public static JsonPlayerManager getJsonPlayerManager(Player player, String profile) {

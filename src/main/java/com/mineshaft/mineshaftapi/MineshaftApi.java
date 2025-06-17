@@ -198,7 +198,10 @@ public final class MineshaftApi extends JavaPlugin {
     public ActionManager getActionManager() {return actionManager;}
 
     public PendingAbilities getPendingAbilities(UUID uuid) {
-        return pendingAbilities.get(uuid);
+        if(pendingAbilities.get(uuid)!=null) {
+            return pendingAbilities.get(uuid);
+        }
+        return new PendingAbilities();
     }
 
     public void setPendingAbilities(UUID uuid, PendingAbilities pendingAbilities) {

@@ -29,14 +29,12 @@ import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.BlockingType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.mineshaft.mineshaftapi.util.maths.Vector2D;
 import com.mineshaft.mineshaftapi.util.maths.VectorUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -104,71 +102,90 @@ public class DamageListener implements Listener {
             }
 
         } else {
+
+            // If a player is doing the attacking:
             if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001) {
                 int hitBonus = 0;
                 double damageMultiplier = 1.0;
-                double knockbackMultiplier = 1.0;
 
-                if(e instanceof EntityDamageByEntityEvent entityDamageByEntityEvent && (e.getDamageSource().getCausingEntity() instanceof Player|| entityDamageByEntityEvent.getDamager() instanceof Player)) {
+                if (e instanceof EntityDamageByEntityEvent entityDamageByEntityEvent && (e.getDamageSource().getCausingEntity() instanceof Player || entityDamageByEntityEvent.getDamager() instanceof Player)) {
                     Player player = null;
 
-                    if(e.getDamageSource().getCausingEntity() instanceof Player) {
-                        player= (Player) e.getDamageSource().getCausingEntity();
-                    } else if(entityDamageByEntityEvent.getDamager() instanceof Player) {
-                        player= (Player) (entityDamageByEntityEvent).getDamager();
+                    // Get player.
+                    if (e.getDamageSource().getCausingEntity() instanceof Player) {
+                        player = (Player) e.getDamageSource().getCausingEntity();
+                    } else if (entityDamageByEntityEvent.getDamager() instanceof Player) {
+                        player = (Player) (entityDamageByEntityEvent).getDamager();
                     }
 
-                    // Check for weapon in hand
-                    ItemStack item = ((Player) ((EntityDamageByEntityEvent) e).getDamager()).getInventory().getItemInMainHand();
-                    if(!item.getType().equals(Material.AIR)) {
+                    // Check for weapon in hand and get hit bonus
+                    hitBonus+= (int) getHitBonus(player, e);
 
-                        // If the player is proficient with the item.
-                        if (JsonPlayerBridge.getWeaponProficiencies(player).contains(ItemManager.getItemSubcategory(item).name().toLowerCase())) {
-                           // Make variable
-                            hitBonus+=2;
-                        }
-                        // The player is proficient with the given item
-                        if(ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.FINESSE)) {
-                            hitBonus+=Math.max(JsonPlayerBridge.getAttribute(player,"DEX"),JsonPlayerBridge.getAttribute(player,"STR"));
-                        } else {
-                            hitBonus+=JsonPlayerBridge.getAttribute(player,"STR");
-                        }
-                    }
-                    Logger.logDebug("Pending abilities " + MineshaftApi.getInstance().getPendingAbilities(player.getUniqueId()).getPendingAbilities());
+                    // Test pending abilities
+                    damageMultiplier = testPendingAbilitiesAndGetDamageMultiplier(player, e);
 
-                    if(MineshaftApi.getInstance().getPendingAbilities(player.getUniqueId())!=null && MineshaftApi.getInstance().getPendingAbilities(player.getUniqueId()).getPendingAbility(PendingAbilities.PendingAbilityType.STRONG_ATTACK)!=null) {
-                        Logger.logDebug("Detected!");
-                        PendingAbilities.PendingAbility pendingAbility = MineshaftApi.getInstance().getPendingAbilities(player.getUniqueId()).getPendingAbility(PendingAbilities.PendingAbilityType.STRONG_ATTACK);
-                        if(pendingAbility!=null) {
-                            // Remove the pending ability
-                            MineshaftApi.getInstance().removePendingAility(player.getUniqueId(),PendingAbilities.PendingAbilityType.STRONG_ATTACK);
-
-                            // Mechanics
-                            damageMultiplier = Objects.requireNonNullElse(pendingAbility.doubleParams.get("DamageMultiplier"), 1.0);
-                            knockbackMultiplier = Objects.requireNonNullElse(pendingAbility.doubleParams.get("KnockbackPower"), 1.0);
-                            boolean particles = Objects.requireNonNullElse(pendingAbility.stringParams.get("Particles"), "true").equalsIgnoreCase("true");
-                            String attackSound = pendingAbility.stringParams.get("AttackSound");
-                            if (attackSound != null)
-                                player.getWorld().playSound(player.getLocation(), attackSound, 1.0f, 1.0f);
-                            if (particles) {
-                                player.getWorld().spawnParticle(Particle.SMOKE, e.getEntity().getLocation(), 40, 1.0, 1.0, 1.0, 0);
-                            }
-                            Vector playerDir = e.getEntity().getLocation().getDirection();
-                            playerDir.multiply(-1);
-                            playerDir.multiply(0.75 * knockbackMultiplier);// lowered velocity
-                            playerDir.setY(0.25);
-                            e.getEntity().setVelocity(e.getEntity().getVelocity().multiply(playerDir));
-                        }
-                    }
                     // Display rounded value as a damage indicator
                     double roundOff = Math.round(DamageManager.calculateNewDamage(e.getDamage()*damageMultiplier,ArmourManager.getArmourClass(e.getEntity())-hitBonus)* 100.0) / 100.0;
                     player.sendActionBar(Component.text(roundOff, NamedTextColor.DARK_RED, TextDecoration.BOLD));
                 }
 
+                // Calculate damage and apply it
                 if(ArmourManager.getArmourClass(e.getEntity())>0) {
-                    e.setDamage(DamageManager.calculateNewDamage(e.getDamage()*damageMultiplier,(ArmourManager.getArmourClass(e.getEntity())-hitBonus)));
+                    e.setDamage(DamageManager.calculateNewDamage(e.getDamage()*damageMultiplier,Math.max(ArmourManager.getArmourClass(e.getEntity())-hitBonus, -10)));
                 }
             }
         }
+    }
+
+
+    public static Double testPendingAbilitiesAndGetDamageMultiplier(Player player, EntityDamageEvent e) {
+        if(MineshaftApi.getInstance().getPendingAbilities(player.getUniqueId())!=null && MineshaftApi.getInstance().getPendingAbilities(player.getUniqueId()).getPendingAbility(PendingAbilities.PendingAbilityType.STRONG_ATTACK)!=null) {
+            Logger.logDebug("Detected!");
+            PendingAbilities.PendingAbility pendingAbility = MineshaftApi.getInstance().getPendingAbilities(player.getUniqueId()).getPendingAbility(PendingAbilities.PendingAbilityType.STRONG_ATTACK);
+            if(pendingAbility!=null) {
+                // Remove the pending ability
+                MineshaftApi.getInstance().removePendingAility(player.getUniqueId(),PendingAbilities.PendingAbilityType.STRONG_ATTACK);
+
+                double knockbackMultiplier;
+
+                // Mechanics
+                knockbackMultiplier = Objects.requireNonNullElse(pendingAbility.doubleParams.get("KnockbackPower"), 1.0);
+                boolean particles = Objects.requireNonNullElse(pendingAbility.stringParams.get("Particles"), "true").equalsIgnoreCase("true");
+                String attackSound = pendingAbility.stringParams.get("AttackSound");
+                if (attackSound != null) {
+                    player.getWorld().playSound(player.getLocation(), attackSound, 1.0f, 1.0f);
+                }
+                if (particles) {
+                    player.getWorld().spawnParticle(Particle.SMOKE, e.getEntity().getLocation(), 40, 1.0, 1.0, 1.0, 0);
+                }
+                Vector playerDir = e.getEntity().getLocation().getDirection();
+                playerDir.multiply(-1);
+                playerDir.multiply(0.75 * knockbackMultiplier);// lowered velocity
+                playerDir.setY(0.25);
+                e.getEntity().setVelocity(e.getEntity().getVelocity().multiply(playerDir));
+                return Objects.requireNonNullElse(pendingAbility.doubleParams.get("DamageMultiplier"), 1.0);
+            }
+        }
+        return 1d;
+    }
+
+    public double getHitBonus(Player player, EntityDamageEvent e) {
+        double hitBonus=0d;
+        ItemStack item = ((Player) ((EntityDamageByEntityEvent) e).getDamager()).getInventory().getItemInMainHand();
+        if (!item.getType().equals(Material.AIR)) {
+
+            // If the player is proficient with the item.
+            if (JsonPlayerBridge.getWeaponProficiencies(player).contains(ItemManager.getItemSubcategory(item).name().toLowerCase())) {
+                // Make variable
+                hitBonus += 2;
+            }
+            // The player is proficient with the given item
+            if (ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.FINESSE)) {
+                hitBonus += Math.max(JsonPlayerBridge.getAttribute(player, "DEX"), JsonPlayerBridge.getAttribute(player, "STR"));
+            } else {
+                hitBonus += JsonPlayerBridge.getAttribute(player, "STR");
+            }
+        }
+        return hitBonus;
     }
 }

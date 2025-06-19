@@ -19,7 +19,7 @@
 package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
 import com.mineshaft.mineshaftapi.manager.event.Event;
-import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
@@ -30,6 +30,10 @@ public class EntityDamageEvent extends Event {
     public double damage = 5;
     public DamageSource source = DamageSource.builder(DamageType.GENERIC).build();
     public Entity damager = null;
+
+    public EntityDamageEvent(EventType type) {
+        super(type);
+    }
 
     public void setDamageType(DamageType type) {
         source = DamageSource.builder(type).build();

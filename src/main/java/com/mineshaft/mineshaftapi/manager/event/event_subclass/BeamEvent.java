@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
+import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 
@@ -31,6 +32,10 @@ public class BeamEvent extends TargeterEvent {
     int flyDistance = 40;
     int particleCount = 0;
     org.bukkit.Particle particleType= org.bukkit.Particle.DRAGON_BREATH;
+
+    public BeamEvent(EventType type) {
+        super(type);
+    }
 
 //    private String sound;
 

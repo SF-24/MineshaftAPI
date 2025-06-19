@@ -38,9 +38,15 @@ public class MineshaftTabCompleter implements TabCompleter {
             if(args[0].equals("reload")) {
                 return StringUtil.copyPartialMatches(args[1],List.of("all","items","item","event","events","config","configs"),new ArrayList<>());
             } else if(args[0].equals("event")||args[0].equals("events")) {
-                ArrayList<String> events = MineshaftApi.getInstance().getEventManagerInstance().getEventList();
+                ArrayList<String> events = new ArrayList<>();
                 events.add("list");
+                events.add("trigger");
                 return StringUtil.copyPartialMatches(args[1], events,new ArrayList<>());
+            }
+        } else if(args.length==3) {
+            if(args[1].equals("trigger") && (args[0].equals("event")||args[0].equals("events"))) {
+                ArrayList<String> events = MineshaftApi.getInstance().getEventManagerInstance().getEventList();
+                return StringUtil.copyPartialMatches(args[2], events,new ArrayList<>());
             }
         }
         return null;

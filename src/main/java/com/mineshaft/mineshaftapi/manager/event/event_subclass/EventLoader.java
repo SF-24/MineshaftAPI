@@ -37,12 +37,8 @@ import java.util.UUID;
 public class EventLoader {
 
     public static Event loadDamageEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
-        EntityDamageEvent loadedEvent = new EntityDamageEvent();
-        loadedEvent.setName(eventClass.getName());
-        loadedEvent.setEventType(EventType.DAMAGE);
-        loadedEvent.setOffset(eventClass.getOffset());
-        loadedEvent.setTarget(eventClass.getTarget());
-        loadedEvent.customParameters = eventClass.getParameters();
+        EntityDamageEvent loadedEvent = new EntityDamageEvent(EventType.DAMAGE);
+        eventClass.clone(loadedEvent);
 
         for (String key : section.getKeys(false)) {
             switch (key) {
@@ -59,9 +55,15 @@ public class EventLoader {
         return loadedEvent;
     }
 
+    public static Event loadVectorEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
+        VectorPlayerEvent loadedEvent = new VectorPlayerEvent(eventClass.getEventType());
+        eventClass.clone(loadedEvent);
+        return loadedEvent;
+    }
+
 
     public static Event loadStrongAttackEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
-        PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent = new PrepareStrongAttackEntityEvent();
+        PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent = new PrepareStrongAttackEntityEvent(EventType.PREPARE_STRONG_ATTACK);
         prepareStrongAttackEntityEvent.setName(eventClass.getName());
         prepareStrongAttackEntityEvent.setEventType(EventType.PREPARE_STRONG_ATTACK);
         prepareStrongAttackEntityEvent.setOffset(eventClass.getOffset());
@@ -79,12 +81,8 @@ public class EventLoader {
     }
 
     public static Event loadBeamEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
-        BeamEvent beamEvent = new BeamEvent();
-        beamEvent.setName(eventClass.getName());
-        beamEvent.setEventType(EventType.BEAM);
-        beamEvent.setOffset(eventClass.getOffset());
-        beamEvent.setTarget(eventClass.getTarget());
-        beamEvent.customParameters = eventClass.getParameters();
+        BeamEvent beamEvent = new BeamEvent(EventType.BEAM);
+        eventClass.clone(beamEvent);
 
         for (String key : section.getKeys(false)) {
             switch (key) {
@@ -152,7 +150,7 @@ public class EventLoader {
                 }
             }
         } else {
-            beamEvent.setOnHitEntity(new EntityDamageEvent());
+            beamEvent.setOnHitEntity(new EntityDamageEvent(EventType.DAMAGE));
         }
 
         if (executingItem != null) {
@@ -173,7 +171,7 @@ public class EventLoader {
         for (Event eventIteration : beamEvent.getOnHitEntity()) {
             if (eventIteration instanceof EntityDamageEvent) {
                 beamEvent.removeOnHitEntity(eventIteration);
-                EntityDamageEvent damageEvent = new EntityDamageEvent();
+                EntityDamageEvent damageEvent = new EntityDamageEvent(EventType.DAMAGE);
                 damageEvent.damage=damage;
                 damageEvent.setEventType(EventType.DAMAGE);
                 beamEvent.setOnHitEntity(damageEvent);
@@ -182,7 +180,7 @@ public class EventLoader {
         for (Event eventIteration : beamEvent.getOnHitPlayer()) {
             if (eventIteration instanceof EntityDamageEvent) {
                 beamEvent.removeOnHitPlayer(eventIteration);
-                EntityDamageEvent damageEvent = new EntityDamageEvent();
+                EntityDamageEvent damageEvent = new EntityDamageEvent(EventType.DAMAGE);
                 damageEvent.setEventType(EventType.DAMAGE);
                 damageEvent.damage=damage;
                 beamEvent.setOnHitEntity(damageEvent);

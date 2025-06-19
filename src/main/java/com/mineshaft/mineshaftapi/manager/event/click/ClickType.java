@@ -16,25 +16,26 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.entity.armour_class;
+package com.mineshaft.mineshaftapi.manager.event.click;
 
-import de.tr7zw.changeme.nbtapi.NBT;
-import org.bukkit.entity.Entity;
+import org.bukkit.event.block.Action;
 
-public class ArmourManager {
+import java.util.ArrayList;
+import java.util.Arrays;
 
-    public static void setArmourClass(Entity entity, int armourClass) {
-        NBT.modify(entity, nbt->{
-            nbt.setInteger("armour_class",armourClass);
-        });
+public enum ClickType {
+
+    LEFT(new ArrayList<>(Arrays.asList(Action.LEFT_CLICK_AIR, Action.LEFT_CLICK_BLOCK)),'L'),
+    RIGHT(new ArrayList<>(Arrays.asList(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK)),'R');
+
+    final ArrayList<org.bukkit.event.block.Action> clickTypes;
+    final char abbreviation;
+
+    ClickType(ArrayList<org.bukkit.event.block.Action> clickTypes, char abbreviation) {
+        this.abbreviation=abbreviation;
+        this.clickTypes=clickTypes;
     }
 
-    public static int getArmourClass(Entity entity) {
-        if(entity==null) return 0;
-        NBT.get(entity, nbt->{
-            return Math.max(nbt.getInteger("armour_class"),-10);
-        });
-        return 0;
-    }
-
+    public ArrayList<Action> getClickTypes() {return clickTypes;}
+    public char getAbbreviation() {return abbreviation;}
 }

@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
+import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import org.bukkit.entity.Entity;
 
 public class PrepareStrongAttackEntityEvent extends Event {
@@ -29,6 +30,10 @@ public class PrepareStrongAttackEntityEvent extends Event {
     public double knockbackPower = 1;
     public boolean particles = false;
     public String attackSound = null;
+
+    public PrepareStrongAttackEntityEvent(EventType type) {
+        super(type);
+    }
 
     public void prepareStrongAttack(Entity entity) {
         PendingAbilities pendingAbilities = MineshaftApi.getInstance().getPendingAbilities(entity.getUniqueId());

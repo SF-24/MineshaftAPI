@@ -20,11 +20,13 @@ package com.mineshaft.mineshaftapi;
 
 import com.mineshaft.mineshaftapi.command.*;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
+import com.mineshaft.mineshaftapi.dependency.KeyListener;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
 import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
 import com.mineshaft.mineshaftapi.dependency.world_guard.RegionManager;
 import com.mineshaft.mineshaftapi.listener.*;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
+import com.mineshaft.mineshaftapi.manager.event.click.ClickCache;
 import com.mineshaft.mineshaftapi.manager.player.combat.ActionManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
 import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
@@ -45,6 +47,7 @@ import java.util.UUID;
 
 public final class MineshaftApi extends JavaPlugin {
 
+    // Managers, some including caches
     ConfigManager configManager = new ConfigManager(this);
     CooldownManager cooldownManager = new CooldownManager();
     ItemManager itemManager;
@@ -52,8 +55,11 @@ public final class MineshaftApi extends JavaPlugin {
     DependencyInit dependencyInit = new DependencyInit();
     ActionManager actionManager = new ActionManager();
 
+    // WorldGuard region manager and cache
     RegionManager regionManager;
 
+    // Caches
+    ClickCache clickCache = new ClickCache();
     HashMap<UUID, PendingAbilities> pendingAbilities = new HashMap<>();
 
     @Override
@@ -67,6 +73,7 @@ public final class MineshaftApi extends JavaPlugin {
         Logger.logInfo("/_/  /_/_/_//_/\\__/___/_//_/\\_,_/_/ \\__/ /_/ |_/_/  /___/");
         Logger.logInfo("                                                           ");
 
+        // Coming soon. Language detection
         switch (getDebugLanguage()) {
             case POLISH:
                 Logger.logInfo("Wtyczka mineshaft API została włączona");
@@ -74,6 +81,9 @@ public final class MineshaftApi extends JavaPlugin {
                 Logger.logInfo("Plugin mineshaft API has been enabled");
         }
 
+        /*
+         * Dependency checks. load dependency specific managers and listeners
+         * */
         if (DependencyInit.hasMythicMobs()) {
             // Register placeholders
             Bukkit.getPluginManager().registerEvents(new MythicListener(), MineshaftApi.getInstance());
@@ -81,7 +91,20 @@ public final class MineshaftApi extends JavaPlugin {
             // Log warning
             Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
         }
+        // Load AriKeys
+        if(DependencyInit.hasAriKeys()) {
+            Bukkit.getPluginManager().registerEvents(new KeyListener(), this);
+        }
 
+        // Load WorldGuard
+        if(DependencyInit.hasWorldGuard()) {
+            regionManager = new RegionManager();
+        }
+        /*
+        * End of dependency loading.
+        * */
+
+        // Register listeners
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new InteractListener(), this);
         Bukkit.getPluginManager().registerEvents(new DamageListener(), this);
@@ -89,13 +112,9 @@ public final class MineshaftApi extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PacketListener(), this);
         Bukkit.getPluginManager().registerEvents(new WorldListener(), this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(), this);
-//        Bukkit.getPluginManager().registerEvents(new UIListener(), this);
 
-        // Load WorldGuard
-        if(DependencyInit.hasWorldGuard()) {
-            regionManager = new RegionManager();
-        }
-
+        // Initialise commands
+        // Null warnings can be ignored, as these are declared in the plugin.yml and will never return null.
         getCommand("mineshaft").setExecutor(new MineshaftCommand());
         getCommand("mineshaft").setTabCompleter(new MineshaftTabCompleter());
         getCommand("player_data").setExecutor(new PlayerDataCommand());
@@ -108,6 +127,7 @@ public final class MineshaftApi extends JavaPlugin {
         itemManager=new ItemManager();
         itemManager.initialiseItems();
 
+        // Load events
         eventManager=new EventManager();
         eventManager.initialiseEvents();
 
@@ -219,5 +239,8 @@ public final class MineshaftApi extends JavaPlugin {
     }
 
     public static @Nullable Plugin getPlugin() {return Bukkit.getPluginManager().getPlugin("MineshaftApi");}
+
+    // Static click cache getter
+    public static ClickCache getClickCache() {return MineshaftApi.getInstance().clickCache;}
 
 }

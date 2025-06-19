@@ -20,11 +20,16 @@ package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
+import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class VectorPlayerEvent extends Event {
+
+    public VectorPlayerEvent(EventType type) {
+        super(type);
+    }
 
     public void dashPlayerEvent(Player player) {
         Vector dir = player.getLocation().getDirection().normalize();

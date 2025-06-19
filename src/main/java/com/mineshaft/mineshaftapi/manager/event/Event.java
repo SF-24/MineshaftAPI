@@ -31,11 +31,13 @@ public class Event {
     protected String parent = "null";
     protected String name = "Unnamed Event";
     protected Vector offset = new Vector(0.0,0.0,0.0);
-    protected EventType eventType = EventType.BEAM;
+    protected EventType eventType;
     protected TriggerType target = TriggerType.ANY;
     protected String sound = null;
 
     public HashMap<String, Object> customParameters = new HashMap<>();
+
+    public Event(EventType type) {this.eventType=type;}
 
     public void setSound(String sound) {this.sound=sound;}
     public void setTarget(TriggerType target) {this.target = target;}
@@ -57,6 +59,15 @@ public class Event {
         if(sound!=null) {
             loc.getWorld().playSound(loc,sound, 1,1);
         }
+    }
+
+    public void clone(Event loadedEvent) {
+        loadedEvent.setName(this.getName());
+        loadedEvent.setOffset(this.getOffset());
+        loadedEvent.setTarget(this.getTarget());
+        loadedEvent.customParameters = this.getParameters();
+        loadedEvent.setSound(sound);
+        loadedEvent.setEventType(eventType);
     }
 
 }

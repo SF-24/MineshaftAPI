@@ -36,12 +36,11 @@ public class VectorEventExecutor extends PlayerEventExecutor {
     public void executeEvent(UUID casterId) {
         super.executeEvent();
 
-        if(event instanceof VectorPlayerEvent) {
-            VectorPlayerEvent vectorPlayerEvent = (VectorPlayerEvent) event;
+        if(event instanceof VectorPlayerEvent vectorPlayerEvent) {
             if(event.getEventType().equals(EventType.PLAYER_VECTOR_LEAP)) {
-                vectorPlayerEvent.dashPlayerEvent(player);
-            } else if(event.getEventType().equals(EventType.PLAYER_VECTOR_DASH)) {
                 vectorPlayerEvent.leapPlayerEvent(player);
+            } else if(event.getEventType().equals(EventType.PLAYER_VECTOR_DASH)) {
+                vectorPlayerEvent.dashPlayerEvent(player);
             }
         }
 

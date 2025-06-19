@@ -22,6 +22,7 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.entity.display.DisplayManager;
 import com.mineshaft.mineshaftapi.manager.entity.display.DisplayType;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
+import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.event.fields.TriggerType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.*;
@@ -47,7 +48,7 @@ public class LaserRunnable extends BukkitRunnable {
     double dist = 0;
     int flyDistance = 40;
     int speed = 4;
-    BeamEvent event = new BeamEvent();
+    BeamEvent event = new BeamEvent(EventType.BEAM);
     int particle = 10;
     Display projectile = null;
     int speedCount = 4;

@@ -126,6 +126,7 @@ public class InteractListener implements Listener {
             ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(cooldownGroup, delayInTicks));
         }
 
+        if(events==null)return;
         for (String event : events) {
             if (EventManager.isHardcoded(event)) {
                 break;

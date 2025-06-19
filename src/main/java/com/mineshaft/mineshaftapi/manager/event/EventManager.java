@@ -128,6 +128,8 @@ public class EventManager {
 
     public boolean runEvent(Event event, Location loc, UUID casterId, Object targetEntity) {
 //        Logger.logDebug("Running event: " + event.getClass().getName() + " " + event.getEventType());
+        Logger.logDebug("Executing: " + event.toString() + " of type " + event.getEventType().toString() + " with target " + targetEntity.toString());
+
         switch (event.getEventType()) {
             case NULL:
 //                Logger.logDebug("Found null event");
@@ -146,6 +148,7 @@ public class EventManager {
                 new BeamExecutor((BeamEvent) event,loc).executeEvent(casterId);
                 return true;
             case PLAYER_VECTOR_DASH,PLAYER_VECTOR_LEAP:
+                Logger.logDebug("mobility event executed");
                 if(!(event instanceof VectorPlayerEvent) || !(targetEntity instanceof Player)) return false;
                 new VectorEventExecutor(event, (Player) targetEntity).executeEvent(casterId);
                 return true;
@@ -198,9 +201,21 @@ public class EventManager {
         // Whether the item has a parent item
         boolean hasParent = false;
 
-        Event eventClass = new Event();
-        eventClass.setName(eventName);
         EventType eventType = EventType.NULL;
+
+        // Check the event type
+        if (section.contains("event_type")) {
+//            Logger.logDebug("type " + eventType);
+            eventType = EventType.valueOf(section.getString("event_type").toUpperCase(Locale.ROOT));
+        } else if(section.contains("type")) {
+            eventType = EventType.valueOf(section.getString("type").toUpperCase(Locale.ROOT));
+        } else if(section.contains("event-type")) {
+            eventType = EventType.valueOf(section.getString("event-type").toUpperCase(Locale.ROOT));
+        }
+
+
+        Event eventClass = new Event(eventType);
+        eventClass.setName(eventName);
 
         List<String> uniqueFields = new ArrayList<>();
 
@@ -216,12 +231,6 @@ public class EventManager {
                 eventClass = getEvent(parentName);
                 hasParent = true;
             }
-        }
-
-        // Check the event type
-        if (section.contains("event_type")) {
-            eventType = EventType.valueOf(section.getString("event_type").toUpperCase(Locale.ROOT));
-//            Logger.logDebug("type " + eventType);
         }
 
         boolean isEventsList = false;
@@ -266,6 +275,7 @@ public class EventManager {
             case BEAM -> eventClass = EventLoader.loadBeamEvent(section,eventClass,executingItem);
             case PREPARE_STRONG_ATTACK -> eventClass = EventLoader.loadStrongAttackEvent(section,eventClass,executingItem);
             case DAMAGE -> eventClass = EventLoader.loadDamageEvent(section,eventClass,executingItem);
+            case PLAYER_VECTOR_DASH,PLAYER_VECTOR_LEAP -> eventClass = EventLoader.loadVectorEvent(section, eventClass, executingItem);
             case BETONQUEST -> {
                 // TODO:
             }

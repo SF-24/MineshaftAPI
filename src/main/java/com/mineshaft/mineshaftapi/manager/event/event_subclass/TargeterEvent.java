@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
 import com.mineshaft.mineshaftapi.manager.event.Event;
+import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
@@ -28,6 +29,11 @@ public class TargeterEvent extends Event {
     ArrayList<Event> onHitEntity = new ArrayList<>();
     ArrayList<Event> onHitBlock = new ArrayList<>();
     ArrayList<Event> onHitPlayer = new ArrayList<>();
+
+    public TargeterEvent(EventType type) {
+        super(type);
+    }
+
 
     public void removeOnHitEntity(Event event) {
         onHitEntity.remove(event);

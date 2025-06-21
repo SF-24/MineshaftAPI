@@ -323,8 +323,9 @@ public class JsonPlayerBridge {
      * Abilities
      * */
 
+    // Minimum level = 1;
     public static void addAbility(Player player, String ability, int level) {
-        getJsonInstance(player).addAbility(ability,level);
+        getJsonInstance(player).addAbility(ability,Math.min(level,1));
     }
 
     public static void addPassiveAbility(Player player, String ability, int level) {
@@ -361,6 +362,16 @@ public class JsonPlayerBridge {
 
     public static HashMap<String, Integer> getAbilities(Player player) {
         return getJsonInstance(player).getAbilities();
+    }
+
+    public static ArrayList<String> getUnknownAbilities(Player player) {
+        ArrayList<String> abilities = new ArrayList<>();
+        for(String ability : MineshaftApi.getInstance().getAbilities()) {
+            if(!getAbilities(player).containsKey(ability)) {
+                abilities.add(ability);
+            }
+        }
+        return abilities;
     }
 
     public static HashMap<String, Integer> getPassiveAbilities(Player player) {

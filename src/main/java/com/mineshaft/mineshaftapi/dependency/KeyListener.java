@@ -18,10 +18,10 @@
 
 package com.mineshaft.mineshaftapi.dependency;
 
-import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.events.MineshaftClickTypeEvent;
 import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 import eu.asangarin.arikeys.api.AriKeyPressEvent;
-import org.bukkit.NamespacedKey;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -30,17 +30,23 @@ public class KeyListener implements Listener {
     @EventHandler
     public void onKey(AriKeyPressEvent e) {
 
-        // Currently useless check
+        // Currently useless variable, but may be useful later: (currently commented out)
 //        boolean isAbilityKey = e.getId().equals(NamespacedKey.fromString("ab_key:ab_left")) || e.getId().equals(NamespacedKey.fromString("ab_key:ab_right"));
 
-        boolean isLeft = e.getId().equals(NamespacedKey.fromString("ab_key:ab_left"));
-        boolean isRight = e.getId().equals(NamespacedKey.fromString("ab_key:ab_right"));
+        boolean isLeft = e.getId().getKey().equals("primary")&&e.getId().getNamespace().equals("abilities");
+        boolean isRight = e.getId().getKey().equals("secondary")&&e.getId().getNamespace().equals("abilities");
+        boolean isCentre = e.getId().getKey().equals("tertiary")&&e.getId().getNamespace().equals("abilities");
 
-        // Record clicks
+        // Record clicks - parse event
         if(isRight) {
-            MineshaftApi.getClickCache().cacheClick(e.getPlayer(), ClickType.RIGHT);
+            MineshaftClickTypeEvent clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.RIGHT);
+            Bukkit.getPluginManager().callEvent(clickEvent);
         } else if(isLeft) {
-            MineshaftApi.getClickCache().cacheClick(e.getPlayer(), ClickType.LEFT);
+            MineshaftClickTypeEvent clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.LEFT);
+            Bukkit.getPluginManager().callEvent(clickEvent);
+        } else if(isCentre) {
+            MineshaftClickTypeEvent clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.MIDDLE);
+            Bukkit.getPluginManager().callEvent(clickEvent);
         }
     }
 }

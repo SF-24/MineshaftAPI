@@ -26,7 +26,6 @@ import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
 import com.mineshaft.mineshaftapi.dependency.world_guard.RegionManager;
 import com.mineshaft.mineshaftapi.listener.*;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
-import com.mineshaft.mineshaftapi.manager.event.click.ClickCache;
 import com.mineshaft.mineshaftapi.manager.player.combat.ActionManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
 import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
@@ -35,6 +34,7 @@ import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.util.Language;
 import com.mineshaft.mineshaftapi.util.Logger;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -42,10 +42,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 public final class MineshaftApi extends JavaPlugin {
+
+    @Getter
+    ArrayList<String> abilities = new ArrayList<>();
 
     // Managers, some including caches
     ConfigManager configManager = new ConfigManager(this);
@@ -59,7 +63,6 @@ public final class MineshaftApi extends JavaPlugin {
     RegionManager regionManager;
 
     // Caches
-    ClickCache clickCache = new ClickCache();
     HashMap<UUID, PendingAbilities> pendingAbilities = new HashMap<>();
 
     @Override
@@ -93,6 +96,7 @@ public final class MineshaftApi extends JavaPlugin {
         }
         // Load AriKeys
         if(DependencyInit.hasAriKeys()) {
+            Logger.logDebug("AriKeys event has been enabled");
             Bukkit.getPluginManager().registerEvents(new KeyListener(), this);
         }
 
@@ -118,6 +122,7 @@ public final class MineshaftApi extends JavaPlugin {
         getCommand("mineshaft").setExecutor(new MineshaftCommand());
         getCommand("mineshaft").setTabCompleter(new MineshaftTabCompleter());
         getCommand("player_data").setExecutor(new PlayerDataCommand());
+        getCommand("player_data").setTabCompleter(new PlayerDataTabCompleter());
         getCommand("balance").setExecutor(new MonetaryBalanceCommand());
         getCommand("getitem").setExecutor(new GetItemCommand());
         getCommand("getitem").setTabCompleter(new GetItemTabCompleter());
@@ -240,7 +245,12 @@ public final class MineshaftApi extends JavaPlugin {
 
     public static @Nullable Plugin getPlugin() {return Bukkit.getPluginManager().getPlugin("MineshaftApi");}
 
-    // Static click cache getter
-    public static ClickCache getClickCache() {return MineshaftApi.getInstance().clickCache;}
+    public void cacheAbility(String ability) {
+        Logger.logDebug("MineshaftApi has logged MineshaftRpg ability " + ability);
+        abilities.add(ability);
+    }
 
+    public void clearAbilities() {
+        abilities.clear();
+    }
 }

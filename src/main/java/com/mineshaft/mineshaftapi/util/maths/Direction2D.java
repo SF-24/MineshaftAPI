@@ -16,43 +16,30 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event.click;
+package com.mineshaft.mineshaftapi.util.maths;
 
-import lombok.Getter;
-import org.bukkit.event.block.Action;
+import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+public enum Direction2D {
 
-@Getter
-public enum ClickType {
-
-    LEFT(new ArrayList<>(Arrays.asList(Action.LEFT_CLICK_AIR, Action.LEFT_CLICK_BLOCK)),'L'),
-    RIGHT(new ArrayList<>(Arrays.asList(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK)),'R'),
-    MIDDLE(new ArrayList<>(List.of()),'M'),
+    UP, DOWN, LEFT, RIGHT
     ;
-
-    final ArrayList<org.bukkit.event.block.Action> clickTypes;
-    final char abbreviation;
-    ClickType(ArrayList<Action> clickTypes, char abbreviation) {
-        this.abbreviation=abbreviation;
-        this.clickTypes=clickTypes;
-    }
-
-    public String getName() {
+    public Vector2D getUnitVector() {
         switch (this) {
+            case UP -> {
+                return new Vector2D(0,1);
+            }
+            case DOWN -> {
+                return new Vector2D(0,-1);
+            }
             case LEFT -> {
-                return "Left";
+                return new Vector2D(1,0);
             }
             case RIGHT -> {
-                return "Right";
-            }
-            case MIDDLE -> {
-                return "Centre";
+                return new Vector2D(-1,0);
             }
         }
-        return "Invalid";
+        return new Vector2D(0,0);
     }
 
 }

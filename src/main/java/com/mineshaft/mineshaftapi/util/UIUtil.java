@@ -42,6 +42,14 @@ public class UIUtil {
         return returnValue[0];
     }
 
+    public static String getAbility(ItemStack item) {
+        final String[] returnValue = {null};
+        NBT.get(item, nbt->{
+            returnValue[0] = nbt.getString("ability");
+        });
+        return returnValue[0];
+    }
+
     // Check if a page in the GUI is valid
     public static boolean isPageValid(List<ItemStack> items, int page, int slotsPerPage) {
         if(page<=0) return false;

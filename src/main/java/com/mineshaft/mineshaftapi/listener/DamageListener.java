@@ -63,6 +63,9 @@ public class DamageListener implements Listener {
         defendableDamage.add(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION);
         defendableDamage.add(EntityDamageEvent.DamageCause.HOT_FLOOR);
         defendableDamage.add(EntityDamageEvent.DamageCause.MAGIC);
+        defendableDamage.add(EntityDamageEvent.DamageCause.SONIC_BOOM);
+        defendableDamage.add(EntityDamageEvent.DamageCause.FALLING_BLOCK);
+        // ? not sure
         if(e.getEntity() instanceof Player) {
             // If a player is damaged
             if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
@@ -127,6 +130,7 @@ public class DamageListener implements Listener {
                     // Display rounded value as a damage indicator
                     double roundOff = Math.round(DamageManager.calculateNewDamage(e.getDamage()*damageMultiplier,ArmourManager.getArmourClass(e.getEntity())-hitBonus)* 100.0) / 100.0;
                     player.sendActionBar(Component.text(roundOff, NamedTextColor.DARK_RED, TextDecoration.BOLD));
+                    Logger.logDebug("New AC: " + (ArmourManager.getArmourClass(e.getEntity())-hitBonus) + ", old AC: "  + ArmourManager.getArmourClass(e.getEntity()) + ", hit bonus: " + hitBonus);
                 }
 
                 // Calculate damage and apply it
@@ -176,11 +180,16 @@ public class DamageListener implements Listener {
 
             // If the player is proficient with the item.
             if (JsonPlayerBridge.getWeaponProficiencies(player).contains(ItemManager.getItemSubcategory(item).name().toLowerCase())) {
+                Logger.logDebug("Player is proficient. Adding proficiency bonus");
                 // Make variable
-                hitBonus += 2;
+                hitBonus += PlayerStatManager.getProficiencyBonus(JsonPlayerBridge.getLevel(player));
             }
             // The player is proficient with the given item
-            if (ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.FINESSE)) {
+            if (ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.FINESSE) || (
+                    (JsonPlayerBridge.getAbilities(player).containsKey("weapon_finesse")||JsonPlayerBridge.getAbilities(player).containsKey("natural_finesse")) &&
+                    (ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.LIGHT) || ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.TRAINED_FINESSE))
+            )) {
+                Logger.logDebug("Adding finesse properties...");
                 hitBonus += Math.max(JsonPlayerBridge.getAttribute(player, "DEX"), JsonPlayerBridge.getAttribute(player, "STR"));
             } else {
                 hitBonus += JsonPlayerBridge.getAttribute(player, "STR");

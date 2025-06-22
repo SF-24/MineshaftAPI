@@ -19,7 +19,9 @@
 package com.mineshaft.mineshaftapi.util.maths;
 
 import lombok.Getter;
+import lombok.Setter;
 
+@Setter @Getter
 public class Vector2D {
 
     double x;
@@ -53,10 +55,6 @@ public class Vector2D {
         updateLength();
     }
 
-    public double getLength() {
-        return length;
-    }
-
     public double getLengthSquared() {
         return (x * x) + (y * y);
     }
@@ -82,10 +80,4 @@ public class Vector2D {
         return this;
     }
 
-    public double getX() {
-        return x;
-    }
-    public double getY() {
-        return y;
-    }
 }

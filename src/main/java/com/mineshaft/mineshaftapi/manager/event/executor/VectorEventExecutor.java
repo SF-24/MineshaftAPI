@@ -38,9 +38,17 @@ public class VectorEventExecutor extends PlayerEventExecutor {
 
         if(event instanceof VectorPlayerEvent vectorPlayerEvent) {
             if(event.getEventType().equals(EventType.PLAYER_VECTOR_LEAP)) {
-                vectorPlayerEvent.leapPlayerEvent(player);
+                if(((VectorPlayerEvent) event).isLegacy()) {
+                    vectorPlayerEvent.legacyLeapPlayerEvent(player);
+                } else {
+                    vectorPlayerEvent.leapPlayerEvent(player);
+                }
             } else if(event.getEventType().equals(EventType.PLAYER_VECTOR_DASH)) {
-                vectorPlayerEvent.dashPlayerEvent(player);
+                if(vectorPlayerEvent.isLegacy()) {
+                    vectorPlayerEvent.legacyDashPlayerEvent(player);
+                } else {
+                    vectorPlayerEvent.dashPlayerEvent(player);
+                }
             }
         }
 

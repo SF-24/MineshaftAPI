@@ -139,7 +139,7 @@ public class EventManager {
                 if(!(event instanceof EntityDamageEvent) || !(targetEntity instanceof LivingEntity)) return false;
                 new EntityDamageExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
                 return true;
-            case PREPARE_STRONG_ATTACK:
+            case PREPARE_STRONG_ATTACK,EXECUTE_STRONG_ATTACK:
                 if(!(event instanceof PrepareStrongAttackEntityEvent) || !(targetEntity instanceof LivingEntity)) return false;
                 new PrepareStrongAttackEventExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
                 return true;
@@ -148,7 +148,6 @@ public class EventManager {
                 new BeamExecutor((BeamEvent) event,loc).executeEvent(casterId);
                 return true;
             case PLAYER_VECTOR_DASH,PLAYER_VECTOR_LEAP:
-                Logger.logDebug("mobility event executed");
                 if(!(event instanceof VectorPlayerEvent) || !(targetEntity instanceof Player)) return false;
                 new VectorEventExecutor(event, (Player) targetEntity).executeEvent(casterId);
                 return true;
@@ -276,7 +275,7 @@ public class EventManager {
             case PREPARE_STRONG_ATTACK -> eventClass = EventLoader.loadStrongAttackEvent(section,eventClass,executingItem);
             case DAMAGE -> eventClass = EventLoader.loadDamageEvent(section,eventClass,executingItem);
             case PLAYER_VECTOR_DASH,PLAYER_VECTOR_LEAP -> eventClass = EventLoader.loadVectorEvent(section, eventClass, executingItem);
-            case BETONQUEST -> {
+            case BETON_QUEST -> {
                 // TODO:
             }
         }

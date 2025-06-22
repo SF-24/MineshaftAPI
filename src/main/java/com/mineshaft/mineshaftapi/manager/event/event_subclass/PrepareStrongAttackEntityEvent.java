@@ -22,7 +22,10 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
+import com.mineshaft.mineshaftapi.manager.player.PlayerAttackManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 public class PrepareStrongAttackEntityEvent extends Event {
 
@@ -35,13 +38,16 @@ public class PrepareStrongAttackEntityEvent extends Event {
         super(type);
     }
 
-    public void prepareStrongAttack(Entity entity) {
+    public void prepareStrongAttack(LivingEntity entity) {
         PendingAbilities pendingAbilities = MineshaftApi.getInstance().getPendingAbilities(entity.getUniqueId());
         pendingAbilities.addStrongAttackAbility(damageMultiplier,knockbackPower,attackSound,particles);
         MineshaftApi.getInstance().setPendingAbilities(entity.getUniqueId(), pendingAbilities);
 
         if(attackSound!=null) {
             entity.getWorld().playSound(entity.getLocation(),attackSound, 1.0f, 1.0f);
+        }
+        if(eventType.equals(EventType.EXECUTE_STRONG_ATTACK)) {
+            Bukkit.getScheduler().runTaskLater(MineshaftApi.getInstance(), ()-> PlayerAttackManager.makeAttack(entity),1/99);
         }
     }
 }

@@ -257,15 +257,27 @@ public class JsonPlayerManager {
         return data.getUnarmedDamage();
     }
 
-    public void setArmourClassBonus(int amount) {
+    public void clearPlayerStatBonuses() {
         PlayerDataClass data = loadData(player);
-        data.setArmourClassBonus(amount);
+        data.clearStatBonuses();
         saveFile(data);
     }
 
-    public int getArmourClassBonus() {
+    public void addPlayerStatBonus(ItemStats stat,double amount) {
         PlayerDataClass data = loadData(player);
-        return data.getArmourClassBonus();
+        data.addStatBonus(stat,amount);
+        saveFile(data);
+    }
+
+    public void setPlayerStatBonus(ItemStats stat,double amount) {
+        PlayerDataClass data = loadData(player);
+        data.setStatBonus(stat,amount);
+        saveFile(data);
+    }
+
+    public double getStatBonus(ItemStats stat) {
+        PlayerDataClass data = loadData(player);
+        return data.getStatBonus(stat);
     }
 
     /**

@@ -19,14 +19,18 @@
 package com.mineshaft.mineshaftapi.manager.player.json;
 
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.SkillClass;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter @Setter
 public class PlayerDataClass {
 
     // Character Data
@@ -50,6 +54,7 @@ public class PlayerDataClass {
 
     // Saved Inventory
 
+    //public void setEffects(ArrayList<PotionEffect> effects) { this.effects = effects; }
     HashMap<Integer, String> inventory = null;
 
 //    ArrayList<PotionEffect> effects;
@@ -59,21 +64,27 @@ public class PlayerDataClass {
     HashMap<String, Integer> reputation = new HashMap<>();
 
     // Abilities
-
     HashMap<String, Integer> abilities = new HashMap<>();
     HashMap<String, Integer> spells = new HashMap<>();
     HashMap<String, Integer> passiveAbilities = new HashMap<>();
 
     // More character data
 
+    // Coins manipulator
     int coins = 0;
     int xp = 0;
+    /**
+     * -- GETTER --
+     *  Basic data
+     *
+     */
     int level = 1;
     int skillPoints = 0;
     double tempArmourClass = 0;
 
+    // Unarmed damage
     double unarmedDamage = 1.0d;
-    int armourClassBonus = 0;
+    HashMap<String, Double> statBonuses = new HashMap<>();
 
     PlayerDataClass() {
         for(PlayerSkills skill : PlayerSkills.values()) {
@@ -93,9 +104,7 @@ public class PlayerDataClass {
         this.pitch=location.getPitch();
         this.yaw=location.getYaw();
     }
-    public void setInventory(HashMap<Integer, String> inventory) { this.inventory = inventory; }
-    //public void setEffects(ArrayList<PotionEffect> effects) { this.effects = effects; }
-    public HashMap<Integer, String> getInventory() { return inventory;}
+
     public String getLocWorld() { return world;}
     public double getLocX() { return x;}
     public double getLocY() { return y;}
@@ -104,37 +113,9 @@ public class PlayerDataClass {
     public float getLocYaw() {return yaw;}
     //public ArrayList<PotionEffect> getEffects() { return effects;}
 
-    public void setTempArmourClass(double value) {this.tempArmourClass = value;}
-    public double getTempArmourClass() {return tempArmourClass;}
-
-    /**
-    * Basic data
-    * */
-
-    public int getLevel() { return level; };
-    public int getXp() { return xp; }
-    public int getCoins() { return coins; }
-
-    // Coins manipulator
-    public void setCoins(int amount) {
-        this.coins=amount;
-    }
-    public void setXp(int amount) {this.xp=amount;}
-    public void setLevel(int amount) {this.level=amount;}
-
-    // Unarmed damage
-    public void setUnarmedDamage(double value) {this.unarmedDamage=value;}
-    public double getUnarmedDamage() {return this.unarmedDamage;}
-    public void setArmourClassBonus(int value) {this.armourClassBonus = value;}
-    public int getArmourClassBonus() {return this.armourClassBonus;}
-
     /**
      * Abilities
      */
-
-    public HashMap<String, Integer> getAbilities() { return abilities;}
-    public HashMap<String, Integer> getSpells() { return spells;}
-    public HashMap<String, Integer> getPassiveAbilities() { return passiveAbilities;}
 
     public boolean hasAbility(String ability) { return abilities.containsKey(ability);}
     public boolean hasPassiveAbility(String ability) { return passiveAbilities.containsKey(ability);}
@@ -180,16 +161,33 @@ public class PlayerDataClass {
     }
 
     /**
+     * Stat bonuses API
+     * */
+    public void clearStatBonuses() {
+        statBonuses.clear();
+    }
+
+    public void addStatBonus(ItemStats stat, double amount) {
+        double value = getStatBonus(stat)+amount;
+        setStatBonus(stat,value);
+    }
+
+    public void setStatBonus(ItemStats stat, double amount) {
+        statBonuses.put(stat.name(),amount);
+    }
+
+    public double getStatBonus(ItemStats stat) {
+        return statBonuses.get(stat.name());
+    }
+
+    /**
      * Player Attributes API
      * */
     public HashMap<String, Integer> getAttributes() {return playerAttributes;}
 
     public int getAttribute(String attribute) {return playerAttributes.get(attribute)==null?-1:playerAttributes.get(attribute);}
     public boolean hasAttribute(String attribute) {return playerAttributes.containsKey(attribute);}
-    public int getSkillPoints() {return skillPoints;}
-
     public void setAttribute(String attribute, int value) {playerAttributes.put(attribute, value);}
-    public void setSkillPoints(int value) {skillPoints = value;}
 
     /**
      * Skills
@@ -259,10 +257,6 @@ public class PlayerDataClass {
 
     public void addQuest(QuestObject questObject) {
         quests.add(questObject);
-    }
-
-    public ArrayList<QuestObject> getQuests() {
-        return quests;
     }
 
     public boolean removeQuest(String questName) {

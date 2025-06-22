@@ -67,4 +67,30 @@ public class VectorUtil {
     public static Vector2D getTopdownRelativeVector(Vector2D originVector, Vector2D relativeVector) {
         return new Vector2D(relativeVector.getX()-originVector.getX(),relativeVector.getY()-originVector.getY());
     }
+
+    public void invertPlanarVector(Vector vector) {
+        double x = vector.getX();
+        vector.setX(vector.getZ());
+        vector.setZ(x);
+    }
+
+    public void invertYVector(Vector vector) {
+        vector.setY(-vector.getY());
+    }
+
+    public void invertY(Vector2D vector) {
+        vector.setY(-vector.getY());
+    }
+
+    public void invertX(Vector2D vector) {
+        vector.setX(-vector.getX());
+    }
+
+    public void invertX(Vector vector) {
+        vector.setX(-vector.getX());
+    }
+
+    public void invertZ(Vector vector) {
+        vector.setZ(-vector.getZ());
+    }
 }

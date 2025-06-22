@@ -375,7 +375,7 @@ public class ItemManager {
 
             for (int priority = 0; priority < 6; priority++) {
                 for (ItemSubcategoryProperty property : subcategory.getPropertyList()) {
-                    if(priority == property.getPriority()) {
+                    if(priority == property.getPriority() && property.getName()!=null) {
                         if(!properties.isEmpty()) {
                             properties+=", "+property.getName();
                         } else {

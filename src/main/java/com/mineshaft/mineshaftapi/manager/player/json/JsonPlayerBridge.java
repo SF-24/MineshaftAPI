@@ -23,6 +23,7 @@ import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestManager;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import net.kyori.adventure.text.Component;
@@ -154,14 +155,6 @@ public class JsonPlayerBridge {
 
     public static double getUnarmedDamage(Player player) {
         return getJsonInstance(player).getUnarmedDamage();
-    }
-
-    public static void setArmourClassBonus(Player player, int amount) {
-        getJsonInstance(player).setArmourClassBonus(amount);
-    }
-
-    public static int getArmourClassBonus(Player player) {
-        return getJsonInstance(player).getArmourClassBonus();
     }
 
     /**
@@ -317,6 +310,25 @@ public class JsonPlayerBridge {
 
     public static List<String> getInCharDataList(Player player, String key) {
         return getJsonInstance(player).getInCharDataList(key);
+    }
+
+    /**
+     * Stat bonuses
+     * */
+    public static void clearPlayerStatBonuses(Player player) {
+        getJsonInstance(player).clearPlayerStatBonuses();
+    }
+
+    public static void addPlayerStatBonus(Player player, ItemStats stat, double amount) {
+        getJsonInstance(player).addPlayerStatBonus(stat,amount);
+    }
+
+    public static void setPlayerStatBonus(Player player, ItemStats stat,double amount) {
+        getJsonInstance(player).setPlayerStatBonus(stat,amount);
+    }
+
+    public static double getStatBonus(Player player, ItemStats stat) {
+        return getJsonInstance(player).getStatBonus(stat);
     }
 
     /**

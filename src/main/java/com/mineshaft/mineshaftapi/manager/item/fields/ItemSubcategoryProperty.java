@@ -23,6 +23,7 @@ public enum ItemSubcategoryProperty {
     LIGHT("Light", 1),
     HEAVY("Heavy", 2),
     FINESSE("Finesse", 5),
+    TRAINED_FINESSE(null, 5),
     ;
     final String name;
     private final int priority;

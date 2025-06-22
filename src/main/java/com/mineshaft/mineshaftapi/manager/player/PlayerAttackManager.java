@@ -86,13 +86,14 @@ public class PlayerAttackManager {
         return ignoredBlocks;
     }
 
-    public static void makeAttack(Player player) {
-        player.swingMainHand();
+    // Make attack on an entity
+    public static void makeAttack(LivingEntity attackingEntity) {
+        attackingEntity.swingMainHand();
 
         Bukkit.getScheduler().runTask(MineshaftApi.getInstance(), ()->{
-            Entity target = getTargetEntity(player);
+            Entity target = getTargetEntity(attackingEntity);
             if(target!=null) {
-                player.attack(target);
+                attackingEntity.attack(target);
             }
         });
     }

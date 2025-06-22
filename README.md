@@ -42,7 +42,7 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
     - [Beam event type](#beam-event-type)
       - [On-hit local events](#on-hit-local-events)
     - [Vector player event type](#vector-player-event-type)
-    - [Prepare strong attack event type](#prepare-strong-attack-event-type)
+    - [Strong attack event type](#strong-attack-event-type)
     - [Entity damage event type](#entity-damage-event-type)
 - [Configuration](#configuration)
 - [Integrations](#integrations)
@@ -594,16 +594,37 @@ Includes the `PLAYER_VECTOR_DASH` and `PLAYER_VECTOR_LEAP`.
 ```yaml
 parent: 'null'
 event_type: PLAYER_VECTOR_DASH
+vector_bounds:
+  y_min: 0
+  y_max: 0.25
+  planar_min: -1
+  planar_max: -1
 ```
 
 ```yaml
 parent: 'null'
 event_type: PLAYER_VECTOR_LEAP
+vector_bounds:
+  y_min: 5
+  y_max: 0.9
+  planar_min: 0.0
+  planar_max: 2.0
 ```
 
-Takes no extra parameters.
+Takes bounds parameter. Not all bounds have to be defined. Both minimum and maximum of a bound have to be defined for them to be taken into account.
+<br>
+Making a value negative leads to it being ignored and treats it as undefinded.
+<br><br>
+Optionally, the `legacy: "true"` or `"is_legacy_event: "true"` flag can be used to create automatic bounds. However, this is _deprecated_ and ___may eventually be removed___.
+Using this is __not recommended__. If you do this, you are doing it ___at your own risk___.
 
-### Prepare strong attack event type
+```yaml
+parent: 'null'
+event_type: PLAYER_VECTOR_DASH
+legacy: true
+```
+
+### Strong attack event type
 
 *Work in progress. Has not been tested.*
 
@@ -617,6 +638,18 @@ damage_multiplier: 2.0
 knockback_power: 1.2
 attack_sound: block.stone.hit
 particles: false
+```
+
+The `EXECUTE_STRONG_ATTACK` event type has the same definition and the strong attack has the same execution, but the player attacks immediately and if the attack is not successful,
+the attack is not triggered the next time the player attacks
+
+```yaml
+parent: 'null'
+event_type: EXECUTE_STRONG_ATTACK
+damage_multiplier: 3.0
+knockback_power: 1.5
+attack_sound: block.stone.hit
+particles: true
 ```
 
 ### Entity damage event type

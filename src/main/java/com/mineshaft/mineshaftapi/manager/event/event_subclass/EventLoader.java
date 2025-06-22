@@ -27,6 +27,7 @@ import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
 import com.mineshaft.mineshaftapi.util.formatter.ColourFormatter;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.MechanicUtil;
+import com.mineshaft.mineshaftapi.util.maths.PlanarVectorBounds;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.damage.DamageType;
@@ -58,6 +59,25 @@ public class EventLoader {
     public static Event loadVectorEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
         VectorPlayerEvent loadedEvent = new VectorPlayerEvent(eventClass.getEventType());
         eventClass.clone(loadedEvent);
+        PlanarVectorBounds bounds = new PlanarVectorBounds();
+        if(section.contains("vector_bounds")) {
+            for(String key : section.getConfigurationSection("vector_bounds").getKeys(false)) {
+                switch (key) {
+                    case "y_max" -> bounds.setYMax(section.getDouble(key));
+                    case "y_min" -> bounds.setYMin(section.getDouble(key));
+                    case "planar_max" -> bounds.setPlaneMax(section.getDouble(key));
+                    case "planar_min" -> bounds.setPlaneMin(section.getDouble(key));
+                }
+            }
+        }
+        if(section.contains("is_legacy_event")) {
+            loadedEvent.setLegacy(section.getBoolean("is_legacy_event"));
+        } else if(section.contains("legacy")) {
+            loadedEvent.setLegacy(section.getBoolean("legacy"));
+        } else {
+            loadedEvent.setLegacy(false);
+        }
+        loadedEvent.setVectorBounds(bounds);
         return loadedEvent;
     }
 

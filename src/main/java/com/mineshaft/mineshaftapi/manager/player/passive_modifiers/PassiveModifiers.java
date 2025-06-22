@@ -16,17 +16,26 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event.fields;
+package com.mineshaft.mineshaftapi.manager.player.passive_modifiers;
 
-public enum EventType {
-    NULL,
-    BEAM,
-    PLAY_SOUND,
-    BETON_QUEST,
-    PLAYER_VECTOR_DASH,
-    PLAYER_VECTOR_LEAP,
-    PREPARE_STRONG_ATTACK,
-    EXECUTE_STRONG_ATTACK,
-    DAMAGE,
-    ITEM_PURCHASE
+import java.util.List;
+
+public class PassiveModifiers {
+
+    public static List<PassiveModifierType> convertsToDummy = List.of(PassiveModifierType.UNARMED_ATTACK);
+
+    public static PassiveModifierType getPassiveModifierType(String name) {
+        return PassiveModifierType.valueOf(name.toUpperCase());
+    }
+
+    public enum PassiveModifierType {
+        PLAYER_STAT_BONUS,
+        UNARMED_ATTACK,
+        DUMMY,
+
+        ;
+        public boolean convertsToDummy() {
+            return convertsToDummy.contains(this);
+        }
+    }
 }

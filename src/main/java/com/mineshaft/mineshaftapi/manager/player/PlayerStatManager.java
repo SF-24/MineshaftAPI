@@ -109,7 +109,7 @@ public class PlayerStatManager {
     }
 
     public static int getProficiencyBonus(int level) {
-        return (int) (1+ (level-1)*4);
+        return 1+(level-1)*4;
     }
 
 }

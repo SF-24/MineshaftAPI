@@ -18,12 +18,14 @@
 
 package com.mineshaft.mineshaftapi.util.ui;
 
+import org.bukkit.Material;
+
 public enum ButtonType {
 
     INFO,
     QUESTION_MARK,
     REFRESH,
-    ADD,
+    PLUS,
     TICK,
 
     ARROW_LEFT,
@@ -34,4 +36,101 @@ public enum ButtonType {
     ARROW_DOWN,
 
     ;
+
+    public int getCustomModelData() {
+        return getCustomModelData(ButtonVariant.DEFAULT);
+    }
+
+    public int getCustomModelData(ButtonVariant variant) {
+        switch (this) {
+            case INFO -> {
+                return 10;
+            }
+            case TICK -> {
+                switch (variant) {
+                    case DEFAULT, GREEN -> {
+                        return 23;
+                    }
+                    case RED -> {
+                        return 21;
+                    }
+                    case YELLOW -> {
+                        return 25;
+                    }
+                    case GREY -> {
+                        return 24;
+                    }
+                }
+            }
+            case ADD -> {
+                switch (variant) {
+                    case DEFAULT, GREEN -> {
+                        return 26;
+                    }
+                    case RED -> {
+                        return 27;
+                    }
+                    case YELLOW -> {
+                        return 28;
+                    }
+                    case GREY -> {
+                        return 29;
+                    }
+                }
+            }
+            case QUESTION_MARK -> {
+                return 54;
+            }
+            case REFRESH -> {
+                return 25;
+            }
+            case ARROW_LEFT -> {
+                switch (variant) {
+                    case DEFAULT -> {
+                        return 55;
+                    }
+                    case RED -> {
+                        return 56;
+                    }
+                }
+            }
+            case ARROW_RIGHT -> {
+                switch (variant) {
+                    case DEFAULT -> {
+                        return 57;
+                    }
+                    case RED -> {
+                        return 58;
+                    }
+                }
+            }
+            case ARROW_UP -> {
+                switch (variant) {
+                    case DEFAULT -> {
+                        return 52;
+                    }
+                    case RED -> {
+                        return 53;
+                    }
+                }
+            }
+            case ARROW_DOWN -> {
+                switch (variant) {
+                    case DEFAULT -> {
+                        return 50;
+                    }
+                    case RED -> {
+                        return 51;
+                    }
+                }
+            }
+            default -> {return 0;}
+        }
+        return 0;
+    }
+
+    public Material getMaterial() {
+        return Material.PEONY;
+    }
+
 }

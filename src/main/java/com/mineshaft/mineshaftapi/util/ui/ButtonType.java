@@ -62,7 +62,7 @@ public enum ButtonType {
                     }
                 }
             }
-            case ADD -> {
+            case PLUS -> {
                 switch (variant) {
                     case DEFAULT, GREEN -> {
                         return 26;

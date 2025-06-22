@@ -23,6 +23,8 @@ import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestManager;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import com.mineshaft.mineshaftapi.events.AbilityEventType;
+import com.mineshaft.mineshaftapi.events.MineshaftAbilityModifyEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
@@ -30,6 +32,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -337,11 +340,19 @@ public class JsonPlayerBridge {
 
     // Minimum level = 1;
     public static void addAbility(Player player, String ability, int level) {
-        getJsonInstance(player).addAbility(ability,Math.min(level,1));
+        MineshaftAbilityModifyEvent abilityEvent = new MineshaftAbilityModifyEvent(player,ability, AbilityEventType.ADD);
+        Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
+        if(!abilityEvent.isCancelled()) {
+            getJsonInstance(player).addAbility(ability,Math.min(level,1));
+        }
     }
 
     public static void addPassiveAbility(Player player, String ability, int level) {
-        getJsonInstance(player).addPassiveAbility(ability,level);
+        MineshaftAbilityModifyEvent abilityEvent = new MineshaftAbilityModifyEvent(player,ability, AbilityEventType.ADD);
+        Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
+        if(!abilityEvent.isCancelled()) {
+            getJsonInstance(player).addPassiveAbility(ability, level);
+        }
     }
 
     public static void addSpell(Player player, String spell, int level) {
@@ -349,11 +360,19 @@ public class JsonPlayerBridge {
     }
 
     public static void removeAbility(Player player, String ability) {
-        getJsonInstance(player).removeAbility(ability);
+        MineshaftAbilityModifyEvent abilityEvent = new MineshaftAbilityModifyEvent(player,ability, AbilityEventType.REMOVE);
+        Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
+        if(!abilityEvent.isCancelled()) {
+            getJsonInstance(player).removeAbility(ability);
+        }
     }
 
     public static void removePassiveAbility(Player player, String ability) {
-        getJsonInstance(player).removePassiveAbility(ability);
+        MineshaftAbilityModifyEvent abilityEvent = new MineshaftAbilityModifyEvent(player,ability, AbilityEventType.REMOVE);
+        Bukkit.getServer().getPluginManager().callEvent(abilityEvent);
+        if(!abilityEvent.isCancelled()) {
+            getJsonInstance(player).removePassiveAbility(ability);
+        }
     }
 
     public static void removeSpell(Player player, String spell) {

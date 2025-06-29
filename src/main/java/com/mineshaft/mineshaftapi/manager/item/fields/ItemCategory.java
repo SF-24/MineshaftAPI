@@ -34,6 +34,9 @@ public enum ItemCategory {
     TOOL_HOE,
     TOOL_MISC,
 
+    CASTING_WAND,
+    CASTING_STAFF,
+
     ITEM_CONSUMABLE,
     ITEM_GENERIC,
 

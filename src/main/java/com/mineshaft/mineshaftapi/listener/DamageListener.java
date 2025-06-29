@@ -122,7 +122,7 @@ public class DamageListener implements Listener {
                     }
 
                     // Check for weapon in hand and get hit bonus
-                    hitBonus+= (int) getHitBonus(player, e);
+                    hitBonus = (int) getHitBonus(player, e);
 
                     // Test pending abilities
                     damageMultiplier = testPendingAbilitiesAndGetDamageMultiplier(player, e);
@@ -174,7 +174,7 @@ public class DamageListener implements Listener {
     }
 
     public double getHitBonus(Player player, EntityDamageEvent e) {
-        double hitBonus=0d;
+        double hitBonus=0;
         ItemStack item = ((Player) ((EntityDamageByEntityEvent) e).getDamager()).getInventory().getItemInMainHand();
         if (!item.getType().equals(Material.AIR)) {
 
@@ -184,15 +184,19 @@ public class DamageListener implements Listener {
                 // Make variable
                 hitBonus += PlayerStatManager.getProficiencyBonus(JsonPlayerBridge.getLevel(player));
             }
-            // The player is proficient with the given item
+
+            // Whether the item is treated as finesse
+
+            // Incorrect
             if (ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.FINESSE) || (
                     (JsonPlayerBridge.getAbilities(player).containsKey("weapon_finesse")||JsonPlayerBridge.getAbilities(player).containsKey("natural_finesse")) &&
                     (ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.LIGHT) || ItemManager.getItemSubcategory(item).getPropertyList().contains(ItemSubcategoryProperty.TRAINED_FINESSE))
             )) {
                 Logger.logDebug("Adding finesse properties...");
-                hitBonus += Math.max(JsonPlayerBridge.getAttribute(player, "DEX"), JsonPlayerBridge.getAttribute(player, "STR"));
+                hitBonus += Math.max(JsonPlayerBridge.getAbilityScoreModifier(player, "DEX"), JsonPlayerBridge.getAbilityScoreModifier(player, "STR"));
             } else {
-                hitBonus += JsonPlayerBridge.getAttribute(player, "STR");
+                Logger.logDebug("Using STR: " + JsonPlayerBridge.getAbilityScoreMap(player));
+                hitBonus += JsonPlayerBridge.getAbilityScoreModifier(player, "STR");
             }
         }
         return hitBonus;

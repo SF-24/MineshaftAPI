@@ -33,6 +33,7 @@ import org.bukkit.util.Vector;
 public class VectorPlayerEvent extends Event {
 
     boolean legacy;
+    boolean allowWhenFlying;
     private PlanarVectorBounds vectorBounds;
 
     public VectorPlayerEvent(EventType type) {

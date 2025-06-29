@@ -20,7 +20,6 @@ package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.world_guard.PlayerRegionEventManager;
-import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
 import com.mineshaft.mineshaftapi.manager.ui.SidebarManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

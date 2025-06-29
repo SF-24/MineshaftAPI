@@ -68,6 +68,8 @@ public final class MineshaftApi extends JavaPlugin {
     @Override
     public void onEnable() {
 
+
+
         // Ascii text generator: https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20
 
         Logger.logInfo("   __  ____              __        _____    ___   ___  ____");
@@ -138,6 +140,7 @@ public final class MineshaftApi extends JavaPlugin {
 
         // Initialise plugin dependencies
         dependencyInit.initialiseDependencies();
+
     }
 
     @Override

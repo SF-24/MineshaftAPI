@@ -19,13 +19,13 @@
 package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.util.ToolRuleExtended;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemDeconstructManager;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRecipeManager;
 import com.mineshaft.mineshaftapi.manager.item.fields.*;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.util.ToolRuleExtended;
 import com.mineshaft.mineshaftapi.util.formatter.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.formatter.TextFormatter;
 import de.tr7zw.changeme.nbtapi.NBT;
@@ -34,7 +34,6 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -55,6 +54,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemManager {
 
@@ -379,7 +379,7 @@ public class ItemManager {
                         if(!properties.isEmpty()) {
                             properties+=", "+property.getName();
                         } else {
-                            properties= NamedTextColor.GRAY + property.getName();
+                            properties= ChatColor.GRAY + property.getName();
                         }
                     }
                 }
@@ -692,6 +692,7 @@ public class ItemManager {
 
         // Apply NBT tag with item
         final boolean finalColdProtect = coldProtect;
+        ItemSubcategory finalSubcategory1 = subcategory;
         NBT.modify(item, nbt -> {
             nbt.setString("uuid", uuid);
             if(!armourType.equals(ArmourType.NONE)) {
@@ -798,7 +799,6 @@ public class ItemManager {
         final String rareString = rarity.name().toLowerCase();
 
         String finalSubcategory = subcategory.name().toLowerCase();
-        List<String> finalItemProperties = itemProperties;
         List<String> finalItemProperties1 = itemProperties;
         NBT.modify(item, nbt -> {
             nbt.setString("rarity", rareString);
@@ -1041,10 +1041,12 @@ public class ItemManager {
     // Get item subcategory from an item
     public static ItemSubcategory getItemSubcategory(ItemStack item) {
         if(item==null) return ItemSubcategory.DEFAULT;
+        // If not null
+        AtomicReference<ItemSubcategory> returnValue = new AtomicReference<>();
         NBT.get(item, nbt->{
-            return getItemSubcategory(nbt.getString("subcategory"));
+            returnValue.set(getItemSubcategory(nbt.getString("sub_category")));
         });
-        return ItemSubcategory.DEFAULT;
+        return returnValue.get();
     }
 
     public static List<String> getItemPropertiesAsString(ItemStack item) {
@@ -1155,11 +1157,12 @@ public class ItemManager {
     }
 
     public static ItemSubcategory getItemSubcategory(String subcategory) {
+        ItemSubcategory returnValue = null;
         for(ItemSubcategory subcategoryItem : ItemSubcategory.values()) {
-            if(subcategoryItem.name().equalsIgnoreCase(subcategory)) {
-                return subcategoryItem;
+            if(subcategoryItem.name().toLowerCase().equalsIgnoreCase(subcategory)) {
+                returnValue=subcategoryItem;
             }
         }
-        return ItemSubcategory.DEFAULT;
+        return returnValue;
     }
 }

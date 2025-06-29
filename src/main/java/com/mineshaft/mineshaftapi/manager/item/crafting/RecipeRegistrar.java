@@ -37,11 +37,11 @@ public class RecipeRegistrar {
     public static void addHardcodedRecipe(ItemStack item, HardcodedRecipe recipe, Material m1, Material m2) {
 
         switch(recipe) {
-            case SWORD,SHORTSWORD -> registerCraftingRecipe(item,
+            case SWORD,SHORTSWORD -> RecipeRegistrar.registerCraftingRecipeSimple(item,
                     List.of(m1, m1, m2), recipe.getCategory(),
                     true, 1, 3
             );
-            case LONGSWORD -> registerCraftingRecipe(item,
+            case LONGSWORD -> RecipeRegistrar.registerCraftingRecipeSimple(item,
                     List.of(
                             air, m1, air,
                             air, m1, air,
@@ -50,7 +50,7 @@ public class RecipeRegistrar {
                     , recipe.getCategory(),
                     true, 3, 3
             );
-            case PICKAXE -> registerCraftingRecipe(item,
+            case PICKAXE -> RecipeRegistrar.registerCraftingRecipeSimple(item,
                     List.of(
                             m1, m1, m1,
                             air, m2, air,
@@ -61,7 +61,7 @@ public class RecipeRegistrar {
             );
             case AXE -> {
 
-                registerCraftingRecipe(item,
+                RecipeRegistrar.registerCraftingRecipeSimple(item,
                         List.of(
                                 m1, m1,
                                 m2, m1,
@@ -70,7 +70,7 @@ public class RecipeRegistrar {
                         , recipe.getCategory(),
                         true, 2, 3
                 );
-                registerCraftingRecipe(item,
+                RecipeRegistrar.registerCraftingRecipeSimple(item,
                         List.of(
                                 m1, m1,
                                 m1, m2,
@@ -81,7 +81,7 @@ public class RecipeRegistrar {
                 );
             }
 
-            case SHOVEL -> registerCraftingRecipe(item,
+            case SHOVEL -> RecipeRegistrar.registerCraftingRecipeSimple(item,
                     List.of(
                             m1,
                             m2,
@@ -91,7 +91,7 @@ public class RecipeRegistrar {
                     true, 1, 3
             );
             case HOE -> {
-                registerCraftingRecipe(item,
+                RecipeRegistrar.registerCraftingRecipeSimple(item,
                     List.of(
                             m1, m1,
                             air, m2,
@@ -100,7 +100,7 @@ public class RecipeRegistrar {
                     , recipe.getCategory(),
                     true, 2, 3
                 );
-                registerCraftingRecipe(item,
+                RecipeRegistrar.registerCraftingRecipeSimple(item,
                         List.of(
                                 m1, m1,
                                 m2, air,
@@ -110,7 +110,7 @@ public class RecipeRegistrar {
                         true, 2, 3
                 );
             }
-            case HELMET_SIMPLE ->registerCraftingRecipe(item,
+            case HELMET_SIMPLE -> RecipeRegistrar.registerCraftingRecipeSimple(item,
                     List.of(
                             m1, m1,m1,
                             m1, air,m1
@@ -118,7 +118,7 @@ public class RecipeRegistrar {
                     , recipe.getCategory(),
                     true, 3, 2
             );
-            case CHESTPLATE_SIMPLE ->registerCraftingRecipe(item,
+            case CHESTPLATE_SIMPLE -> RecipeRegistrar.registerCraftingRecipeSimple(item,
                     List.of(
                             m1, air, m1,
                             m1, m1, m1,
@@ -127,7 +127,7 @@ public class RecipeRegistrar {
                     , recipe.getCategory(),
                     true, 3, 3
             );
-            case LEGGINGS_SIMPLE ->registerCraftingRecipe(item,
+            case LEGGINGS_SIMPLE -> RecipeRegistrar.registerCraftingRecipeSimple(item,
                     List.of(
                             m1, m1, m1,
                             m1, air, m1,
@@ -136,7 +136,7 @@ public class RecipeRegistrar {
                     , recipe.getCategory(),
                     true, 3, 3
             );
-            case BOOTS_SIMPLE ->registerCraftingRecipe(item,
+            case BOOTS_SIMPLE -> RecipeRegistrar.registerCraftingRecipeSimple(item,
                     List.of(
                             m1, air,m1,
                             m1, air,m1
@@ -181,7 +181,7 @@ public class RecipeRegistrar {
     }
 
     // register a recipe
-    public static void registerCraftingRecipe(ItemStack item, List<Material> components, CraftingBookCategory category, boolean isShaped, int width, int height) {
+    public static void registerCraftingRecipeSimple(ItemStack item, List<Material> components, CraftingBookCategory category, boolean isShaped, int width, int height) {
         if(width>3)width=3;
 
         if(isShaped) {
@@ -241,10 +241,80 @@ public class RecipeRegistrar {
         }
     }
 
+    // register a recipe
+    public static void registerCraftingRecipeComplex(ItemStack item, List<ItemStack> components, CraftingBookCategory category, boolean isShaped, int width, int height) {
+        if(width>3)width=3;
+
+        if(width<1||height<1) isShaped = false;
+
+        if(isShaped) {
+            while(components.size() < width*height) {
+                components.add(new ItemStack(Material.AIR));
+            }
+
+            String key = UUID.randomUUID().toString();
+            ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(MineshaftApi.getInstance(), key), item);
+            recipe.setCategory(category);
+
+            HashMap<ItemStack, Character> ingredients = new HashMap<>();
+
+            StringBuilder recipeString = new StringBuilder();
+            for(ItemStack m : components) {
+                if(m.equals(Material.AIR)) {
+                    recipeString.append("_");
+                } else if (!ingredients.containsKey(m)) {
+                    String randomChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()=+,./;'[]<>?:{}|".substring(recipeString.length(),recipeString.length()+1);
+                    ingredients.put(m,randomChar.charAt(0));
+                    recipeString.append(randomChar);
+                } else {
+                    String keyChar = ingredients.get(m).toString();
+                    ingredients.put(m,keyChar.charAt(0));
+                    recipeString.append(keyChar);
+                }
+            }
+
+            switch (height) {
+                case 1 -> recipe.shape(
+                        recipeString.substring(0,width).replace('_', ' '));
+                case 2 -> recipe.shape(
+                        recipeString.substring(0,width).replace('_', ' '),
+                        recipeString.substring(width,width*2).replace('_', ' '));
+                case 3 -> recipe.shape(
+                        recipeString.substring(0,width).replace('_', ' '),
+                        recipeString.substring(width,width*2).replace('_', ' '),
+                        recipeString.substring(width*2,width*3).replace('_', ' '));
+            }
+
+            for(ItemStack m : ingredients.keySet()) {
+                if (!m.getType().equals(Material.AIR)) {
+                    recipe.setIngredient(ingredients.get(m), m);
+                }
+            }
+
+            Bukkit.getServer().addRecipe(recipe);
+        } else {
+            String key = UUID.randomUUID().toString();
+            ShapelessRecipe recipe = new ShapelessRecipe(new NamespacedKey(MineshaftApi.getInstance(), key), item);
+            recipe.setCategory(category);
+            for(ItemStack m : components) {
+                recipe.addIngredient(m);
+            }
+            Bukkit.getServer().addRecipe(recipe);
+        }
+    }
+
     public static void registerFurnaceRecipe(ItemStack item, ItemStack output, CookingBookCategory category, int xp, int timeInTicks) {
         FurnaceRecipe recipe = new FurnaceRecipe(new NamespacedKey(MineshaftApi.getInstance(), UUID.randomUUID().toString()),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
         recipe.setCategory(category);
         Bukkit.getServer().addRecipe(recipe);
+    }
+
+    public static void registerFurnaceRecipeSimpleFood(ItemStack item, ItemStack output) {
+        registerFurnaceRecipeSimple(item,output,CookingBookCategory.FOOD);
+    }
+
+    public static void registerFurnaceRecipeSimple(ItemStack item, ItemStack output, CookingBookCategory category) {
+        registerFurnaceRecipe(item,output,category,0,200);
     }
 
     public static void registerBlastFurnaceRecipe(ItemStack item, ItemStack output, CookingBookCategory category, int xp, int timeInTicks) {
@@ -263,5 +333,13 @@ public class RecipeRegistrar {
         CampfireRecipe recipe = new CampfireRecipe(new NamespacedKey(MineshaftApi.getInstance(), UUID.randomUUID().toString()),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
         recipe.setCategory(category);
         Bukkit.getServer().addRecipe(recipe);
+    }
+
+    public static void registerShapelessRecipe(ItemStack item, List<ItemStack> components, CraftingBookCategory category) {
+        registerCraftingRecipeComplex(item,components,category,false,-1,-1);
+    }
+
+    public static void registerShapelessRecipeMisc(ItemStack item, List<ItemStack> components) {
+        registerCraftingRecipeComplex(item,components,CraftingBookCategory.MISC,false,-1,-1);
     }
 }

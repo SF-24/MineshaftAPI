@@ -77,6 +77,12 @@ public class EventLoader {
         } else {
             loadedEvent.setLegacy(false);
         }
+        if(section.contains("allow_if_flying")) {
+            loadedEvent.setAllowWhenFlying(section.getBoolean("allow_in_flight"));
+        } else {
+            loadedEvent.setAllowWhenFlying(false);
+        }
+
         loadedEvent.setVectorBounds(bounds);
         return loadedEvent;
     }

@@ -31,7 +31,7 @@ public class ArmourEquipManager {
     public static boolean tryEquip(Player player, ItemStack itemStack) {
         if(itemStack==null) return false;
         final boolean[] returnValue = {false};
-        if(JsonPlayerBridge.hasAttribute(player, "str") && !itemStack.getType().equals(Material.AIR) && itemStack.getItemMeta()!=null) {
+        if(JsonPlayerBridge.hasAbilityScore(player, "str") && !itemStack.getType().equals(Material.AIR) && itemStack.getItemMeta()!=null) {
             try {
                 NBT.get(itemStack, nbt->{
                     if(nbt!=null && nbt.hasNBTData()) {
@@ -39,7 +39,7 @@ public class ArmourEquipManager {
                         //player.sendMessage("Type: " + type);
                         if(type!=null) {
                             ArmourType armourType = ArmourType.valueOf(type.toUpperCase());
-                            if(JsonPlayerBridge.getAttribute(player, "str")<armourType.getStrRequirement()) {
+                            if(JsonPlayerBridge.getAbilityScoreValue(player, "str")<armourType.getStrRequirement()) {
                                 player.sendMessage(ChatColor.WHITE + "You must have at least "+ChatColor.RED + "STRENGTH " + ChatColor.DARK_RED.toString() + ChatColor.BOLD + armourType.getStrRequirement() + ChatColor.WHITE + " to equip this armour.");
                                 returnValue[0] = true;
                             }

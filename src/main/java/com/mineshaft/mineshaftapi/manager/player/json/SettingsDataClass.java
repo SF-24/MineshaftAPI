@@ -48,6 +48,25 @@ public class SettingsDataClass extends JsonSaveObject {
         return spellHotbars.get((hotbar*8)+slot);
     }
 
+    public int getBindNumber(String spell) {
+        for(int slot : spellHotbars.keySet()) {
+            if(spellHotbars.get(slot).equals(spell)) {
+                return slot;
+            }
+        }
+        return -1;
+    }
+
+    public int getSlot(String spell) {
+        return getBindNumber(spell)-(getBindNumber(spell)%8*8);
+    }
+
+    public int getHotbar(String spell) {
+        return getSlot(spell)%8;
+    }
+
+
+
     public void removeSpell(int hotbar, int slot) {
         spellHotbars.remove((hotbar*8)+slot);
     }

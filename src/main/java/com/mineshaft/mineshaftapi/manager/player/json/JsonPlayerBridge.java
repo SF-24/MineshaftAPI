@@ -26,6 +26,7 @@ import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestO
 import com.mineshaft.mineshaftapi.events.AbilityEventType;
 import com.mineshaft.mineshaftapi.events.MineshaftAbilityModifyEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import net.kyori.adventure.text.Component;
@@ -176,21 +177,25 @@ public class JsonPlayerBridge {
         getJsonInstance(player).setSkillPoints(points);
     }
 
-    public static boolean hasAttribute(Player player, String attribute) {
-        return getJsonInstance(player).hasAttribute(attribute);
+    public static boolean hasAbilityScore(Player player, String attribute) {
+        return getJsonInstance(player).hasAbilityScore(attribute);
     }
 
 
-    public static int getAttribute(Player player, String attribute) {
-        return getJsonInstance(player).getAttribute(attribute);
+    public static int getAbilityScoreValue(Player player, String attribute) {
+        return getJsonInstance(player).getAbilityScoreValue(attribute.toLowerCase());
     }
 
-    public static HashMap<String, Integer> getAttributeMap(Player player) {
-        return getJsonInstance(player).getAttributeMap();
+    public static int getAbilityScoreModifier(Player player, String attribute) {
+        return PlayerStatManager.calculateAbilityScoreModifier(getAbilityScoreValue(player,attribute.toLowerCase()));
     }
 
-    public static void setAttribute(Player player, String attribute, int value) {
-        getJsonInstance(player).setAttribute(attribute, value);
+    public static HashMap<String, Integer> getAbilityScoreMap(Player player) {
+        return getJsonInstance(player).getAbilityScoreMap();
+    }
+
+    public static void setAbilityScore(Player player, String attribute, int value) {
+        getJsonInstance(player).setAbilityScoreValue(attribute, value);
     }
 
     /**
@@ -437,5 +442,7 @@ public class JsonPlayerBridge {
     public static JsonPlayerManager getJsonPlayerManager(Player player, String profile) {
         return new JsonPlayerManager(player, profile);
     }
+
+
 
 }

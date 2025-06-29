@@ -82,6 +82,8 @@ public enum ItemSubcategory {
     LEGGINGS(ItemSubcategoryType.ARMOUR,List.of()),
     BOOTS(ItemSubcategoryType.ARMOUR,List.of()),
 
+    WAND(ItemSubcategoryType.WAND,List.of()),
+
     DEFAULT(ItemSubcategoryType.NONE,List.of());
 
     ;

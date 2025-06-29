@@ -16,23 +16,18 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.fields;
+package com.mineshaft.mineshaftapi.util;
 
-public enum ItemSubcategoryType {
+import org.bukkit.Bukkit;
 
-    // MORE COMING SOON....
+public class VersionUtil {
 
-    NONE,
+    public static String getVersion() {
+        return Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+    }
 
-    WAND,
-    CONSUMABLE,
-    TOOL,
-    ARMOUR,
-    WEAPON_SIMPLE,
-    WEAPON_MARTIAL,
-    WEAPON_LIGHT,
-    WEAPON_VIBROWEAPON,
-    WEAPON_BLASTER
-    ;
+    public boolean is1_21() {
+        return getVersion().contains("1_21");
+    }
 
 }

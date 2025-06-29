@@ -185,7 +185,7 @@ public class PlayerDataClass {
      * */
     public HashMap<String, Integer> getAttributes() {return playerAttributes;}
 
-    public int getAttribute(String attribute) {return playerAttributes.get(attribute)==null?-1:playerAttributes.get(attribute);}
+    public int getAttribute(String attribute) {return playerAttributes.get(attribute)==null?-99:playerAttributes.get(attribute);}
     public boolean hasAttribute(String attribute) {return playerAttributes.containsKey(attribute);}
     public void setAttribute(String attribute, int value) {playerAttributes.put(attribute, value);}
 

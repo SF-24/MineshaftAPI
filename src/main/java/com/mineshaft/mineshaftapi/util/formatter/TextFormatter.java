@@ -26,9 +26,34 @@ public class TextFormatter {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
-    public static String capitaliseStringFully(String string) {
-        return WordUtils.capitalizeFully(string);
+    public static String capitaliseStringFully(String input) {
+        if (input == null || input.isEmpty())
+        {
+            return input;
+        }
+
+        // split the input string into words using whitespace
+        String[] words = input.split("\\s");
+
+        // create a StringBuilder
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words)
+        {
+            if(word.equalsIgnoreCase("and")||word.equalsIgnoreCase("or")|word.equalsIgnoreCase("of")|word.equalsIgnoreCase("in")||word.equalsIgnoreCase("the")) {
+                result.append(word).append(" ");
+                continue;
+            }
+            // capitalize the first letter of each word and append the rest of the word
+            result.append(Character.toUpperCase(word.charAt(0)))
+                    .append(word.substring(1).toLowerCase())
+                    .append(" "); // Add a space between words
+        }
+
+        // remove the trailing space and return the capitalized string
+        return result.toString().trim();
     }
+
 
     public static String addSpacesToString(String string) {
         string = string.replace("-"," ");

@@ -1,7 +1,7 @@
 name: MineshaftApi
 version: '${project.version}'
 main: com.mineshaft.mineshaftapi.MineshaftApi
-api-version: 1.20
+api-version: 1.13
 prefix: MineshaftApi
 authors: [ SebastianFrynas ]
 description: A Minecraft plugin focusing on Rpg and Multiplayer elements

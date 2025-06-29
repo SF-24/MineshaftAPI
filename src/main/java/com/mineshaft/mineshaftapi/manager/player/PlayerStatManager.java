@@ -22,6 +22,7 @@ import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -63,14 +64,14 @@ public class PlayerStatManager {
             if ((player.getOpenInventory().getTopInventory().getHolder()==null)) {
                 return JsonPlayerBridge.getTempArmourClass(player);
             } else {
-                if(JsonPlayerBridge.hasAttribute(player,"dex")) {
-                    int dex = JsonPlayerBridge.getAttribute(player, "dex");
+                if(JsonPlayerBridge.hasAbilityScore(player,"dex")) {
+                    int dex = JsonPlayerBridge.getAbilityScoreValue(player, "dex");
                     int maximumDex = (int) getPlayerStat(ItemStats.MAXIMUM_ADDED_DEX_MODIFIER, player);
                     int dexModifier = 0;
                     if (maximumDex > 0) {
-                        dexModifier = Math.max(calculateAttributeModifier(dex), maximumDex);
+                        dexModifier = Math.max(calculateAbilityScoreModifier(dex), maximumDex);
                     } else if (maximumDex < 0)
-                        dexModifier = calculateAttributeModifier(dex);
+                        dexModifier = calculateAbilityScoreModifier(dex);
                     return dexModifier+getRawPlayerStat(ItemStats.ARMOUR_CLASS,player);
                 }
                 return getRawPlayerStat(ItemStats.ARMOUR_CLASS,player);
@@ -103,9 +104,21 @@ public class PlayerStatManager {
         return getRawPlayerStat(stat, player);
     }
 
+    public static int calculateAbilityScoreModifier(int value) {
+        if(value > 0) {
+            if (value % 2 == 0) {
 
-    public static int calculateAttributeModifier(int attribute) {
-        return (int) (((double)attribute)-10.0 + (((double)attribute)-10.0<0?-0.5:0) /2.0);
+                // If remainder is zero then this number is even
+                return (value-10)/2;
+            }
+
+            else {
+
+                // If remainder is not zero then this number is odd
+                return (value-11)/2;
+            }
+        }
+        return value;
     }
 
     public static int getProficiencyBonus(int level) {

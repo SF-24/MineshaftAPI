@@ -422,23 +422,23 @@ public class JsonPlayerManager {
         return data.getSkillPoints();
     }
 
-    public void setAttribute(String attribute, int value) {
+    public void setAbilityScoreValue(String attribute, int value) {
         PlayerDataClass data = loadData(player);
         data.setAttribute(attribute, value);
         saveFile(data);
     }
 
-    public int getAttribute(String attribute) {
+    public int getAbilityScoreValue(String attribute) {
         PlayerDataClass data = loadData(player);
         return data.getAttribute(attribute);
     }
 
-    public boolean hasAttribute(String attribute) {
+    public boolean hasAbilityScore(String attribute) {
         PlayerDataClass data = loadData(player);
         return data.hasAttribute(attribute);
     }
 
-    public HashMap<String, Integer> getAttributeMap() {
+    public HashMap<String, Integer> getAbilityScoreMap() {
         PlayerDataClass data = loadData(player);
         return data.getAttributes();
     }

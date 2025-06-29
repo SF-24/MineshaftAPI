@@ -18,15 +18,16 @@
 
 package com.mineshaft.mineshaftapi.manager.player.json;
 
-import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class JsonSettingsBridge {
+
+    public static int hotbarCount=3;
+    int slotPerHotbar = 8;
 
     public static String getPath(Player player) {return ProfileManager.getProfilePathOfPlayer(player.getUniqueId(),JsonProfileBridge.getCurrentProfile(player));}
     public static String getFileName() {return "player_settings";}
@@ -93,6 +94,18 @@ public class JsonSettingsBridge {
         if(data == null) {return;}
         data.setCurrentSpellHotbar(currentSpellHotbar);
         saveFile(player, data);
+    }
+
+    public static int getSpellSlot(Player player, String spell) {
+        SettingsDataClass data = getData(player);
+        if(data == null) {return -10;}
+        return data.getSlot(spell);
+    }
+
+    public static int getSpellHotbar(Player player, String spell) {
+        SettingsDataClass data = getData(player);
+        if(data == null) {return -10;}
+        return data.getHotbar(spell);
     }
 
     /*

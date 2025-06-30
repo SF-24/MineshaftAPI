@@ -25,13 +25,14 @@ import com.mineshaft.mineshaftapi.dependency.VaultDependency;
 import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
 import com.mineshaft.mineshaftapi.dependency.world_guard.RegionManager;
 import com.mineshaft.mineshaftapi.listener.*;
-import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
-import com.mineshaft.mineshaftapi.manager.player.combat.ActionManager;
-import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
-import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
 import com.mineshaft.mineshaftapi.manager.config.ConfigManager;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
+import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.player.AbilityType;
+import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
+import com.mineshaft.mineshaftapi.manager.player.combat.ActionManager;
+import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
 import com.mineshaft.mineshaftapi.util.Language;
 import com.mineshaft.mineshaftapi.util.Logger;
 import lombok.Getter;
@@ -42,14 +43,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 public final class MineshaftApi extends JavaPlugin {
 
     @Getter
-    ArrayList<String> abilities = new ArrayList<>();
+    HashMap<String,AbilityType> abilities = new HashMap<>();
 
     // Managers, some including caches
     ConfigManager configManager = new ConfigManager(this);
@@ -248,9 +248,9 @@ public final class MineshaftApi extends JavaPlugin {
 
     public static @Nullable Plugin getPlugin() {return Bukkit.getPluginManager().getPlugin("MineshaftApi");}
 
-    public void cacheAbility(String ability) {
+    public void cacheAbility(String ability, AbilityType abilityType) {
         Logger.logDebug("MineshaftApi has logged MineshaftRpg ability " + ability);
-        abilities.add(ability);
+        abilities.put(ability,abilityType);
     }
 
     public void clearAbilities() {

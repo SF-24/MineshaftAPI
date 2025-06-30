@@ -91,8 +91,12 @@ public class PlayerDataCommand implements CommandExecutor {
                 if(args[1].equalsIgnoreCase("add")) {
                     String ability = args[3];
                     if(!JsonPlayerBridge.getAbilities(player).containsKey(ability)) {
-                        if(MineshaftApi.getInstance().getAbilities().contains(ability)) {
-                            JsonPlayerBridge.addAbility(player, ability, 1);
+                        if(MineshaftApi.getInstance().getAbilities().containsKey(ability)) {
+                            switch (MineshaftApi.getInstance().getAbilities().get(ability)) {
+                                case ACTIVE_ABILITY -> JsonPlayerBridge.addAbility(player, ability, 1);
+                                case PASSIVE_ABILITY -> JsonPlayerBridge.addPassiveAbility(player, ability, 1);
+                                case SPELL -> JsonPlayerBridge.addSpell(player, ability, 1);
+                            }
                             sender.sendMessage("Command execution successful");
                         } else {
                             sender.sendMessage(Component.text("This ability does not exist",NamedTextColor.RED));

@@ -59,10 +59,15 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ItemManager {
 
     HashMap<UUID, String> items = new HashMap<>();
+    HashMap<UUID, String> itemPaths = new HashMap<>();
     HashMap<UUID, List<String>> cachedEvents = new HashMap<>();
 
     public HashMap<UUID, String> getItemList() {
         return items;
+    }
+
+    public HashMap<UUID, String> getItemPathList() {
+        return itemPaths;
     }
 
     String path = MineshaftApi.getInstance().getItemPath();
@@ -130,7 +135,12 @@ public class ItemManager {
         ItemDeconstructManager.registerMeltingRecipes(name);
 
         items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
+        itemPaths.put(UUID.fromString(yamlConfiguration.getString("id")), path);
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
+    }
+
+    public static String getItemPath(UUID uuid) {
+        return MineshaftApi.getInstance().getItemManagerInstance().itemPaths.get(uuid);
     }
 
     public static String getItemName(UUID uuid) {
@@ -808,7 +818,7 @@ public class ItemManager {
             ReadWriteNBTList<String> propertyList = nbt.getStringList("item_properties");
             propertyList.addAll(finalItemProperties1);
         });
-        
+
         /**
          * Custom hardcoded properties
          * */
@@ -1037,6 +1047,32 @@ public class ItemManager {
         });
         return value[0];
     }
+
+    // Get item category from an item
+    public static ItemCategory getItemCategory(ItemStack item) {
+        if(item==null) return ItemCategory.ITEM_GENERIC;
+        // If not null
+        AtomicReference<ItemSubcategory> returnValue = new AtomicReference<>();
+        NBT.get(item, nbt->{
+            return getItemCategory(UUID.fromString(nbt.getString("uuid")));
+        });
+        return ItemCategory.ITEM_GENERIC;
+    }
+
+    public static ItemCategory getItemCategory(UUID uuid) {
+        File fileYaml = new File(getItemPath(uuid), getItemName(uuid) + ".yml");
+
+        // return null if file does not exist
+        if (!fileYaml.exists()) return null;
+
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+
+        if(yamlConfiguration.contains("item_category")&&yamlConfiguration.getString("item_category")!=null) {
+            return ItemCategory.valueOf(yamlConfiguration.getString("item_category").toUpperCase(Locale.ROOT));
+        }
+        return ItemCategory.ITEM_GENERIC;
+    }
+
 
     // Get item subcategory from an item
     public static ItemSubcategory getItemSubcategory(ItemStack item) {

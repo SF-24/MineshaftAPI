@@ -402,7 +402,7 @@ public class JsonPlayerBridge {
 
     public static ArrayList<String> getUnknownAbilities(Player player) {
         ArrayList<String> abilities = new ArrayList<>();
-        for(String ability : MineshaftApi.getInstance().getAbilities()) {
+        for(String ability : MineshaftApi.getInstance().getAbilities().keySet()) {
             if(!getAbilities(player).containsKey(ability)) {
                 abilities.add(ability);
             }

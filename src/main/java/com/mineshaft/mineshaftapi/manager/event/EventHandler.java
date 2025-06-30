@@ -38,37 +38,34 @@ public class EventHandler {
             return false;
         }
 
-        if (player.isSneaking() || e.getAction().equals(Action.RIGHT_CLICK_AIR) || (e.getClickedBlock() != null && !BlockManager.isInteractable(e.getClickedBlock().getType()))) {
-
-            // On parry
-            if (events.contains("parry")) {
-                // Player is blocking:
-                if (MineshaftApi.getInstance().getActionManager().canBlock(player.getUniqueId())) {
-                    if (!MineshaftApi.getInstance().getActionManager().isPlayerBlocking(player.getUniqueId())) {
-                        // Start blocking
-                        MineshaftApi.getInstance().getActionManager().addPlayerBlocking(player.getUniqueId());
-                    }
-                } else {
-                    // COOLDOWN!
-                    e.setCancelled(true);
+        // On parry
+        if (events.contains("parry")) {
+            // Player is blocking:
+            if (MineshaftApi.getInstance().getActionManager().canBlock(player.getUniqueId())) {
+                if (!MineshaftApi.getInstance().getActionManager().isPlayerBlocking(player.getUniqueId())) {
+                    // Start blocking
+                    MineshaftApi.getInstance().getActionManager().addPlayerBlocking(player.getUniqueId());
                 }
-                return true;
-            } else if (events.contains("power_attack")) {
-                // Player is parrying:
-                if (MineshaftApi.getInstance().getActionManager().canDoPowerAttack(player.getUniqueId())) {
-                    if (!MineshaftApi.getInstance().getActionManager().isPlayerPowerAttack(player.getUniqueId())) {
-                        // Start preparing power attack
-                        MineshaftApi.getInstance().getActionManager().addPlayerPowerAttack(player.getUniqueId(), ItemManager.getItemSubcategory(item));
-                    }
-                } else {
-                    // COOLDOWN!
-                    e.setCancelled(true);
-                }
-                return true;
+            } else {
+                // COOLDOWN!
+                e.setCancelled(true);
             }
-
-            // Power attack
+            return true;
+        } else if (events.contains("power_attack")) {
+            // Player is parrying:
+            if (MineshaftApi.getInstance().getActionManager().canDoPowerAttack(player.getUniqueId())) {
+                if (!MineshaftApi.getInstance().getActionManager().isPlayerPowerAttack(player.getUniqueId())) {
+                    // Start preparing power attack
+                    MineshaftApi.getInstance().getActionManager().addPlayerPowerAttack(player.getUniqueId(), ItemManager.getItemSubcategory(item));
+                }
+            } else {
+                // COOLDOWN!
+                e.setCancelled(true);
+            }
+            return true;
         }
+
+        // Power attack
         return false;
     }
 }

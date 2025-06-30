@@ -19,20 +19,21 @@
 package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryProperty;
-import com.mineshaft.mineshaftapi.manager.player.ActionType;
+import com.mineshaft.mineshaftapi.events.MineshaftUseItemEvent;
 import com.mineshaft.mineshaftapi.manager.block.BlockManager;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
+import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import de.tr7zw.changeme.nbtapi.NBT;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,6 +52,9 @@ public class InteractListener implements Listener {
     @EventHandler
     void onInteract(PlayerInteractEvent e) {
 
+        //
+        // GET CLICK TYPE
+        //
         ActionType clickType = ActionType.NULL;
 
         // detect right and left clicks
@@ -69,6 +73,14 @@ public class InteractListener implements Listener {
 
         final UUID[] uuid = new UUID[1];
 
+        // CHECK IF ITEM EVENT IS CANCELLED
+        if (!(player.isSneaking() || e.getAction().equals(Action.RIGHT_CLICK_AIR) || !clickType.equals(ActionType.RIGHT_CLICK) || (e.getClickedBlock() != null && !BlockManager.isInteractable(e.getClickedBlock().getType())))) {
+            return;
+        }
+
+        //
+        // GET UUID:
+        //
         try {
             NBT.get(item, nbt -> {
                 String id = nbt.getOrDefault("uuid", "null");
@@ -79,6 +91,9 @@ public class InteractListener implements Listener {
         }
         UUID uniqueId = uuid[0];
 
+        //
+        // GET EVENTS AND TRIGGER HARDCODED EVENTS
+        //
         ArrayList<String> events = null;
         if (uniqueId != null) {
             String name = ItemManager.getItemName(uniqueId);
@@ -87,12 +102,20 @@ public class InteractListener implements Listener {
 
             if (events == null || events.isEmpty()) return;
 
+            // TRIGGER DETECTABLE EVENT FOR CHILD PLUGINS
+            MineshaftUseItemEvent event = new MineshaftUseItemEvent(player,uniqueId,events,item,clickType);
+            Bukkit.getPluginManager().callEvent(event);
+
+            // Check whether the event is cancelled or not. If it is, return
+            if(event.isCancelled()) {
+               // Event is cancelled, so return
+                return;
+            }
+
             // HARDCODED EVENTS:
             boolean executed = com.mineshaft.mineshaftapi.manager.event.EventHandler.handleHardcodedEvents(player,item,events,e);
             if (executed && events.size() == 1) return;
         }
-
-
 
         /*
           HANDLING DYNAMIC EVENTS

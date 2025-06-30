@@ -100,7 +100,11 @@ public class InteractListener implements Listener {
 
             events = ItemManager.getInteractEventsFromItem(name, clickType);
 
-            if (events == null || events.isEmpty()) return;
+            if (events == null || events.isEmpty()) {
+                // Event call for item with no events;
+                Bukkit.getPluginManager().callEvent(new MineshaftUseItemEvent(player,uniqueId,new ArrayList<>(),item,clickType));
+                return;
+            }
 
             // TRIGGER DETECTABLE EVENT FOR CHILD PLUGINS
             MineshaftUseItemEvent event = new MineshaftUseItemEvent(player,uniqueId,events,item,clickType);

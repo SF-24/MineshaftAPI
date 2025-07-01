@@ -37,22 +37,22 @@ public class ItemDeconstructManager {
         ItemStack result = new ItemStack(ItemRecipeManager.getCraftingMaterials(itemName).get("melting"));
         if(result.getType().equals(Material.AIR)) return;
 
-        result.setAmount(RecipeRegistrar.getHardcodedRecipeItemNumber(ItemRecipeManager.getHardcodedCraftingRecipe(itemName),true));
+        result.setAmount(MineshaftApi.getRecipeRegistrar().getHardcodedRecipeItemNumber(ItemRecipeManager.getHardcodedCraftingRecipe(itemName),true));
 
         ItemStack item = MineshaftApi.getInstance().getItemManagerInstance().getItem(itemName);
 
         // Register recipes via the recipe registrar
         if(MineshaftApi.getInstance().getConfigManager().enableBlastFurnaceMelting()) {
-            RecipeRegistrar.registerBlastFurnaceRecipe(item,result, CookingBookCategory.MISC,0,MineshaftApi.getInstance().getConfigManager().getDefaultUnsmeltingTime());
+            MineshaftApi.getRecipeRegistrar().registerBlastFurnaceRecipe(item,result, CookingBookCategory.MISC,0,MineshaftApi.getInstance().getConfigManager().getDefaultUnsmeltingTime());
         }
         if(MineshaftApi.getInstance().getConfigManager().enableFurnaceMelting()) {
-            RecipeRegistrar.registerFurnaceRecipe(item,result, CookingBookCategory.MISC,0,MineshaftApi.getInstance().getConfigManager().getDefaultUnsmeltingTime());
+            MineshaftApi.getRecipeRegistrar().registerFurnaceRecipe(item,result, CookingBookCategory.MISC,0,MineshaftApi.getInstance().getConfigManager().getDefaultUnsmeltingTime());
         }
         if(MineshaftApi.getInstance().getConfigManager().enableSmokerMelting()) {
-            RecipeRegistrar.registerSmokerRecipe(item,result, CookingBookCategory.MISC,0,MineshaftApi.getInstance().getConfigManager().getDefaultUnsmeltingTime());
+            MineshaftApi.getRecipeRegistrar().registerSmokerRecipe(item,result, CookingBookCategory.MISC,0,MineshaftApi.getInstance().getConfigManager().getDefaultUnsmeltingTime());
         }
         if(MineshaftApi.getInstance().getConfigManager().enableCampfireMelting()) {
-            RecipeRegistrar.registerCampfireRecipe(item,result, CookingBookCategory.MISC,0,MineshaftApi.getInstance().getConfigManager().getDefaultUnsmeltingTime());
+            MineshaftApi.getRecipeRegistrar().registerCampfireRecipe(item,result, CookingBookCategory.MISC,0,MineshaftApi.getInstance().getConfigManager().getDefaultUnsmeltingTime());
         }
     }
 
@@ -66,7 +66,7 @@ public class ItemDeconstructManager {
 
         int newAmount = (int) ((
                         getDurabilityFraction(item)
-                        *RecipeRegistrar.getHardcodedRecipeItemNumber(ItemRecipeManager.getHardcodedCraftingRecipe(itemName),true))
+                        *MineshaftApi.getRecipeRegistrar().getHardcodedRecipeItemNumber(ItemRecipeManager.getHardcodedCraftingRecipe(itemName),true))
                         +0.12);
         if(newAmount == 0) return new ItemStack(Material.AIR);
         result.setAmount(newAmount);

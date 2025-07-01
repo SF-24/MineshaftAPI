@@ -29,6 +29,7 @@ import com.mineshaft.mineshaftapi.manager.config.ConfigManager;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.crafting.RecipeRegistrar;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.ActionManager;
@@ -47,6 +48,9 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public final class MineshaftApi extends JavaPlugin {
+
+    @Getter
+    static final RecipeRegistrar recipeRegistrar = new RecipeRegistrar("mineshaft");
 
     @Getter
     HashMap<String,AbilityType> abilities = new HashMap<>();

@@ -34,10 +34,14 @@ public class RecipeRegistrar {
 
     String namespace;
 
-    public ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+    public ArrayList<String> recipeCache = new ArrayList<>();
 
     public RecipeRegistrar(String namespace) {
-        this.namespace = namespace;
+        if(namespace == null) {
+            this.namespace = namespace;
+        } else {
+            this.namespace = "mineshaftdefault";
+        }
     }
 
     public final Material air = Material.AIR;
@@ -189,10 +193,12 @@ public class RecipeRegistrar {
     }
 
     // register a recipe
-    public void registerCraftingRecipeSimple(ItemStack item, List<Material> components, CraftingBookCategory category, boolean isShaped, int width, int height) {
+    public void registerCraftingRecipeSimple(ItemStack item, List<Material> elements, CraftingBookCategory category, boolean isShaped, int width, int height) {
         if(width>3)width=3;
+        if(width<1||height<1) isShaped=false;
 
         if(isShaped) {
+            ArrayList<Material> components = new ArrayList<>(elements);
             while(components.size() < width*height) {
                 components.add(Material.AIR);
             }
@@ -238,22 +244,26 @@ public class RecipeRegistrar {
                 }
             }
 
+            cacheRecipe(key);
             Bukkit.getServer().addRecipe(recipe);
         } else {
             String key = UUID.randomUUID().toString();
             ShapelessRecipe recipe = new ShapelessRecipe(new NamespacedKey(namespace, key), item);
+            cacheRecipe(key);
             recipe.setCategory(category);
-            for(Material m : components) {
+            for(Material m : elements) {
                 recipe.addIngredient(m);
             }
         }
     }
 
     // register a recipe
-    public void registerCraftingRecipeComplex(ItemStack item, List<ItemStack> components, CraftingBookCategory category, boolean isShaped, int width, int height) {
+    public void registerCraftingRecipeComplex(ItemStack item, List<ItemStack> elements, CraftingBookCategory category, boolean isShaped, int width, int height) {
         if(width>3)width=3;
 
         if(width<1||height<1) isShaped = false;
+
+        ArrayList<ItemStack> components = new ArrayList<>(elements);
 
         if(isShaped) {
             while(components.size() < width*height) {
@@ -263,6 +273,7 @@ public class RecipeRegistrar {
             String key = UUID.randomUUID().toString();
             ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(namespace, key), item);
             recipe.setCategory(category);
+            cacheRecipe(key);
 
             HashMap<ItemStack, Character> ingredients = new HashMap<>();
 
@@ -303,6 +314,7 @@ public class RecipeRegistrar {
         } else {
             String key = UUID.randomUUID().toString();
             ShapelessRecipe recipe = new ShapelessRecipe(new NamespacedKey(namespace, key), item);
+            cacheRecipe(key);
             recipe.setCategory(category);
             for(ItemStack m : components) {
                 recipe.addIngredient(m);
@@ -312,7 +324,9 @@ public class RecipeRegistrar {
     }
 
     public void registerFurnaceRecipe(ItemStack item, ItemStack output, CookingBookCategory category, int xp, int timeInTicks) {
-        FurnaceRecipe recipe = new FurnaceRecipe(new NamespacedKey(namespace, UUID.randomUUID().toString()),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
+        String id = UUID.randomUUID().toString();
+        cacheRecipe(id);
+        FurnaceRecipe recipe = new FurnaceRecipe(new NamespacedKey(namespace, id),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
         recipe.setCategory(category);
         Bukkit.getServer().addRecipe(recipe);
     }
@@ -326,19 +340,25 @@ public class RecipeRegistrar {
     }
 
     public void registerBlastFurnaceRecipe(ItemStack item, ItemStack output, CookingBookCategory category, int xp, int timeInTicks) {
-        BlastingRecipe recipe = new BlastingRecipe(new NamespacedKey(namespace, UUID.randomUUID().toString()),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
+        String id = UUID.randomUUID().toString();
+        BlastingRecipe recipe = new BlastingRecipe(new NamespacedKey(namespace, id),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
         recipe.setCategory(category);
+        cacheRecipe(id);
         Bukkit.getServer().addRecipe(recipe);
     }
 
     public void registerSmokerRecipe(ItemStack item, ItemStack output, CookingBookCategory category, int xp, int timeInTicks) {
-        SmokingRecipe recipe = new SmokingRecipe(new NamespacedKey(namespace, UUID.randomUUID().toString()),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
+        String id = UUID.randomUUID().toString();
+        SmokingRecipe recipe = new SmokingRecipe(new NamespacedKey(namespace, id),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
         recipe.setCategory(category);
+        cacheRecipe(id);
         Bukkit.getServer().addRecipe(recipe);
     }
 
     public void registerCampfireRecipe(ItemStack item, ItemStack output, CookingBookCategory category, int xp, int timeInTicks) {
-        CampfireRecipe recipe = new CampfireRecipe(new NamespacedKey(namespace, UUID.randomUUID().toString()),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
+        String id = UUID.randomUUID().toString();
+        cacheRecipe(id);
+        CampfireRecipe recipe = new CampfireRecipe(new NamespacedKey(namespace, id),output,new RecipeChoice.ExactChoice(item),xp,timeInTicks);
         recipe.setCategory(category);
         Bukkit.getServer().addRecipe(recipe);
     }
@@ -351,7 +371,13 @@ public class RecipeRegistrar {
         registerCraftingRecipeComplex(item,components,CraftingBookCategory.MISC,false,-1,-1);
     }
 
-    public void deregisterNamespace() {
-        Bukkit.getServer().removeRecipe(NamespacedKey.fromString(namespace));
+    public void cacheRecipe(String id) {
+        recipeCache.add(id);
+    }
+
+    public void clearRecipes() {
+        for(String id : recipeCache) {
+            Bukkit.getServer().removeRecipe(new NamespacedKey(namespace, id));
+        }
     }
 }

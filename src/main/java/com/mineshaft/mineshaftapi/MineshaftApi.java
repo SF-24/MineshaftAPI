@@ -156,6 +156,9 @@ public final class MineshaftApi extends JavaPlugin {
                 Logger.logInfo("Plugin mineshaft API has been disabled");
         }
         PlayerManager.KickPlayers();
+
+        // Deregister recipes
+        getRecipeRegistrar().clearRecipes();
     }
 
     public static Language getLanguage(Player player) {

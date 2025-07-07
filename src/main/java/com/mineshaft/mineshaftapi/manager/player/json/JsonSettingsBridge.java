@@ -116,7 +116,7 @@ public class JsonSettingsBridge {
         if(ability==null) {
             Logger.logError("JsonSettingsBridge has detected a null ability");
             return;
-        } else if(combo.isEmpty()) {
+        } else if(combo==null || combo.isEmpty()) {
             Logger.logError("Detected empty combo for ability " + ability);
             return;
         }

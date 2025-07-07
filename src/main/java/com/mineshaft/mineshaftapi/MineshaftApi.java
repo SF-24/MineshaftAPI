@@ -50,7 +50,7 @@ import java.util.UUID;
 public final class MineshaftApi extends JavaPlugin {
 
     @Getter
-    static final RecipeRegistrar recipeRegistrar = new RecipeRegistrar("mineshaft");
+    static RecipeRegistrar recipeRegistrar;
 
     @Getter
     HashMap<String,AbilityType> abilities = new HashMap<>();
@@ -133,6 +133,9 @@ public final class MineshaftApi extends JavaPlugin {
         getCommand("getitem").setExecutor(new GetItemCommand());
         getCommand("getitem").setTabCompleter(new GetItemTabCompleter());
         getCommand("heal").setExecutor(new HealCommand());
+
+        // Initialise registrar
+        recipeRegistrar = new RecipeRegistrar("mineshaft");
 
         // Initialise custom items
         itemManager=new ItemManager();

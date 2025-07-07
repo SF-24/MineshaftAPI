@@ -42,18 +42,18 @@ public class VectorPlayerEvent extends Event {
 
     public void dashPlayerEvent(Player player) {
         Vector dir = player.getLocation().getDirection().normalize();
-        vectorBounds.trimVector(dir);
 
         dir = dir.add(dir);
         dir = dir.add(player.getLocation().getDirection().normalize());
         dir = dir.add(player.getLocation().getDirection().normalize());
+        vectorBounds.trimVector(dir);
 
         player.setVelocity(dir);
     }
 
     @Deprecated
     public void legacyDashPlayerEvent(Player player) {
-        vectorBounds=new PlanarVectorBounds(0,0.25);
+        setVectorBounds(new PlanarVectorBounds(0.25,0.25));
         dashPlayerEvent(player);
     }
 

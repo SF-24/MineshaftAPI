@@ -18,9 +18,15 @@
 
 package com.mineshaft.mineshaftapi.manager.item.crafting;
 
+import com.mineshaft.mineshaftapi.MineshaftApi;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
@@ -30,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class RecipeRegistrar {
+public class RecipeRegistrar implements Listener {
 
     String namespace;
 
@@ -42,6 +48,7 @@ public class RecipeRegistrar {
         } else {
             this.namespace = "mineshaftdefault";
         }
+            Bukkit.getPluginManager().registerEvents(this, MineshaftApi.getInstance());
     }
 
     public final Material air = Material.AIR;
@@ -379,5 +386,27 @@ public class RecipeRegistrar {
         for(String id : recipeCache) {
             Bukkit.getServer().removeRecipe(new NamespacedKey(namespace, id));
         }
+    }
+
+    public void giveRecipes(Player player) {
+        for(String id : recipeCache) {
+            player.discoverRecipe(new NamespacedKey(namespace, id));
+        }
+    }
+
+    public void removeRecipes(Player player) {
+        for(String id : recipeCache) {
+            player.undiscoverRecipe(new NamespacedKey(namespace, id));
+        }
+    }
+
+    @EventHandler
+    void joinEvent(PlayerJoinEvent e) {
+        giveRecipes(e.getPlayer());
+    }
+
+    @EventHandler
+    void quitEvent(PlayerQuitEvent e) {
+        removeRecipes(e.getPlayer());
     }
 }

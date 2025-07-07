@@ -74,7 +74,11 @@ public class InteractListener implements Listener {
         final UUID[] uuid = new UUID[1];
 
         // CHECK IF ITEM EVENT IS CANCELLED
-        if (!(player.isSneaking() || e.getAction().equals(Action.RIGHT_CLICK_AIR) || !clickType.equals(ActionType.RIGHT_CLICK) || (e.getClickedBlock() != null && !BlockManager.isInteractable(e.getClickedBlock().getType())))) {
+        if (
+                (
+                        !player.isSneaking() &&  clickType.equals(ActionType.RIGHT_CLICK) && e.getClickedBlock() != null && BlockManager.isInteractable(e.getClickedBlock().getType())
+                )
+        ) {
             return;
         }
 

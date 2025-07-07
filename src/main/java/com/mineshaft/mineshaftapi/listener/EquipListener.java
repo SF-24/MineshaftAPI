@@ -33,14 +33,15 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Objects;
 
 public class EquipListener implements Listener {
-
+    public final List<InventoryType> inventoryTypes = List.of(InventoryType.PLAYER, InventoryType.CHEST);
 
     @EventHandler
     private void onInventoryClick(InventoryClickEvent e) {
-
+        if(!inventoryTypes.contains(e.getInventory().getType())) return;
         try {
             Logger.logInfo("current: " + Objects.requireNonNull(e.getCurrentItem()).getType());
             Logger.logInfo("cursor: " + Objects.requireNonNull(e.getCursor()).getType());

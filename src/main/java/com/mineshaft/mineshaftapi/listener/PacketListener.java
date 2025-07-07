@@ -19,18 +19,13 @@
 package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.events.MineshaftTownDiscoveryEvent;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
-import com.mineshaft.mineshaftapi.manager.event.event_subclass.EventLoader;
 import com.mineshaft.mineshaftapi.manager.player.PlayerAttackManager;
-import com.mineshaft.mineshaftapi.manager.player.combat.CooldownActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.sk89q.worldguard.bukkit.event.debug.LoggingEntityDamageByEntityEvent;
 import io.netty.channel.*;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -96,7 +91,6 @@ public class PacketListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         inject(e.getPlayer());
-
     }
 
     @EventHandler
@@ -104,6 +98,4 @@ public class PacketListener implements Listener {
         stop(e.getPlayer());
         MineshaftApi.getInstance().getActionManager().removePlayerBlocking(e.getPlayer().getUniqueId());
     }
-
-
 }

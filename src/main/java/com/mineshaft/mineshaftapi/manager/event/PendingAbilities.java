@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftapi.manager.event;
 
 import java.util.HashMap;
 
+
 public class PendingAbilities {
 
     HashMap<PendingAbilityType, PendingAbility> pendingAbilities = new HashMap<>();

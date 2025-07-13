@@ -529,7 +529,9 @@ offset:
   z: 0
 on_hit:
   entity:
-    damage: 8
+    event_type: ENTITY_DAMAGE
+    damage: 10
+    damage_type: FREEZE
 ```
 
 This event will fire a red coloured beam. If it hits a mob, it will damage it for 8 damage. 

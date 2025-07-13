@@ -31,7 +31,6 @@ public class UIListener implements Listener {
     @EventHandler
     void onClick(InventoryClickEvent e) {
 
-
 //        assert e.getCurrentItem()!=null;
 //        assert e.getCurrentItem().getItemMeta()!=null;
 

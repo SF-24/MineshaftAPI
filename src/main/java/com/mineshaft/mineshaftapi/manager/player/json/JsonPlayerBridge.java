@@ -242,9 +242,9 @@ public class JsonPlayerBridge {
      * Player inventory
      * */
 
-    public static void saveInventory(Player player) {
+    public static void saveInventory(Player player, boolean saveHotbar) {
         //getJsonInstance(player).setTempArmourClass();
-        getJsonInstance(player).setInventory(player);
+        getJsonInstance(player).setInventory(player, saveHotbar);
     }
 
     public static void saveLocation(Player player) {

@@ -16,18 +16,23 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.event.fields;
+package com.mineshaft.mineshaftapi.util.maths;
 
-public enum EventType {
-    NULL,
-    BEAM,
-    DISARM,
-    PLAY_SOUND,
-    BETON_QUEST,
-    PLAYER_VECTOR_DASH,
-    PLAYER_VECTOR_LEAP,
-    PREPARE_STRONG_ATTACK,
-    EXECUTE_STRONG_ATTACK,
-    DAMAGE,
-    ITEM_PURCHASE
+import org.bukkit.util.Vector;
+
+public enum DirectionVertical {
+
+    UP, DOWN;
+
+    public Vector getUnitVector() {
+        switch (this) {
+            case UP -> {
+                return new Vector(0,1,0);
+            }
+            case DOWN -> {
+                return new Vector(0,-1,0);
+            }
+        }
+        return new Vector(0,0,0);
+    }
 }

@@ -475,11 +475,12 @@ public class JsonPlayerManager {
         saveFile(data);
     }
 
-    public void setInventory(Player player) {
+    public void setInventory(Player player, boolean hotbar) {
         PlayerDataClass data = loadData(player);
 
         HashMap<Integer, String> inventory = new HashMap<>();
-        for(int i = 0 ; i < player.getInventory().getSize(); i++) {
+
+        for(int i = hotbar?9:0 ; i < player.getInventory().getSize(); i++) {
             if (player.getInventory().getItem(i) != null) {
                 inventory.put(i, InventorySerialization.encodeItemStackToString(player.getInventory().getItem(i)));
             }
@@ -507,18 +508,20 @@ public class JsonPlayerManager {
 
     public void getInventory(Player player) {
         PlayerDataClass data = loadData(player);
-        HashMap<Integer, String> inv = data.getInventory();
+        if(data!=null) {
+            HashMap<Integer, String> inv = data.getInventory();
 
-        for(int i : inv.keySet()) {
-            if(inv.get(i)!=null) {
-                player.getInventory().setItem(i, InventorySerialization.decodeItemStack(inv.get(i)));
+            for (int i : inv.keySet()) {
+                if (inv.get(i) != null) {
+                    player.getInventory().setItem(i, InventorySerialization.decodeItemStack(inv.get(i)));
+                }
             }
         }
     }
 
     public void getLocation(Player player) {
         PlayerDataClass data = loadData(player);
-        if(data.getLocWorld()!=null) {
+        if(data!=null && data.getLocWorld()!=null) {
             Bukkit.getScheduler().runTask(MineshaftApi.getInstance(),()->{
                 player.teleport(new Location(Bukkit.getWorld(data.getLocWorld()),data.getLocX(),data.getLocY(),data.getLocZ(),data.getLocYaw(),data.getLocPitch()));
             });

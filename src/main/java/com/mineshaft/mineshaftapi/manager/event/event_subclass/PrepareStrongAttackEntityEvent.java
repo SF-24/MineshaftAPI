@@ -24,7 +24,6 @@ import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.player.PlayerAttackManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 public class PrepareStrongAttackEntityEvent extends Event {
@@ -46,7 +45,7 @@ public class PrepareStrongAttackEntityEvent extends Event {
         if(attackSound!=null) {
             entity.getWorld().playSound(entity.getLocation(),attackSound, 1.0f, 1.0f);
         }
-        if(eventType.equals(EventType.EXECUTE_STRONG_ATTACK)) {
+        if(eventType.equals(EventType.ENTITY_EXECUTE_STRONG_ATTACK)) {
             Bukkit.getScheduler().runTaskLater(MineshaftApi.getInstance(), ()-> PlayerAttackManager.makeAttack(entity),1/99);
         }
     }

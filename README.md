@@ -42,8 +42,10 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
     - [Beam event type](#beam-event-type)
       - [On-hit local events](#on-hit-local-events)
     - [Vector player event type](#vector-player-event-type)
-    - [Strong attack event type](#strong-attack-event-type)
+    - [Strong entity attack event type](#strong-attack-event-type)
     - [Entity damage event type](#entity-damage-event-type)
+    - [Entity disarm event type](#entity-disarm-event-type)
+    - [Entity knockback event type](#entity-knockback-event-type)
 - [Configuration](#configuration)
 - [Integrations](#integrations)
     - [Mythic Mobs](#mythic-mobs)
@@ -544,13 +546,16 @@ The following parameters are available for all events. Each event type has uniqu
 | `offset`     | The offset of the event. These values are added to the location where the event is executed | Complex   |
 | `sound`      | The sound which plays when the event triggers                                               | String    |
 
-| Event Type              | Description                                            |
-|:------------------------|--------------------------------------------------------|
-| `BEAM`                  | Shoots a beam from the target location                 | 
-| `PLAYER_VECTOR_DASH`    | Makes the player dash forwards                         | 
-| `PLAYER_VECTOR_LEAP`    | Makes the player leap in the direction they are facing | 
-| `PREPARE_STRONG_ATTACK` | Makes the next attack stronger                         | 
-| `DAMAGE`                | Inflicts damage upon an entity or player               | 
+| Event Type                     | Description                                            |
+|:-------------------------------|--------------------------------------------------------|
+| `BEAM`                         | Shoots a beam from the target location                 | 
+| `PLAYER_VECTOR_DASH`           | Makes the player dash forwards                         | 
+| `PLAYER_VECTOR_LEAP`           | Makes the player leap in the direction they are facing | 
+| `ENTITY_PREPARE_STRONG_ATTACK` | Makes the next attack stronger                         | 
+| `ENTITY_EXECUTE_STRONG_ATTACK` | Executes a stronger attack                             | 
+| `ENTITY_DAMAGE`                | Inflicts damage upon an entity or player               | 
+| `ENTITY_DISARM`                | Disarms the target entity                              | 
+| `ENTITY_KNOCKBACK`             | Knocks back the target entity                          | 
 
 
 ### Beam event type
@@ -579,15 +584,13 @@ on_hit:
   player:
     event_type: PLAYER_VECTOR_LEAP
   entity:
-    event_type: DAMAGE
+    event_type: ENTITY_DAMAGE
     damage: 10
     damage_type: FREEZE
   block:
 ```
 
 ### Vector player event type
-
-*Work in progress. Has not yet been tested*
 
 Includes the `PLAYER_VECTOR_DASH` and `PLAYER_VECTOR_LEAP`.
 
@@ -633,7 +636,7 @@ The particles are shown and the sound is played when the attack is triggered.
 
 ```yaml
 parent: 'null'
-event_type: PREPARE_STRONG_ATTACK
+event_type: ENTITY_PREPARE_STRONG_ATTACK
 damage_multiplier: 2.0
 knockback_power: 1.2
 attack_sound: block.stone.hit
@@ -645,7 +648,7 @@ the attack is not triggered the next time the player attacks
 
 ```yaml
 parent: 'null'
-event_type: EXECUTE_STRONG_ATTACK
+event_type: ENTITY_EXECUTE_STRONG_ATTACK
 damage_multiplier: 3.0
 knockback_power: 1.5
 attack_sound: block.stone.hit
@@ -654,6 +657,37 @@ particles: true
 
 ### Entity damage event type
 
+`Damage type is the [damage type](https://jd.papermc.io/paper/1.21.5/org/bukkit/damage/DamageType.html).<br>
+Damage is the amount of damage inflicted
+
+```yaml
+parent: 'null'
+event_type: ENTITY_DAMAGE
+damage: 5
+damage_type: FREEZE
+```
+
+### Entity disarm event type
+
+*Work in progress. Has not been tested.*
+
+```yaml
+parent: 'null'
+event_type: ENTITY_DISARM
+use_disarm_roll: true
+use_knockback: false
+use_facing_item_vector: true
+base_strength: 1
+```
+
+`use_knockback` determines whether the entity is knocked back or not. Only works if the event was executed by a caster.<br>
+`use_facing_item_vector` determines whether the entity is disarmed based upon the casters directions. If there is no caster this has no effect.<br>
+`use_disarm_roll` determines whether a randomised method is used to check if the target is disarmed.<br>
+`base_strength` affects the initial roll if the `use_disarm_roll` is used.
+
+
+### Entity knockback event type
+
 *Work in progress. Has not been tested.*
 
 Damage type is the [damage type](https://jd.papermc.io/paper/1.21.5/org/bukkit/damage/DamageType.html).<br>
@@ -661,12 +695,15 @@ Damage is the amount of damage inflicted
 
 ```yaml
 parent: 'null'
-event_type: DAMAGE
-damage: 5
-damage_type: FREEZE
+event_type: ENTITY_KNOCKBACK
+knockback_multiplier: 1.0
+limit_vertical_knockback: true
 ```
 
-### ***TODO: coming soon***
+`knockback_multiplier` determines how far the target is knocked back.<br>
+`limit_vertical_knockback` determines the vertical knockback is limited so that the target does not fly upwards.<br>
+
+### ***TODO: more coming soon***
 
 # Configuration
 

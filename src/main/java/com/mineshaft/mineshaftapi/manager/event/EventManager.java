@@ -21,10 +21,7 @@ package com.mineshaft.mineshaftapi.manager.event;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.*;
-import com.mineshaft.mineshaftapi.manager.event.executor.BeamExecutor;
-import com.mineshaft.mineshaftapi.manager.event.executor.EntityDamageExecutor;
-import com.mineshaft.mineshaftapi.manager.event.executor.PrepareStrongAttackEventExecutor;
-import com.mineshaft.mineshaftapi.manager.event.executor.VectorEventExecutor;
+import com.mineshaft.mineshaftapi.manager.event.executor.*;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventFields;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.event.fields.UniqueEventFields;
@@ -134,14 +131,22 @@ public class EventManager {
             case NULL:
 //                Logger.logDebug("Found null event");
                 return false;
-            case DAMAGE:
+            case ENTITY_DAMAGE:
 //                Logger.logDebug("Entity damage event: ");
                 if(!(event instanceof EntityDamageEvent) || !(targetEntity instanceof LivingEntity)) return false;
                 new EntityDamageExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
                 return true;
-            case PREPARE_STRONG_ATTACK,EXECUTE_STRONG_ATTACK:
+            case ENTITY_PREPARE_STRONG_ATTACK, ENTITY_EXECUTE_STRONG_ATTACK:
                 if(!(event instanceof PrepareStrongAttackEntityEvent) || !(targetEntity instanceof LivingEntity)) return false;
                 new PrepareStrongAttackEventExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
+                return true;
+            case ENTITY_DISARM:
+                if(!(event instanceof EntityDisarmEvent) || !(targetEntity instanceof LivingEntity)) return false;
+                new DisarmExecutor(event, (Player) targetEntity).executeEvent(casterId);
+                return true;
+            case ENTITY_KNOCKBACK:
+                if(!(event instanceof EntityKnockbackEvent)) return false;
+                new KnockbackExecutor(event, (Player) targetEntity).executeEvent(casterId);
                 return true;
             case BEAM:
                 if(!(event instanceof BeamEvent)) return false;
@@ -272,9 +277,10 @@ public class EventManager {
 
         switch (eventType) {
             case BEAM -> eventClass = EventLoader.loadBeamEvent(section,eventClass,executingItem);
-            case PREPARE_STRONG_ATTACK -> eventClass = EventLoader.loadStrongAttackEvent(section,eventClass,executingItem);
-            case DAMAGE -> eventClass = EventLoader.loadDamageEvent(section,eventClass,executingItem);
+            case ENTITY_PREPARE_STRONG_ATTACK -> eventClass = EventLoader.loadStrongAttackEvent(section,eventClass,executingItem);
+            case ENTITY_DAMAGE -> eventClass = EventLoader.loadDamageEvent(section,eventClass,executingItem);
             case PLAYER_VECTOR_DASH,PLAYER_VECTOR_LEAP -> eventClass = EventLoader.loadVectorEvent(section, eventClass, executingItem);
+            case ENTITY_DISARM -> eventClass = EventLoader.loadDisarmEvent(section, eventClass, executingItem);
             case BETON_QUEST -> {
                 // TODO:
             }

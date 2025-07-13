@@ -18,48 +18,34 @@
 
 package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
+import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Color;
-import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
+import org.bukkit.util.Vector;
 
-public class BeamEvent extends TargeterEvent {
+@Getter @Setter
+public class EntityKnockbackEvent extends Event {
 
-    boolean hasProjectile=false;
-    @Getter
-    @Setter
-    int size = 2;
-    @Getter
-    @Setter
-    org.bukkit.Color colour = org.bukkit.Color.RED;
-    @Getter
-    @Setter
-    int power = 10;
-    @Getter
-    @Setter
-    int speed = 20;
-    //  public void setSound(String sound) {this.sound = sound;}
-    @Getter
-    @Setter
-    int flyDistance = 40;
-    @Getter
-    @Setter
-    int particleCount = 0;
-    @Getter
-    @Setter
-    org.bukkit.Particle particleType= org.bukkit.Particle.DRAGON_BREATH;
+    double knockbackMultiplier = 1;
+    boolean limitVerticalKnockback = true;
+    public Vector casterVector;
 
-    public BeamEvent(EventType type) {
+    public EntityKnockbackEvent(EventType type) {
         super(type);
     }
 
-//    private String sound;
-
-    public void setProjectile(boolean projectile) { this.hasProjectile=projectile;}
-
-    public boolean hasProjectile() {return this.hasProjectile;}
-
-    //    public String getSound() {return sound;}
-
+    public void knockbackEntity(Entity entity) {
+        if(casterVector!=null) {
+            Vector dir=casterVector.normalize();
+            dir.multiply(dir);
+            dir.multiply(knockbackMultiplier);
+//            dir.multiply(-1);
+            if(limitVerticalKnockback) {
+                dir = dir.setY(0.25);
+            }
+            entity.setVelocity(dir);
+        }
+    }
 }

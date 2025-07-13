@@ -38,7 +38,7 @@ import java.util.UUID;
 public class EventLoader {
 
     public static Event loadDamageEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
-        EntityDamageEvent loadedEvent = new EntityDamageEvent(EventType.DAMAGE);
+        EntityDamageEvent loadedEvent = new EntityDamageEvent(EventType.ENTITY_DAMAGE);
         eventClass.clone(loadedEvent);
 
         for (String key : section.getKeys(false)) {
@@ -89,9 +89,9 @@ public class EventLoader {
 
 
     public static Event loadStrongAttackEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
-        PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent = new PrepareStrongAttackEntityEvent(EventType.PREPARE_STRONG_ATTACK);
+        PrepareStrongAttackEntityEvent prepareStrongAttackEntityEvent = new PrepareStrongAttackEntityEvent(EventType.ENTITY_PREPARE_STRONG_ATTACK);
         prepareStrongAttackEntityEvent.setName(eventClass.getName());
-        prepareStrongAttackEntityEvent.setEventType(EventType.PREPARE_STRONG_ATTACK);
+        prepareStrongAttackEntityEvent.setEventType(EventType.ENTITY_PREPARE_STRONG_ATTACK);
         prepareStrongAttackEntityEvent.setOffset(eventClass.getOffset());
         prepareStrongAttackEntityEvent.setTarget(eventClass.getTarget());
         prepareStrongAttackEntityEvent.customParameters = eventClass.getParameters();
@@ -176,7 +176,7 @@ public class EventLoader {
                 }
             }
         } else {
-            beamEvent.setOnHitEntity(new EntityDamageEvent(EventType.DAMAGE));
+            beamEvent.setOnHitEntity(new EntityDamageEvent(EventType.ENTITY_DAMAGE));
         }
 
         if (executingItem != null) {
@@ -197,21 +197,54 @@ public class EventLoader {
         for (Event eventIteration : beamEvent.getOnHitEntity()) {
             if (eventIteration instanceof EntityDamageEvent) {
                 beamEvent.removeOnHitEntity(eventIteration);
-                EntityDamageEvent damageEvent = new EntityDamageEvent(EventType.DAMAGE);
+                EntityDamageEvent damageEvent = new EntityDamageEvent(EventType.ENTITY_DAMAGE);
                 damageEvent.damage=damage;
-                damageEvent.setEventType(EventType.DAMAGE);
+                damageEvent.setEventType(EventType.ENTITY_DAMAGE);
                 beamEvent.setOnHitEntity(damageEvent);
             }
         }
         for (Event eventIteration : beamEvent.getOnHitPlayer()) {
             if (eventIteration instanceof EntityDamageEvent) {
                 beamEvent.removeOnHitPlayer(eventIteration);
-                EntityDamageEvent damageEvent = new EntityDamageEvent(EventType.DAMAGE);
-                damageEvent.setEventType(EventType.DAMAGE);
+                EntityDamageEvent damageEvent = new EntityDamageEvent(EventType.ENTITY_DAMAGE);
+                damageEvent.setEventType(EventType.ENTITY_DAMAGE);
                 damageEvent.damage=damage;
                 beamEvent.setOnHitEntity(damageEvent);
             }
         }
+    }
+
+    public static Event loadDisarmEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
+        EntityDisarmEvent loadedEvent = new EntityDisarmEvent(eventClass.getEventType());
+        eventClass.clone(loadedEvent);
+        PlanarVectorBounds bounds = new PlanarVectorBounds();
+        if(section.contains("use_disarm_roll")) {
+            loadedEvent.setRollToDisarm(section.getBoolean("use_disarm_roll"));
+        }
+        if(section.contains("use_knockback")) {
+            loadedEvent.setKnockback(section.getBoolean("use_knockback"));
+        }
+        if(section.contains("base_strength")) {
+            loadedEvent.setBaseStrength(section.getInt("base_strength"));
+        }
+        if(section.contains("use_facing_item_vector")) {
+            loadedEvent.setUseFacingItemVector(section.getBoolean("use_facing_item_vector"));
+        }
+        return loadedEvent;
+    }
+
+    public static Event loadKnockbackEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
+        EntityKnockbackEvent loadedEvent = new EntityKnockbackEvent(eventClass.getEventType());
+        eventClass.clone(loadedEvent);
+        PlanarVectorBounds bounds = new PlanarVectorBounds();
+        if(section.contains("knockback_multiplier")) {
+            loadedEvent.setKnockbackMultiplier(section.getDouble("knockback_multiplier"));
+        }
+        if(section.contains("limit_vertical_knockback")) {
+            loadedEvent.setLimitVerticalKnockback(section.getBoolean("limit_vertical_knockback"));
+        }
+
+        return loadedEvent;
     }
 
 }

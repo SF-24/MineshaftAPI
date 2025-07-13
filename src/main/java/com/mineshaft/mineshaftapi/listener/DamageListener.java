@@ -110,6 +110,7 @@ public class DamageListener implements Listener {
             if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001) {
                 int hitBonus = 0;
                 double damageMultiplier = 1.0;
+                double newDamage = e.getDamage();
 
                 if (e instanceof EntityDamageByEntityEvent entityDamageByEntityEvent && (e.getDamageSource().getCausingEntity() instanceof Player || entityDamageByEntityEvent.getDamager() instanceof Player)) {
                     Player player = null;
@@ -128,15 +129,14 @@ public class DamageListener implements Listener {
                     damageMultiplier = testPendingAbilitiesAndGetDamageMultiplier(player, e);
 
                     // Display rounded value as a damage indicator
-                    double roundOff = Math.round(DamageManager.calculateNewDamage(e.getDamage()*damageMultiplier,ArmourManager.getArmourClass(e.getEntity())-hitBonus)* 100.0) / 100.0;
-                    player.sendActionBar(Component.text(roundOff, NamedTextColor.DARK_RED, TextDecoration.BOLD));
+                    newDamage = Math.round(DamageManager.calculateNewDamage(e.getDamage()*damageMultiplier,ArmourManager.getArmourClass(e.getEntity())-hitBonus)* 100.0) / 100.0;
+                    player.sendActionBar(Component.text(newDamage, NamedTextColor.DARK_RED, TextDecoration.BOLD));
                     Logger.logDebug("New AC: " + (ArmourManager.getArmourClass(e.getEntity())-hitBonus) + ", old AC: "  + ArmourManager.getArmourClass(e.getEntity()) + ", hit bonus: " + hitBonus);
                 }
 
                 // Calculate damage and apply it
-                if(ArmourManager.getArmourClass(e.getEntity())>0) {
-                    e.setDamage(DamageManager.calculateNewDamage(e.getDamage()*damageMultiplier,Math.max(ArmourManager.getArmourClass(e.getEntity())-hitBonus, -10)));
-                }
+                e.setDamage(newDamage);
+
             }
         }
     }
@@ -167,7 +167,8 @@ public class DamageListener implements Listener {
                 playerDir.multiply(0.75 * knockbackMultiplier);// lowered velocity
                 playerDir.setY(0.25);
                 e.getEntity().setVelocity(e.getEntity().getVelocity().multiply(playerDir));
-                return Objects.requireNonNullElse(pendingAbility.doubleParams.get("DamageMultiplier"), 1.0);
+                Logger.logDebug("Damage multi.: " + pendingAbility.doubleParams.get("DamageMultiplier"));
+                return Objects.requireNonNullElse(pendingAbility.doubleParams.get("DamageMultiplier"), 1.5);
             }
         }
         return 1d;

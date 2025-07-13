@@ -144,6 +144,7 @@ public class LaserRunnable extends BukkitRunnable {
                     if((!flipped && !entityIteration.getUniqueId().equals(casterId)) && boundingBox.contains(loc.getX(),loc.getY(),loc.getZ())) {
                         if (entityIteration instanceof LivingEntity && !(entityIteration instanceof ItemFrame)) {
                             foundEntity = true;
+                            Bukkit.getPlayer("XpKitty").sendMessage("HIT! t = " +t);
                             // entity detected
                             if (distance>entityIteration.getLocation().distance(loc)) {
                                 distance = entityIteration.getLocation().distance(loc);

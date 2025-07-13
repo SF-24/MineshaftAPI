@@ -81,6 +81,7 @@ public final class MineshaftApi extends JavaPlugin {
         Logger.logInfo(" / /|_/ / / _ \\/ -_|_-</ _ \\/ _ `/ _/ __/ / __ |/ ___// / ");
         Logger.logInfo("/_/  /_/_/_//_/\\__/___/_//_/\\_,_/_/ \\__/ /_/ |_/_/  /___/");
         Logger.logInfo("                                                           ");
+        Logger.logInfo("Loaded version 1.1.1");
 
         // Coming soon. Language detection
         switch (getDebugLanguage()) {

@@ -37,7 +37,7 @@ public class HitManager {
 
     // When a block is hit
     public static HitResponse triggerBlockHit(TargeterEvent event, UUID casterId, Location hitLocation, Location previousLocation, boolean hideParticles) {
-        Logger.logDebug("Block hit " + hitLocation);
+//        Logger.logDebug("Block hit " + hitLocation);
 
         HitResponse hitResponse = new HitResponse();
         //PLAY FIZZLE SOUND
@@ -47,7 +47,7 @@ public class HitManager {
                 // Pitch, then volume
                 hitLocation.getWorld().playSound(hitLocation, Sound.BLOCK_FIRE_EXTINGUISH, 1.0F /*volume, was 0.75*/, 1.0f);
                 hitLocation.getWorld().spawnParticle(Particle.SMOKE, hitLocation, 50, 0, 0, 0, 0);
-                Logger.logDebug("Block hit particles");
+//                Logger.logDebug("Block hit particles");
             }
             hitResponse.isCancelled=true;
             //onHitBlock(event.getOnHitBlock(),casterId,hitLocation.getBlock(),null);
@@ -65,6 +65,7 @@ public class HitManager {
             hitResponse.affectsEntity=true;
         }
         if(event.getOnHitEntity()!=null) {
+            Logger.logDebug("Entity hit " + event.getOnHitEntity());
             HitManager.onHitEntity(event.getOnHitEntity(),casterId,livingEntityTarget);
             hitResponse.affectsEntity=true;
         }
@@ -94,7 +95,13 @@ public class HitManager {
 
     public static void onHitEntity(List<Event> entityHitEvent, UUID casterId, LivingEntity targetEntity) {
 //        Logger.logDebug("entity hit onhitmanager");
+        Logger.logDebug("triggering on hit");
         for(Event event : entityHitEvent) {
+            if(event==null) {
+                Logger.logDebug("Found null event nested in a beam event!");
+                return;
+            }
+            // Null!
             if (!event.getEventType().equals(EventType.BEAM)) {
 
                 Logger.logDebug("Event: " + event.getClass().getName());

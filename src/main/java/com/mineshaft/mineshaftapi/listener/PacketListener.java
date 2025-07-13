@@ -46,6 +46,8 @@ public class PacketListener implements Listener {
                 // Observer packets coming in
                 if(packet instanceof ServerboundPlayerActionPacket) {
                     if(((ServerboundPlayerActionPacket) packet).getAction().equals(ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM)) {
+                        Logger.logDebug("Packet intercepted!");
+
                         MineshaftApi.getInstance().getActionManager().removePlayerBlocking(player.getUniqueId());
                         if(MineshaftApi.getInstance().getActionManager().isPlayerPowerAttack(player.getUniqueId())) {
                             // Execute a power attack
@@ -90,6 +92,9 @@ public class PacketListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        try {
+            stop(e.getPlayer());
+        } catch (Exception ignored) {}
         inject(e.getPlayer());
     }
 

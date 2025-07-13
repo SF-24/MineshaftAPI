@@ -40,6 +40,7 @@ public class EntityDisarmEvent extends Event {
     boolean rollToDisarm = true;
     boolean knockback = false;
     boolean useFacingItemVector = true;
+    int castStrength = 11;
     int baseStrength = 5;
     Vector itemVector = new Vector(0, 1, 0);
     LivingEntity caster = null;
@@ -56,14 +57,14 @@ public class EntityDisarmEvent extends Event {
             int targetResist = 5;
             int targetModifier = 0;
 
-            if(target instanceof Player playerTarget) {
-                targetModifier += Math.max(JsonPlayerBridge.getAbilityScoreModifier(playerTarget,"str"),JsonPlayerBridge.getAbilityScoreModifier(playerTarget,"dex"));
+            if(target instanceof Player) {
+                targetModifier += Math.max(JsonPlayerBridge.getAbilityScoreModifier((Player)target,"str"),JsonPlayerBridge.getAbilityScoreModifier((Player)target,"dex"));
             }
 
             int targetRoll = random.nextInt(6)+targetResist+targetModifier;
 
             // TODO: add base strength
-            int casterRoll = baseStrength;
+            int casterRoll = baseStrength + castStrength;
 
             if (casterRoll > targetRoll) {
                 disarm = true;

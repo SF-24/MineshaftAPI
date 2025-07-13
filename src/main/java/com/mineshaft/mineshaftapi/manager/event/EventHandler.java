@@ -19,7 +19,6 @@
 package com.mineshaft.mineshaftapi.manager.event;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.block.BlockManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -51,8 +50,9 @@ public class EventHandler {
                 e.setCancelled(true);
             }
             return true;
+
         } else if (events.contains("power_attack")) {
-            // Player is parrying:
+            // Power attack
             if (MineshaftApi.getInstance().getActionManager().canDoPowerAttack(player.getUniqueId())) {
                 if (!MineshaftApi.getInstance().getActionManager().isPlayerPowerAttack(player.getUniqueId())) {
                     // Start preparing power attack
@@ -65,7 +65,11 @@ public class EventHandler {
             return true;
         }
 
-        // Power attack
+        if(events.contains("wand")) {
+            e.setCancelled(true);
+            return true;
+        }
+
         return false;
     }
 }

@@ -480,7 +480,7 @@ public class JsonPlayerManager {
 
         HashMap<Integer, String> inventory = new HashMap<>();
 
-        for(int i = hotbar?9:0 ; i < player.getInventory().getSize(); i++) {
+        for(int i = hotbar?0:9 ; i < player.getInventory().getSize(); i++) {
             if (player.getInventory().getItem(i) != null) {
                 inventory.put(i, InventorySerialization.encodeItemStackToString(player.getInventory().getItem(i)));
             }

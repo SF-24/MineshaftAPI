@@ -50,7 +50,6 @@ public class MineshaftCommand implements CommandExecutor {
                         break;
                     case "items":
                     case "item":
-
                         // reload items only
                         MineshaftApi.reloadItems();
                         sender.sendMessage(ChatColor.AQUA + "Custom items have been reloaded");

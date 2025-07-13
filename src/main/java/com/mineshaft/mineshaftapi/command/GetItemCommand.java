@@ -28,6 +28,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+import java.util.List;
+
 public class GetItemCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -45,8 +48,8 @@ public class GetItemCommand implements CommandExecutor {
             String item = args[0];
             try {
                 player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
-            } catch(NullPointerException e) {
-                player.sendMessage(ChatColor.RED + "Invalid item");
+            } catch (Exception e) {
+                player.sendMessage(ChatColor.RED + "Invalid item or item definition");
                 sendItemList(player);
             }
             return false;
@@ -86,7 +89,7 @@ public class GetItemCommand implements CommandExecutor {
 
     protected void sendItemList(Player player) {
         player.sendMessage(ChatColor.GOLD + "Showing item list:");
-        for(String name : MineshaftApi.getInstance().getItemManagerInstance().getItemList().values()) {
+        for(String name : MineshaftApi.getInstance().getItemManagerInstance().getItemList().values().stream().sorted().toList()) {
             player.sendMessage(" " + ChatColor.BLUE + name);
         }
     }

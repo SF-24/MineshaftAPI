@@ -75,9 +75,9 @@ public class InteractListener implements Listener {
 
         // CHECK IF ITEM EVENT IS CANCELLED
         if (
-                (
-                        !player.isSneaking() &&  clickType.equals(ActionType.RIGHT_CLICK) && e.getClickedBlock() != null && BlockManager.isInteractable(e.getClickedBlock().getType())
-                )
+            (
+                !player.isSneaking() &&  clickType.equals(ActionType.RIGHT_CLICK) && e.getClickedBlock() != null && BlockManager.isInteractable(e.getClickedBlock().getType())
+            )
         ) {
             return;
         }
@@ -167,11 +167,9 @@ public class InteractListener implements Listener {
             e.setCancelled(true);
             EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();
             Event executableEvent = eventManager.getEvent(event, item);
-            if (executableEvent instanceof BeamEvent) {
-                String sound = ((BeamEvent) executableEvent).getSound();
-                if (sound != null) {
-                    player.getLocation().getWorld().playSound(player.getLocation(), sound, 5.0f, 1.0f);
-                }
+            String sound = executableEvent.getSound();
+            if (sound != null) {
+                player.getLocation().getWorld().playSound(player.getLocation(), sound, 5.0f, 1.0f);
             }
             eventManager.runEvent(executableEvent, player.getLocation(), player.getUniqueId(), player);
         }

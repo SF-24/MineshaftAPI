@@ -74,7 +74,8 @@ public class ItemManager {
 
 
     public void initialiseItems() {
-        items = new HashMap<>();
+        items.clear();
+        itemPaths.clear();
 
         File folder = getFolder();
 
@@ -129,10 +130,17 @@ public class ItemManager {
                 e.printStackTrace();
             }
         }
+        if(items.containsKey(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))))) {
+            Logger.logError("Duplicate id detected for items: " + fileName + " and " + items.get(UUID.fromString(yamlConfiguration.getString("id"))));
+        }
 
-        // Register item crafting recipe, if exists.
-        ItemRecipeManager.registerRecipe(name);
-        ItemDeconstructManager.registerMeltingRecipes(name);
+        try {
+            // Register item crafting recipe, if exists.
+            ItemRecipeManager.registerRecipe(name);
+            ItemDeconstructManager.registerMeltingRecipes(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
         itemPaths.put(UUID.fromString(yamlConfiguration.getString("id")), path);
@@ -170,7 +178,10 @@ public class ItemManager {
         File fileYaml = new File(path, itemName + ".yml");
 
         // return null if file does not exist
-        if (!fileYaml.exists()) return null;
+        if (!fileYaml.exists()) {
+            Logger.logError("Attempted to load null item: " + itemName + ".yml");
+            return null;
+        }
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 

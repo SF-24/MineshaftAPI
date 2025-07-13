@@ -142,11 +142,11 @@ public class EventManager {
                 return true;
             case ENTITY_DISARM:
                 if(!(event instanceof EntityDisarmEvent) || !(targetEntity instanceof LivingEntity)) return false;
-                new DisarmExecutor(event, (Player) targetEntity).executeEvent(casterId);
+                new DisarmExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
                 return true;
             case ENTITY_KNOCKBACK:
                 if(!(event instanceof EntityKnockbackEvent)) return false;
-                new KnockbackExecutor(event, (Player) targetEntity).executeEvent(casterId);
+                new KnockbackExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
                 return true;
             case BEAM:
                 if(!(event instanceof BeamEvent)) return false;

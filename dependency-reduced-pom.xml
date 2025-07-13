@@ -4,7 +4,7 @@
   <groupId>com.mineshaft</groupId>
   <artifactId>mineshaft-api</artifactId>
   <name>Mineshaft Api</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1.1-SNAPSHOT</version>
   <description>A Minecraft plugin focusing on Rpg and Multiplayer elements</description>
   <url>https://github.com/SF-24</url>
   <build>

@@ -18,20 +18,22 @@
 
 package com.mineshaft.mineshaftapi.util;
 
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.player.ActionType;
+import de.tr7zw.changeme.nbtapi.NBT;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
 import net.kyori.adventure.key.Key;
-import org.betonquest.betonquest.conversation.ChatConvIO;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ItemUtil {
 
@@ -78,6 +80,20 @@ public class ItemUtil {
             setConsumableComponent(item, getConsumable(eatTimeSeconds, eatSound,ItemUseAnimation.DRINK,List.of(),false));
 
         }
+    }
+
+    public static boolean isWand(ItemStack item) {
+        final UUID[] uuid = new UUID[1];
+        try {
+            NBT.get(item, nbt -> {
+                String id = nbt.getString("uuid");
+                if (id.equalsIgnoreCase("null")) return;
+                uuid[0] = UUID.fromString(id);
+            });
+        } catch (Exception ignored) {
+        }
+        UUID uniqueId = uuid[0];
+        return ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK).contains("wand");
     }
 
 }

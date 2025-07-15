@@ -27,40 +27,40 @@ public class SpellClass {
     public SpellClass () {
         this.level=1;
         this.progress=0;
-        this.hasLearned=false;
+        this.learned=false;
     }
 
     public SpellClass(int level) {
         this.level=level;
         this.progress=0;
-        this.hasLearned=false;
+        this.learned=false;
     }
 
     public SpellClass(int level, int learningProgress) {
         this.level=level;
         this.progress=learningProgress;
-        this.hasLearned=false;
+        this.learned =false;
     }
 
     public SpellClass(int level, int progress, boolean hasLearned) {
         this.level=level;
         this.progress=progress;
-        this.hasLearned=false;
+        this.learned =false;
     }
 
     public SpellClass(int level, boolean hasLearned) {
         this.level=level;
         this.progress=0;
-        this.hasLearned=false;
+        this.learned =false;
     }
 
     public SpellClass(boolean hasLearned) {
         this.level=1;
         this.progress=0;
-        this.hasLearned=false;
+        this.learned =false;
     }
 
-    boolean hasLearned;
+    boolean learned;
     int level;
     int progress;
 }

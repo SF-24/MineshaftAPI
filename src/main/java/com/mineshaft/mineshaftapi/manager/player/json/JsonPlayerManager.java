@@ -408,6 +408,11 @@ public class JsonPlayerManager {
         return data.getSpells();
     }
 
+    public SpellClass getSpell(String spell) {
+        PlayerDataClass data = loadData(player);
+        return data.getSpells().get(spell);
+    }
+
     /**
      * Player Attributes API
      * */

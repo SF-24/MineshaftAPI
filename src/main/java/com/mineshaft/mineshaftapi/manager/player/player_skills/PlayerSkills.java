@@ -18,6 +18,9 @@
 
 package com.mineshaft.mineshaftapi.manager.player.player_skills;
 
+import lombok.Getter;
+
+@Getter
 public enum PlayerSkills {
 
     // ??? Decreases cost of strength related abilities?
@@ -41,31 +44,18 @@ public enum PlayerSkills {
     // Double nature discovery EXP
     NATURE("Nature", "INT"),
 
+    // DYNAMIC?
+    SPELL_CASTING("Spell casting", "INT"),
+
     // ??? To do with finding stuff?
     PERCEPTION("Perception", "WIS"),
 
     // Will somehow work with discoveries and crafting
     SURVIVAL("Survival", "WIS"),
 
-    // Will work with npc interactions
+    // Will work with npc interactions,
     PERSUASION("Persuasion", "CHA"),
 
-//    MEDICINE("Medicine", "WIS"),
-
-
-//    TRADITIONS("Traditions", "INT"),
-//
-//    ANIMAL_HANDLING("Animal Handling", "WIS"),
-//    INSIGHT("Insight", "WIS"),
-//
-//    DECEPTION("Deception", "CHA"),
-//    INTIMIDATION("Intimidation", "CHA"),
-//    PERFORMANCE("Performance", "CHA")
-
-//    SLEIGHT_OF_HAND("Sleight of Hand", "DEX"),
-//    RIDDLES("Riddles", "INT")
-//    HISTORY("History", "DEX"),
-//    INVESTIGATION("Investigation", "DEX"),
 
     ;
 
@@ -77,6 +67,4 @@ public enum PlayerSkills {
         this.baseAbilityScore=baseAbilityScore;
     }
 
-    public String getName() {return this.name;}
-    public String getBaseAbilityScore() {return this.baseAbilityScore;}
 }

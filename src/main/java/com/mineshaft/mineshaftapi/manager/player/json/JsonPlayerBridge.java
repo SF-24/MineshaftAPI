@@ -381,6 +381,10 @@ public class JsonPlayerBridge {
         addSpell(player, spell, new SpellClass(level, progressToNextLevel, true));
     }
 
+    public static SpellClass getSpellClass(Player player, String spell) {
+        return getJsonInstance(player).getSpell(spell);
+    }
+
     public static void removeAbility(Player player, String ability) {
         MineshaftAbilityModifyEvent abilityEvent = new MineshaftAbilityModifyEvent(player,ability, AbilityEventType.REMOVE);
         Bukkit.getServer().getPluginManager().callEvent(abilityEvent);

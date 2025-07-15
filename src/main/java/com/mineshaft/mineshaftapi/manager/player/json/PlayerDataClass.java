@@ -22,6 +22,7 @@ import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestO
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.SkillClass;
+import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -65,7 +66,7 @@ public class PlayerDataClass {
 
     // Abilities
     HashMap<String, Integer> abilities = new HashMap<>();
-    HashMap<String, Integer> spells = new HashMap<>();
+    HashMap<String, SpellClass> spells = new HashMap<>();
     HashMap<String, Integer> passiveAbilities = new HashMap<>();
 
     // More character data
@@ -123,7 +124,7 @@ public class PlayerDataClass {
 
     public void addAbility(String ability, int level) {this.abilities.put(ability, level);}
     public void addPassiveAbility(String ability, int level) {this.passiveAbilities.put(ability, level);}
-    public void addSpell(String spell, int level) {this.spells.put(spell, level);}
+    public void addSpell(String spell, SpellClass spellClass) {this.spells.put(spell, spellClass);}
 
     public void removeAbility(String ability) {this.abilities.remove(ability);}
     public void removePassiveAbility(String ability) {this.passiveAbilities.remove(ability);}

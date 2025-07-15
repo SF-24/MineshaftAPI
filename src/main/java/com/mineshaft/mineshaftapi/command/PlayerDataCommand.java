@@ -22,6 +22,7 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -95,7 +96,7 @@ public class PlayerDataCommand implements CommandExecutor {
                             switch (MineshaftApi.getInstance().getAbilities().get(ability)) {
                                 case ACTIVE_ABILITY -> JsonPlayerBridge.addAbility(player, ability, 1);
                                 case PASSIVE_ABILITY -> JsonPlayerBridge.addPassiveAbility(player, ability, 1);
-                                case SPELL -> JsonPlayerBridge.addSpell(player, ability, 1);
+                                case SPELL -> JsonPlayerBridge.addSpell(player, ability, 1, 0, true);
                             }
                             sender.sendMessage("Command execution successful");
                         } else {

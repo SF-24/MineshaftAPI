@@ -28,6 +28,7 @@ import com.mineshaft.mineshaftapi.events.MineshaftAbilityModifyEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
+import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
 import com.mineshaft.mineshaftapi.util.Logger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -360,8 +361,24 @@ public class JsonPlayerBridge {
         }
     }
 
-    public static void addSpell(Player player, String spell, int level) {
-        getJsonInstance(player).addSpell(spell,level);
+    public static void addSpell(Player player, String spell, SpellClass spellClass) {
+        getJsonInstance(player).addSpell(spell,spellClass);
+    }
+
+    public static void addSpell(Player player, String spell, int level, int progress, boolean hasLearned) {
+        addSpell(player, spell, new SpellClass(level, progress, hasLearned));
+    }
+
+    public static void addSpellNotLearned(Player player, String spell, int level, int progressToLearning) {
+        addSpell(player, spell, new SpellClass(level, progressToLearning));
+    }
+
+    public static void addSpellLearned(Player player, String spell, int level) {
+        addSpell(player, spell, new SpellClass(level, true));
+    }
+
+    public static void addSpellLearned(Player player, String spell, int level, int progressToNextLevel) {
+        addSpell(player, spell, new SpellClass(level, progressToNextLevel, true));
     }
 
     public static void removeAbility(Player player, String ability) {
@@ -414,7 +431,7 @@ public class JsonPlayerBridge {
         return getJsonInstance(player).getPassiveAbilities();
     }
 
-    public static HashMap<String, Integer> getSpells(Player player) {
+    public static HashMap<String, SpellClass> getSpells(Player player) {
         return getJsonInstance(player).getSpells();
     }
 

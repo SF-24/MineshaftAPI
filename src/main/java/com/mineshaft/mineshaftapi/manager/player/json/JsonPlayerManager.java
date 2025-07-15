@@ -23,6 +23,7 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
+import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
 import com.mineshaft.mineshaftapi.manager.ui.SidebarManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
@@ -353,9 +354,9 @@ public class JsonPlayerManager {
         saveFile(data);
     }
 
-    public void addSpell(String spell, int level) {
+    public void addSpell(String spell, SpellClass spellClass) {
         PlayerDataClass data = loadData(player);
-        data.addSpell(spell,level);
+        data.addSpell(spell,spellClass);
         saveFile(data);
     }
 
@@ -402,7 +403,7 @@ public class JsonPlayerManager {
         return data.getPassiveAbilities();
     }
 
-    public HashMap<String, Integer> getSpells() {
+    public HashMap<String, SpellClass> getSpells() {
         PlayerDataClass data = loadData(player);
         return data.getSpells();
     }

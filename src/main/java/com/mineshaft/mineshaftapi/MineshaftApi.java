@@ -45,9 +45,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 public final class MineshaftApi extends JavaPlugin {
+
+    @Getter
+    static Random random = new Random();
 
     @Getter
     static RecipeRegistrar recipeRegistrar;

@@ -20,6 +20,8 @@ package com.mineshaft.mineshaftapi.manager.event;
 
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.event.fields.TriggerType;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -28,32 +30,34 @@ import java.util.HashMap;
 
 public class Event {
 
+    // Dummy parameter used specifically for certain events and with MineshaftRpg
+    @Getter @Setter
+    int castStrength = 0;
+
     protected String parent = "null";
+    @Getter @Setter
     protected String name = "Unnamed Event";
+    @Getter
     protected Vector offset = new Vector(0.0,0.0,0.0);
+    @Getter @Setter
     protected EventType eventType;
+    @Getter @Setter
     protected TriggerType target = TriggerType.ANY;
+    @Getter @Setter
     protected String sound = null;
 
     public HashMap<String, Object> customParameters = new HashMap<>();
 
     public Event(EventType type) {this.eventType=type;}
 
-    public void setSound(String sound) {this.sound=sound;}
-    public void setTarget(TriggerType target) {this.target = target;}
     public void setOffset(Vector offset) {this.offset=offset;}
     public void setOffset(double x, double y, double z) {this.offset=new Vector(x,y,z);}
-    public void setName(String name) {this.name=name;}
-    public void setEventType(EventType eventType) {this.eventType=eventType;}
+
     public void addParameter(String key, Object value) {customParameters.put(key,value);}
 
     public HashMap<String, Object> getParameters() {return customParameters;}
-    public Vector getOffset() {return offset;}
-    public String getName() {return name;}
+
     public Object getParameter(String key) {return customParameters.get(key);}
-    public EventType getEventType() {return eventType;}
-    public TriggerType getTarget() {return target;}
-    public String getSound() {return sound;}
 
     public void playSound(Location loc) {
         if(sound!=null) {

@@ -123,16 +123,22 @@ public class EventManager {
         }
     }
 
+
     public boolean runEvent(Event event, Location loc, UUID casterId, Object targetEntity) {
-//        Logger.logDebug("Running event: " + event.getClass().getName() + " " + event.getEventType());
+        return runEvent(event,loc,casterId,targetEntity,0);
+    }
+
+    public boolean runEvent(Event event, Location loc, UUID casterId, Object targetEntity, int castStrength) {
         Logger.logDebug("Executing: " + event.toString() + " of type " + event.getEventType().toString() + " with target " + targetEntity.toString());
 
+        // Set the cast strength parameter
+        event.setCastStrength(castStrength);
+
+        // Switch depending on the event type
         switch (event.getEventType()) {
             case NULL:
-//                Logger.logDebug("Found null event");
                 return false;
             case ENTITY_DAMAGE:
-//                Logger.logDebug("Entity damage event: ");
                 if(!(event instanceof EntityDamageEvent) || !(targetEntity instanceof LivingEntity)) return false;
                 new EntityDamageExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
                 return true;

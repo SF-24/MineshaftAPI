@@ -63,4 +63,12 @@ public class SpellClass {
     boolean learned;
     int level;
     int progress;
+
+    public void addProgress(int progress) {
+        this.progress+=progress;
+    }
+
+    public void addLevel(int level) {
+        this.level+=level;
+    }
 }

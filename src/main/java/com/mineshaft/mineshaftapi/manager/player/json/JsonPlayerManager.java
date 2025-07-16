@@ -31,7 +31,9 @@ import com.mineshaft.mineshaftapi.util.Logger;
 import io.lumine.mythic.bukkit.utils.serialize.InventorySerialization;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.*;
@@ -516,6 +518,7 @@ public class JsonPlayerManager {
         PlayerDataClass data = loadData(player);
         if(data!=null) {
             HashMap<Integer, String> inv = data.getInventory();
+            player.getInventory().clear();
 
             for (int i : inv.keySet()) {
                 if (inv.get(i) != null) {

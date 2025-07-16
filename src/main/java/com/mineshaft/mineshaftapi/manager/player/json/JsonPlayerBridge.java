@@ -36,6 +36,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -245,7 +246,9 @@ public class JsonPlayerBridge {
 
     public static void saveInventory(Player player, boolean saveHotbar) {
         //getJsonInstance(player).setTempArmourClass();
-        getJsonInstance(player).setInventory(player, saveHotbar);
+        if(!player.getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST)) {
+            getJsonInstance(player).setInventory(player, saveHotbar);
+        }
     }
 
     public static void saveLocation(Player player) {

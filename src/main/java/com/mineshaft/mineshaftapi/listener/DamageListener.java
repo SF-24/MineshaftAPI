@@ -28,6 +28,7 @@ import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryProperty;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.BlockingType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.maths.VectorUtil;
 import net.kyori.adventure.text.Component;
@@ -74,8 +75,8 @@ public class DamageListener implements Listener {
             }
 
             if(e.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
-                float fallDamage = (e.getEntity().getFallDistance()-4);
-                float newFallDamage = fallDamage- JsonPlayerBridge.getAbilityScoreModifier((Player) e.getEntity(),"dex");
+                float fallDamage = (e.getEntity().getFallDistance()-3);
+                float newFallDamage = fallDamage-(JsonPlayerBridge.getAbilityScoreModifier((Player) e.getEntity(),"dex")+1)-JsonPlayerBridge.getSkillLevel(((Player) e.getEntity()), PlayerSkills.ACROBATICS)*PlayerStatManager.getProficiencyBonus(JsonPlayerBridge.getLevel((Player) e.getEntity()));
                 if(e.getDamage()>newFallDamage) {
                     if(newFallDamage<=0) e.setCancelled(true);
                     else e.setDamage(newFallDamage);

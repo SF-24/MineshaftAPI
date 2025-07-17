@@ -33,6 +33,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ItemUtil {
@@ -93,7 +94,10 @@ public class ItemUtil {
         } catch (Exception ignored) {
         }
         UUID uniqueId = uuid[0];
-        return ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK).contains("wand");
+        if(ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK)==null) {
+            return false;
+        }
+        return Objects.requireNonNull(ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK)).contains("wand");
     }
 
 }

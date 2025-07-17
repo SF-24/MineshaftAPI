@@ -41,6 +41,7 @@ public class SettingsDataClass extends JsonSaveObject {
     // [0,1,2,3,4,5,6,7] [8,9,10,11,12,13,14,15]
 
     public void setSpell(int hotbar, int slot, String spell) {
+        removeSpell(spell);
         spellHotbars.put((hotbar*8)+slot, spell);
     }
 
@@ -54,18 +55,23 @@ public class SettingsDataClass extends JsonSaveObject {
                 return slot;
             }
         }
-        return -1;
+        return -9999;
     }
 
     public int getSlot(String spell) {
-        return getBindNumber(spell)-(getBindNumber(spell)%8*8);
+        int slot = getBindNumber(spell);
+        while(slot>8) slot=slot-8;
+        return slot;
     }
 
     public int getHotbar(String spell) {
-        return getSlot(spell)%8;
+        if(getSlot(spell)<0) return -99999;
+        return getBindNumber(spell)/8;
     }
 
-
+    public void removeSpell(String spell) {
+        spellHotbars.remove(getSlot(spell));
+    }
 
     public void removeSpell(int hotbar, int slot) {
         spellHotbars.remove((hotbar*8)+slot);

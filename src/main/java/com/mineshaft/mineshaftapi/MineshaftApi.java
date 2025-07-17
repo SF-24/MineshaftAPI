@@ -51,6 +51,9 @@ import java.util.UUID;
 public final class MineshaftApi extends JavaPlugin {
 
     @Getter
+    PacketListener packetListener;
+
+    @Getter
     static Random random = new Random();
 
     @Getter
@@ -120,7 +123,8 @@ public final class MineshaftApi extends JavaPlugin {
         * */
 
         // Register listeners
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        packetListener=new PacketListener();
+        Bukkit.getPluginManager().registerEvents(packetListener, this);
         Bukkit.getPluginManager().registerEvents(new InteractListener(), this);
         Bukkit.getPluginManager().registerEvents(new DamageListener(), this);
         Bukkit.getPluginManager().registerEvents(new EquipListener(), this);

@@ -62,6 +62,10 @@ public class ItemManager {
     HashMap<UUID, String> itemPaths = new HashMap<>();
     HashMap<UUID, List<String>> cachedEvents = new HashMap<>();
 
+    public boolean isValidUUID(UUID uuid) {
+        return items.containsKey(uuid);
+    }
+
     public HashMap<UUID, String> getItemList() {
         return items;
     }
@@ -823,7 +827,7 @@ public class ItemManager {
         List<String> finalItemProperties1 = itemProperties;
         NBT.modify(item, nbt -> {
             nbt.setString("rarity", rareString);
-            nbt.setString("sub_category", finalSubcategory);
+            nbt.setString("subCategory", finalSubcategory);
 
             // create the item property list
             ReadWriteNBTList<String> propertyList = nbt.getStringList("item_properties");
@@ -1090,10 +1094,17 @@ public class ItemManager {
         if(item==null) return ItemSubcategory.DEFAULT;
         // If not null
         AtomicReference<ItemSubcategory> returnValue = new AtomicReference<>();
+        AtomicReference<ItemSubcategory> returnValueOld = new AtomicReference<>();
         NBT.get(item, nbt->{
-            returnValue.set(getItemSubcategory(nbt.getString("sub_category")));
+            returnValueOld.set(getItemSubcategory(nbt.getString("sub_category")));
+            returnValue.set(getItemSubcategory(nbt.getString("subCategory")));
         });
-        return returnValue.get();
+
+        if(returnValue.get()==null) {
+            return returnValueOld.get();
+        } else {
+            return returnValue.get();
+        }
     }
 
     public static List<String> getItemPropertiesAsString(ItemStack item) {

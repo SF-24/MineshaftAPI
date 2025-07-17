@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ButtonUtil {
 
@@ -74,6 +75,14 @@ public class ButtonUtil {
         if(onClick!=null&&!onClick.equalsIgnoreCase("")) {
             UIUtil.setOnclick(button,onClick);
         }
+        return button;
+    }
+
+    public static ItemStack getButton(ButtonType type, ButtonVariant variant, String name, List<String> lore, String onClick) {
+        ItemStack button = getButton(type, variant, name, new ArrayList<>(), onClick);
+        ItemMeta itemMeta = button.getItemMeta();
+        itemMeta.setLore(lore);
+        button.setItemMeta(itemMeta);
         return button;
     }
 

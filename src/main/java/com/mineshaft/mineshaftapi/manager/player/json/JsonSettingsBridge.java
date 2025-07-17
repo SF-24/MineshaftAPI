@@ -62,6 +62,13 @@ public class JsonSettingsBridge {
         saveFile(player, data);
     }
 
+    public static void removeSpell(Player player, String spell) {
+        SettingsDataClass data = getData(player);
+        if(data == null) {return;}
+        data.removeSpell(spell);
+        saveFile(player, data);
+    }
+
     public static void clearSpellHotbar(Player player, int hotbar) {
         SettingsDataClass data = getData(player);
         if(data == null) {return;}

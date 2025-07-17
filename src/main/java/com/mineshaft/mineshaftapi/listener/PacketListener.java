@@ -79,22 +79,23 @@ public class PacketListener implements Listener {
 
         // Create pipeline (middleman between client and server packets)
         ChannelPipeline pipeline = ((CraftPlayer)player).getHandle().connection.connection.channel.pipeline();
-        pipeline.addBefore("packet_handler", player.getName(), channelHandler);
+
+        pipeline.addBefore("packet_handler", "Mineshaft_"+player.getName(), channelHandler);
     }
 
     public void stop(Player player) {
         Channel channel = ((CraftPlayer)player).getHandle().connection.connection.channel;
         channel.eventLoop().submit(() -> {
-            channel.pipeline().remove(player.getName());
+            channel.pipeline().remove("Mineshaft_"+player.getName());
             return null;
         });
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        try {
-            stop(e.getPlayer());
-        } catch (Exception ignored) {}
+//        try {
+//            stop(e.getPlayer());
+//        } catch (Exception ignored) {}
         inject(e.getPlayer());
     }
 

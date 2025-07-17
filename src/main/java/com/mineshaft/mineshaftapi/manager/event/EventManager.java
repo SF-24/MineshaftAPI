@@ -154,12 +154,16 @@ public class EventManager {
                 if(!(event instanceof EntityKnockbackEvent)) return false;
                 new KnockbackExecutor(event, (LivingEntity) targetEntity).executeEvent(casterId);
                 return true;
+            case PLAYER_WAND_LIGHT,PLAYER_WAND_EXTINGUISH:
+                if(!(event instanceof PlayerWandEvent)) return false;
+                new WandEventExecutor(event, (Player) targetEntity).executeEvent(casterId);
+                return true;
             case BEAM:
                 if(!(event instanceof BeamEvent)) return false;
                 new BeamExecutor((BeamEvent) event,loc).executeEvent(casterId);
                 return true;
             case PLAYER_VECTOR_DASH,PLAYER_VECTOR_LEAP:
-                if(!(event instanceof VectorPlayerEvent) || !(targetEntity instanceof Player)) return false;
+                if(!(event instanceof PlayerVectorEvent) || !(targetEntity instanceof Player)) return false;
                 new VectorEventExecutor(event, (Player) targetEntity).executeEvent(casterId);
                 return true;
             case PLAY_SOUND:
@@ -287,6 +291,8 @@ public class EventManager {
             case ENTITY_DAMAGE -> eventClass = EventLoader.loadDamageEvent(section,eventClass,executingItem);
             case PLAYER_VECTOR_DASH,PLAYER_VECTOR_LEAP -> eventClass = EventLoader.loadVectorEvent(section, eventClass, executingItem);
             case ENTITY_DISARM -> eventClass = EventLoader.loadDisarmEvent(section, eventClass, executingItem);
+            case ENTITY_KNOCKBACK -> eventClass = EventLoader.loadKnockbackEvent(section, eventClass, executingItem);
+            case PLAYER_WAND_EXTINGUISH,PLAYER_WAND_LIGHT -> eventClass = EventLoader.loadWandEvent(section, eventClass, executingItem);
             case BETON_QUEST -> {
                 // TODO:
             }

@@ -45,19 +45,19 @@ public class SpellClass {
     public SpellClass(int level, int progress, boolean hasLearned) {
         this.level=level;
         this.progress=progress;
-        this.learned =false;
+        this.learned =hasLearned;
     }
 
     public SpellClass(int level, boolean hasLearned) {
         this.level=level;
         this.progress=0;
-        this.learned =false;
+        this.learned =hasLearned;
     }
 
     public SpellClass(boolean hasLearned) {
         this.level=1;
         this.progress=0;
-        this.learned =false;
+        this.learned =hasLearned;
     }
 
     boolean learned;

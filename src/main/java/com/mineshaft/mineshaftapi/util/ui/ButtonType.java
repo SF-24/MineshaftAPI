@@ -86,41 +86,41 @@ public enum ButtonType {
             }
             case ARROW_LEFT -> {
                 switch (variant) {
-                    case DEFAULT -> {
-                        return 55;
-                    }
                     case RED -> {
                         return 56;
+                    }
+                    default -> {
+                        return 55;
                     }
                 }
             }
             case ARROW_RIGHT -> {
                 switch (variant) {
-                    case DEFAULT -> {
-                        return 57;
-                    }
                     case RED -> {
                         return 58;
+                    }
+                    default -> {
+                        return 57;
                     }
                 }
             }
             case ARROW_UP -> {
                 switch (variant) {
-                    case DEFAULT -> {
-                        return 52;
-                    }
                     case RED -> {
                         return 53;
+                    }
+                    default -> {
+                        return 52;
                     }
                 }
             }
             case ARROW_DOWN -> {
                 switch (variant) {
-                    case DEFAULT -> {
-                        return 50;
-                    }
                     case RED -> {
                         return 51;
+                    }
+                    default -> {
+                        return 50;
                     }
                 }
             }

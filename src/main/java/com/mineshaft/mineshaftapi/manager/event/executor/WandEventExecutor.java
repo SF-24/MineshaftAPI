@@ -20,38 +20,31 @@ package com.mineshaft.mineshaftapi.manager.event.executor;
 
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.PlayerEventExecutor;
-import com.mineshaft.mineshaftapi.manager.event.event_subclass.PlayerVectorEvent;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.PlayerWandEvent;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
 import java.util.UUID;
 
-public class VectorEventExecutor extends PlayerEventExecutor {
+public class WandEventExecutor extends PlayerEventExecutor {
 
-    public VectorEventExecutor(Event event, Player player) {
+    public WandEventExecutor(Event event, Player player) {
         super(event,player);
     }
 
     @Override
     public void executeEvent(UUID casterId) {
         super.executeEvent();
-
-        if(event instanceof PlayerVectorEvent vectorPlayerEvent) {
-            if(event.getEventType().equals(EventType.PLAYER_VECTOR_LEAP)) {
-                if(((PlayerVectorEvent) event).isLegacy()) {
-                    vectorPlayerEvent.legacyLeapPlayerEvent(player);
-                } else {
-                    vectorPlayerEvent.leapPlayerEvent(player);
-                }
-            } else if(event.getEventType().equals(EventType.PLAYER_VECTOR_DASH)) {
-                if(vectorPlayerEvent.isLegacy()) {
-                    vectorPlayerEvent.legacyDashPlayerEvent(player);
-                } else {
-                    vectorPlayerEvent.dashPlayerEvent(player);
-                }
+        if(event instanceof PlayerWandEvent) {
+            if (event.getEventType().equals(EventType.PLAYER_WAND_LIGHT)) {
+                ((PlayerWandEvent) event).wandLightEvent(Objects.requireNonNull(player));
+            } else if (event.getEventType().equals(EventType.PLAYER_WAND_EXTINGUISH)) {
+                ((PlayerWandEvent) event).wandExtinguishEvent(Objects.requireNonNull(player));
+            } else {
+                player.sendMessage("unknown event type");
             }
         }
-
     }
-
 }

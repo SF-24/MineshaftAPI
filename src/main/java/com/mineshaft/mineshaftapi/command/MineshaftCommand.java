@@ -20,11 +20,14 @@ package com.mineshaft.mineshaftapi.command;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.util.Logger;
+import io.netty.channel.Channel;
 import net.minecraft.world.entity.player.Player;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.jetbrains.annotations.NotNull;
 
 public class MineshaftCommand implements CommandExecutor {
@@ -37,6 +40,15 @@ public class MineshaftCommand implements CommandExecutor {
             // No arguments
             sendMessageToSender(sender, ChatColor.RED + "Too few arguments!");
             sendSyntaxError(sender);
+        } else if(args.length==1 && args[0].equals("fix_handler")) {
+            for(org.bukkit.entity.Player player : Bukkit.getOnlinePlayers()) {
+                Channel channel = ((CraftPlayer)player).getHandle().connection.connection.channel;
+                channel.eventLoop().submit(() -> {
+                    channel.pipeline().remove(player.getName());
+                    return null;
+                });
+            }
+
         } else if(args[0].equals("reload")) {
             if(args.length==1) {
                 MineshaftApi.reloadPlugin();

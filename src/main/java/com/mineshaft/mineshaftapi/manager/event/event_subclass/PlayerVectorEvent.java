@@ -22,7 +22,6 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.util.maths.PlanarVectorBounds;
-import com.mineshaft.mineshaftapi.util.maths.Vector2D;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -30,13 +29,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 @Setter @Getter
-public class VectorPlayerEvent extends Event {
+public class PlayerVectorEvent extends Event {
 
     boolean legacy;
     boolean allowWhenFlying;
     private PlanarVectorBounds vectorBounds;
 
-    public VectorPlayerEvent(EventType type) {
+    public PlayerVectorEvent(EventType type) {
         super(type);
     }
 

@@ -76,7 +76,6 @@ public class UIListener implements Listener {
         if (ChatColor.translateAlternateColorCodes('&', title).equalsIgnoreCase(ChatColor.BLACK + "Menu")) {
             e.setCancelled(true);
 
-
         } else if (ChatColor.translateAlternateColorCodes('&', title).equalsIgnoreCase(ChatColor.BLACK + "Item Repair")) {
             e.getWhoClicked().sendMessage("Type: " + e.getSlot() + ", " + e.getCursor().getType());
             e.getWhoClicked().sendMessage("Type: " + e.getSlot() + ", " + e.getCurrentItem().getType());

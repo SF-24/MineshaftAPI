@@ -23,7 +23,6 @@ import com.mineshaft.mineshaftapi.events.MineshaftUseItemEvent;
 import com.mineshaft.mineshaftapi.manager.block.BlockManager;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
-import com.mineshaft.mineshaftapi.manager.event.event_subclass.BeamEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
@@ -55,13 +54,15 @@ public class InteractListener implements Listener {
         //
         // GET CLICK TYPE
         //
-        ActionType clickType = ActionType.NULL;
+        ActionType clickType;
 
         // detect right and left clicks
         if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             clickType = ActionType.RIGHT_CLICK;
         } else if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             clickType = ActionType.LEFT_CLICK;
+        } else {
+            clickType = ActionType.NULL;
         }
 
         ItemStack item = e.getItem();

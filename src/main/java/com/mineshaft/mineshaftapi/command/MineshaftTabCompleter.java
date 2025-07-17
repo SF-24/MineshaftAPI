@@ -33,7 +33,7 @@ public class MineshaftTabCompleter implements TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
         if(args.length==1) {
-            return StringUtil.copyPartialMatches(args[0],List.of("reload","event","events"),new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[0],List.of("reload","fix_handler","event","events"),new ArrayList<>());
         } else if(args.length==2) {
             if(args[0].equals("reload")) {
                 return StringUtil.copyPartialMatches(args[1],List.of("all","items","item","event","events","config","configs"),new ArrayList<>());

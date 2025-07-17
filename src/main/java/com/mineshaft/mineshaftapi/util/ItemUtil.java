@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftapi.util;
 
+import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import de.tr7zw.changeme.nbtapi.NBT;
@@ -35,6 +36,7 @@ import org.bukkit.inventory.meta.components.FoodComponent;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ItemUtil {
 
@@ -85,18 +87,31 @@ public class ItemUtil {
 
     public static boolean isWand(ItemStack item) {
         final UUID[] uuid = new UUID[1];
+        AtomicBoolean isWand = new AtomicBoolean(false);
+
         try {
             NBT.get(item, nbt -> {
+                if(nbt.getBoolean("isWand")) {
+                    isWand.set(true);
+                }
+
                 String id = nbt.getString("uuid");
                 if (id.equalsIgnoreCase("null")) return;
                 uuid[0] = UUID.fromString(id);
             });
         } catch (Exception ignored) {
         }
+
+        if(isWand.get()) {return true;}
+
         UUID uniqueId = uuid[0];
+        if(uniqueId==null || !MineshaftApi.getInstance().getItemManagerInstance().isValidUUID(uniqueId)) {
+            return false;
+        }
         if(ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK)==null) {
             return false;
         }
+
         return Objects.requireNonNull(ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK)).contains("wand");
     }
 

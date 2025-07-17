@@ -36,17 +36,25 @@ public class KeyListener implements Listener {
         boolean isLeft = e.getId().getKey().equals("primary")&&e.getId().getNamespace().equals("abilities");
         boolean isRight = e.getId().getKey().equals("secondary")&&e.getId().getNamespace().equals("abilities");
         boolean isCentre = e.getId().getKey().equals("tertiary")&&e.getId().getNamespace().equals("abilities");
+        boolean isClear = e.getId().getKey().equals("clear")&&e.getId().getNamespace().equals("abilities");
 
         // Record clicks - parse event
+        MineshaftClickTypeEvent clickEvent;
         if(isRight) {
-            MineshaftClickTypeEvent clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.RIGHT);
-            Bukkit.getPluginManager().callEvent(clickEvent);
+            clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.RIGHT);
         } else if(isLeft) {
-            MineshaftClickTypeEvent clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.LEFT);
-            Bukkit.getPluginManager().callEvent(clickEvent);
+            clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.LEFT);
         } else if(isCentre) {
-            MineshaftClickTypeEvent clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.MIDDLE);
-            Bukkit.getPluginManager().callEvent(clickEvent);
+            clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.MIDDLE);
+        } else if(isClear) {
+            clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.CLEAR);
+        } else if(e.getId().getKey().equals("hotbar_up")) {
+            clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.HOTBAR_UP);
+        } else if(e.getId().getKey().equals("hotbar_down")) {
+            clickEvent = new MineshaftClickTypeEvent(e.getPlayer(), ClickType.HOTBAR_DOWN);
+        } else {
+            return;
         }
+        Bukkit.getPluginManager().callEvent(clickEvent);
     }
 }

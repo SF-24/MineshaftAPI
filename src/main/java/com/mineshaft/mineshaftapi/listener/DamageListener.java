@@ -40,6 +40,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -70,6 +71,16 @@ public class DamageListener implements Listener {
             // If a player is damaged
             if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
                 e.setCancelled(true);
+            }
+
+            if(e.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
+                float fallDamage = (e.getEntity().getFallDistance()-4);
+                float newFallDamage = fallDamage- JsonPlayerBridge.getAbilityScoreModifier((Player) e.getEntity(),"dex");
+                if(e.getDamage()>newFallDamage) {
+                    if(newFallDamage<=0) e.setCancelled(true);
+                    else e.setDamage(newFallDamage);
+                    Logger.logInfo("Negated fall damage of player " + e.getEntity().getName() + " from " + fallDamage + " to " + newFallDamage);
+                }
             }
 
             if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001 ) {

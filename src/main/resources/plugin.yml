@@ -42,6 +42,9 @@ permissions:
   mineshaft.debug.events:
     default: op
     description: Allows access to debug events
+  mineshaft.debug.spell:
+    default: false
+    description: Allows access to debug spell messages
   mineshaft.op:
     permission: default.op
     description: Default operator permission

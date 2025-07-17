@@ -31,6 +31,9 @@ public enum ClickType {
     LEFT(new ArrayList<>(Arrays.asList(Action.LEFT_CLICK_AIR, Action.LEFT_CLICK_BLOCK)),'L'),
     RIGHT(new ArrayList<>(Arrays.asList(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK)),'R'),
     MIDDLE(new ArrayList<>(List.of()),'M'),
+    CLEAR(new ArrayList<>(List.of()),'C'),
+    HOTBAR_UP(new ArrayList<>(List.of()),'H'),
+    HOTBAR_DOWN(new ArrayList<>(List.of()),'H'),
     ;
 
     final ArrayList<org.bukkit.event.block.Action> clickTypes;

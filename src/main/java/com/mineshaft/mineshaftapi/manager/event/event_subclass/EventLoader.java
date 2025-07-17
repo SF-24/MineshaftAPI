@@ -57,7 +57,7 @@ public class EventLoader {
     }
 
     public static Event loadVectorEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
-        VectorPlayerEvent loadedEvent = new VectorPlayerEvent(eventClass.getEventType());
+        PlayerVectorEvent loadedEvent = new PlayerVectorEvent(eventClass.getEventType());
         eventClass.clone(loadedEvent);
         PlanarVectorBounds bounds = new PlanarVectorBounds();
         if(section.contains("vector_bounds")) {
@@ -245,6 +245,12 @@ public class EventLoader {
             loadedEvent.setLimitVerticalKnockback(section.getBoolean("limit_vertical_knockback"));
         }
 
+        return loadedEvent;
+    }
+
+    public static Event loadWandEvent(ConfigurationSection section, Event eventClass, ItemStack executingItem) {
+        PlayerWandEvent loadedEvent = new PlayerWandEvent(eventClass.getEventType());
+        eventClass.clone(loadedEvent);
         return loadedEvent;
     }
 

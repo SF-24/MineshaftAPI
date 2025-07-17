@@ -24,6 +24,8 @@ import org.bukkit.entity.Player;
 public class PlayerManager {
     public static void KickPlayers() {
         for(Player player : MineshaftApi.getInstance().getServer().getOnlinePlayers()) {
+            MineshaftApi.getInstance().getPacketListener().stop(player);
+
             switch (MineshaftApi.getLanguage(player)) {
                 case ENGLISH:
                     player.kickPlayer("Server is reloading or has stopped");

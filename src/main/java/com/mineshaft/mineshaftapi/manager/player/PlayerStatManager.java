@@ -22,7 +22,6 @@ import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
-import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -124,5 +123,4 @@ public class PlayerStatManager {
     public static int getProficiencyBonus(int level) {
         return (int) (2+0.25*(level-1));
     }
-
 }

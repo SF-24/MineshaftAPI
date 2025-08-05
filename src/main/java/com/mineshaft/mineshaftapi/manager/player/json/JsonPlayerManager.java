@@ -21,19 +21,18 @@ package com.mineshaft.mineshaftapi.manager.player.json;
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.item.crafting.RecipeKey;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
+import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
 import com.mineshaft.mineshaftapi.manager.ui.SidebarManager;
-import com.mineshaft.mineshaftapi.manager.item.ItemStats;
-import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import io.lumine.mythic.bukkit.utils.serialize.InventorySerialization;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.*;
@@ -546,10 +545,26 @@ public class JsonPlayerManager {
 //        }
     }
 
-
-
     public double getPlayerTempArmourClass() {
         PlayerDataClass data = loadData(player);
         return data.getTempArmourClass();
+    }
+
+    public List<RecipeKey> getRecipes() {
+        PlayerDataClass data = loadData(player);
+        return data.getRecipes();
+    }
+
+    public void addRecipe(RecipeKey recipeKey) {
+        PlayerDataClass data = loadData(player);
+        data.addRecipe(recipeKey);
+        saveFile(data);
+        player.discoverRecipe(recipeKey.getNamespacedKey());
+    }
+
+    public void removeRecipe(RecipeKey recipeKey) {
+        PlayerDataClass data = loadData(player);
+        data.removeRecipe(recipeKey);
+        saveFile(data);
     }
 }

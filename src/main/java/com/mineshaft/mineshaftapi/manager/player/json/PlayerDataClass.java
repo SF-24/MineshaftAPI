@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftapi.manager.player.json;
 
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.item.crafting.RecipeKey;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.SkillClass;
 import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
@@ -51,6 +52,7 @@ public class PlayerDataClass {
 
     // Quests
 
+    ArrayList<RecipeKey> recipes = new ArrayList<>();
     ArrayList<QuestObject> quests = new ArrayList<>();
 
     // Saved Inventory
@@ -268,6 +270,14 @@ public class PlayerDataClass {
             }
         }
         return false;
+    }
+
+    public void addRecipe(RecipeKey recipeKey) {
+        recipes.add(recipeKey);
+    }
+
+    public void removeRecipe(RecipeKey recipeKey) {
+        recipes.remove(recipeKey);
     }
 
 

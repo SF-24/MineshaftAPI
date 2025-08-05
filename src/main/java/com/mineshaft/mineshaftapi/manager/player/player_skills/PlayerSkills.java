@@ -34,7 +34,8 @@ public enum PlayerSkills {
 
     // Will work with upcoming discovery system.
     // Double lore discovery EXP
-    LORE("Lore", "INT"),
+    LORE_GREOGRAPHY("Lore (Geography)", "INT"),
+    LORE_HISTORY("Lore (History)", "INT"),
 
     // ??? Some form of discoveries
     // Double shadow-lore discovery EXP
@@ -45,7 +46,7 @@ public enum PlayerSkills {
     NATURE("Nature", "INT"),
 
     // DYNAMIC?
-    SPELL_CASTING("Spell casting", "INT"),
+    SPELL_CASTING("Spell-casting", "INT"),
 
     // ??? To do with finding stuff?
     PERCEPTION("Perception", "WIS"),

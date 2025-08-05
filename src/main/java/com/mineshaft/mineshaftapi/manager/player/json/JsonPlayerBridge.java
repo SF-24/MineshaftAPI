@@ -26,6 +26,7 @@ import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestO
 import com.mineshaft.mineshaftapi.events.AbilityEventType;
 import com.mineshaft.mineshaftapi.events.MineshaftAbilityModifyEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.item.crafting.RecipeKey;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
@@ -463,10 +464,19 @@ public class JsonPlayerBridge {
         return Collections.emptyList();
     }
 
+    public static List<RecipeKey> getDiscoveredRecipes(Player player) {
+        return getJsonInstance(player).getRecipes();
+    }
+
+    public static void addDiscoveredRecipe(Player player, RecipeKey recipeKey) {
+        getJsonInstance(player).addRecipe(recipeKey);
+    }
+
+    public static void removeDiscoveredRecipe(Player player, RecipeKey recipeKey) {
+        getJsonInstance(player).removeRecipe(recipeKey);
+    }
+
     public static JsonPlayerManager getJsonPlayerManager(Player player, String profile) {
         return new JsonPlayerManager(player, profile);
     }
-
-
-
 }

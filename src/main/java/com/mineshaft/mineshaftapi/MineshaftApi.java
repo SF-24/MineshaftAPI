@@ -29,6 +29,7 @@ import com.mineshaft.mineshaftapi.manager.config.ConfigManager;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.crafting.GlobalRecipeCache;
 import com.mineshaft.mineshaftapi.manager.item.crafting.RecipeRegistrar;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
@@ -60,6 +61,9 @@ public final class MineshaftApi extends JavaPlugin {
     static RecipeRegistrar recipeRegistrar;
 
     @Getter
+    static GlobalRecipeCache globalRecipeCache;
+
+    @Getter
     HashMap<String,AbilityType> abilities = new HashMap<>();
 
     // Managers, some including caches
@@ -78,9 +82,6 @@ public final class MineshaftApi extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
-
-
         // Ascii text generator: https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20
 
         Logger.logInfo("   __  ____              __        _____    ___   ___  ____");
@@ -171,6 +172,7 @@ public final class MineshaftApi extends JavaPlugin {
 
         // Deregister recipes
         getRecipeRegistrar().clearRecipes();
+        globalRecipeCache.clearLockedRecipes();
     }
 
     public static Language getLanguage(Player player) {

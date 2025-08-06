@@ -28,12 +28,14 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
 @Getter @Setter
 public abstract class BlockClass {
 
+    ItemStack dropItem;
     Material material = Material.BARRIER;
     int customModelData = 0;
     UUID displayId = null;
@@ -43,15 +45,15 @@ public abstract class BlockClass {
 
     public abstract void click(Player player);
 
-    public BlockClass(Location location, BlockFace facing, Material material, int customModelData) {
-        init(location, facing);
+    public BlockClass(Location location, BlockFace facing, Material material, int customModelData, ItemStack item) {
+        init(location, facing, material, customModelData, item);
     }
 
-    public BlockClass(Location location, Material material, int customModelData) {
-        init(location, null);
+    public BlockClass(Location location, Material material, int customModelData, ItemStack item) {
+        init(location, null, material, customModelData, item);
     }
 
-    void init(Location location, BlockFace blockFace) {
+    void init(Location location, BlockFace blockFace, Material material, int customModelData, ItemStack item) {
         this.location=location;
         if(blockFace != null) {
             facing = blockFace;
@@ -59,6 +61,9 @@ public abstract class BlockClass {
         } else {
             facing = BlockFace.UP;
         }
+        this.material=material;
+        this.customModelData=customModelData;
+        this.dropItem=item;
         place();
     }
 
@@ -107,5 +112,6 @@ public abstract class BlockClass {
                 break;
             }
         }
+        location.getWorld().dropItem(location,dropItem);
     }
 }

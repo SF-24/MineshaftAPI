@@ -16,22 +16,15 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.block.json;
+package com.mineshaft.mineshaftapi.util;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
-public abstract class BlockClassTickable extends BlockClass{
-    public BlockClassTickable(Location location, BlockFace facing, Material material, int customModelData, ItemStack dropItem) {
-        super(location, facing, material, customModelData, dropItem);
+public class LocationUtil {
+
+    public static Vector getRoundedLocation(Location location) {
+        return new Vector(location.getBlockX(),location.getBlockY(),location.getBlockZ());
     }
-
-    public BlockClassTickable(Location location, Material material, int customModelData, ItemStack dropItem) {
-        super(location, material, customModelData, dropItem);
-    }
-
-    public abstract void tick();
 
 }

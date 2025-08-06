@@ -86,5 +86,9 @@ public class DependencyInit {
         return Bukkit.getPluginManager().getPlugin("WorldGuard") != null || Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
     }
 
+    public static boolean hasLeadWires() {
+        return Bukkit.getPluginManager().getPlugin("LeadWires") != null || Bukkit.getPluginManager().isPluginEnabled("LeadWires");
+    }
+
     public VaultDependency getVault() {return vaultDependency;}
 }

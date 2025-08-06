@@ -6,8 +6,8 @@ prefix: MineshaftApi
 authors: [ SebastianFrynas ]
 description: A Minecraft plugin focusing on Rpg and Multiplayer elements
 website: https://github.com/SF-24
-depend: [  ]
-softdepend: [ MythicMobs, Vault, BetonQuest, PlaceholderAPI, FreeMinecraftModels, WorldGuard, AriKeys, BetterHud ]
+depend: [
+softdepend: [ MythicMobs, Vault, BetonQuest, PlaceholderAPI, FreeMinecraftModels, WorldGuard, AriKeys, BetterHud, LeadWires ]
 commands:
   player_data:
     permission: mineshaft.debug.players

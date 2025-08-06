@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.listener;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.events.MineshaftUseItemEvent;
 import com.mineshaft.mineshaftapi.manager.block.BlockManager;
+import com.mineshaft.mineshaftapi.manager.block.json.JsonBlockCacheBridge;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
@@ -63,6 +64,13 @@ public class InteractListener implements Listener {
             clickType = ActionType.LEFT_CLICK;
         } else {
             clickType = ActionType.NULL;
+        }
+
+        // Remove a custom block if it is clicked
+        if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            if(JsonBlockCacheBridge.getBlock(e.getClickedBlock().getLocation())!=null) {
+                JsonBlockCacheBridge.removeBlock(e.getClickedBlock().getLocation());
+            }
         }
 
         ItemStack item = e.getItem();

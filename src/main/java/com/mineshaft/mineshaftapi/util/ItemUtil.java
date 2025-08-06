@@ -115,4 +115,12 @@ public class ItemUtil {
         return Objects.requireNonNull(ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK)).contains("wand");
     }
 
+    public static ItemStack getDefaultItem(Material material, int customModelData) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        meta.setCustomModelData(customModelData);
+        item.setItemMeta(meta);
+        return item;
+    }
+
 }

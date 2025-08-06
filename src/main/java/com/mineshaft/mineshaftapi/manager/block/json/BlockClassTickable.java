@@ -16,36 +16,21 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.util.maths;
+package com.mineshaft.mineshaftapi.manager.block.json;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.util.Vector;
 
-public enum Direction {
-
-    UP, DOWN, LEFT, RIGHT, FORWARDS, BACK
-;
-    public Vector getUnitVector() {
-        switch (this) {
-            case UP -> {
-                return new Vector(0,1,0);
-            }
-            case DOWN -> {
-                return new Vector(0,-1,0);
-            }
-            case LEFT -> {
-                return new Vector(1,0,0);
-            }
-            case RIGHT -> {
-                return new Vector(-1,0,0);
-            }
-            case FORWARDS -> {
-                return new Vector(0,0,1);
-            }
-            case BACK -> {
-                return new Vector(0,0,-1);
-            }
-        }
-        return new Vector(0,0,0);
+public abstract class BlockClassTickable extends BlockClass{
+    public BlockClassTickable(Location location, BlockFace facing, Material material, int customModelData) {
+        super(location, facing, material, customModelData);
     }
+
+    public BlockClassTickable(Location location, Material material, int customModelData) {
+        super(location, material, customModelData);
+    }
+
+    public abstract void tick();
+
 }

@@ -191,6 +191,8 @@ public final class MineshaftApi extends JavaPlugin {
 
     public String getPluginPath() {return getPluginFolder(); }
 
+    public String getBlockCachePath() {return getPluginDataPath() + File.separator + "BlockCache"; }
+
     public String getPluginDataPath() {return getPluginFolder() + File.separator + "Data"; }
 
     public String getPlayerDataPath() {return getPluginDataPath() + File.separator + "PlayerData"; }

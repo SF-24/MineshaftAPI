@@ -179,13 +179,13 @@
         <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api</artifactId>
-            <version>2.15.0</version>
+            <version>2.15.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.lumine</groupId>
             <artifactId>Mythic-Dist</artifactId>
-            <version>5.6.1</version>
+            <version>5.9.5</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -227,7 +227,7 @@
         <dependency>
             <groupId>io.github.toxicity188</groupId>
             <artifactId>BetterHud-bukkit-api</artifactId>
-            <version>1.12.2</version>
+            <version>1.13.2</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>

@@ -25,7 +25,7 @@ import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
 import org.betonquest.betonquest.api.quest.QuestException;
-import org.betonquest.betonquest.id.EventID;
+import org.betonquest.betonquest.api.quest.event.EventID;
 import org.bukkit.entity.Player;
 
 public class BetonQuestManager {
@@ -39,7 +39,7 @@ public class BetonQuestManager {
         if(!DependencyInit.hasBetonQuest()) return;
         final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
         try {
-            BetonQuest.getInstance().getQuestTypeAPI().event(playerProfile,new EventID(questPackage,event));
+            BetonQuest.getInstance().getQuestTypeApi().event(playerProfile,new EventID(questPackage,event));
         } catch (QuestException e) {
             Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
         }
@@ -54,7 +54,7 @@ public class BetonQuestManager {
         if(!DependencyInit.hasBetonQuest() || getPackage(questPackage) == null) return;
         final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
         try {
-            BetonQuest.getInstance().getQuestTypeAPI().event(playerProfile,new EventID(getPackage(questPackage),event));
+            BetonQuest.getInstance().getQuestTypeApi().event(playerProfile,new EventID(getPackage(questPackage),event));
         } catch (QuestException e) {
             Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
         }

@@ -97,7 +97,7 @@ public class InteractListener implements Listener {
         try {
             NBT.get(item, nbt -> {
                 String id = nbt.getOrDefault("uuid", "null");
-                if (id.equalsIgnoreCase("null")) return;
+                if (id==null || id.isBlank() || id.equalsIgnoreCase("null")) return;
                 uuid[0] = UUID.fromString(id);
             });
         } catch (Exception ignored) {
@@ -146,8 +146,12 @@ public class InteractListener implements Listener {
         }
 
         // Shots per second
-        double firingSpeed = ItemManager.getItemNbtRangedStat(item, RangedItemStats.FIRING_SPEED_CUSTOM);
+        double firingSpeed = 0;
         double firingCooldown = 1 / firingSpeed;
+
+        try {
+            firingSpeed = ItemManager.getItemNbtRangedStat(item, RangedItemStats.FIRING_SPEED_CUSTOM);
+        } catch (NullPointerException ignored) {}
 
         if (firingSpeed > 0) {
             // Firing cooldown
@@ -166,12 +170,11 @@ public class InteractListener implements Listener {
             ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(cooldownGroup, delayInTicks));
         }
 
-        if(events==null)return;
+        if(events==null||events.isEmpty())return;
         for (String event : events) {
             if (EventManager.isHardcoded(event)) {
-                break;
+                continue;
             }
-
             // Cancel the event if it should be cancelled
             e.setCancelled(true);
             EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();

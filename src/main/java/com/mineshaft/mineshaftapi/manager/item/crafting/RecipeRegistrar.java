@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.manager.item.crafting;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerManager;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -51,7 +52,7 @@ public class RecipeRegistrar implements Listener {
     }
 
     private void init(String namespace) {
-        if(namespace == null) {
+        if(namespace != null && !namespace.isEmpty()) {
             this.namespace = namespace;
         } else {
             this.namespace = "mineshaftdefault";
@@ -308,6 +309,7 @@ public class RecipeRegistrar implements Listener {
         for(String id : recipeCache.keySet()) {
             if(recipeCache.get(id) || JsonPlayerBridge.getDiscoveredRecipes(player).contains(new RecipeKey(namespace, id))) {
                 player.discoverRecipe(new NamespacedKey(namespace, id));
+                Logger.logInfo("Giving recipe " + namespace + " | " + id + " to player " + player.getName());
             }
         }
     }

@@ -22,7 +22,7 @@ import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
 import org.betonquest.betonquest.api.quest.QuestException;
 import org.betonquest.betonquest.api.quest.event.online.OnlineEvent;
-import org.betonquest.betonquest.instruction.variable.Variable;
+import org.betonquest.betonquest.api.instruction.variable.Variable;
 
 public class BetonExperienceEvent implements OnlineEvent {
     /**

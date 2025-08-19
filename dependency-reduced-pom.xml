@@ -137,7 +137,7 @@
     <dependency>
       <groupId>io.lumine</groupId>
       <artifactId>Mythic-Dist</artifactId>
-      <version>5.6.1</version>
+      <version>5.9.5</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
@@ -160,7 +160,6 @@
       <artifactId>betonquest</artifactId>
       <version>3.0.0-SNAPSHOT</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.sk89q.worldguard</groupId>
@@ -179,7 +178,7 @@
     <dependency>
       <groupId>io.github.toxicity188</groupId>
       <artifactId>BetterHud-bukkit-api</artifactId>
-      <version>1.12.2</version>
+      <version>1.13.2</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>

@@ -32,14 +32,14 @@ public class BetonQuestManager {
 
     public static void runBetonEvent(Player player, BetonEventObject betonEvent) {
         if(!DependencyInit.hasBetonQuest()) return;
-        runBetonPlayerEvent(player, BetonQuest.getInstance().getPackages().get(betonEvent.getQuestPackageName()),betonEvent.getEvent());
+        runBetonPlayerEvent(player, BetonQuest.getInstance().getQuestPackageManager().getPackages().get(betonEvent.getQuestPackageName()),betonEvent.getEvent());
     }
 
     public static void runBetonPlayerEvent(Player player, QuestPackage questPackage, String event) {
         if(!DependencyInit.hasBetonQuest()) return;
         final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
         try {
-            BetonQuest.getInstance().getQuestTypeApi().event(playerProfile,new EventID(questPackage,event));
+            BetonQuest.getInstance().getQuestTypeApi().event(playerProfile,new EventID(BetonQuest.getInstance().getQuestPackageManager(),questPackage,event));
         } catch (QuestException e) {
             Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
         }
@@ -54,7 +54,7 @@ public class BetonQuestManager {
         if(!DependencyInit.hasBetonQuest() || getPackage(questPackage) == null) return;
         final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
         try {
-            BetonQuest.getInstance().getQuestTypeApi().event(playerProfile,new EventID(getPackage(questPackage),event));
+            BetonQuest.getInstance().getQuestTypeApi().event(playerProfile,new EventID(BetonQuest.getInstance().getQuestPackageManager(),getPackage(questPackage),event));
         } catch (QuestException e) {
             Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
         }
@@ -62,7 +62,7 @@ public class BetonQuestManager {
 
     public static QuestPackage getPackage(String packageName) {
         if(!DependencyInit.hasBetonQuest()) return null;
-        return BetonQuest.getInstance().getPackages().get(packageName);
+        return BetonQuest.getInstance().getQuestPackageManager().getPackages().get(packageName);
     }
 
 

@@ -208,7 +208,6 @@
             <artifactId>betonquest</artifactId>
             <version>3.0.0-SNAPSHOT</version>
             <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>

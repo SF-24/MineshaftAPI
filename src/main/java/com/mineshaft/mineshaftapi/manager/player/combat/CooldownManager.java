@@ -30,37 +30,15 @@ import java.util.concurrent.TimeUnit;
 
 public class CooldownManager {
 
-
-
-    private HashMap<UUID, Cache<UUID, Long>> itemCacheMap = new HashMap<>();
-    private HashMap<UUID, Map<UUID, Instant>> itemCooldownMap = new HashMap<>();
-
-    // Important: time in milliseconds
-    @Deprecated(forRemoval = true)
-    public void addPlayerKey(UUID uuid, UUID itemId, long timeInMilliseconds) {
-        Cache<UUID, Long> cooldown;
-        if(itemCacheMap.containsKey(uuid)) {
-            cooldown=itemCacheMap.get(uuid);
-        } else {
-            cooldown = CacheBuilder.newBuilder().expireAfterWrite(400L, TimeUnit.MILLISECONDS).build();
-        }
-        cooldown.put(itemId, System.currentTimeMillis() + timeInMilliseconds);
-        itemCacheMap.put(uuid,cooldown);
-    }
+    private final HashMap<UUID, Map<UUID, Instant>> itemCooldownMap = new HashMap<>();
 
     public boolean hasCooldown(UUID uuid, UUID itemId) {
-        Cache<UUID, Long> cooldown;
         Map<UUID, Instant> newCooldown;
 
-        // check cache map for cooldown
-        if(itemCacheMap.containsKey(uuid)) {
-            cooldown=itemCacheMap.get(uuid);
-            return cooldown.asMap().containsKey(itemId);
-
         // check new cooldown map for cooldown
-        } else if(itemCooldownMap.containsKey(uuid)) {
+        if(itemCooldownMap.containsKey(uuid)) {
             newCooldown=itemCooldownMap.get(uuid);
-            if(newCooldown.containsKey(uuid)) {
+            if(newCooldown.containsKey(itemId)) {
                 Instant cooldownInstant = newCooldown.get(itemId);
                 return cooldownInstant!=null && Instant.now().isBefore(cooldownInstant);
             }

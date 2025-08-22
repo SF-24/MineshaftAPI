@@ -24,6 +24,7 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryProperty;
 import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.util.PacketUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -89,8 +90,8 @@ public class ActionManager {
     public void addCooldown(Player player, CooldownActionType type) {
         // send item cooldown animation
         if(MineshaftApi.getInstance().getConfigManager().enableItemCooldownAnimation()) {
-            Item handItem = ((CraftPlayer) player).getHandle().getItemInHand(InteractionHand.MAIN_HAND).getItem();
             int cooldownTicks = 4; // 1/5 of a second
+            PacketUtil.sendCooldown(player, player.getInventory().getItemInMainHand(),cooldownTicks);
 
             switch (type) {
                 case BLOCKING,THROW,SMOKING_PIPE -> cooldownTicks = 4;
@@ -112,8 +113,6 @@ public class ActionManager {
                 default -> blockCooldown.put(player.getUniqueId(), System.currentTimeMillis()+ blockingCooldown);
             }
 
-            ResourceLocation cooldownGroup = BuiltInRegistries.ITEM.getKey(handItem);
-            ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(cooldownGroup, (cooldownTicks)));
 //            MineshaftApi.getInstance().getServer().getScheduler().runTask(MineshaftApi.getInstance(), () -> {
 //                player.setCooldown(player.getInventory().getItemInMainHand().getType(), cooldownTicks);
 //            });

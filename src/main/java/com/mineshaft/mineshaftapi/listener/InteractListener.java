@@ -27,6 +27,8 @@ import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
+import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.util.PacketUtil;
 import de.tr7zw.changeme.nbtapi.NBT;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
@@ -101,6 +103,7 @@ public class InteractListener implements Listener {
                 uuid[0] = UUID.fromString(id);
             });
         } catch (Exception ignored) {
+            return;
         }
         UUID uniqueId = uuid[0];
 
@@ -108,7 +111,7 @@ public class InteractListener implements Listener {
         // GET EVENTS AND TRIGGER HARDCODED EVENTS
         //
         ArrayList<String> events = null;
-        if (uniqueId != null) {
+        if (uniqueId != null && !uniqueId.toString().isBlank()) {
             String name = ItemManager.getItemName(uniqueId);
 
             events = ItemManager.getInteractEventsFromItem(name, clickType);
@@ -145,32 +148,37 @@ public class InteractListener implements Listener {
             return;
         }
 
+        if(events==null||events.isEmpty())return;
+
         // Shots per second
         double firingSpeed = 0;
-        double firingCooldown = 1 / firingSpeed;
+        double firingCooldown = 0;
 
         try {
             firingSpeed = ItemManager.getItemNbtRangedStat(item, RangedItemStats.FIRING_SPEED_CUSTOM);
+            Logger.logInfo("Firing speed: " + firingSpeed);
+            if(firingSpeed!=0) {
+                firingCooldown = 1 / firingSpeed;
+            }
         } catch (NullPointerException ignored) {}
+
 
         if (firingSpeed > 0) {
             // Firing cooldown
             // Apply cooldown
             MineshaftApi.getInstance().getCooldownManager().addPlayerCooldown(player.getUniqueId(), uniqueId, Duration.ofMillis((long) (firingCooldown * 1000)));
         } else {
+            firingCooldown=0.4d;
             MineshaftApi.getInstance().getCooldownManager().addPlayerCooldown(player.getUniqueId(), uniqueId, Duration.ofMillis(400L));
         }
 
         // send item cooldown animation
         if (MineshaftApi.getInstance().getConfigManager().enableItemCooldownAnimation()) {
-            int delayInTicks = (int) (firingCooldown / 20);
-
-            Item handItem = ((CraftPlayer) player).getHandle().getItemInHand(InteractionHand.MAIN_HAND).getItem();
-            ResourceLocation cooldownGroup = BuiltInRegistries.ITEM.getKey(handItem);
-            ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(cooldownGroup, delayInTicks));
+            int delayInTicks = (int) (firingCooldown * 20);
+            PacketUtil.sendCooldown(player, item, delayInTicks);
+        } else {
         }
 
-        if(events==null||events.isEmpty())return;
         for (String event : events) {
             if (EventManager.isHardcoded(event)) {
                 continue;

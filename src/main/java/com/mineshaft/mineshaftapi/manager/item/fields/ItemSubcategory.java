@@ -69,6 +69,8 @@ public enum ItemSubcategory {
     // GUNS
     GUN(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
     BLASTER(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
+    BLASTER_PISTOL(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
+    BLASTER_RIFLE(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
     RIFLE(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
     LASGUN(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
 

@@ -231,6 +231,14 @@ stats:
 | `maximum_added_dex_modifier` | Maximum added dexterity modifier | Modifies the maximum MineshaftRpg dexterity bonus added to armour class | Set to -1 for infinite. Only works in conjunction with MineshaftRpg (WIP). Does nothing on its own |
 
 
+### List of ranged-stat item attributes
+
+| Value                 | Stat                             | Description | Notes |
+|:----------------------|----------------------------------|:------------|------:|
+| `firing_speed_custom` | Override beam event firing speed |             |       |
+| `firing_range_custom` | Override beam event firing range |             |       |
+
+
 ### Food
 
 The `food` property is used only for consumables. 

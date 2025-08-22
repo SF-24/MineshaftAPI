@@ -18,6 +18,7 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
 		- [Item rarity list](#item-rarity-list)
 		- [Item stats and attributes](#item-stats-and-attributes)
 		    - [List of item attributes](#list-of-item-attributes)
+		    - [List of ranged-stat item attributes](#list-of-ranged-stat-item-attributes)
 		-  [Food](#food)
             - [List of food stats](#list-of-food-stats)
 		- [Consumable](#consumable)
@@ -237,7 +238,6 @@ stats:
 |:----------------------|----------------------------------|:------------|------:|
 | `firing_speed_custom` | Override beam event firing speed |             |       |
 | `firing_range_custom` | Override beam event firing range |             |       |
-
 
 ### Food
 

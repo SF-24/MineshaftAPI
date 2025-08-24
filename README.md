@@ -235,7 +235,12 @@ stats:
 
 ### List of ranged-stat item attributes
 
-Placed under `ranged_stats:` in the YAML file
+Placed under `ranged_stats:` in the YAML file, e.g.:
+<br>
+```yaml
+ranged_stats:
+  firing_speed_custom: 2.5
+```
 
 | Value                 | Stat                             | Description | Notes |
 |:----------------------|----------------------------------|:------------|------:|

@@ -39,6 +39,12 @@ public class EventHandler {
         if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             // Right click:
 
+            boolean cannotFire = (MineshaftApi.getInstance().getCooldownManager().hasCooldown(player.getUniqueId(), ItemManager.getItemIdFromItem(item)));
+
+            if (cannotFire||!ItemAmmunitionManager.canShoot(item)) {
+                return false;
+            }
+
             // On parry
             if (events.contains("parry")) {
                 // Player is blocking:
@@ -74,10 +80,11 @@ public class EventHandler {
 
             if(events.contains("use_ammo") || events.contains("use_ammunition")) {
                 e.setCancelled(true);
-
-                // TODO: Decrease item ammunition.
-                ItemAmmunitionManager.shoot(item);
-
+                if(e.getHand()==EquipmentSlot.OFF_HAND) {
+                    player.getInventory().setItemInOffHand(ItemAmmunitionManager.consumeAmmunition(item));
+                } else {
+                    player.getInventory().setItemInMainHand(ItemAmmunitionManager.consumeAmmunition(item));
+                }
                 return true;
             }
 
@@ -88,7 +95,11 @@ public class EventHandler {
             // Reload a blaster item.
             if(events.contains("reload")) {
                 e.setCancelled(true);
-                ItemAmmunitionManager.reloadItem(player, item);
+                if(e.getHand()==(EquipmentSlot.OFF_HAND)) {
+                    player.getInventory().setItemInOffHand(ItemAmmunitionManager.reloadItem(player, item));
+                } else {
+                    player.getInventory().setItemInMainHand(ItemAmmunitionManager.reloadItem(player, item));
+                }
                 return true;
             }
 

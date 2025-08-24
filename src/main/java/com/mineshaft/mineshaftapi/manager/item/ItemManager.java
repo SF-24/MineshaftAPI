@@ -671,10 +671,6 @@ public class ItemManager {
             }
         }
 
-        if(!rangedStatMap.isEmpty()) {
-            lore.add("");
-        }
-
         if(maxAmmunition>0) {
             lore.add(getAmmunitionString(maxAmmunition,maxAmmunition));
         }
@@ -1051,7 +1047,7 @@ public class ItemManager {
     }
 
     public static String getAmmunitionString(int ammunition, int maxAmmunition) {
-        return (ChatColor.WHITE + "Ammunition: " + ChatColor.GREEN + ammunition + ChatColor.DARK_GRAY + "/" + maxAmmunition);
+        return (ChatColor.GRAY + "Ammunition: " + ChatColor.DARK_GREEN + ammunition + ChatColor.DARK_GRAY + "/" + maxAmmunition);
     }
 
     protected static void setItemNbtStat(ItemStack stack, ItemStats stat, double value) {

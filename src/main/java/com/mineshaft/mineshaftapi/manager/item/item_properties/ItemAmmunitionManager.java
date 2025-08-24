@@ -18,9 +18,12 @@
 
 package com.mineshaft.mineshaftapi.manager.item.item_properties;
 
+import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import de.tr7zw.changeme.nbtapi.NBT;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -30,8 +33,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemAmmunitionManager {
+
 
     public static int getMaximumAmmunitionCount(String name) {
 
@@ -94,7 +100,10 @@ public class ItemAmmunitionManager {
     }
 
     public static String getAmmunitionInInventory(Player player, List<String> ammunitionTypes) {
-        for(int i = 0; i<36; i++) {
+        for(int i = 0; i<37; i++) {
+            if(player.getInventory().getItem(i)==null || player.getInventory().getItem(i).getType()==Material.AIR || ItemManager.getItemIdFromItem(player.getInventory().getItem(i))==null) {
+                continue;
+            }
             if(ammunitionTypes.contains(ItemManager.getItemName(ItemManager.getItemIdFromItem(player.getInventory().getItem(i))))) {
                 return ItemManager.getItemName(ItemManager.getItemIdFromItem(player.getInventory().getItem(i)));
             }
@@ -103,7 +112,7 @@ public class ItemAmmunitionManager {
     }
 
     public static void takeAmmunition(Player player, String ammunitionType) {
-        for(int i = 0; i<36; i++) {
+        for(int i = 0; i<37; i++) {
             if(player.getInventory().getItem(i)==null ||player.getInventory().getItem(i).getType().equals(Material.AIR)) continue;
             if(ItemManager.getItemNameFromItem(player.getInventory().getItem(i)).equalsIgnoreCase(ammunitionType)) {
                 ItemStack item = player.getInventory().getItem(i);
@@ -114,18 +123,26 @@ public class ItemAmmunitionManager {
         }
     }
 
-    public static void reloadItem(Player player, ItemStack itemStack) {
+    public static ItemStack reloadItem(Player player, ItemStack itemStack) {
         // Check the inventory for ammunition
 
         // Update the ammunition count
         if(getAmmunitionInInventory(player,getAmmunitionTypes(ItemManager.getItemNameFromItem(itemStack)))!=null) {
+            if(getAmmunition(itemStack)==getMaximumAmmunitionCount(ItemManager.getItemNameFromItem(itemStack))) {
+                player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(getAmmunitionType(itemStack)));
+            }
+
+            // TODO: Add ammunition stash
             String ammunitionType = getAmmunitionInInventory(player,getAmmunitionTypes(ItemManager.getItemNameFromItem(itemStack)));
             takeAmmunition(player, ammunitionType);
             setAmmunition(itemStack,ammunitionType,getMaximumAmmunitionCount(ItemManager.getItemNameFromItem(itemStack)));
+        } else {
+            player.sendActionBar(Component.text("Not enough ammunition", NamedTextColor.RED));
         }
+        return itemStack;
     }
 
-    public static void setAmmunition(ItemStack itemStack, String ammunitionType, int ammunitionCount) {
+    public static ItemStack setAmmunition(ItemStack itemStack, String ammunitionType, int ammunitionCount) {
         ItemMeta meta = itemStack.getItemMeta();
         ArrayList<String> lore = (ArrayList<String>) meta.getLore();
         for(int line = 0; line<lore.size(); line++) {
@@ -133,7 +150,7 @@ public class ItemAmmunitionManager {
                 lore.remove(line);
             }
         }
-        lore.add(ItemManager.getAmmunitionString(ammunitionCount,getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
+        lore.add(ItemManager.getAmmunitionString(Math.max(ammunitionCount,0),getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
 
@@ -141,29 +158,34 @@ public class ItemAmmunitionManager {
             nbt.setString("ammunition_type", ammunitionType);
             nbt.setInteger("ammunition",ammunitionCount);
         });
+        return itemStack;
     }
 
     public static int getAmmunition(ItemStack itemStack) {
+        AtomicInteger shots = new AtomicInteger();
         NBT.get(itemStack, nbt->{
-            return nbt.getInteger("ammunition");
+           shots.set(nbt.getInteger("ammunition"));
         });
-        return 0;
+        return shots.get();
     }
 
     public static String getAmmunitionType(ItemStack itemStack) {
+        AtomicReference<String> type = new AtomicReference<>();
         NBT.get(itemStack, nbt->{
-            return nbt.getString("ammunition_type");
+            type.set(nbt.getString("ammunition_type"));
         });
-        return null;
+        return type.get();
     }
 
     public static boolean canShoot(ItemStack itemStack) {
         return getMaximumAmmunitionCount(ItemManager.getItemNameFromItem(itemStack))==0||getAmmunition(itemStack)>0;
     }
 
-    public static void shoot(ItemStack itemStack) {
+    public static ItemStack consumeAmmunition(ItemStack itemStack) {
+        if(getAmmunition(itemStack)<0) return itemStack;
         int shotsLeft = getAmmunition(itemStack)-1;
         setAmmunition(itemStack,getAmmunitionType(itemStack),shotsLeft);
+        return itemStack;
     }
 
 

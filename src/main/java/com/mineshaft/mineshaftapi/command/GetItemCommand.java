@@ -27,6 +27,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,11 +44,20 @@ public class GetItemCommand implements CommandExecutor {
 
         if(args.length==0) {
             sendItemList(player);
-        } else if(args.length==1) {
+        } else if(args.length==1 || args.length==2) {
 
             String item = args[0];
             try {
-                player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+                ItemStack itemStack = MineshaftApi.getInstance().getItemManagerInstance().getItem(item);
+                if(args.length==2) {
+                    try {
+                        int amount = Integer.parseInt(args[1]);
+                        itemStack.setAmount(amount);
+                    } catch (NumberFormatException ignored) {
+                        player.sendMessage(ChatColor.RED + "Invalid amount");
+                    }
+                }
+                player.getInventory().addItem(itemStack);
             } catch (Exception e) {
                 player.sendMessage(ChatColor.RED + "Invalid item or item definition");
                 sendItemList(player);
@@ -97,7 +107,7 @@ public class GetItemCommand implements CommandExecutor {
 
 
     public static void sendSyntax(Player player) {
-        player.sendMessage(ChatColor.RED + "/getitem <item>");
+        player.sendMessage(ChatColor.RED + "/getitem <item> [amount]");
         player.sendMessage(ChatColor.RED + "/getitem gui <folder> [page]");
         player.sendMessage(ChatColor.RED + "/getitem gui null");
     }

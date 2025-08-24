@@ -31,13 +31,7 @@ import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.PacketUtil;
 import de.tr7zw.changeme.nbtapi.NBT;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.Item;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -107,6 +101,10 @@ public class InteractListener implements Listener {
             return;
         }
         UUID uniqueId = uuid[0];
+
+        /*
+         * Return if the player cannot use the item
+         * **/
 
         //
         // GET EVENTS AND TRIGGER HARDCODED EVENTS
@@ -188,6 +186,11 @@ public class InteractListener implements Listener {
             e.setCancelled(true);
             EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();
             Event executableEvent = eventManager.getEvent(event, item);
+
+            if(executableEvent==null) {
+                Logger.logWarning("Detected null executable event for event " + event);
+            }
+
             String sound = executableEvent.getSound();
             if (sound != null) {
                 player.getLocation().getWorld().playSound(player.getLocation(), sound, 5.0f, 1.0f);

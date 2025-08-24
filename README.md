@@ -486,9 +486,13 @@ action:
 
 Custom events must not be named using any of the following names. These are reserved for hardcoded features.
 
-| Event   | Description                                                                                                         | 
-|:--------|---------------------------------------------------------------------------------------------------------------------|
-| `parry` | Implements weapon blocking similar to sword blocking. Works not just for swords. Works only for right click actions |
+| Event                       | Description                                                                                                         | 
+|:----------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `parry`                     | Implements weapon blocking similar to sword blocking. Works not just for swords. Works only for right click actions |
+| `power_attack`              | Charges up the weapon for a strong attack                                                                           |
+| `reload`                    | Reloads the weapon, if it is a ranged weapon                                                                        |
+| `wand`                      | Opens the spell casting menu                                                                                        |
+| `use_ammo`,`use_ammunition` | Consumes the item's ammunition (e.g. on shot)                                                                       |
 
 
 ### Item event parameters

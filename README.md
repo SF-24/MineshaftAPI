@@ -11,8 +11,8 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
 - [Copyright notice](#Important-Copyright-Information)
 - [Documentation introduction](#Documentation)
 - [Upcoming features](#Upcoming-and-planned-features)
-- [Item creation](#Item-Creation )
-	- [Example](#Example)
+- [Item creation](#item-creation)
+	- [Example](#example)
 	- [List of parameters](#List-of-parameters)
 		- [Item category list](#item-category-list)
 		- [Item rarity list](#item-rarity-list)
@@ -120,7 +120,7 @@ The following features are not yet explained in the documentation
 - NPCs
 - Better API and JavaDocs
 
-# Item Creation 
+# Item Creation
 
 Items are created via custom YAML files. These are placed in the `Mineshaft/Items` folder in the plugin directory of your server.
 

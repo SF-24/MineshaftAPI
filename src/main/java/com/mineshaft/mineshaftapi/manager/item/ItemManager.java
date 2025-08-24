@@ -758,8 +758,8 @@ public class ItemManager {
 
             if(finalMaxAmmunition>0) {
                 nbt.setInteger("ammunition", finalMaxAmmunition);
-                if(finalAmmunitionTypes.contains("power_cell")) {
-                    nbt.setString("ammunition_type", "power_cell");
+                if(finalAmmunitionTypes.contains("ammunition_power_cell")) {
+                    nbt.setString("ammunition_type", "ammunition_power_cell");
                 } else {
                     nbt.setString("ammunition_type", finalAmmunitionTypes.get(0));
                 }

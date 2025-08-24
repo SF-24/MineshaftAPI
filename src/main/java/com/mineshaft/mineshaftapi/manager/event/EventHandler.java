@@ -20,12 +20,15 @@ package com.mineshaft.mineshaftapi.manager.event;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class EventHandler {
 
@@ -33,41 +36,53 @@ public class EventHandler {
         // HARDCODED EVENTS:
 
         // detect right and left clicks
-        if (!e.getAction().equals(Action.RIGHT_CLICK_AIR) && !e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            // Right click:
+
+            // On parry
+            if (events.contains("parry")) {
+                // Player is blocking:
+                if (MineshaftApi.getInstance().getActionManager().canBlock(player.getUniqueId())) {
+                    if (!MineshaftApi.getInstance().getActionManager().isPlayerBlocking(player.getUniqueId())) {
+                        // Start blocking
+                        MineshaftApi.getInstance().getActionManager().addPlayerBlocking(player.getUniqueId());
+                    }
+                } else {
+                    // COOLDOWN!
+                    e.setCancelled(true);
+                }
+                return true;
+
+            } else if (events.contains("power_attack")) {
+                // Power attack
+                if (MineshaftApi.getInstance().getActionManager().canDoPowerAttack(player.getUniqueId())) {
+                    if (!MineshaftApi.getInstance().getActionManager().isPlayerPowerAttack(player.getUniqueId())) {
+                        // Start preparing power attack
+                        MineshaftApi.getInstance().getActionManager().addPlayerPowerAttack(player.getUniqueId(), ItemManager.getItemSubcategory(item));
+                    }
+                } else {
+                    // COOLDOWN!
+                    e.setCancelled(true);
+                }
+                return true;
+            }
+
+            if(events.contains("wand")) {
+                e.setCancelled(true);
+                return true;
+            }
+
             return false;
-        }
+        } else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK) || e.getAction().equals(Action.LEFT_CLICK_AIR)) {
+            // LEFT CLICK
 
-        // On parry
-        if (events.contains("parry")) {
-            // Player is blocking:
-            if (MineshaftApi.getInstance().getActionManager().canBlock(player.getUniqueId())) {
-                if (!MineshaftApi.getInstance().getActionManager().isPlayerBlocking(player.getUniqueId())) {
-                    // Start blocking
-                    MineshaftApi.getInstance().getActionManager().addPlayerBlocking(player.getUniqueId());
-                }
-            } else {
-                // COOLDOWN!
+            // Reload a blaster item.
+            if(events.contains("reload")) {
                 e.setCancelled(true);
+                ItemAmmunitionManager.reloadItem(player, item);
             }
-            return true;
 
-        } else if (events.contains("power_attack")) {
-            // Power attack
-            if (MineshaftApi.getInstance().getActionManager().canDoPowerAttack(player.getUniqueId())) {
-                if (!MineshaftApi.getInstance().getActionManager().isPlayerPowerAttack(player.getUniqueId())) {
-                    // Start preparing power attack
-                    MineshaftApi.getInstance().getActionManager().addPlayerPowerAttack(player.getUniqueId(), ItemManager.getItemSubcategory(item));
-                }
-            } else {
-                // COOLDOWN!
-                e.setCancelled(true);
-            }
-            return true;
-        }
-
-        if(events.contains("wand")) {
-            e.setCancelled(true);
-            return true;
+            return false;
         }
 
         return false;

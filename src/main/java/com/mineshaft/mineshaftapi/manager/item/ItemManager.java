@@ -34,6 +34,7 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
+import it.unimi.dsi.fastutil.chars.Char2CharArrayMap;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -168,7 +169,7 @@ public class ItemManager {
         return uuid[0];
     }
 
-    public String getItemNameFromItem(ItemStack item) {
+    public static String getItemNameFromItem(ItemStack item) {
         UUID uuid = getItemIdFromItem(item);
         if (uuid != null) {
             return getItemName(uuid);
@@ -338,6 +339,25 @@ public class ItemManager {
             }
         } else {
             armourType = ArmourType.NONE;
+        }
+
+        List<String> ammunitionTypes = Collections.emptyList();
+        int maxAmmunition = 0;
+
+        if(category == ItemCategory.WEAPON_RANGED) {
+            if(yamlConfiguration.contains("ammunition")) {
+
+                for(String field : yamlConfiguration.getConfigurationSection("ammunition").getKeys(false)) {
+                    switch(field) {
+                        case "shot_count","shots" -> {
+                            maxAmmunition = yamlConfiguration.getInt("ammunition."+field);
+                        }
+                        case "ammunition_types","ammo_types","ammunition_type","ammo_type" -> {
+                            ammunitionTypes = yamlConfiguration.getStringList("ammunition."+field);
+                        }
+                    }
+                }
+            }
         }
 
         meta.setDisplayName(rarity.getColourCode() + displayName);
@@ -651,6 +671,14 @@ public class ItemManager {
             }
         }
 
+        if(!rangedStatMap.isEmpty()) {
+            lore.add("");
+        }
+
+        if(maxAmmunition>0) {
+            lore.add(getAmmunitionString(maxAmmunition,maxAmmunition));
+        }
+
         // Hide attributes
         if (hideAttributes) {
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -718,6 +746,8 @@ public class ItemManager {
         // Apply NBT tag with item
         final boolean finalColdProtect = coldProtect;
         ItemSubcategory finalSubcategory1 = subcategory;
+        int finalMaxAmmunition = maxAmmunition;
+        List<String> finalAmmunitionTypes = ammunitionTypes;
         NBT.modify(item, nbt -> {
             nbt.setString("uuid", uuid);
             if(!armourType.equals(ArmourType.NONE)) {
@@ -725,6 +755,15 @@ public class ItemManager {
             }
             // More are available! Ask your IDE, or see Javadoc for suggestions!
             nbt.setBoolean("ColdProtection", finalColdProtect);
+
+            if(finalMaxAmmunition>0) {
+                nbt.setInteger("ammunition", finalMaxAmmunition);
+                if(finalAmmunitionTypes.contains("power_cell")) {
+                    nbt.setString("ammunition_type", "power_cell");
+                } else {
+                    nbt.setString("ammunition_type", finalAmmunitionTypes.get(0));
+                }
+            }
         });
 
         // Custom stats.
@@ -1011,6 +1050,10 @@ public class ItemManager {
         return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value);
     }
 
+    public static String getAmmunitionString(int ammunition, int maxAmmunition) {
+        return (ChatColor.WHITE + "Ammunition: " + ChatColor.GREEN + ammunition + ChatColor.DARK_GRAY + "/" + maxAmmunition);
+    }
+
     protected static void setItemNbtStat(ItemStack stack, ItemStats stat, double value) {
         NBT.modify(stack, nbt -> {
             nbt.setDouble("stat." + stat.name().toLowerCase(Locale.ROOT), value);
@@ -1161,7 +1204,6 @@ public class ItemManager {
         return ItemCategory.ITEM_GENERIC;
     }
 
-    // TODO: returns null - bug
     public static ArrayList<String> getInteractEventsFromItem(String name, ActionType actionType) {
 
         ArrayList<String> interactEvents = new ArrayList<>();

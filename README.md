@@ -234,6 +234,8 @@ stats:
 
 ### List of ranged-stat item attributes
 
+Placed under `ranged_stats:` in the YAML file
+
 | Value                 | Stat                             | Description | Notes |
 |:----------------------|----------------------------------|:------------|------:|
 | `firing_speed_custom` | Override beam event firing speed |             |       |

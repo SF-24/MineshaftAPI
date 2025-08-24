@@ -19,7 +19,6 @@
 package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.dependency.world_guard.PlayerRegionEventManager;
 import com.mineshaft.mineshaftapi.manager.ui.SidebarManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,8 +26,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PlayerListener implements Listener {
 
@@ -42,18 +39,5 @@ public class PlayerListener implements Listener {
             SidebarManager.displayScoreboard(player);
         }
 
-        PlayerRegionEventManager.testRegions(player);
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void PlayerTeleportEvent(PlayerTeleportEvent e) {
-        PlayerRegionEventManager.testRegions(e.getPlayer());
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void PlayerMoveEvent(PlayerMoveEvent e) {
-        if (e.getTo().distanceSquared(e.getFrom()) > 0) {
-            PlayerRegionEventManager.testRegions(e.getPlayer());
-        }
     }
 }

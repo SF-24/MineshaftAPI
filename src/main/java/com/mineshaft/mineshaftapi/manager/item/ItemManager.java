@@ -256,7 +256,7 @@ public class ItemManager {
         int b = -1;
 
         String statsString = "stats";
-        String rangedStatsString = "rangedstats";
+        String rangedStatsString = "ranged_stats";
 
         boolean hideAttributes = true;
 

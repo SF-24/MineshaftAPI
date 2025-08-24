@@ -19,7 +19,8 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
 		- [Item stats and attributes](#item-stats-and-attributes)
 		    - [List of item attributes](#list-of-item-attributes)
 		    - [List of ranged-stat item attributes](#list-of-ranged-stat-item-attributes)
-		-  [Food](#food)
+		- [Ammunition](#ammunition)
+        - [Food](#food)
             - [List of food stats](#list-of-food-stats)
 		- [Consumable](#consumable)
 		- [Potion effects](#potion-effects)
@@ -100,7 +101,7 @@ The following features are not yet explained in the documentation
 - *Extendable weapons (lightsaber creation, etc.)*
 - *Customisable weapon cooldown*
 - ~~*Player attributes: Strength, intelligence, etc.*~~ (Part of MineshaftRpg plugin)
-- Ammunition feature for ranged weapons (with reloading)
+- ~~Ammunition feature for ranged weapons (with reloading)~~
 - Customisable sidebar (Shelved for now)
 - More Placeholders (Partially implemented)
 - Custom menus and shops
@@ -240,6 +241,19 @@ Placed under `ranged_stats:` in the YAML file
 |:----------------------|----------------------------------|:------------|------:|
 | `firing_speed_custom` | Override beam event firing speed |             |       |
 | `firing_range_custom` | Override beam event firing range |             |       |
+
+### Ammunition
+
+Can only be used by ranged weapons.
+<br>`shots` specifies the number of shots that can be made per ammunition item used.
+<br>`ammunition_types` specifies the names of the items used as ammunition.
+
+```yaml
+ammunition:
+  shots: 16
+  ammunition_types:
+  - ammunition_power_cell
+```
 
 ### Food
 

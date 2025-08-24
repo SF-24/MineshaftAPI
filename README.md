@@ -450,7 +450,7 @@ repair-materials:
 
 #### Crafting
 
-*Work in progress. Documentation coming soon...*
+*Current implementation works, custom recipe declaration coming soon.*
 
 Allows for items to be crafted using a hardcoded recipe and specified materials.
 
@@ -612,8 +612,6 @@ The beam event fires off a beam in the direction in which the entity that execut
 #### On hit local events
 
 ***Completely redone to support inline event declaration***
-
-*Work in progress. Not yet tested*
 
 On hit example:
 ```yaml

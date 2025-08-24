@@ -143,5 +143,28 @@ public class ItemAmmunitionManager {
         });
     }
 
+    public static int getAmmunition(ItemStack itemStack) {
+        NBT.get(itemStack, nbt->{
+            return nbt.getInteger("ammunition");
+        });
+        return 0;
+    }
+
+    public static String getAmmunitionType(ItemStack itemStack) {
+        NBT.get(itemStack, nbt->{
+            return nbt.getString("ammunition_type");
+        });
+        return null;
+    }
+
+    public static boolean canShoot(ItemStack itemStack) {
+        return getMaximumAmmunitionCount(ItemManager.getItemNameFromItem(itemStack))==0||getAmmunition(itemStack)>0;
+    }
+
+    public static void shoot(ItemStack itemStack) {
+        int shotsLeft = getAmmunition(itemStack)-1;
+        setAmmunition(itemStack,getAmmunitionType(itemStack),shotsLeft);
+    }
+
 
 }

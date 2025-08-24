@@ -72,6 +72,15 @@ public class EventHandler {
                 return true;
             }
 
+            if(events.contains("use_ammo") || events.contains("use_ammunition")) {
+                e.setCancelled(true);
+
+                // TODO: Decrease item ammunition.
+                ItemAmmunitionManager.shoot(item);
+
+                return true;
+            }
+
             return false;
         } else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK) || e.getAction().equals(Action.LEFT_CLICK_AIR)) {
             // LEFT CLICK
@@ -80,6 +89,7 @@ public class EventHandler {
             if(events.contains("reload")) {
                 e.setCancelled(true);
                 ItemAmmunitionManager.reloadItem(player, item);
+                return true;
             }
 
             return false;

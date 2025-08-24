@@ -79,16 +79,6 @@ public class EventHandler {
                 return true;
             }
 
-            if(events.contains("use_ammo") || events.contains("use_ammunition")) {
-                e.setCancelled(true);
-                if(e.getHand()==EquipmentSlot.OFF_HAND) {
-                    player.getInventory().setItemInOffHand(ItemAmmunitionManager.consumeAmmunition(item));
-                } else {
-                    player.getInventory().setItemInMainHand(ItemAmmunitionManager.consumeAmmunition(item));
-                }
-                return true;
-            }
-
             return false;
         } else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK) || e.getAction().equals(Action.LEFT_CLICK_AIR)) {
             // LEFT CLICK
@@ -108,6 +98,19 @@ public class EventHandler {
             return false;
         }
 
+        return false;
+    }
+
+    public static boolean handleSecondaryHardcodedEvents(Player player, ItemStack item, ArrayList<String> events, PlayerInteractEvent e) {
+        if(events.contains("use_ammo") || events.contains("use_ammunition")) {
+            e.setCancelled(true);
+            if(e.getHand()==EquipmentSlot.OFF_HAND) {
+                player.getInventory().setItemInOffHand(ItemAmmunitionManager.consumeAmmunition(item));
+            } else {
+                player.getInventory().setItemInMainHand(ItemAmmunitionManager.consumeAmmunition(item));
+            }
+            return true;
+        }
         return false;
     }
 }

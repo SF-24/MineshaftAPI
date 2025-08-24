@@ -161,7 +161,6 @@ public class InteractListener implements Listener {
             }
         } catch (NullPointerException ignored) {}
 
-
         if (firingSpeed > 0) {
             // Firing cooldown
             // Apply cooldown
@@ -175,9 +174,7 @@ public class InteractListener implements Listener {
         if (MineshaftApi.getInstance().getConfigManager().enableItemCooldownAnimation()) {
             int delayInTicks = (int) (firingCooldown * 20);
             PacketUtil.sendCooldown(player, item, delayInTicks);
-        } else {
         }
-
         for (String event : events) {
             if (EventManager.isHardcoded(event)) {
                 continue;
@@ -187,16 +184,19 @@ public class InteractListener implements Listener {
             EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();
             Event executableEvent = eventManager.getEvent(event, item);
 
-            if(executableEvent==null) {
+            if (executableEvent == null) {
                 Logger.logWarning("Detected null executable event for event " + event);
+            } else {
+                String sound = executableEvent.getSound();
+                if (sound != null) {
+                    player.getLocation().getWorld().playSound(player.getLocation(), sound, 5.0f, 1.0f);
+                }
+                eventManager.runEvent(executableEvent, player.getLocation(), player.getUniqueId(), player);
             }
-
-            String sound = executableEvent.getSound();
-            if (sound != null) {
-                player.getLocation().getWorld().playSound(player.getLocation(), sound, 5.0f, 1.0f);
-            }
-            eventManager.runEvent(executableEvent, player.getLocation(), player.getUniqueId(), player);
         }
+
+        // Handle ammunition consumption
+        com.mineshaft.mineshaftapi.manager.event.EventHandler.handleSecondaryHardcodedEvents(player,item,events,e);
     }
 
 }

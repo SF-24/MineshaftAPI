@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.manager.event;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -95,6 +96,7 @@ public class EventHandler {
             // Reload a blaster item.
             if(events.contains("reload")) {
                 e.setCancelled(true);
+                player.playSound(player.getLocation(),"minecraft:block.stone_button.click_on", SoundCategory.PLAYERS, 1.0f, 1.0f);
                 if(e.getHand()==(EquipmentSlot.OFF_HAND)) {
                     player.getInventory().setItemInOffHand(ItemAmmunitionManager.reloadItem(player, item));
                 } else {

@@ -760,6 +760,20 @@ public class ItemManager {
                     nbt.setString("ammunition_type", finalAmmunitionTypes.get(0));
                 }
             }
+
+            // Extendable weapon mechanics
+            if(yamlConfiguration.contains("extendable")) {
+                nbt.setBoolean("is_sheathed",true);
+                nbt.setInteger("custom_model_data", Objects.requireNonNullElse(yamlConfiguration.getInt("custom_model_data"),0));
+
+                for(String field : yamlConfiguration.getConfigurationSection("extendable").getKeys(false)) {
+                    switch (field) {
+                        case "custom_model_data" -> nbt.setInteger("open_custom_model_data", yamlConfiguration.getInt("extendable.custom_model_data"));
+                        // TODO: Add more customisation
+                    }
+                }
+            }
+
         });
 
         // Custom stats.

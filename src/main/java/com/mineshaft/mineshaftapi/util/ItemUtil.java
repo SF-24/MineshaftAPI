@@ -132,4 +132,11 @@ public class ItemUtil {
         return item;
     }
 
+    public static boolean isSheathed(ItemStack item) {
+        NBT.get(item, nbt->{
+            return (boolean) nbt.getBoolean("is_sheathed");
+        });
+        return false;
+    }
+
 }

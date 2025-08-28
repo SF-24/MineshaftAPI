@@ -29,6 +29,7 @@ import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.BlockingType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
+import com.mineshaft.mineshaftapi.util.ItemUtil;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.maths.VectorUtil;
 import net.kyori.adventure.text.Component;
@@ -36,6 +37,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -67,21 +72,18 @@ public class DamageListener implements Listener {
         defendableDamage.add(EntityDamageEvent.DamageCause.MAGIC);
         defendableDamage.add(EntityDamageEvent.DamageCause.SONIC_BOOM);
         defendableDamage.add(EntityDamageEvent.DamageCause.FALLING_BLOCK);
-        // ? not sure
+
+        // Testing for sheathed weapons, e.g. lightsabers or flick daggers.
+        if(e instanceof EntityDamageByEntityEvent entityDamageByEntityEvent && (entityDamageByEntityEvent.getDamager() instanceof HumanEntity entity)) {
+            if(ItemUtil.isSheathed(entity.getInventory().getItemInMainHand())) {
+                e.setDamage(1.0d);
+            }
+        }
+
         if(e.getEntity() instanceof Player) {
             // If a player is damaged
             if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
                 e.setCancelled(true);
-            }
-
-            if(e.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
-                float fallDamage = (e.getEntity().getFallDistance()-3);
-                float newFallDamage = fallDamage-(JsonPlayerBridge.getAbilityScoreModifier((Player) e.getEntity(),"dex")+1)-JsonPlayerBridge.getSkillLevel(((Player) e.getEntity()), PlayerSkills.ACROBATICS)*PlayerStatManager.getProficiencyBonus(JsonPlayerBridge.getLevel((Player) e.getEntity()));
-                if(e.getDamage()>newFallDamage) {
-                    if(newFallDamage<=0) e.setCancelled(true);
-                    else e.setDamage(newFallDamage);
-                    Logger.logInfo("Negated fall damage of player " + e.getEntity().getName() + " from " + fallDamage + " to " + newFallDamage);
-                }
             }
 
             if(defendableDamage.contains(e.getCause()) && e.getDamage()>0.0001 ) {

@@ -39,7 +39,7 @@ import java.util.*;
 
 public class EventManager {
 
-    static List<String> hardcodedEvents = List.of("parry","power_attack","throw","smoke_pipe","reload","use_ammo","use_ammunition");
+    static List<String> hardcodedEvents = List.of("toggle_sheathe","parry","power_attack","throw","smoke_pipe","reload","use_ammo","use_ammunition");
 
     ArrayList<String> events = new ArrayList<>();
 

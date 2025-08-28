@@ -20,6 +20,7 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
 		    - [List of item attributes](#list-of-item-attributes)
 		    - [List of ranged-stat item attributes](#list-of-ranged-stat-item-attributes)
 		- [Ammunition](#ammunition)
+		- [Extendable/Sheathe-able Weapons](#extendable-weapons)
         - [Food](#food)
             - [List of food stats](#list-of-food-stats)
 		- [Consumable](#consumable)
@@ -98,7 +99,7 @@ The following features are not yet explained in the documentation
 - *[important!] Completing the README file and adding all documentation*
 - ~~*[important!] Working armour support*~~ (mostly implemented)
 - *More configuration: item rarities, etc.*
-- *Extendable weapons (lightsaber creation, etc.)*
+- ***W.I.P.*** *Extendable weapons (lightsaber creation, etc.)*
 - *Customisable weapon cooldown*
 - ~~*Player attributes: Strength, intelligence, etc.*~~ (Part of MineshaftRpg plugin)
 - ~~Ammunition feature for ranged weapons (with reloading)~~
@@ -108,17 +109,18 @@ The following features are not yet explained in the documentation
 - BetonQuest integration (Partially implemented)
 - BetonQuest quest tracker
 - More MythicMobs features
-- ~~FreeMinecraftModels integration with MythicMobs compatibility~~ **Use BetterModels for now instead**
+- ~~FreeMinecraftModels integration with MythicMobs compatibility~~ **Use BetterModels instead**
 - ~~Custom crafting system~~ (Partially implemented.)
 - Add more customizability to the custom crafting system 
-- ~~Skills~~ (Look at MineshaftRpg instead)
+- ~~Skills~~ (Use MineshaftRpg instead)
 - Item customisation (replacing parts, etc.)
-- In-built mob support (similar to MythicMobs or EliteMobs)
-- Dungeons
+- In-built mob support (similar to MythicMobs or EliteMobs) **Shelved for now in favour of more MythicMobs support**
+- Dungeons **Likely as separate plugin**
 - More events (Working on it)
-- ~~Replacing local events with events~~ (Added, but untested)
-- NPCs
+- ~~Replacing local events with events~~ ~~(Added, but untested)~~ **Works**
+- NPCs **Shelved, use Citizens or an alternative**
 - Better API and JavaDocs
+- Make non right or left click events handle cooldowns
 
 # Item Creation
 
@@ -259,6 +261,20 @@ ammunition:
   ammunition_types:
   - ammunition_power_cell
 ```
+
+The weapon is reloaded with the `reload` hardcoded event and ammunition is consumed with the `use_ammo` or `use_ammunition` hardcoded event.
+
+### Extendable Weapons
+
+The weapon is by default sheathed and can be unsheathed with an event, for example a lightsaber of swiss-army knife.<br>
+The custom model data is set to the custom model data specified in extendable when the weapon is unsheathed.
+
+```yaml
+extendable:
+  custom_model_data: 12
+```
+
+The weapon is extended and sheathed with the `toggle_sheathe` hardcoded event.
 
 ### Food
 
@@ -506,13 +522,14 @@ action:
 Custom events must not be named using any of the following names. These are reserved for hardcoded features.
 <br>These can be specified to be executed as usual events, though they can only be executed after a certain action is used.
 
-| Event                       | Action Type | Description                                                                                                         | 
-|:----------------------------|-------------|---------------------------------------------------------------------------------------------------------------------|
-| `parry`                     | Right-Click | Implements weapon blocking similar to sword blocking. Works not just for swords. Works only for right click actions |
-| `power_attack`              | Right-Click | Charges up the weapon for a strong attack                                                                           |
-| `wand`                      | Right-Click | Opens the spell casting menu                                                                                        |
-| `use_ammo`,`use_ammunition` | Right-Click | Consumes the item's ammunition (e.g. on shot)                                                                       |
-| `reload`                    | Left-Click  | Reloads the weapon, if it is a ranged weapon                                                                        |
+| Event                       | Action Type | Description                                                                                                                                           | 
+|:----------------------------|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `parry`                     | Any         | Implements weapon blocking similar to sword blocking in old Minecraft. Works not just for swords. Does not work that well for non right-click actions |
+| `power_attack`              | Any         | Charges up the weapon for a strong attack                                                                                                             |
+| `wand`                      | Any         | Opens the spell casting menu                                                                                                                          |
+| `use_ammo`,`use_ammunition` | Right-Click | Consumes the item's ammunition (e.g. on shot)                                                                                                         |
+| `reload`                    | Any         | Reloads the weapon, if it is a ranged weapon, consuming an **ammunition** item                                                                        |
+| `toggle_sheathe`            | Any         | Toggles whether the weapon is sheathed if it has the `extendable` property                                                                            |
 
 
 ### Item event parameters

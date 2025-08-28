@@ -22,21 +22,20 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.events.MineshaftUseItemEvent;
 import com.mineshaft.mineshaftapi.manager.block.BlockManager;
 import com.mineshaft.mineshaftapi.manager.block.json.JsonBlockCacheBridge;
-import com.mineshaft.mineshaftapi.manager.event.Event;
-import com.mineshaft.mineshaftapi.manager.event.EventManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
 import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.PacketUtil;
-import de.tr7zw.changeme.nbtapi.NBT;
-import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.Duration;
@@ -45,16 +44,18 @@ import java.util.UUID;
 
 public class InteractListener implements Listener {
 
-
     @EventHandler
     void onInteract(PlayerInteractEvent e) {
 
-        //
-        // GET CLICK TYPE
-        //
+        // return if the player is not holding an item
+        if (e.getItem() == null) return;
+
+        // Declare variables
+        ItemStack item = e.getItem();
+        Player player = e.getPlayer();
         ActionType clickType;
 
-        // detect right and left clicks
+        // Detect the item type
         if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             clickType = ActionType.RIGHT_CLICK;
         } else if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
@@ -70,15 +71,6 @@ public class InteractListener implements Listener {
             }
         }
 
-        ItemStack item = e.getItem();
-
-        // return if the player is not holding an item
-        if (item == null) return;
-
-        Player player = e.getPlayer();
-
-        final UUID[] uuid = new UUID[1];
-
         // CHECK IF ITEM EVENT IS CANCELLED
         if (
             (
@@ -91,55 +83,42 @@ public class InteractListener implements Listener {
         //
         // GET UUID:
         //
-        try {
-            NBT.get(item, nbt -> {
-                String id = nbt.getOrDefault("uuid", "null");
-                if (id==null || id.isBlank() || id.equalsIgnoreCase("null")) return;
-                uuid[0] = UUID.fromString(id);
-            });
-        } catch (Exception ignored) {
+
+        UUID uniqueId = ItemManager.getItemIdFromItem(item);
+        if (uniqueId == null) {
             return;
         }
-        UUID uniqueId = uuid[0];
-
-        /*
-         * Return if the player cannot use the item
-         * **/
 
         //
         // GET EVENTS AND TRIGGER HARDCODED EVENTS
         //
-        ArrayList<String> events = null;
-        if (uniqueId != null && !uniqueId.toString().isBlank()) {
-            String name = ItemManager.getItemName(uniqueId);
+        ArrayList<String> events = ItemManager.getInteractEventsFromItem(ItemManager.getItemNameFromItem(item), clickType);
 
-            events = ItemManager.getInteractEventsFromItem(name, clickType);
+        // TRIGGER DETECTABLE EVENT FOR CHILD PLUGINS
+        MineshaftUseItemEvent event = com.mineshaft.mineshaftapi.manager.event.EventHandler.callMineshaftUseItemEvent(player, uniqueId, item, events, clickType);
 
-            if (events == null || events.isEmpty()) {
-                // Event call for item with no events;
-                Bukkit.getPluginManager().callEvent(new MineshaftUseItemEvent(player,uniqueId,new ArrayList<>(),item,clickType));
-                return;
-            }
-
-            // TRIGGER DETECTABLE EVENT FOR CHILD PLUGINS
-            MineshaftUseItemEvent event = new MineshaftUseItemEvent(player,uniqueId,events,item,clickType);
-            Bukkit.getPluginManager().callEvent(event);
-
-            // Check whether the event is cancelled or not. If it is, return
-            if(event.isCancelled()) {
-               // Event is cancelled, so return
-                return;
-            }
-
-            // HARDCODED EVENTS:
-            boolean executed = com.mineshaft.mineshaftapi.manager.event.EventHandler.handleHardcodedEvents(player,item,events,e);
-            if (executed && events.size() == 1) return;
+        // Null check for the events
+        if (events == null || events.isEmpty()) {
+            // Event call for item with no events;
+            return;
         }
+
+        // Check whether the event is cancelled or not. If it is, return
+        if(event.isCancelled()) {
+           // Event is cancelled, so return
+            return;
+        }
+
+        // Hardcoded events:
+        boolean executed = com.mineshaft.mineshaftapi.manager.event.EventHandler.handleHardcodedEvents(player,item,events,e,e.getHand(),clickType);
+        if (executed && events.size() == 1) return;
+
+        // IMPORTANT: Firing speed mechanics ONLY APPLY to NON-HARDCODED RIGHT-CLICK or LEFT-CLICK EVENTS if a COOLDOWN is specified.
 
         /*
           HANDLING DYNAMIC EVENTS
           (Not hardcoded)
-          */
+        */
 
         boolean cannotFire = (MineshaftApi.getInstance().getCooldownManager().hasCooldown(player.getUniqueId(), uniqueId));
 
@@ -147,7 +126,7 @@ public class InteractListener implements Listener {
             return;
         }
 
-        if(events==null||events.isEmpty())return;
+        if(events.isEmpty())return;
 
         // Shots per second
         double firingSpeed = 0;
@@ -175,28 +154,33 @@ public class InteractListener implements Listener {
             int delayInTicks = (int) (firingCooldown * 20);
             PacketUtil.sendCooldown(player, item, delayInTicks);
         }
-        for (String event : events) {
-            if (EventManager.isHardcoded(event)) {
-                continue;
-            }
-            // Cancel the event if it should be cancelled
-            e.setCancelled(true);
-            EventManager eventManager = MineshaftApi.getInstance().getEventManagerInstance();
-            Event executableEvent = eventManager.getEvent(event, item);
 
-            if (executableEvent == null) {
-                Logger.logWarning("Detected null executable event for event " + event);
-            } else {
-                String sound = executableEvent.getSound();
-                if (sound != null) {
-                    player.getLocation().getWorld().playSound(player.getLocation(), sound, 5.0f, 1.0f);
-                }
-                eventManager.runEvent(executableEvent, player.getLocation(), player.getUniqueId(), player);
-            }
-        }
+        // Handle custom event
+        com.mineshaft.mineshaftapi.manager.event.EventHandler.handleEvents(player, item, events, e);
 
         // Handle ammunition consumption
         com.mineshaft.mineshaftapi.manager.event.EventHandler.handleSecondaryHardcodedEvents(player,item,events,e);
     }
 
+    @EventHandler
+    void onOffHandSwap(PlayerSwapHandItemsEvent e) {
+        if(e.getMainHandItem().getType().equals(Material.AIR)) return;
+
+        Player player = e.getPlayer();
+        UUID uniqueId = ItemManager.getItemIdFromItem(e.getMainHandItem());
+
+        if(uniqueId==null) return;
+
+        // Get the events
+
+        String name = ItemManager.getItemName(uniqueId);
+        ArrayList<String> events = ItemManager.getInteractEventsFromItem(name, ActionType.OFFHAND_SWAP);
+
+        // Do not cancel if there are no specified events to execute.
+        if(events==null||events.isEmpty()) return;
+
+        // Otherwise, cancel and execute the events.
+        e.setCancelled(true);
+        com.mineshaft.mineshaftapi.manager.event.EventHandler.runEvents(player,e.getMainHandItem(),events,e, EquipmentSlot.HAND,ActionType.OFFHAND_SWAP);
+    }
 }

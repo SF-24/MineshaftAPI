@@ -24,7 +24,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemSheatheManager {
 
-    public static ItemStack openWeapon(ItemStack itemStack) {
+    public static void unSheatheWeapon(ItemStack itemStack) {
+        NBT.get(itemStack, nbt->{
+            if(!(nbt.hasTag("is_sheathed"))) {
+                return;
+            }
+        });
+
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setCustomModelData(getOpenCustomModelData(itemStack));
         itemStack.setItemMeta(itemMeta);
@@ -32,10 +38,9 @@ public class ItemSheatheManager {
         NBT.modify(itemStack, nbt->{
             nbt.setBoolean("is_sheathed",false);
         });
-        return itemStack;
     }
 
-    public static ItemStack sheatheWeapon(ItemStack itemStack) {
+    public static void sheatheWeapon(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setCustomModelData(getSheathedCustomModelData(itemStack));
         itemStack.setItemMeta(itemMeta);
@@ -43,7 +48,6 @@ public class ItemSheatheManager {
         NBT.modify(itemStack, nbt->{
             nbt.setBoolean("is_sheathed",true);
         });
-        return itemStack;
     }
 
     public static int getOpenCustomModelData(ItemStack item) {

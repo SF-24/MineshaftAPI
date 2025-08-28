@@ -18,11 +18,16 @@
 
 package com.mineshaft.mineshaftapi.manager.player;
 
+import lombok.Getter;
+
+@Getter
 public enum ActionType {
 
     RIGHT_CLICK("right_click"),
     LEFT_CLICK("left_click"),
     SNEAK("sneak"),
+    MIDDLE("middle"),
+    OFFHAND_SWAP("offhand_swap"),
     NULL("nil");
 
     private final String clickPath;
@@ -31,5 +36,4 @@ public enum ActionType {
         this.clickPath = clickPath;
     }
 
-    public String getClickPath() {return clickPath;}
 }

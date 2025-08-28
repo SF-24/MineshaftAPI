@@ -142,15 +142,19 @@ public class ItemAmmunitionManager {
         return itemStack;
     }
 
-    public static ItemStack setAmmunition(ItemStack itemStack, String ammunitionType, int ammunitionCount) {
+    public static void setAmmunition(ItemStack itemStack, String ammunitionType, int ammunitionCount) {
         ItemMeta meta = itemStack.getItemMeta();
         ArrayList<String> lore = (ArrayList<String>) meta.getLore();
-        for(int line = 0; line<lore.size(); line++) {
-            if(lore.get(line).contains("Ammunition:")) {
-                lore.remove(line);
+        if(lore!=null) {
+            for (int line = 0; line < lore.size(); line++) {
+                if (lore.get(line).contains("Ammunition:")) {
+                    lore.set(line, ItemManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
+                }
             }
+        } else {
+            lore = new ArrayList<>();
+            lore.add(ItemManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
         }
-        lore.add(ItemManager.getAmmunitionString(Math.max(ammunitionCount,0),getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
 
@@ -158,7 +162,6 @@ public class ItemAmmunitionManager {
             nbt.setString("ammunition_type", ammunitionType);
             nbt.setInteger("ammunition",ammunitionCount);
         });
-        return itemStack;
     }
 
     public static int getAmmunition(ItemStack itemStack) {

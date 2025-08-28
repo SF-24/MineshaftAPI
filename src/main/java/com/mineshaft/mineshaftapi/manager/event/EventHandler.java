@@ -52,10 +52,10 @@ public class EventHandler {
     public static boolean handleHardcodedEvents(Player player, ItemStack item, ArrayList<String> events, Cancellable e, EquipmentSlot slot, ActionType actionType) {
         // HARDCODED EVENTS:
 
-        boolean cannotFire = (MineshaftApi.getInstance().getCooldownManager().hasCooldown(player.getUniqueId(), ItemManager.getItemIdFromItem(item)));
-        if (cannotFire||!ItemAmmunitionManager.canShoot(item)) {
-            return false;
-        }
+//        boolean cannotFire = (MineshaftApi.getInstance().getCooldownManager().hasCooldown(player.getUniqueId(), ItemManager.getItemIdFromItem(item)));
+//        if (cannotFire||!ItemAmmunitionManager.canShoot(item)) {
+//            return false;
+//        }
 
 
         for(String event : events) {

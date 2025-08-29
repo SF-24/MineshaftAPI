@@ -68,6 +68,9 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
 **This project is under the GPU Affero GPL v3 license**<br>
 Terms of use can be found [here](https://www.gnu.org/licenses/agpl-3.0.en.html)
 
+# Dependencies
+Most dependencies are either optional or shaded, however MythicMobs is required if MineshaftRpg is used, due to its class being used for ItemStack serialisation
+
 # Documentation
 Currently, the only functionality of this plugin are custom item creation, event creation and **Vault** server economy.
 
@@ -99,7 +102,7 @@ The following features are not yet explained in the documentation
 *This is just a to-do list featuring my current ideas*<br>
 *List elements in italic will definitely be added*
 
-- *[important!] Completing the README file and adding all documentation*
+- ***W.I.P*** *[important!] Completing the README file and adding all documentation*
 - ~~*[important!] Working armour support*~~ (mostly implemented)
 - *More configuration: item rarities, etc.*
 - ***W.I.P.*** *Extendable weapons (lightsaber creation, etc.)*

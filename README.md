@@ -30,6 +30,9 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
 		-  [Tools](#tool-component)
             - [Default Mining Speed Values](#default-mining-speed-values)
             - [Block Rules](#block-rules)
+      - [Item slots](#item-slots)
+        - [Item slot parameter list](#parameter-list)
+        - [Making items modifications](#creating-item-modifications)
       - [Crafting Mechanics](#crafting-mechanics)
         - [Item Repair](#item-repair) 
         - [Crafting](#crafting) 
@@ -452,6 +455,41 @@ block_rules:
 | `block_tag`         | The name of the block tag containing the blocks corresponding to the rule | Integer   | [Vanilla Tag List](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Tag.html) |
 | `correct_for_drops` | Whether item drops will be obtained from blocks in this list              | Boolean   |                                                                                  |
 | `mining_speed`      | The mining speed of blocks in this list                                   | Double    |                                                                                  |
+
+
+### Item Slots
+
+***Work in progress. Has not been tested and is not complete.***
+<br><br>
+Item Slots (or sockets) are an option of changing different properties or parts of an item without changing the item itself.<br>
+It allows to set **inventory slots** in an item, which can be filled with specially declared items.
+<br>
+Item categories are not hardcoded, but are handled dynamically by comparing **strings** (text variables). An item can be set to be placed in multiple item slot types.
+<br>
+<br>
+Below is an example of the item slot declaration section
+<br>
+
+```yaml
+slots:
+  example_name:
+    type: slot_type
+    param: dye
+```
+
+The **example_name** text should be replaced with the name of the slot. An item cannot have multiple slots with the same name.<br>
+The **type** section holds the type of the slot. This can be any text value.<br>
+The **param** section, is the component of the item, which is affected by the given value.
+
+<br>
+
+#### Parameter list
+
+***Work in progress. Coming soon....***
+
+##### Creating item modifications
+
+***Work in progress. Coming soon....***
 
 ### Crafting Mechanics
 

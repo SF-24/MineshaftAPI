@@ -24,14 +24,22 @@ import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import de.tr7zw.changeme.nbtapi.NBT;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
+import io.papermc.paper.datacomponent.item.DyedItemColor;
+import io.papermc.paper.datacomponent.item.Equippable;
+import io.papermc.paper.datacomponent.item.ItemArmorTrim;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
 import net.kyori.adventure.key.Key;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +47,38 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ItemUtil {
+
+    // Dye colour components
+
+    public static DyedItemColor getDyedItemColour(Color colour, boolean showInTooltip) {
+        return DyedItemColor.dyedItemColor().color(colour).showInTooltip(showInTooltip).build();
+    }
+
+    public static void addDyedItemColourComponent(ItemStack itemStack,DyedItemColor component) {
+        itemStack.setData(DataComponentTypes.DYED_COLOR,component);
+    }
+
+    // Armour trims
+
+    public static ItemArmorTrim getArmourTrim(TrimMaterial trimMaterial, TrimPattern trimPattern, boolean showInTooltip) {
+        return ItemArmorTrim.itemArmorTrim(new ArmorTrim(trimMaterial, trimPattern), showInTooltip);
+    }
+
+    public static void addArmourTrim(ItemStack itemStack, ItemArmorTrim component) {
+        itemStack.setData(DataComponentTypes.TRIM, component);
+    }
+
+    // Equippable
+
+    public static Equippable getEquippable(EquipmentSlot slot) {
+        return Equippable.equippable(slot).build();
+    }
+
+    public static void addEquippable(ItemStack itemStack, Equippable equippable) {
+        itemStack.setData(DataComponentTypes.EQUIPPABLE, equippable);
+    }
+
+    // Food components
 
     public static FoodComponent getFoodComponent(int nutrition, float saturation, boolean alwaysEdible) {
         FoodComponent component = new ItemStack(Material.APPLE).getItemMeta().getFood();

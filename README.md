@@ -215,7 +215,8 @@ See below for a list of custom attributes
 
 **Example**
 *Below is an example of a stat section of am item*
-*For a full example of an item YAML file [click here](#Example)*
+*For a full example of an item YAML file [click here](#Example)*z
+
 ```yaml
 stats:
   damage: 5

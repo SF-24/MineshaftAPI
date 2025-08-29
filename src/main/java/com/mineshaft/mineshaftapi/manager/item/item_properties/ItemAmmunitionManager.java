@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftapi.manager.item.item_properties;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.LoreManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import de.tr7zw.changeme.nbtapi.NBT;
 import net.kyori.adventure.text.Component;
@@ -29,10 +30,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -148,12 +152,12 @@ public class ItemAmmunitionManager {
         if(lore!=null) {
             for (int line = 0; line < lore.size(); line++) {
                 if (lore.get(line).contains("Ammunition:")) {
-                    lore.set(line, ItemManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
+                    lore.set(line, LoreManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
                 }
             }
         } else {
             lore = new ArrayList<>();
-            lore.add(ItemManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
+            lore.add(LoreManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
         }
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
@@ -189,6 +193,28 @@ public class ItemAmmunitionManager {
         int shotsLeft = getAmmunition(itemStack)-1;
         setAmmunition(itemStack,getAmmunitionType(itemStack),shotsLeft);
         return itemStack;
+    }
+
+    public static int getMaxAmmunition(UUID uniqueId) {
+        for(String field : ItemManager.getYamlConfiguration(uniqueId).getConfigurationSection("ammunition").getKeys(false)) {
+            switch(field) {
+                case "shot_count","shots" -> {
+                    return ItemManager.getYamlConfiguration(uniqueId).getInt("ammunition."+field);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public static @NotNull List<String> getAmmunitionTypes(UUID uniqueId) {
+        for(String field : ItemManager.getYamlConfiguration(uniqueId).getConfigurationSection("ammunition").getKeys(false)) {
+            switch(field) {
+                case "ammunition_types","ammo_types","ammunition_type","ammo_type" -> {
+                    return ItemManager.getYamlConfiguration(uniqueId).getStringList("ammunition."+field);
+                }
+            }
+        }
+        return Collections.emptyList();
     }
 
 

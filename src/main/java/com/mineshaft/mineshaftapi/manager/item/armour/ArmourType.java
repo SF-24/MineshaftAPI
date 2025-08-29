@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item;
+package com.mineshaft.mineshaftapi.manager.item.armour;
 
 public enum ArmourType {
 

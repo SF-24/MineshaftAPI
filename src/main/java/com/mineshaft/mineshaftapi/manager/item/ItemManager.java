@@ -20,21 +20,22 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
+import com.mineshaft.mineshaftapi.manager.item.armour.ArmourManager;
+import com.mineshaft.mineshaftapi.manager.item.armour.ArmourResistanceTypes;
+import com.mineshaft.mineshaftapi.manager.item.armour.ArmourType;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemDeconstructManager;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRecipeManager;
 import com.mineshaft.mineshaftapi.manager.item.fields.*;
+import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.ToolRuleExtended;
-import com.mineshaft.mineshaftapi.util.formatter.NumericFormatter;
-import com.mineshaft.mineshaftapi.util.formatter.TextFormatter;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
-import it.unimi.dsi.fastutil.chars.Char2CharArrayMap;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -51,6 +52,7 @@ import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -193,34 +195,38 @@ public class ItemManager {
         // Whether the item has a parent item
         boolean hasParent = false;
 
+        // Get uuid and run a null uuid check
+        // If the uuid is null, something has gone very wrong with the plugin.
         String uuid = yamlConfiguration.getString("id");
-
+        if(uuid==null) {
+            Logger.logError("Invalid null uuid for item " + itemName);
+            return new ItemStack(Material.AIR);
+        }
         ItemStack item = new ItemStack(Material.BARRIER);
 
-
         // Rarity
-        ItemRarity rarity = ItemRarity.STANDARD;
+        ItemRarity rarity = getItemRarity(UUID.fromString(uuid));
 
         String itemDisplay = "Item";
         String parentItemDisplay = null;
-        ItemSubcategory subcategory = ItemSubcategory.DEFAULT;
+
+        ItemSubcategory subcategory = getItemSubcategory(UUID.fromString(uuid));
 
         if (yamlConfiguration.contains("parent")) {
             String parentName = yamlConfiguration.getString("parent");
             if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
                 item = getItem(parentName);
                 hasParent = true;
-                File parent = new File(path, itemName + ".yml");
-                if (parent.exists()) {
-                    YamlConfiguration parentYaml = YamlConfiguration.loadConfiguration(parent);
-                    if (parentYaml.getString("subcategory") != null) {
-                        parentItemDisplay = TextFormatter.convertStringToName(parentYaml.getString("subcategory"));
-                        subcategory = getItemSubcategory(parentYaml.getString("subcategory"));
-                    }
-                }
+//                File parent = new File(path, itemName + ".yml");
+//                if (parent.exists()) {
+//                    YamlConfiguration parentYaml = YamlConfiguration.loadConfiguration(parent);
+//                    if (parentYaml.getString("subcategory") != null) {
+//                        parentItemDisplay = TextFormatter.convertStringToName(parentYaml.getString("subcategory"));
+//                        subcategory = getItemSubcategory(parentYaml.getString("subcategory"));
+//                    }
+//                }
             }
         }
-
 
         if (yamlConfiguration.contains("material")) {
             try {
@@ -267,9 +273,6 @@ public class ItemManager {
 
         for (String field : yamlConfiguration.getKeys(false)) {
             switch (field) {
-                case "rarity":
-                    rarity = ItemRarity.valueOf(yamlConfiguration.getString("rarity").toUpperCase(Locale.ROOT));
-                    break;
                 case "item_properties":
                     itemProperties=yamlConfiguration.getStringList("item_properties");
                 case "item_category":
@@ -307,8 +310,6 @@ public class ItemManager {
                     meta.setEnchantmentGlintOverride(yamlConfiguration.getBoolean("enchantment_glint"));
                 case "hide_attributes":
                     hideAttributes = yamlConfiguration.getBoolean("hide_attributes");
-                case "subcategory":
-                    subcategory = getItemSubcategory(yamlConfiguration.getString("subcategory"));
                 default:
             }
         }
@@ -316,13 +317,7 @@ public class ItemManager {
         boolean coldProtect = false;
 
         if (category == ItemCategory.ARMOUR_HELMET || category == ItemCategory.ARMOUR_BOOTS || category == ItemCategory.ARMOUR_CHESTPLATE || category == ItemCategory.ARMOUR_LEGGINGS) {
-            if (yamlConfiguration.contains("armour.type")) {
-                armourType = ArmourType.valueOf(yamlConfiguration.getString("armour.type"));
-            } else if (yamlConfiguration.contains("armor.type")) {
-                armourType = ArmourType.valueOf(yamlConfiguration.getString("armor.type"));
-            } else {
-                armourType = ArmourType.NONE;
-            }
+            armourType = ArmourManager.getArmourType(UUID.fromString(uuid));
             if(yamlConfiguration.contains("armour.cold_protection")) {
                 coldProtect=yamlConfiguration.getBoolean("armour.cold_protection");
             }
@@ -343,97 +338,19 @@ public class ItemManager {
 
         List<String> ammunitionTypes = Collections.emptyList();
         int maxAmmunition = 0;
-
-        if(category == ItemCategory.WEAPON_RANGED) {
-            if(yamlConfiguration.contains("ammunition")) {
-
-                for(String field : yamlConfiguration.getConfigurationSection("ammunition").getKeys(false)) {
-                    switch(field) {
-                        case "shot_count","shots" -> {
-                            maxAmmunition = yamlConfiguration.getInt("ammunition."+field);
-                        }
-                        case "ammunition_types","ammo_types","ammunition_type","ammo_type" -> {
-                            ammunitionTypes = yamlConfiguration.getStringList("ammunition."+field);
-                        }
-                    }
-                }
-            }
+        if(useAmmunition(UUID.fromString(uuid))) {
+            maxAmmunition = ItemAmmunitionManager.getMaxAmmunition(UUID.fromString(uuid));
+            ammunitionTypes = ItemAmmunitionManager.getAmmunitionTypes(UUID.fromString(uuid));
         }
 
         meta.setDisplayName(rarity.getColourCode() + displayName);
 
         // GENERATE LORE:
-        ArrayList<String> lore = new ArrayList<>();
+        ArrayList<String> lore = LoreManager.getLore(UUID.fromString(uuid));
 
-        if (rarity != ItemRarity.STANDARD) {
-
-            if (category.equals(ItemCategory.WEAPON_MELEE) || category.equals(ItemCategory.WEAPON_RANGED)) {
-                itemDisplay = "Weapon";
-            } else if (category.equals(ItemCategory.ARMOUR_CHESTPLATE)) {
-                itemDisplay = "Chestplate";
-            } else if (category.equals(ItemCategory.ARMOUR_LEGGINGS)) {
-                itemDisplay = "Leggings";
-            } else if (category.equals(ItemCategory.ARMOUR_BOOTS)) {
-                itemDisplay = "Boots";
-            } else if (category.equals(ItemCategory.ARMOUR_HELMET)) {
-                itemDisplay = "Helmet";
-            } else if (category.equals(ItemCategory.TOOL_AXE)) {
-                itemDisplay = "Axe";
-            } else if (category.equals(ItemCategory.TOOL_PICKAXE)) {
-                itemDisplay = "Pickaxe";
-            } else if (category.equals(ItemCategory.TOOL_SHOVEL)) {
-                itemDisplay = "Shovel";
-            } else if (category.equals(ItemCategory.TOOL_HOE)) {
-                itemDisplay = "Hoe";
-            } else if (category.equals(ItemCategory.ITEM_CONSUMABLE)) {
-                itemDisplay = "Consumable";
-            }
-
-            if (subcategory != null && !subcategory.equals(ItemSubcategory.DEFAULT)) {
-                itemDisplay = TextFormatter.convertStringToName(subcategory.name().toLowerCase());
-            } else if (parentItemDisplay != null) {
-                itemDisplay = parentItemDisplay;
-            }
-
-            if (MineshaftApi.getInstance().getConfigManager().useItalicItemRarity()) {
-                String italic = ChatColor.ITALIC.toString();
-                lore.add(rarity.getSecondaryColourCode() + italic + rarity.getName() + " " + itemDisplay);
-            } else {
-                lore.add(rarity.getSecondaryColourCode() + rarity.getName() + " " + itemDisplay);
-            }
-            // Set rarity
-        }
-        if (!armourType.equals(ArmourType.NONE)) {
-            lore.add(ChatColor.GRAY + armourType.getName());
-            if(coldProtect) {
-                lore.add(ChatColor.GRAY + "Frost Protection");
-            }
-        } else if(!rarity.equals(ItemRarity.STANDARD)) {
-            if(coldProtect) {
-                lore.add(ChatColor.GRAY + "Frost Protection");
-            }
-
-            // Item properties
-        }
-        if(!subcategory.getPropertyList().isEmpty()) {
-            String properties = "";
-
-            for (int priority = 0; priority < 6; priority++) {
-                for (ItemSubcategoryProperty property : subcategory.getPropertyList()) {
-                    if(priority == property.getPriority() && property.getName()!=null) {
-                        if(!properties.isEmpty()) {
-                            properties+=", "+property.getName();
-                        } else {
-                            properties= ChatColor.GRAY + property.getName();
-                        }
-                    }
-                }
-            }
-            lore.add(properties);
-        }
-        if(!rarity.equals(ItemRarity.STANDARD) || !armourType.equals(ArmourType.NONE) || coldProtect || !subcategory.getPropertyList().isEmpty()) {
-            lore.add("");
-        }
+//        if(!rarity.equals(ItemRarity.STANDARD) || !armourType.equals(ArmourType.NONE) || coldProtect || !subcategory.getPropertyList().isEmpty()) {
+//            lore.add("");
+//        }
 
 
 //        else {
@@ -442,7 +359,6 @@ public class ItemManager {
 //                lore.add("");
 //            }
 //        }
-
 
 
         // Load file stats, append to lore and add them to the item
@@ -562,8 +478,8 @@ public class ItemManager {
         }
 
 
-        int lowestPriority = 100;
-        int highestPriority= 0;
+//        int lowestPriority = 100;
+//        int highestPriority= 0;
 
         for (ItemStats stat : statMap.keySet()) {
             double value = statMap.get(stat);
@@ -585,9 +501,6 @@ public class ItemManager {
                     attributeModifier = new AttributeModifier(UUID.randomUUID(), UUID.randomUUID().toString(), value-1, AttributeModifier.Operation.ADD_NUMBER, slot);
                 }
             }
-
-            if(stat.getPriority()<lowestPriority) lowestPriority=stat.getPriority();
-            if(stat.getPriority()>highestPriority) highestPriority=stat.getPriority();
 
             switch (stat) {
                 case DAMAGE:
@@ -639,41 +552,39 @@ public class ItemManager {
             }
         }
 
-        boolean hasStats = false;
+//        if(lowestPriority<0) lowestPriority=0;
+//
+//        for(int i = lowestPriority; i<=highestPriority; i++) {
+//            for(ItemStats stat : statMap.keySet()) {
+//                if (i == stat.getPriority()) {
+//                    hasStats = true;
+//                    if (stat.equals(ItemStats.ARMOUR_CLASS) && statMap.get(stat)!=0) {
+//                        lore.add(LoreManager.getStatString(stat, statMap.get(stat), category, (int) maximum_dex_modifier));
+//
+//                    } else if(statMap.get(stat)!=0) {
+//                        lore.add(LoreManager.getStatString(stat, statMap.get(stat), category, 0));
+//                    }
+//                }
+//            }
+//        }
 
-        if(lowestPriority<0) lowestPriority=0;
-
-        for(int i = lowestPriority; i<=highestPriority; i++) {
-            for(ItemStats stat : statMap.keySet()) {
-                if (i == stat.getPriority()) {
-                    hasStats = true;
-                    if (stat.equals(ItemStats.ARMOUR_CLASS) && statMap.get(stat)!=0) {
-                        lore.add(getStatString(stat, statMap.get(stat), category, (int) maximum_dex_modifier));
-
-                    } else if(statMap.get(stat)!=0) {
-                        lore.add(getStatString(stat, statMap.get(stat), category, 0));
-                    }
-                }
-            }
-        }
-
-        if(!rangedStatMap.isEmpty()) {
-            lore.add("");
-        }
+//        if(!rangedStatMap.isEmpty()) {
+//            lore.add("");
+//        }
 
         // get ranged stat strings
 //        Logger.logInfo(rangedStatMap.toString());
-        for(int i = lowestPriority; i<=highestPriority; i++) {
-            for(RangedItemStats stat : rangedStatMap.keySet()) {
-                if (i == stat.getPriority() && statMap.get(stat)!=null) {
-                    lore.add(getRangedStatString(stat, statMap.get(stat)));
-                }
-            }
-        }
+//        for(int i = lowestPriority; i<=highestPriority; i++) {
+//            for(RangedItemStats stat : rangedStatMap.keySet()) {
+//                if (i == stat.getPriority() && statMap.get(stat)!=null) {
+//                    lore.add(LoreManager.getRangedStatString(stat, statMap.get(stat)));
+//                }
+//            }
+//        }
 
-        if(maxAmmunition>0) {
-            lore.add(getAmmunitionString(maxAmmunition,maxAmmunition));
-        }
+//        if(maxAmmunition>0) {
+//            lore.add(LoreManager.getAmmunitionString(maxAmmunition,maxAmmunition));
+//        }
 
         // Hide attributes
         if (hideAttributes) {
@@ -740,6 +651,7 @@ public class ItemManager {
         // final variant meta above here. No more after this.
 
         // Apply NBT tag with item
+        final ArrayList<ArmourResistanceTypes> armourResistanceTypes = ArmourManager.getArmourResistances(UUID.fromString(uuid));
         final boolean finalColdProtect = coldProtect;
         ItemSubcategory finalSubcategory1 = subcategory;
         int finalMaxAmmunition = maxAmmunition;
@@ -749,7 +661,10 @@ public class ItemManager {
             if(!armourType.equals(ArmourType.NONE)) {
                 nbt.setString("ArmourType",armourType.name().toLowerCase());
             }
-            // More are available! Ask your IDE, or see Javadoc for suggestions!
+
+            for(ArmourResistanceTypes element : armourResistanceTypes) {
+                nbt.setBoolean(element.name().toLowerCase(), true);
+            }
             nbt.setBoolean("ColdProtection", finalColdProtect);
 
             if(finalMaxAmmunition>0) {
@@ -795,9 +710,8 @@ public class ItemManager {
         }
 
         // Set rarity tag
-        ItemRarity finalRarity = rarity;
         NBT.modify(item, nbt -> {
-            nbt.setString("rarity", finalRarity.toString());
+            nbt.setString("rarity", rarity.toString());
         });
 
         if(yamlConfiguration.contains("consumable")) {
@@ -876,7 +790,7 @@ public class ItemManager {
         List<String> finalItemProperties1 = itemProperties;
         NBT.modify(item, nbt -> {
             nbt.setString("rarity", rareString);
-            nbt.setString("subCategory", finalSubcategory);
+            nbt.setString("subcategory", finalSubcategory);
 
             // create the item property list
             ReadWriteNBTList<String> propertyList = nbt.getStringList("item_properties");
@@ -947,7 +861,7 @@ public class ItemManager {
         }
     }
 
-    protected HashMap<ItemStats, Double> getStatMap(String name, String statPath) {
+    protected static HashMap<ItemStats, Double> getStatMap(String name, String statPath) {
         //System.out.println("getting statmap");
 
         HashMap<ItemStats, Double> statMap = new HashMap<>();
@@ -1012,15 +926,13 @@ public class ItemManager {
     }
 
 
-    protected HashMap<RangedItemStats, Double> getRangedStatMap(String name, String rangedStatPath) {
+    protected static HashMap<RangedItemStats, Double> getRangedStatMap(String name, String rangedStatPath) {
         HashMap<RangedItemStats, Double> statMap = new HashMap<>();
 
         String path = getPath();
-        File fileYaml = getFileYaml(name);
-        @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
+        YamlConfiguration yamlConfiguration = getYamlConfiguration(name);
 
-        if (!yamlConfiguration.contains(rangedStatPath)) {
-//            Logger.logError("could not find " + rangedStatPath + " in: " + path + "/" + name + ".yml");
+        if (yamlConfiguration==null || !yamlConfiguration.contains(rangedStatPath)) {
             return statMap;
         }
 
@@ -1038,30 +950,6 @@ public class ItemManager {
             }
         }
         return statMap;
-    }
-
-    protected static String getStatString(ItemStats stat, Double value, ItemCategory category, int arg) {
-        if(stat.equals(ItemStats.DAMAGE)||stat.equals(ItemStats.ATTACK_SPEED)||stat.equals(ItemStats.RANGED_DAMAGE)) {
-            if(category.equals(ItemCategory.WEAPON_MELEE)||category.equals(ItemCategory.WEAPON_RANGED)||category.equals(ItemCategory.TOOL_AXE)||category.equals(ItemCategory.TOOL_PICKAXE)||category.equals(ItemCategory.TOOL_SHOVEL)||category.equals(ItemCategory.TOOL_HOE)) {
-                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value);
-            }
-        } else if(stat.equals(ItemStats.ARMOUR_CLASS)) {
-            if(arg>0) {
-                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + " + DEX" + ChatColor.WHITE + "(" + arg + ")";
-            } else if(arg<0) {
-                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + " + DEX";
-            }
-        }
-        return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + "+" + NumericFormatter.formatNumberAdvanced(value);
-    }
-
-    protected static String getRangedStatString(RangedItemStats stat, Double value) {
-        if(value==null||value<0) value=0d;
-        return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value);
-    }
-
-    public static String getAmmunitionString(int ammunition, int maxAmmunition) {
-        return (ChatColor.GRAY + "Ammunition: " + ChatColor.DARK_GREEN + ammunition + ChatColor.DARK_GRAY + "/" + maxAmmunition);
     }
 
     protected static void setItemNbtStat(ItemStack stack, ItemStats stat, double value) {
@@ -1141,6 +1029,17 @@ public class ItemManager {
         return ItemCategory.ITEM_GENERIC;
     }
 
+    // Get the rarity of an item.
+    public static ItemRarity getItemRarity(UUID uniqueId) {
+        if(getYamlConfiguration(uniqueId)!=null) {
+            if(getYamlConfiguration(uniqueId).contains("rarity")) {
+                return ItemRarity.valueOf(getYamlConfiguration(uniqueId).getString("rarity").toUpperCase(Locale.ROOT));
+            } else if(getParentYamlConfiguration(uniqueId)!=null) {
+            }
+        }
+        return ItemRarity.STANDARD;
+
+    }
 
     // Get item subcategory from an item
     public static ItemSubcategory getItemSubcategory(ItemStack item) {
@@ -1148,16 +1047,79 @@ public class ItemManager {
         // If not null
         AtomicReference<ItemSubcategory> returnValue = new AtomicReference<>();
         AtomicReference<ItemSubcategory> returnValueOld = new AtomicReference<>();
+        AtomicReference<ItemSubcategory> returnValueOld2 = new AtomicReference<>();
         NBT.get(item, nbt->{
             returnValueOld.set(getItemSubcategory(nbt.getString("sub_category")));
-            returnValue.set(getItemSubcategory(nbt.getString("subCategory")));
+            returnValueOld2.set(getItemSubcategory(nbt.getString("subCategory")));
+            returnValue.set(getItemSubcategory(nbt.getString("subcategory")));
         });
 
         if(returnValue.get()==null) {
-            return returnValueOld.get();
+            if(returnValueOld.get()==null) {
+                return returnValueOld2.get();
+            } else {
+                return returnValueOld.get();
+            }
         } else {
             return returnValue.get();
         }
+    }
+
+    public static ItemSubcategory getItemSubcategory(UUID uniqueId) {
+        YamlConfiguration yamlConfiguration = ItemManager.getYamlConfiguration(uniqueId);
+        if(yamlConfiguration.contains("subcategory")) {
+            return getItemSubcategory(yamlConfiguration.getString("subcategory"));
+        } else {
+            if (yamlConfiguration.contains("parent")) {
+                String parentName = yamlConfiguration.getString("parent");
+                if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
+                    YamlConfiguration parentYamlConfiguration = ItemManager.getYamlConfiguration(parentName);
+                    if (parentYamlConfiguration!=null) {
+                        if (parentYamlConfiguration.getString("subcategory") != null) {
+                            return getItemSubcategory(parentYamlConfiguration.getString("subcategory"));
+                        }
+                    } else {
+                        return ItemSubcategory.DEFAULT;
+                    }
+                }
+            }
+
+        }
+        return ItemSubcategory.DEFAULT;
+    }
+
+
+    public static YamlConfiguration getYamlConfiguration(UUID uniqueId) {
+        return getYamlConfiguration(getItemName(uniqueId));
+    }
+
+    public static YamlConfiguration getParentYamlConfiguration(UUID uniqueId) {
+        if (getYamlConfiguration(uniqueId).contains("parent")) {
+            if (getYamlConfiguration(uniqueId).getString("parent") != null && !(getYamlConfiguration(uniqueId).getString("parent").equalsIgnoreCase("null")) && !(getYamlConfiguration(uniqueId).getString("parent").equalsIgnoreCase("nil"))) {
+                return getYamlConfiguration(getYamlConfiguration(uniqueId).getString("parent"));
+            }
+        }
+        return null;
+    }
+
+    public static @Nullable String getParentName(UUID uniqueId) {
+        if (getYamlConfiguration(uniqueId).contains("parent")) {
+            if (getYamlConfiguration(uniqueId).getString("parent") != null && !(getYamlConfiguration(uniqueId).getString("parent").equalsIgnoreCase("null")) && !(getYamlConfiguration(uniqueId).getString("parent").equalsIgnoreCase("nil"))) {
+                return (getYamlConfiguration(uniqueId).getString("parent"));
+            }
+        }
+        return null;
+    }
+
+    public static UUID getUuid(String name) {
+        if(getYamlConfiguration(name).contains("id")) return null;
+        return UUID.fromString(getYamlConfiguration(name).getString("id"));
+    }
+
+    public static YamlConfiguration getYamlConfiguration(String fileName) {
+        File fileYaml = new File(MineshaftApi.getInstance().getItemPath(), fileName);
+        if(!fileYaml.exists()) return null;
+        return YamlConfiguration.loadConfiguration(fileYaml);
     }
 
     public static List<String> getItemPropertiesAsString(ItemStack item) {
@@ -1275,4 +1237,12 @@ public class ItemManager {
         }
         return returnValue;
     }
+
+    public static boolean useAmmunition(UUID uniqueId) {
+        if(ItemManager.getItemCategory(uniqueId) == ItemCategory.WEAPON_RANGED) {
+            return(getYamlConfiguration(uniqueId).contains("ammunition"))&& ItemAmmunitionManager.getMaxAmmunition(uniqueId)>0;
+        }
+        return false;
+    }
+
 }

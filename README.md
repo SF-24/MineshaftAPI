@@ -103,7 +103,7 @@ The following features are not yet explained in the documentation
 - ~~*[important!] Working armour support*~~ (mostly implemented)
 - *More configuration: item rarities, etc.*
 - ***W.I.P.*** *Extendable weapons (lightsaber creation, etc.)*
-- *Customisable weapon cooldown*
+- ~~*Customisable weapon cooldown*~~ (Mostly implemented)
 - ~~*Player attributes: Strength, intelligence, etc.*~~ (Part of MineshaftRpg plugin)
 - ~~Ammunition feature for ranged weapons (with reloading)~~
 - Customisable sidebar (Shelved for now)
@@ -116,14 +116,14 @@ The following features are not yet explained in the documentation
 - ~~Custom crafting system~~ (Partially implemented.)
 - Add more customizability to the custom crafting system 
 - ~~Skills~~ (Use MineshaftRpg instead)
-- Item customisation (replacing parts, etc.)
+- ***W.I.P.*** Item customisation (replacing parts, etc.)
 - In-built mob support (similar to MythicMobs or EliteMobs) **Shelved for now in favour of more MythicMobs support**
 - Dungeons **Likely as separate plugin**
 - More events (Working on it)
 - ~~Replacing local events with events~~ ~~(Added, but untested)~~ **Works**
 - NPCs **Shelved, use Citizens or an alternative**
 - Better API and JavaDocs
-- Make non right or left click events handle cooldowns
+- Make non right-click or left-click events handle cooldowns
 
 # Item Creation
 

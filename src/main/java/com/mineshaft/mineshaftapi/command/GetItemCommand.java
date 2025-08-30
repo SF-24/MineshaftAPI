@@ -20,7 +20,9 @@ package com.mineshaft.mineshaftapi.command;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.BlockUI;
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManagerAccessUtility;
+import com.mineshaft.mineshaftapi.util.DirUtil;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -29,6 +31,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,11 +47,16 @@ public class GetItemCommand implements CommandExecutor {
 
         if(args.length==0) {
             sendItemList(player);
-        } else if(args.length==1 || args.length==2) {
+        } else if(args.length==1 || args.length==2){
+            // Generate the path
+            String path = MineshaftApi.getItemPath()+File.separator+args[0];
+            path = DirUtil.getDirPathFromFilePath(path);
 
-            String item = args[0];
+            String item = DirUtil.getFileFromFilePath(args[0]);
+            player.sendMessage("Giving item " + item + " in directory " + path.replace(File.separator,"|"));
+
             try {
-                ItemStack itemStack = MineshaftApi.getInstance().getItemManagerInstance().getItem(item);
+                ItemStack itemStack = MineshaftApi.getInstance().getItemManagerInstance().getItem(path,item);
                 if(args.length==2) {
                     try {
                         int amount = Integer.parseInt(args[1]);
@@ -63,7 +71,8 @@ public class GetItemCommand implements CommandExecutor {
                 sendItemList(player);
             }
             return false;
-        } else if(args.length <= 3) {
+        }
+        if(args.length <= 3) {
 
             if(args[0].equalsIgnoreCase("gui")) {
                 String folder = args[1];

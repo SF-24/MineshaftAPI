@@ -77,8 +77,7 @@ public class ItemManager {
         return itemPaths;
     }
 
-    String path = MineshaftApi.getInstance().getItemPath();
-
+    private static final String defaultPath = MineshaftApi.getItemPath();
 
     public void initialiseItems() {
         items.clear();
@@ -92,9 +91,9 @@ public class ItemManager {
 
         for (File file : Objects.requireNonNull(folder.listFiles())) {
             if(!file.isDirectory()) {
-                initialiseItem(file.getName());
+                initialiseItem(defaultPath,file.getName());
             } else {
-                initialiseFilesInDirectory(getPath(), file.getName(), 0);
+                initialiseFilesInDirectory(defaultPath, file.getName(), 0);
             }
         }
     }
@@ -113,12 +112,13 @@ public class ItemManager {
             if(file.isDirectory()) {
                 initialiseFilesInDirectory(path+File.separator+dirName, file.getName(), iteration++);
             } else {
-                initialiseItem(file.getName());
+                // Initialise files in the directory
+                initialiseItem(path,file.getName());
             }
         }
     }
 
-    public void initialiseItem(String fileName) {
+    public void initialiseItem(String path, String fileName) {
         if(items.containsValue(fileName)) {
             Logger.logWarning("Conflicting item names: '" + fileName + "'. This may result in errors due to items containing the same name. This may be fixed in a future release.");
         }
@@ -149,6 +149,7 @@ public class ItemManager {
             e.printStackTrace();
         }
 
+        // TODO: CHECK CODE
         items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
         itemPaths.put(UUID.fromString(yamlConfiguration.getString("id")), path);
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
@@ -179,10 +180,14 @@ public class ItemManager {
         return null;
     }
 
+    public ItemStack getItem(String itemName) {
+        MineshaftApi.getInstance();
+        return getItem(MineshaftApi.getItemPath(), itemName);
+    }
 
     @SuppressWarnings({"deprecation","removal"})
-    public ItemStack getItem(String itemName) {
-        File fileYaml = new File(path, itemName + ".yml");
+    public ItemStack getItem(String dir, String itemName) {
+        File fileYaml = new File(dir, itemName + ".yml");
 
         // return null if file does not exist
         if (!fileYaml.exists()) {
@@ -820,7 +825,8 @@ public class ItemManager {
 
     // Generate the default item
     public static void createDemoItem() {
-        String path = MineshaftApi.getInstance().getItemPath();
+        MineshaftApi.getInstance();
+        String path = MineshaftApi.getItemPath();
         File fileYaml = new File(path, "example-item" + ".yml");
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
@@ -866,7 +872,6 @@ public class ItemManager {
 
         HashMap<ItemStats, Double> statMap = new HashMap<>();
 
-        String path = getPath();
         File fileYaml = getFileYaml(name);
         @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
 
@@ -898,7 +903,6 @@ public class ItemManager {
 
         HashMap<WeaponStats, Double> statMap = new HashMap<>();
 
-        String path = getPath();
         File fileYaml = getFileYaml(name);
         @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
 
@@ -929,7 +933,6 @@ public class ItemManager {
     protected static HashMap<RangedItemStats, Double> getRangedStatMap(String name, String rangedStatPath) {
         HashMap<RangedItemStats, Double> statMap = new HashMap<>();
 
-        String path = getPath();
         YamlConfiguration yamlConfiguration = getYamlConfiguration(name);
 
         if (yamlConfiguration==null || !yamlConfiguration.contains(rangedStatPath)) {
@@ -1117,7 +1120,13 @@ public class ItemManager {
     }
 
     public static YamlConfiguration getYamlConfiguration(String fileName) {
-        File fileYaml = new File(MineshaftApi.getInstance().getItemPath(), fileName);
+        // TODO: Get path
+        return getYamlConfiguration(MineshaftApi.getItemPath(), fileName);
+    }
+
+
+    public static YamlConfiguration getYamlConfiguration(String path, String fileName) {
+        File fileYaml = new File(path, fileName);
         if(!fileYaml.exists()) return null;
         return YamlConfiguration.loadConfiguration(fileYaml);
     }
@@ -1180,7 +1189,8 @@ public class ItemManager {
 
         ArrayList<String> interactEvents = new ArrayList<>();
 
-        File fileYaml = new File(getPath(), name + ".yml");
+        // TODO: Get the path
+        File fileYaml = new File(getPath(name), name + ".yml");
 
         // return null if file does not exist
         if (!fileYaml.exists()) {
@@ -1208,12 +1218,8 @@ public class ItemManager {
         return interactEvents;
     }
 
-    public static String getPath() {
-        return MineshaftApi.getInstance().getItemPath();
-    };
-
     public static File getFolder() {
-        File folder = new File(getPath());
+        File folder = new File(defaultPath);
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -1221,7 +1227,11 @@ public class ItemManager {
     }
 
     public static File getFileYaml(String name) {
-        return new File(getPath(), name + ".yml");
+        return new File(getPath(name), name + ".yml");
+    }
+
+    public static String getPath(String name) {
+        return getItemPath(getUuid(name));
     }
 
     public static @NotNull YamlConfiguration getYamlConfiguration(File fileYaml) {

@@ -185,21 +185,21 @@ public final class MineshaftApi extends JavaPlugin {
         return MineshaftApi.getPlugin(MineshaftApi.class);
     }
 
-    private final String pluginFolder = "plugins" + File.separator + "MineshaftApi";
+    private static final String pluginFolder = "plugins" + File.separator + "MineshaftApi";
 
-    public String getPluginFolder() { return MineshaftApi.getInstance().pluginFolder;}
+    public static String getPluginFolder() { return MineshaftApi.pluginFolder;}
 
-    public String getPluginPath() {return getPluginFolder(); }
+    public static String getPluginPath() {return getPluginFolder(); }
 
-    public String getBlockCachePath() {return getPluginDataPath() + File.separator + "BlockCache"; }
+    public static String getBlockCachePath() {return getPluginDataPath() + File.separator + "BlockCache"; }
 
-    public String getPluginDataPath() {return getPluginFolder() + File.separator + "Data"; }
+    public static String getPluginDataPath() {return getPluginFolder() + File.separator + "Data"; }
 
-    public String getPlayerDataPath() {return getPluginDataPath() + File.separator + "PlayerData"; }
+    public static String getPlayerDataPath() {return getPluginDataPath() + File.separator + "PlayerData"; }
 
-    public String getItemPath() {return getPluginFolder() + File.separator + "Items"; }
+    public static String getItemPath() {return getPluginFolder() + File.separator + "Items"; }
 
-    public String getEventPath() {return getPluginFolder() + File.separator + "Events"; }
+    public static String getEventPath() {return getPluginFolder() + File.separator + "Events"; }
 
     public ItemManager getItemManagerInstance() {return itemManager;}
 

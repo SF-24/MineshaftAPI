@@ -38,12 +38,10 @@ import java.util.List;
 public class GetItemCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!(sender instanceof Player)) {
+        if(!(sender instanceof Player player)) {
             Logger.logError("Only a player may execute this command");
             return false;
         }
-
-        Player player = (Player) sender;
 
         if(args.length==0) {
             sendItemList(player);

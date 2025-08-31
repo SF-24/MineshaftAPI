@@ -20,6 +20,8 @@ package com.mineshaft.mineshaftapi.manager.item.fields;
 
 public enum ItemCategory {
 
+    SLOT_ITEM,
+
     WEAPON_MELEE,
     WEAPON_RANGED,
 

@@ -53,6 +53,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.io.File;
 import java.io.IOException;
@@ -898,6 +899,32 @@ public class ItemManager {
         return statMap;
     }
 
+    protected static HashMap<ItemStats, Double> getItemStatMap(ItemStack itemStack) {
+        //System.out.println("getting statmap");
+
+        HashMap<ItemStats, Double> statMap = new HashMap<>();
+
+        for(ItemStats itemStats : ItemStats.values()) {
+            if(getItemNbtStat(itemStack,itemStats)>0) {
+                statMap.put(itemStats,getItemNbtStat(itemStack,itemStats));
+            }
+        }
+        return statMap;
+    }
+
+    protected static HashMap<RangedItemStats, Double> getRangedItemStatMap(ItemStack itemStack) {
+        //System.out.println("getting statmap");
+
+        HashMap<RangedItemStats, Double> statMap = new HashMap<>();
+
+        for(RangedItemStats itemStats : RangedItemStats.values()) {
+            if(getItemNbtRangedStat(itemStack,itemStats)>0) {
+                statMap.put(itemStats,getItemNbtRangedStat(itemStack,itemStats));
+            }
+        }
+        return statMap;
+    }
+
     protected HashMap<WeaponStats, Double> getWeaponStatMap(String name, String statPath) {
         //System.out.println("getting statmap");
 
@@ -1089,6 +1116,24 @@ public class ItemManager {
 
         }
         return ItemSubcategory.DEFAULT;
+    }
+
+    public static @NotNull String getItemSubcategoryOverride(UUID uniqueId) {
+        YamlConfiguration yamlConfiguration = ItemManager.getYamlConfiguration(uniqueId);
+        if(yamlConfiguration.contains("subcategory_override")&&yamlConfiguration.getString("subcategory_override")!=null&&!yamlConfiguration.getStringList("subcategory_override").isEmpty()) {
+            return (yamlConfiguration.getString("subcategory_override")).toLowerCase();
+        } else if (yamlConfiguration.contains("parent")) {
+            String parentName = yamlConfiguration.getString("parent");
+            if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
+                YamlConfiguration parentYamlConfiguration = ItemManager.getYamlConfiguration(parentName);
+                if (parentYamlConfiguration!=null) {
+                    if (parentYamlConfiguration.contains("subcategory") && parentYamlConfiguration.getString("subcategory_override")!=null && !parentYamlConfiguration.getString("subcategory_override").isEmpty()) {
+                        return (parentYamlConfiguration.getString("subcategory_override")).toLowerCase();
+                    }
+                }
+            }
+        }
+        return getItemSubcategory(uniqueId).name().toLowerCase();
     }
 
 

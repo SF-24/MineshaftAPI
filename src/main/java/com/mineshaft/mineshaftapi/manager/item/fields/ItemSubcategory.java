@@ -39,6 +39,8 @@ public enum ItemSubcategory {
     CONSUMABLE(ItemSubcategoryType.CONSUMABLE,List.of()),
 
     // WEAPONS
+    WEAPON(ItemSubcategoryType.WEAPON_GENERIC,List.of()),
+
     CLUB(ItemSubcategoryType.WEAPON_SIMPLE,List.of(ItemSubcategoryProperty.LIGHT)),
     DAGGER(ItemSubcategoryType.WEAPON_SIMPLE,List.of(ItemSubcategoryProperty.FINESSE, ItemSubcategoryProperty.LIGHT)),
     GREAT_CLUB(ItemSubcategoryType.WEAPON_SIMPLE,List.of(ItemSubcategoryProperty.HEAVY)),
@@ -55,16 +57,19 @@ public enum ItemSubcategory {
     GLAIVE(ItemSubcategoryType.WEAPON_MARTIAL,List.of(ItemSubcategoryProperty.HEAVY)),
     MATTOCK(ItemSubcategoryType.WEAPON_MARTIAL,List.of(ItemSubcategoryProperty.HEAVY)),
 
+    SWORD(ItemSubcategoryType.WEAPON_MARTIAL, List.of()),
+
     // RANGED WEAPONS
     LIGHT_CROSSBOW(ItemSubcategoryType.WEAPON_SIMPLE,List.of()),
     HEAVY_CROSSBOW(ItemSubcategoryType.WEAPON_MARTIAL,List.of(ItemSubcategoryProperty.HEAVY)),
     SHORTBOW(ItemSubcategoryType.WEAPON_SIMPLE,List.of()),
     LONGBOW(ItemSubcategoryType.WEAPON_MARTIAL,List.of()),
+    SLINGSHOT(ItemSubcategoryType.WEAPON_SIMPLE,List.of(ItemSubcategoryProperty.LIGHT)),
 
     // OTHER WEAPONS
     LIGHTSABER(ItemSubcategoryType.WEAPON_LIGHT,List.of()),
-    VIBROWEAPON(ItemSubcategoryType.WEAPON_LIGHT,List.of()),
     ELECTROSTAFF(ItemSubcategoryType.WEAPON_LIGHT,List.of()),
+    VIBROWEAPON(ItemSubcategoryType.WEAPON_VIBROWEAPON,List.of()),
 
     // GUNS
     GUN(ItemSubcategoryType.WEAPON_BLASTER,List.of()),
@@ -85,6 +90,12 @@ public enum ItemSubcategory {
     BOOTS(ItemSubcategoryType.ARMOUR,List.of()),
 
     WAND(ItemSubcategoryType.WAND,List.of()),
+
+    // Slot items: TODO
+    MODIFICATION(ItemSubcategoryType.NONE,List.of()),
+    EMITTER(ItemSubcategoryType.NONE,List.of()),
+    COLOUR_CRYSTAL(ItemSubcategoryType.NONE,List.of()),
+    KYBER_CRYSTAL(ItemSubcategoryType.NONE,List.of()),
 
     DEFAULT(ItemSubcategoryType.NONE,List.of());
 

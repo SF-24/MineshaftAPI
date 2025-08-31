@@ -15,6 +15,7 @@ This _README_ file is valid only for the 1.21.4 version. For older versions, ple
 	- [Example](#example)
 	- [List of parameters](#List-of-parameters)
 		- [Item category list](#item-category-list)
+		- [Item sub-category list](#item-sub-category-list)
 		- [Item rarity list](#item-rarity-list)
 		- [Item stats and attributes](#item-stats-and-attributes)
 		    - [List of item attributes](#list-of-item-attributes)
@@ -159,41 +160,112 @@ stats:
 ## List of parameters
 Not all parameters are required for the item to work
 
-| Parameter           |                                                                     Description                                                                      | Data Type |                                                                                                                                                                                        Note |
-|:--------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------:|----------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| `parent`            | The name of the parent item. All values unspecified in the file will be set to those of the parent. A parent item may also have its own parent item. |    String |                                                                                                                                                                                             |
-| `name`              |                                                             The custom name for the item                                                             |    String |                                                                                                                                                                                             |
-| `subcategory`       |                                                          The displayed category of the item                                                          |    String |                                                                                                                                   Only affects the item description. Use any value you want |
-| `material`          |                                                         The Minecraft material for the item                                                          |      Enum |                                                                                                     [1.21 Material List](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html) |
-| `rarity`            |                                                                  Rarity of the item                                                                  |      Enum |                                                                                                                                                            [Rarity List](#Item-Rarity-List) |
-| `item_category`     |                                                                 Category of the item                                                                 |      Enum |                                                                                                                                                        [Category List](#Item-Category-List) |
-| `custom_model_data` |                                                                  Custom Model Data                                                                   |   Integer |                                                                                                                                                                                             |
-| `durability`        |                                               The amount of times an item may be used before it breaks                                               |   Integer |                                                                                                                                                                                             |
-| `stack_size`        |                                                       The maximum stack size of any given item                                                       |   Integer |                                                                                                                                                                      Value between 1 and 99 |
-| `hide_attributes`   |                                          Whether the default Minecraft attribute description will be hidden                                          |   boolean |                                                                                                                                           Default is true. Only set to false for debugging. |
-| `enchantment_glint` |                                                                   WIP: do not set                                                                    |   boolean |                                                                                                                                                                                             |
-| `stats`             |                                                               List of item attributes                                                                |   HashMap |                                                                                                                                                                                             |
-| `id`                |                                A unique id assigned by the plugin. This is used for the plugin to recognize the item.                                |      UUID |                                          Do not change or set manually. Two items having the same id will result in **MAJOR** bugs. Changing an item id results in previous items breaking. |
-| `item_model`        |                                                            The custom model for the item                                                             |    String |                                                                                                                                                                                             |
-| `tooltip`           |                                                     Allows for setting the custom tooltip style.                                                     |    String | Textures loaded from: `/assets/<namespace>/textures/gui/sprites/tooltip/<id>_background` and `/assets/<namespace>/textures/gui/sprites/tooltip/<id>_frame` where id is the specified style. |
+| Parameter              |                                                                     Description                                                                      | Data Type |                                                                                                                                                                                        Note |
+|:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------:|----------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| `parent`               | The name of the parent item. All values unspecified in the file will be set to those of the parent. A parent item may also have its own parent item. |    String |                                                                                                                                                                                             |
+| `name`                 |                                                             The custom name for the item                                                             |    String |                                                                                                                                                                                             |
+| `subcategory`          |                                                          The displayed category of the item                                                          |    String |                                                                                                                Affects the item description and properties. [List](#Item-Sub-Category-List) |
+| `subcategory_override` |              The subcategory string, which will be displayed instead of the subcategory. The subcategory is used if this is undefined.               |    String |                                                                                                                                   Only affects the item description. Use any value you want |
+| `material`             |                                                         The Minecraft material for the item                                                          |      Enum |                                                                                                     [1.21 Material List](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html) |
+| `rarity`               |                                                                  Rarity of the item                                                                  |      Enum |                                                                                                                                                            [Rarity List](#Item-Rarity-List) |
+| `item_category`        |                                                                 Category of the item                                                                 |      Enum |                                                                                                                                                        [Category List](#Item-Category-List) |
+| `custom_model_data`    |                                                                  Custom Model Data                                                                   |   Integer |                                                                                                                                                                                             |
+| `durability`           |                                               The amount of times an item may be used before it breaks                                               |   Integer |                                                                                                                                                                                             |
+| `stack_size`           |                                                       The maximum stack size of any given item                                                       |   Integer |                                                                                                                                                                      Value between 1 and 99 |
+| `hide_attributes`      |                                          Whether the default Minecraft attribute description will be hidden                                          |   boolean |                                                                                                                                           Default is true. Only set to false for debugging. |
+| `enchantment_glint`    |                                                                   WIP: do not set                                                                    |   boolean |                                                                                                                                                                                             |
+| `stats`                |                                                               List of item attributes                                                                |   HashMap |                                                                                                                                                                                             |
+| `id`                   |                                A unique id assigned by the plugin. This is used for the plugin to recognize the item.                                |      UUID |                                          Do not change or set manually. Two items having the same id will result in **MAJOR** bugs. Changing an item id results in previous items breaking. |
+| `item_model`           |                                                            The custom model for the item                                                             |    String |                                                                                                                                                                                             |
+| `tooltip`              |                                                     Allows for setting the custom tooltip style.                                                     |    String | Textures loaded from: `/assets/<namespace>/textures/gui/sprites/tooltip/<id>_background` and `/assets/<namespace>/textures/gui/sprites/tooltip/<id>_frame` where id is the specified style. |
 
 ### Item Category List
 
-| Value               | Description                      |
-|:--------------------|:---------------------------------|
-| `weapon_melee`      | Melee weapon                     |
-| `weapon_ranged`     | Ranged weapon                    |
-| `armour_helmet`     | Helmet (Equip in head slot)      |
-| `armour_chestplate` | Chestplate (Equip in chest slot) |
-| `armour_leggings`   | Leggings (Equip in leg slot)     |
-| `armour_boots`      | Boots (Equip in foot slot)       |
-| `tool_axe`          | Axe                              |
-| `tool_pickaxe`      | Pickaxe                          |
-| `tool_shovel`       | Shovel                           |
-| `tool_hoe`          | Hoe                              |
-| `item_consumable`   | Consumable item (One time use)   |
-| `item_generic`      | Generic item (no category)       |
-| `other`             | Other (Unspecified)              |
+| Value               | Description                              |
+|:--------------------|:-----------------------------------------|
+| `weapon_melee`      | Melee weapon                             |
+| `weapon_ranged`     | Ranged weapon                            |
+| `armour_helmet`     | Helmet (Equip in head slot)              |
+| `armour_chestplate` | Chestplate (Equip in chest slot)         |
+| `armour_leggings`   | Leggings (Equip in leg slot)             |
+| `armour_boots`      | Boots (Equip in foot slot)               |
+| `tool_axe`          | Axe                                      |
+| `tool_pickaxe`      | Pickaxe                                  |
+| `tool_shovel`       | Shovel                                   |
+| `tool_hoe`          | Hoe                                      |
+| `tool_misc`         | Another tool                             |
+| `item_consumable`   | Consumable item (One time use)           |
+| `item_generic`      | Generic item (no category)               |
+| `slot_item`         | An item placed in a slot in another item |
+| `other`             | Other (Unspecified)                      |
+
+### Item Sub-Category List
+
+Custom subcategories do not yet exist... 
+<br>For now use subcategory override<br>
+Properties have no function unless *MineshaftRpg* is used.
+
+| Value             | Description           | Properties     |
+|:------------------|:----------------------|:---------------|
+| **Tools:**        |                       |                |
+| `tool`            | Generic tool          |                |
+| `axe`             | Axe                   |                |
+| `pickaxe`         | Pickaxe               |                |
+| `hoe`             | Hoe                   |                |
+| `drill`           | Drill                 |                |
+| `pipe`            | Pipe                  |                |
+| **Weapons**       |                       |                |
+| `weapon`          | Uncategorized         |                |
+| *Simple*          |                       |                |
+| `club`            | Club                  | Light          |
+| `dagger`          | Dagger                | Finesse, Light |
+| `great_club`      | Great-Club            | Heavy          |
+| `hand_axe`        | Hand Axe              |                |
+| `hammer`          | Hammer                |                |
+| `mace`            | Mace                  |                |
+| `staff`           | Staff                 |                |
+| `spear`           | Spear                 |                |
+| *Martial*         |                       |                |
+| `great_axe`       | Great-Axe             | Heavy          |
+| `scimitar`        | Scimitar              |                |
+| `shortsword`      | Short-Sword           | Light, Finesse |
+| `longsword`       | Long-Sword            |                |
+| `glaive`          | Glaive                | Heavy          |
+| `mattock`         | Mattock               | Heavy          |
+| `sword`           | Sword (Generic)       |                |
+| *Ranged, Simple*  |                       |                |
+| `light_crossbow`  | Light Crossbow        |                |
+| `shortbow`        | Short-Bow             |                |
+| `slingshot`       | Slingshot             | Light          |
+| *Ranged, Martial* |                       |                |
+| `heavy_crossbow`  | Heavy Crossbow        | Heavy          |
+| `longbow`         | Longbow               |                |
+| *Lightweapons*    |                       |                |
+| `lightsaber`      | Lightsabre            |                |
+| `electrostaff`    | Electro-Staff         |                |
+| *Vibroweapons*    |                       |                |
+| `vibroweapon`     | Vibroweapon (Generic) |                |
+| *Guns/Blasters*   |                       |                |
+| `gun`             | Gun                   |                |
+| `blaster`         | Blaster               |                |
+| `blaster_pistol`  | Blaster Pistol        |                |
+| `blaster_rifle`   | Blaster Rifle         |                |
+| `rifle`           | Rifle                 |                |
+| `lasgun`          | Lasgun                |                |
+| **Armour**        |                       |                |
+| `helmet`          | Helmet                |                |
+| `hat`             | Hat                   |                |
+| `hood`            | Hood                  |                |
+| `tunic`           | Tunic                 |                |
+| `chestplate`      | Chestplate            |                |
+| `trousers`        | Trousers              |                |
+| `leggings`        | Leggings              |                |
+| `boots`           | Boots                 |                |
+| **Other**         |                       |                |
+| `wand`            | Wand                  |                |
+| `medkit`          | Medical Kit           |                |
+| `consumable`      | Consumable            |                |
+| `default`         | None                  |                |
 
 ### Item Rarity List
 

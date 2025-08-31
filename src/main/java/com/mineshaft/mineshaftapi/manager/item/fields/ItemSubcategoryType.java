@@ -32,7 +32,8 @@ public enum ItemSubcategoryType {
     WEAPON_MARTIAL,
     WEAPON_LIGHT,
     WEAPON_VIBROWEAPON,
-    WEAPON_BLASTER
+    WEAPON_BLASTER,
+    WEAPON_GENERIC
     ;
 
 }

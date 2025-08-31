@@ -27,10 +27,13 @@ import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryProperty;
 import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
+import com.mineshaft.mineshaftapi.manager.item.item_slots.SlotManager;
 import com.mineshaft.mineshaftapi.util.formatter.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.formatter.TextFormatter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,18 +43,16 @@ import java.util.UUID;
 public class LoreManager {
 
     public static ArrayList<String> getLore(UUID uniqueId) {
+        return getLore(uniqueId,null);
+    }
+
+
+    public static ArrayList<String> getLore(UUID uniqueId, ItemStack item) {
         // Get the item
-        YamlConfiguration yamlConfiguration = ItemManager.getYamlConfiguration(uniqueId);
-
-        ItemRarity rarity = ItemManager.getItemRarity(uniqueId);
-
-        HashMap<ItemStats, Double> statMap = ItemManager.getStatMap(ItemManager.getItemName(uniqueId), "stats.");
-        HashMap<RangedItemStats, Double> rangedStatMap = ItemManager.getRangedStatMap(ItemManager.getItemName(uniqueId), "ranged_stats.");
-
         ArrayList<String> lore = new ArrayList<>();
 
         // Rarity String, including subcategory
-        if(getRarityString(uniqueId)!=null) {
+        if (getRarityString(uniqueId) != null) {
             lore.add(getRarityString(uniqueId));
         }
 
@@ -74,17 +75,41 @@ public class LoreManager {
         }
 
         // Item stats
-        lore.addAll(getStatLore(uniqueId));
 
-        lore.addAll(getRangedStatLore(uniqueId));
+        lore.addAll(getStatLore(uniqueId, item));
+
+        lore.addAll(getRangedStatLore(uniqueId,item));
 
         // Empty line break
-        if((!getRangedStatLore(uniqueId).isEmpty() || !getStatLore(uniqueId).isEmpty()) && (ItemManager.useAmmunition(uniqueId))) {
+        if((!getRangedStatLore(uniqueId,item).isEmpty() || !getStatLore(uniqueId,item).isEmpty()) && (ItemManager.useAmmunition(uniqueId))) {
             lore.add(" ");
         }
 
         if(ItemManager.useAmmunition(uniqueId)) {
             lore.add(LoreManager.getAmmunitionString(ItemAmmunitionManager.getMaxAmmunition(uniqueId),ItemAmmunitionManager.getMaxAmmunition(uniqueId)));
+        }
+
+        if((!getStatLore(uniqueId,item).isEmpty()||!getRangedStatLore(uniqueId,item).isEmpty())&&!SlotManager.getSocketTypes(uniqueId).isEmpty()) {
+            lore.add(" ");
+            lore.add(ChatColor.BLUE+"Item Modifications");
+
+            // Get the slot names
+            HashMap<String,String> slotTypes = SlotManager.getSocketTypes(uniqueId);
+
+            // Loop through the slots
+            for(String slotName : slotTypes.keySet()) {
+                // Display the slot item
+                if (item != null && SlotManager.getSlot(item, slotName).getType() != Material.AIR) {
+                    if(SlotManager.getSlot(item,slotName).hasItemMeta()) {
+                        lore.add("  " + ChatColor.WHITE + slotTypes.get(slotName) + ": " + ChatColor.BLUE + SlotManager.getSlot(item, slotName).getItemMeta().getDisplayName());
+                    } else {
+                        lore.add("  " + ChatColor.WHITE + slotTypes.get(slotName) + ": " + ChatColor.BLUE + TextFormatter.convertStringToName(SlotManager.getSlot(item, slotName).getType().name()));
+                    }
+                } else {
+                    // Display an empty slot
+                    lore.add("  " + ChatColor.WHITE + slotTypes.get(slotName) + ": empty" );
+                }
+            }
         }
 
         // TODO: Display custom slots
@@ -153,9 +178,9 @@ public class LoreManager {
 //            }
 
             if (ItemManager.getItemSubcategory(uniqueId) != null && !ItemManager.getItemSubcategory(uniqueId).equals(ItemSubcategory.DEFAULT)) {
-                return TextFormatter.convertStringToName(ItemManager.getItemSubcategory(uniqueId).name().toLowerCase());
+                return TextFormatter.convertStringToName(ItemManager.getItemSubcategoryOverride(uniqueId));
             } else if(ItemManager.getItemSubcategory(ItemManager.getParentName(uniqueId)) != null) {
-                return TextFormatter.convertStringToName(ItemManager.getItemSubcategory(ItemManager.getParentName(uniqueId)).name().toLowerCase());
+                return TextFormatter.convertStringToName(ItemManager.getItemSubcategoryOverride(ItemManager.getUuid(ItemManager.getParentName(uniqueId))));
             }
         }
         return "";
@@ -197,9 +222,14 @@ public class LoreManager {
         return null;
     }
 
-    public static ArrayList<String> getStatLore(UUID uniqueId) {
+    public static ArrayList<String> getStatLore(UUID uniqueId, ItemStack itemStack) {
         ArrayList<String> lore = new ArrayList<>();
-        HashMap<ItemStats, Double> statMap = ItemManager.getStatMap(ItemManager.getItemName(uniqueId), "stats.");
+        HashMap<ItemStats, Double> statMap;
+        if(itemStack==null || itemStack.getType()==Material.AIR) {
+            statMap=ItemManager.getStatMap(ItemManager.getItemName(uniqueId), "stats.");
+        } else {
+            statMap=ItemManager.getItemStatMap(itemStack);
+        }
 
         int lowestPriority = 100;
         int highestPriority= 0;
@@ -229,9 +259,15 @@ public class LoreManager {
         return lore;
     }
 
-    public static ArrayList<String> getRangedStatLore(UUID uniqueId) {
+    public static ArrayList<String> getRangedStatLore(UUID uniqueId, ItemStack itemStack) {
         ArrayList<String> lore = new ArrayList<>();
-        HashMap<RangedItemStats, Double> statMap = ItemManager.getRangedStatMap(ItemManager.getItemName(uniqueId), "ranged_stats.");
+        HashMap<RangedItemStats, Double> statMap;
+
+        if(itemStack==null || itemStack.getType()==Material.AIR) {
+            statMap=ItemManager.getRangedStatMap(ItemManager.getItemName(uniqueId), "stats.");
+        } else {
+            statMap=ItemManager.getRangedItemStatMap(itemStack);
+        }
 
         int lowestPriority = 100;
         int highestPriority= 0;

@@ -67,14 +67,19 @@ public final class MineshaftApi extends JavaPlugin {
     HashMap<String,AbilityType> abilities = new HashMap<>();
 
     // Managers, some including caches
+    @Getter
     ConfigManager configManager = new ConfigManager(this);
+    @Getter
     CooldownManager cooldownManager = new CooldownManager();
     ItemManager itemManager;
     EventManager eventManager;
+    @Getter
     DependencyInit dependencyInit = new DependencyInit();
+    @Getter
     ActionManager actionManager = new ActionManager();
 
     // WorldGuard region manager and cache
+    @Getter
     RegionManager regionManager;
 
     // Caches
@@ -205,17 +210,9 @@ public final class MineshaftApi extends JavaPlugin {
 
     public EventManager getEventManagerInstance() {return eventManager;}
 
-    public CooldownManager getCooldownManager() {return cooldownManager;}
-
-    public ConfigManager getConfigManager() {return configManager;}
-
-    public RegionManager getRegionManager() {return regionManager;}
-
     public boolean hasVaultDependency() { return DependencyInit.hasVault(); }
 
     public VaultDependency getVault() {return dependencyInit.getVault();}
-
-    public DependencyInit getDependencyInit() {return dependencyInit;}
 
     public static void reloadItems() {
         MineshaftApi.getInstance().itemManager.initialiseItems();
@@ -245,8 +242,6 @@ public final class MineshaftApi extends JavaPlugin {
 
         return packageName.substring(packageName.lastIndexOf('.') + 1);
     }
-
-    public ActionManager getActionManager() {return actionManager;}
 
     public PendingAbilities getPendingAbilities(UUID uuid) {
         if(pendingAbilities.get(uuid)!=null) {

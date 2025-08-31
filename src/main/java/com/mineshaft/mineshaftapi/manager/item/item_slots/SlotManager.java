@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.sockets;
+package com.mineshaft.mineshaftapi.manager.item.item_slots;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
@@ -30,7 +30,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class SocketManager {
+public class SlotManager {
 
     // Map format: [Slot Name | Slot Type]
     // The slot type is declared by the plugin user, there are no hardcoded values.
@@ -91,7 +91,7 @@ public class SocketManager {
     // Gets the item from a given slot.
     // Returns null or an empty AIR item if the slot cannot be read, does not exist or is empty.
     // IMPORTANT: This does not check whether the slot exists
-    public static void getSlot(ItemStack baseItem, String slotName) {
+    public static ItemStack getSlot(ItemStack baseItem, String slotName) {
         NBT.get(baseItem,nbt->{
             if(nbt.getItemStack("slot_"+slotName)==null || nbt.getItemStack("slot_"+slotName).getType()== Material.AIR) {
                 return new ItemStack(Material.AIR);
@@ -99,5 +99,6 @@ public class SocketManager {
 
             return nbt.getItemStack("slot_"+slotName);
         });
+        return new ItemStack(Material.AIR);
     }
 }

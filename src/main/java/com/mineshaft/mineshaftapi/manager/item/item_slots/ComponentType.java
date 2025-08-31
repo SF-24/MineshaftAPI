@@ -16,9 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.sockets;
-
-import io.papermc.paper.datacomponent.DataComponentTypes;
+package com.mineshaft.mineshaftapi.manager.item.item_slots;
 
 public enum ComponentType {
 

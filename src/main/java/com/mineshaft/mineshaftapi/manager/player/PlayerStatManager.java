@@ -61,6 +61,7 @@ public class PlayerStatManager {
     public static double getPlayerStat(ItemStats stat, Player player) {
         if(stat.equals(ItemStats.ARMOUR_CLASS)) {
             if ((player.getOpenInventory().getTopInventory().getHolder()==null)) {
+                // TODO: FIX
                 return JsonPlayerBridge.getTempArmourClass(player);
             } else {
                 if(JsonPlayerBridge.hasAbilityScore(player,"dex")) {

@@ -39,12 +39,12 @@ public class TargetEventMechanic implements ITargetedEntitySkill {
 
     protected final String event;
     protected final int damage;
-    protected final int offset;
+    protected final double offset;
 
     public TargetEventMechanic(MythicLineConfig config) {
         this.event = config.getString(new String[] {"event", "e"}, "example-event");
         this.damage = config.getInteger(new String[] {"damage", "d"}, 5);
-        this.offset = config.getInteger(new String[] {"offset", "o"}, 0);
+        this.offset = config.getDouble(new String[] {"offset", "o"}, 0);
     }
 
     @Override

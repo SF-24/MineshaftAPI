@@ -28,7 +28,7 @@ import java.util.Random;
 
 public class MythicAssist {
 
-    public static Location getLocation(SkillMetadata data, AbstractLocation targetLoc, int offset) {
+    public static Location getLocation(SkillMetadata data, AbstractLocation targetLoc, double offset) {
         Location loc = new Location(Bukkit.getWorld(data.getCaster().getLocation().getWorld().getUniqueId()), data.getCaster().getLocation().getX(), data.getCaster().getLocation().getY(), data.getCaster().getLocation().getZ());
 
         AbstractLocation casterLoc = data.getCaster().getLocation();

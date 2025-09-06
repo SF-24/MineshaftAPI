@@ -107,13 +107,6 @@ public final class MineshaftApi extends JavaPlugin {
         /*
          * Dependency checks. load dependency specific managers and listeners
          * */
-        if (DependencyInit.hasMythicMobs()) {
-            // Register placeholders
-            Bukkit.getPluginManager().registerEvents(new MythicListener(), MineshaftApi.getInstance());
-        } else {
-            // Log warning
-            Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
-        }
         // Load AriKeys
         if(DependencyInit.hasAriKeys()) {
             Logger.logDebug("AriKeys event has been enabled");

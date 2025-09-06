@@ -44,15 +44,22 @@ public class GetItemCommand implements CommandExecutor {
         }
 
         if(args.length==0) {
+            // Prevents error
             sendItemList(player);
+            return false;
         } else if(args.length==1 || args.length==2){
             // Generate the path
             String path = MineshaftApi.getItemPath()+File.separator+args[0];
             path = DirUtil.getDirPathFromFilePath(path);
+            if(path.isBlank()) {
+                path=MineshaftApi.getItemPath();
+            }
 
             String item = DirUtil.getFileFromFilePath(args[0]);
             player.sendMessage("Giving item " + item + " in directory " + path.replace(File.separator,"|"));
+            Logger.logWarning("Giving item " + item + " in directory " + path.replace(File.separator,"|"));
 
+            // Error in try/catch
             try {
                 ItemStack itemStack = MineshaftApi.getInstance().getItemManagerInstance().getItem(path,item);
                 if(args.length==2) {
@@ -65,8 +72,10 @@ public class GetItemCommand implements CommandExecutor {
                 }
                 player.getInventory().addItem(itemStack);
             } catch (Exception e) {
+                e.printStackTrace();
                 player.sendMessage(ChatColor.RED + "Invalid item or item definition");
-                sendItemList(player);
+                player.sendMessage(ChatColor.RED + "Type: '/getitem' to view item list");
+//                sendItemList(player);
             }
             return false;
         }

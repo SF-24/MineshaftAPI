@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.dependency;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonDisplayQuestEventFactory;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonExperienceEventFactory;
+import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
@@ -59,6 +60,14 @@ public class DependencyInit {
                 // Log warning
                 Logger.logWarning("Vault is not installed. While this plugin is not required, some functionality and compatibility features will be disabled");
             }
+        }
+        if (DependencyInit.hasMythicMobs()) {
+            // Register placeholders
+            Logger.logInfo("Loaded MythicMobs integration");
+            Bukkit.getPluginManager().registerEvents(new MythicListener(), MineshaftApi.getInstance());
+        } else {
+            // Log warning
+            Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
         }
     }
 

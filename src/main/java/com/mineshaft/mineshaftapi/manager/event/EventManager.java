@@ -129,7 +129,11 @@ public class EventManager {
     }
 
     public boolean runEvent(Event event, Location loc, UUID casterId, Object targetEntity, int castStrength) {
-        Logger.logDebug("Executing: " + event.toString() + " of type " + event.getEventType().toString() + " with target " + targetEntity.toString());
+        if(targetEntity!=null) {
+            Logger.logDebug("Executing: " + event.toString() + " of type " + event.getEventType().toString() + " with target " + targetEntity.toString());
+        } else {
+            Logger.logDebug("Executing: " + event.toString() + " of type " + event.getEventType().toString() + " with target 'null'");
+        }
 
         // Set the cast strength parameter
         event.setCastStrength(castStrength);

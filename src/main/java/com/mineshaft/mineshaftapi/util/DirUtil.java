@@ -23,14 +23,20 @@ import java.io.File;
 public class DirUtil {
 
     public static String getDirPathFromFilePath(String text) {
-        int index=text.lastIndexOf('/')-1;
-        text=text.substring(0,index);
-        return text.replace("/", File.separator);
+        if(text.contains("/")) {
+            int index=text.lastIndexOf('/');
+            text=text.substring(0,index);
+            return text.replace("/", File.separator);
+        }
+        return "";
     }
 
     public static String getFileFromFilePath(String text) {
-        int index=text.lastIndexOf('/');
-        return text.substring(index);
+        if(!text.contains("/")) {
+            return text;
+        }
+        int index=text.lastIndexOf('/')+1;
+        return text.substring(index).replace("/","");
     }
 
 }

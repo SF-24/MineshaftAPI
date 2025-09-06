@@ -320,13 +320,13 @@ Placed under `ranged_stats:` in the YAML file, e.g.:
 <br>
 ```yaml
 ranged_stats:
-  firing_speed_custom: 2.5
+  firing_speed: 2.5
 ```
 
-| Value                 | Stat                             | Description                                                             | Notes |
-|:----------------------|----------------------------------|:------------------------------------------------------------------------|------:|
-| `firing_speed_custom` | Override beam event firing speed | The number of shots, which can be made per second.                      |       |
-| `firing_range_custom` | Override beam event firing range | The distance in blocks the projectiles will fly before being destroyed. |       |
+| Value          | Stat                             | Description                                                             | Notes |
+|:---------------|----------------------------------|:------------------------------------------------------------------------|------:|
+| `firing_speed` | Override beam event firing speed | The number of shots, which can be made per second.                      |       |
+| `firing_range` | Override beam event firing range | The distance in blocks the projectiles will fly before being destroyed. |       |
 
 ### Ammunition
 

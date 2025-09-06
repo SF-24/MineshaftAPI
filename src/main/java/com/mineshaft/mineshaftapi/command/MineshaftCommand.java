@@ -49,6 +49,10 @@ public class MineshaftCommand implements CommandExecutor {
                 });
             }
 
+        } else if(args.length==1 && args[0].equals("sockets")||args[0].equals("slots")) {
+
+            // TODO: Open the socket UI
+
         } else if(args[0].equals("reload")) {
             if(args.length==1) {
                 MineshaftApi.reloadPlugin();

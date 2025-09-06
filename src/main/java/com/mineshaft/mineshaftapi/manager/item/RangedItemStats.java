@@ -18,12 +18,13 @@
 
 package com.mineshaft.mineshaftapi.manager.item;
 
+import com.mineshaft.mineshaftapi.util.formatter.TextFormatter;
 import org.bukkit.ChatColor;
 
 public enum RangedItemStats {
     NULL(ChatColor.WHITE.toString(), 0),
-    FIRING_SPEED_CUSTOM(ChatColor.AQUA.toString(),11),
-    FIRING_RANGE_CUSTOM(ChatColor.BLUE.toString(),12);
+    FIRING_SPEED(ChatColor.AQUA.toString(),11),
+    FIRING_RANGE(ChatColor.BLUE.toString(),12);
 
     private final String colour;
     private final int priority;
@@ -35,6 +36,8 @@ public enum RangedItemStats {
 
     public int getPriority() {return priority;}
     public String getColour() {return colour;}
-
-
+    public String getName() {
+        return TextFormatter.capitaliseStringFully(TextFormatter.convertStringToName(this.name().replace("_CUSTOM", "")));
     }
+
+}

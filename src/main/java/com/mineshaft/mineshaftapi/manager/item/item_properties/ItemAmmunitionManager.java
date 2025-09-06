@@ -47,7 +47,7 @@ public class ItemAmmunitionManager {
 
         int maxShots = 0;
 
-        File fileYaml = new File(ItemManager.getPath(), name + ".yml");
+        File fileYaml = new File(ItemManager.getPath(name), name + ".yml");
 
         // return null if file does not exist
         if (!fileYaml.exists()) {
@@ -75,7 +75,7 @@ public class ItemAmmunitionManager {
 
         ArrayList<String> ammunitionTypes = new ArrayList<>();
 
-        File fileYaml = new File(ItemManager.getPath(), name + ".yml");
+        File fileYaml = new File(ItemManager.getPath(name), name + ".yml");
 
         // return null if file does not exist
         if (!fileYaml.exists()) {

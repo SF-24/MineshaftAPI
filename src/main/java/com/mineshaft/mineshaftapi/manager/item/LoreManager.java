@@ -264,7 +264,7 @@ public class LoreManager {
         HashMap<RangedItemStats, Double> statMap;
 
         if(itemStack==null || itemStack.getType()==Material.AIR) {
-            statMap=ItemManager.getRangedStatMap(ItemManager.getItemName(uniqueId), "stats.");
+            statMap=ItemManager.getRangedStatMap(ItemManager.getItemName(uniqueId), "ranged_stats.");
         } else {
             statMap=ItemManager.getRangedItemStatMap(itemStack);
         }

@@ -52,8 +52,8 @@ public class TargetEventMechanic implements ITargetedEntitySkill {
         data.getParameters();
 
         UUID uuid = data.getCaster().getEntity().getUniqueId();
-
         AbstractLocation targetLoc = targetEntity.getLocation();
+
 
         // MineshaftApi.getAnyPlayer().sendMessage("offset: " + this.offset);
 

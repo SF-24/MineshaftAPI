@@ -53,7 +53,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,11 +151,14 @@ public class ItemManager {
 
         // TODO: CHECK CODE
         items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
-        itemPaths.put(UUID.fromString(yamlConfiguration.getString("id")), path);
-        Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "'");
+        itemPaths.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), path);
+        Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "' and path '" + path + "'");
     }
 
     public static String getItemPath(UUID uuid) {
+        if(!MineshaftApi.getInstance().getItemManagerInstance().itemPaths.containsKey(uuid) || MineshaftApi.getInstance().getItemManagerInstance().itemPaths.get(uuid).isBlank()) {
+            return MineshaftApi.getItemPath();
+        }
         return MineshaftApi.getInstance().getItemManagerInstance().itemPaths.get(uuid);
     }
 
@@ -192,11 +194,16 @@ public class ItemManager {
 
         // return null if file does not exist
         if (!fileYaml.exists()) {
-            Logger.logError("Attempted to load null item: " + itemName + ".yml");
+            Logger.logError("Attempted to load null item: " + itemName + ".yml in directory: " + dir);
             return null;
         }
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
+
+        if(yamlConfiguration==null) {
+            Logger.logError("Loaded null YamlConfiguration for file " + dir + "/" + fileYaml.getName());
+            return null;
+        }
 
         // Whether the item has a parent item
         boolean hasParent = false;
@@ -990,7 +997,7 @@ public class ItemManager {
 
     protected static void setItemNbtRangedStat(ItemStack stack, RangedItemStats stat, double value) {
         NBT.modify(stack, nbt -> {
-            nbt.setDouble("ranged_stat." + stat.name().toLowerCase(Locale.ROOT), value);
+            nbt.setDouble("ranged_stat." + stat.getName().toLowerCase(Locale.ROOT), value);
         });
     }
 
@@ -1170,9 +1177,17 @@ public class ItemManager {
     }
 
 
-    public static YamlConfiguration getYamlConfiguration(String path, String fileName) {
-        File fileYaml = new File(path, fileName);
-        if(!fileYaml.exists()) return null;
+    public static YamlConfiguration getYamlConfiguration(String path, String itemName) {
+        if(itemName==null || itemName.isEmpty() || itemName.contains("null")) return null;
+        if(path.isBlank()) {
+            Logger.logWarning("Found empty path for file " + itemName + ".yml, using default path" );
+            path=MineshaftApi.getItemPath();
+        }
+        File fileYaml = new File(path, itemName+".yml");
+        if(!fileYaml.exists()) {
+            Logger.logError("Tried to load non-existent file: " + path + "/" + fileYaml.getName());
+            return null;
+        }
         return YamlConfiguration.loadConfiguration(fileYaml);
     }
 
@@ -1239,7 +1254,7 @@ public class ItemManager {
 
         // return null if file does not exist
         if (!fileYaml.exists()) {
-            Logger.logError("FILE NOT FOUND ERROR!!!!!!!");
+            Logger.logError("FILE NOT FOUND ERROR! For file: " + fileYaml.getPath());
             return null;
         }
 
@@ -1248,10 +1263,12 @@ public class ItemManager {
         // Whether the item has a parent item
         // TODO: fix this code
 
-        String parent = yamlConfiguration.getString("parent");
-        if(parent!=null && !parent.equalsIgnoreCase("null")) {
-            List<String> parentEvents = getInteractEventsFromItem(parent, actionType);
-            interactEvents.addAll(parentEvents);
+        if(yamlConfiguration.contains("parent")) {
+            String parent = yamlConfiguration.getString("parent");
+            if (parent != null && !parent.equalsIgnoreCase("null") && !parent.equalsIgnoreCase("nil")) {
+                List<String> parentEvents = getInteractEventsFromItem(parent, actionType);
+                interactEvents.addAll(parentEvents);
+            }
         }
 
         String clickPath = "action.";
@@ -1298,6 +1315,13 @@ public class ItemManager {
             return(getYamlConfiguration(uniqueId).contains("ammunition"))&& ItemAmmunitionManager.getMaxAmmunition(uniqueId)>0;
         }
         return false;
+    }
+
+    public static void updateItem(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        // TODO: Update the properties from the equipped sockets
+        item.setLore(LoreManager.getLore(getItemIdFromItem(item),item));
+        item.setItemMeta(meta);
     }
 
 }

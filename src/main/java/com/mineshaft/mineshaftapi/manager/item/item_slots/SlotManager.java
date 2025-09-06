@@ -20,11 +20,13 @@ package com.mineshaft.mineshaftapi.manager.item.item_slots;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.LoreManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.util.HashMap;
@@ -86,6 +88,9 @@ public class SlotManager {
         NBT.modify(baseItem, nbt->{
            nbt.setItemStack("slot_"+slotName, slotItem);
         });
+
+        ItemManager.updateItem(baseItem);
+        // TODO: Update the item with the new properties
     }
 
     // Gets the item from a given slot.
@@ -100,5 +105,9 @@ public class SlotManager {
             return nbt.getItemStack("slot_"+slotName);
         });
         return new ItemStack(Material.AIR);
+    }
+
+    public static void equipSocket(ItemStack baseItem, String slotName, ItemStack socketItem) {
+        // TODO:
     }
 }

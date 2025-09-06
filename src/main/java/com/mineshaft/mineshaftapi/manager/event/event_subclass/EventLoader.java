@@ -182,7 +182,7 @@ public class EventLoader {
         if (executingItem != null) {
             // Override damage via weapon stat
             double damage = ItemManager.getItemNbtStat(executingItem, ItemStats.RANGED_DAMAGE);
-            int range = (int) ItemManager.getItemNbtRangedStat(executingItem, RangedItemStats.FIRING_RANGE_CUSTOM);
+            int range = (int) ItemManager.getItemNbtRangedStat(executingItem, RangedItemStats.FIRING_RANGE);
             if (range > 0) {
                 beamEvent.setFlyDistance(range);
             }

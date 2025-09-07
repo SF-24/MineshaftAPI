@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.dependency;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonDisplayQuestEventFactory;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonExperienceEventFactory;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonRemoveQuestEventFactory;
 import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;
@@ -39,7 +40,8 @@ public class DependencyInit {
             PrimaryServerThreadData data = new PrimaryServerThreadData(Bukkit.getServer(), Bukkit.getScheduler(), BetonQuest.getInstance());
 
             BetonQuest.getInstance().getQuestRegistries().event().register("mineshaftxp", new BetonExperienceEventFactory(loggerFactory,data));
-            BetonQuest.getInstance().getQuestRegistries().event().register("mineshaftquestdisplay", new BetonDisplayQuestEventFactory(loggerFactory, data));
+            BetonQuest.getInstance().getQuestRegistries().event().register("addquest", new BetonDisplayQuestEventFactory(loggerFactory, data));
+            BetonQuest.getInstance().getQuestRegistries().event().register("remquest", new BetonRemoveQuestEventFactory(loggerFactory, data));
 
         } else {
             Logger.logWarning("BetonQuest is not enabled. Plugin compatibility features have been disabled.");

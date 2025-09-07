@@ -32,12 +32,12 @@ import org.betonquest.betonquest.quest.event.PrimaryServerThreadEvent;
 
 import java.util.List;
 
-public class BetonDisplayQuestEventFactory implements PlayerEventFactory {
+public class BetonRemoveQuestEventFactory implements PlayerEventFactory {
 
     private final BetonQuestLoggerFactory loggerFactory;
     private final PrimaryServerThreadData data;
 
-    public BetonDisplayQuestEventFactory(final BetonQuestLoggerFactory loggerFactory, PrimaryServerThreadData data) {
+    public BetonRemoveQuestEventFactory(final BetonQuestLoggerFactory loggerFactory, PrimaryServerThreadData data) {
         this.loggerFactory = loggerFactory;
         this.data=data;
     }
@@ -45,18 +45,11 @@ public class BetonDisplayQuestEventFactory implements PlayerEventFactory {
 
     @Override
     public PlayerEvent parsePlayer(Instruction instruction) throws QuestException {
-
         final Variable<String> id = instruction.get(Argument.STRING);
-        final Variable<String> name = instruction.get(Argument.STRING);
-        final Variable<String> description = instruction.get(Argument.STRING);
-        final Variable<String> cancelEvent = instruction.get(Argument.STRING);
-        final Variable<List<String>> objectivesBase = instruction.getList(Argument.STRING);
-
-        QuestPackage questPackage = instruction.getPackage();
 
         return new PrimaryServerThreadEvent(new OnlineEventAdapter(
-                new BetonDisplayQuestEvent(id, name, description, objectivesBase, cancelEvent, questPackage),
-                loggerFactory.create(BetonExperienceEvent.class),
+                new BetonRemoveQuestEvent(id),
+                loggerFactory.create(BetonRemoveQuestEvent.class),
                 instruction.getPackage()
         ), data);
     }

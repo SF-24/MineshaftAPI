@@ -19,9 +19,6 @@
 package com.mineshaft.mineshaftapi.manager.player.json;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.dependency.DependencyInit;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestManager;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.events.AbilityEventType;
 import com.mineshaft.mineshaftapi.events.MineshaftAbilityModifyEvent;
@@ -30,11 +27,9 @@ import com.mineshaft.mineshaftapi.manager.item.crafting.RecipeKey;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
-import com.mineshaft.mineshaftapi.util.Logger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -47,6 +42,7 @@ import java.util.List;
 public class JsonPlayerBridge {
 
     public static JsonPlayerManager getJsonInstance(Player player) { return new JsonPlayerManager(player, JsonProfileBridge.getCurrentProfile(player));}
+    public static JsonQuestManager getQuestInstance(Player player) { return new JsonQuestManager(player, JsonProfileBridge.getCurrentProfile(player));}
 
     /**
      * Basic data
@@ -205,40 +201,24 @@ public class JsonPlayerBridge {
     * QUESTS AND DISPLAY
     */
 
-
-
-    public static void addQuest(Player player, QuestObject questObject) {
-
+    public static void addQuest(Player player, String id, QuestObject questObject) {
+        getQuestInstance(player).addQuest(id,questObject);
     }
 
-    public static void removeQuest(Player player, String questName) {
-        if (getQuest(player, questName) == null) {
-            return;
-        }
-        if (DependencyInit.hasBetonQuest()) {
-            QuestEventsObject cancelEvent = getQuest(player,questName).getEventObject();
-            if(cancelEvent!=null) {
-                final QuestPackage questPackage = (cancelEvent.getQuestPackage());
-                BetonQuestManager.runBetonPlayerEvent(player,questPackage,questName);
-            }
-        } else {
-            Logger.logError("Attempted to use quest display API while BetonQuest is not enabled. Quest functionality is unavailable without this plugin!");
-        }
-        getJsonInstance(player).removeQuest(player, questName);
-
+    public static void removeQuest(Player player, String questId) {
+        getQuestInstance(player).removeQuest(questId);
     }
 
-    public static ArrayList<QuestObject> getQuests(Player player) {
-        return getJsonInstance(player).getQuests(player);
+    public static HashMap<String, QuestObject> getQuests(Player player) {
+        return getQuestInstance(player).getQuests();
     }
 
-    public static QuestObject getQuest(Player player, String questName) {
-        for(QuestObject questObject : getQuests(player)) {
-            if(questObject.getName().equalsIgnoreCase(questName)) {
-                return questObject;
-            }
-        }
-        return null;
+    public static QuestObject getQuest(Player player, String questId) {
+        return getQuestInstance(player).getQuest(questId);
+    }
+
+    public boolean hasQuest(Player player, String questId) {
+        return getQuestInstance(player).hasQuest(questId);
     }
 
     /**

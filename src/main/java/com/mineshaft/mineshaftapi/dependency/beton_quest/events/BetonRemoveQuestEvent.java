@@ -29,26 +29,15 @@ import org.betonquest.betonquest.api.quest.event.online.OnlineEvent;
 
 import java.util.List;
 
-public class BetonDisplayQuestEvent implements OnlineEvent {
+public class BetonRemoveQuestEvent implements OnlineEvent {
     final Variable<String> id;
-    final Variable<String> name;
-    final Variable<String> description;
-    final Variable<List<String>> objectives;
-    final Variable<String> cancelEvent;
-    final QuestPackage questPackage;
 
-    public BetonDisplayQuestEvent(Variable<String> id, Variable<String> name, Variable<String> description, Variable<List<String>> objectives, Variable<String> cancelEvent, QuestPackage questPackage) {
+    public BetonRemoveQuestEvent(Variable<String> id) {
         this.id = id;
-        this.name=name;
-        this.description=description;
-        this.objectives=objectives;
-        this.cancelEvent=cancelEvent;
-        this.questPackage=questPackage;
     }
 
     @Override
     public void execute(final OnlineProfile profile) throws QuestException {
-        QuestObject questObject = new QuestObject(name.getValue(profile), description.getValue(profile), objectives.getValue(profile), new QuestEventsObject(questPackage, cancelEvent.getValue(profile)));
-        JsonPlayerBridge.addQuest(profile.getPlayer(), id.getValue(profile), questObject);
+        JsonPlayerBridge.removeQuest(profile.getPlayer(), id.getValue(profile));
     }
 }

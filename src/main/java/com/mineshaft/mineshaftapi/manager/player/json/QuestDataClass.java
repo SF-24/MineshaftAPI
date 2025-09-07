@@ -16,14 +16,32 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
+package com.mineshaft.mineshaftapi.manager.player.json;
 
-import org.bukkit.entity.Player;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import lombok.Getter;
 
-public class PlayerQuestManagment {
+import java.util.HashMap;
 
-    public static void addQuestToPlayer(Player player, QuestObject quest) {
-        // TODO:
+@Getter
+public class QuestDataClass {
+
+    HashMap<String, QuestObject> quests = new HashMap<>();
+
+    public QuestObject getQuest(String id) {
+        return quests.get(id);
+    }
+
+    public void removeQuest(String questId) {
+        quests.remove(questId);
+    }
+
+    public void addQuest(String questId, QuestObject questObject) {
+        quests.put(questId, questObject);
+    }
+
+    public boolean hasQuest(String questId) {
+        return quests.containsKey(questId);
     }
 
 }

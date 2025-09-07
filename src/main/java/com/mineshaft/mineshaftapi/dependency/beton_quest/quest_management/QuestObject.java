@@ -18,18 +18,23 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class QuestObject {
 
-    protected boolean usePlaceholders = true;
+    protected boolean usePlaceholderApi = true;
 
     protected String name = "";
     protected String description = "";
 
     protected List<String> objectives = new ArrayList<>();
 
+    @Setter
     protected QuestStatus status = QuestStatus.ACTIVE;
     private final QuestEventsObject eventObject;
 
@@ -39,13 +44,4 @@ public class QuestObject {
         this.objectives=objectives;
         this.eventObject=eventObject;
     }
-
-    public void setStatus(QuestStatus questStatus) {this.status=questStatus;}
-
-    public boolean usePlaceholderAPI() {return usePlaceholders;}
-    public String getName() {return name;}
-    public String getDescription() {return description;}
-    public List<String> getObjectives() {return objectives;}
-    public QuestStatus getStatus() {return status;}
-    public QuestEventsObject getEventObject() {return eventObject;}
 }

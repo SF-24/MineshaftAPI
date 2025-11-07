@@ -26,7 +26,7 @@ import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
-import org.betonquest.betonquest.quest.PrimaryServerThreadData;
+import org.betonquest.betonquest.api.quest.PrimaryServerThreadData;
 import org.bukkit.Bukkit;
 
 public class DependencyInit {

@@ -18,10 +18,18 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
 
+import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
 import lombok.Getter;
 import lombok.Setter;
+import org.betonquest.betonquest.conversation.ChatConvIO;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -43,5 +51,13 @@ public class QuestObject {
         this.description=description;
         this.objectives=objectives;
         this.eventObject=eventObject;
+    }
+
+    public ItemStack getItem() {
+        ItemStack itemStack = new ItemStack(Material.PAPER);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(status.getColour() + name);
+        itemMeta.setLore(Collections.singletonList(ChatColor.GRAY + description));
+        return itemStack;
     }
 }

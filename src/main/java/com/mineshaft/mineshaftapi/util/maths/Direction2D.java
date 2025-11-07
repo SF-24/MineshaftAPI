@@ -18,8 +18,6 @@
 
 package com.mineshaft.mineshaftapi.util.maths;
 
-import org.bukkit.util.Vector;
-
 public enum Direction2D {
 
     UP, DOWN, LEFT, RIGHT

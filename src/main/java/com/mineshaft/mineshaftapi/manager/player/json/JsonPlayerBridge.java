@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftapi.manager.player.json;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestStatus;
 import com.mineshaft.mineshaftapi.events.AbilityEventType;
 import com.mineshaft.mineshaftapi.events.MineshaftAbilityModifyEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
@@ -211,6 +212,10 @@ public class JsonPlayerBridge {
 
     public static HashMap<String, QuestObject> getQuests(Player player) {
         return getQuestInstance(player).getQuests();
+    }
+
+    public static HashMap<String, QuestObject> getQuests(Player player, QuestStatus status) {
+        return getQuestInstance(player).getQuests(status);
     }
 
     public static QuestObject getQuest(Player player, String questId) {

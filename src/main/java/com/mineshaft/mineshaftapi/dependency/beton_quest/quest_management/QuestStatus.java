@@ -18,11 +18,21 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
 
+import lombok.Getter;
+import org.bukkit.ChatColor;
+
+@Getter
 public enum QuestStatus {
 
-    INACTIVE,
-    ACTIVE,
-    COMPLETE,
-    LOCKED;
+    INACTIVE(ChatColor.GRAY.toString()),
+    ACTIVE(ChatColor.GREEN.toString()),
+    COMPLETE(ChatColor.GOLD.toString()),
+    LOCKED(ChatColor.RED.toString()),;
+
+    private final String colour;
+
+    QuestStatus(String colour) {
+        this.colour=colour;
+    }
 
 }

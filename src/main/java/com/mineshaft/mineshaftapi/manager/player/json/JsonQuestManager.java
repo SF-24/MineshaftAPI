@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftapi.manager.player.json;
 
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestStatus;
 import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
@@ -27,6 +28,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -182,5 +185,17 @@ public class JsonQuestManager {
     public HashMap<String, QuestObject> getQuests() {
         QuestDataClass data = loadData(player);
         return data.getQuests();
+    }
+
+    public HashMap<String, QuestObject> getQuests(QuestStatus status) {
+        QuestDataClass data = loadData(player);
+        HashMap<String, QuestObject> returnValues = new HashMap<>();
+        for(String id : data.getQuests().keySet()) {
+            QuestObject questObject = data.getQuests().get(id);
+            if(questObject.getStatus().equals(status)) {
+                returnValues.put(id, questObject);
+            }
+        }
+        return returnValues;
     }
 }

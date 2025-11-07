@@ -18,7 +18,6 @@
 
 package com.mineshaft.mineshaftapi.util.maths;
 
-import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
 public enum Direction {

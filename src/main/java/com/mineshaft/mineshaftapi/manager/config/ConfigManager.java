@@ -104,9 +104,10 @@ public class ConfigManager {
         return getConfig().getBoolean("send-exp-actionbar");
     }
 
+    public int getArmourConstant() {return getConfig().getInt("armour-constant");}
+
     public void reloadConfigs() {
         MineshaftApi.getInstance().reloadConfig();
     }
-
 
 }

@@ -18,15 +18,17 @@
 
 package com.mineshaft.mineshaftapi.manager;
 
+import com.mineshaft.mineshaftapi.MineshaftApi;
+
 public class DamageManager {
 
-    // Change this to modify how much armour class protects the user
-    static final double baseDamageCalculationValue = 14;
-
     public static double calculateNewDamage(double damage, double armourClass) {
-        double damageReduction = armourClass / (armourClass +
-                baseDamageCalculationValue);
+        double damageReduction = armourClass /
+                (armourClass + getArmourConstant());
         return damage * (1 - damageReduction);
     }
 
+    public static int getArmourConstant() {
+        return MineshaftApi.getInstance().getConfigManager().getArmourConstant();
+    }
 }

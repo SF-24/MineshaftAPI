@@ -20,6 +20,12 @@ send-exp-actionbar: true
 # Whether the item rarity description will be italic
 italic-item-rarity: true
 
+# ----------------------------------------CONSTANTS----------------------------------------
+
+# The armour protection constant (n)
+# Effective HP = HP(1+Defence/n)
+armour-constant: 16
+
 # ----------------------------------------CURRENCY----------------------------------------
 
 # Singular and plural form of the currency name

@@ -143,6 +143,7 @@ public final class MineshaftApi extends JavaPlugin {
 
         // Initialise registrar
         recipeRegistrar = new RecipeRegistrar("mineshaft");
+        globalRecipeCache = new GlobalRecipeCache();
 
         // Initialise custom items
         itemManager=new ItemManager();
@@ -169,7 +170,11 @@ public final class MineshaftApi extends JavaPlugin {
 
         // Deregister recipes
         getRecipeRegistrar().clearRecipes();
-        globalRecipeCache.clearLockedRecipes();
+        if(globalRecipeCache!=null) {
+            globalRecipeCache.clearLockedRecipes();
+        } else {
+            Logger.logWarning("Warning! The global recipe cache has a null value.");
+        }
     }
 
     public static Language getLanguage(Player player) {

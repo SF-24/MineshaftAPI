@@ -161,11 +161,8 @@ public class ItemManager {
         }
 
         // Cache item:
-
-        Logger.logInfo("Caching item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "' and path '" + path + "'");
         items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
         itemPaths.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), path);
-
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "' and path '" + path + "'");
     }
 

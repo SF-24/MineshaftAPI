@@ -148,6 +148,7 @@ public final class MineshaftApi extends JavaPlugin {
         // Initialise custom items
         itemManager=new ItemManager();
         itemManager.initialiseItems();
+        itemManager.initialiseItemRecipes();
 
         // Load events
         eventManager=new EventManager();

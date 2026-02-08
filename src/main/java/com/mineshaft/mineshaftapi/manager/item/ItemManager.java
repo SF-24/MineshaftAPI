@@ -37,7 +37,6 @@ import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -102,6 +101,22 @@ public class ItemManager {
         }
     }
 
+    public void initialiseItemRecipes() {
+        for(UUID uniqueId : items.keySet()) {
+            String name = items.get(uniqueId);
+
+            try {
+                // Register item crafting recipe, if exists.
+                ItemRecipeManager.registerRecipe(name);
+                ItemDeconstructManager.registerMeltingRecipes(name);
+                Logger.logInfo("Initialised recipe for item: " + name);
+            } catch (Exception e) {
+                Logger.logWarning("Initialising recipe failed for item: " + name);
+            }
+
+        }
+    }
+
     // Initialises files in a given directory
     // iteration is used to avoid an infinite loop
     public void initialiseFilesInDirectory(String path, String dirName, int iteration) {
@@ -145,17 +160,12 @@ public class ItemManager {
             Logger.logError("Duplicate id detected for items: " + fileName + " and " + items.get(UUID.fromString(yamlConfiguration.getString("id"))));
         }
 
-        try {
-            // Register item crafting recipe, if exists.
-            ItemRecipeManager.registerRecipe(name);
-            ItemDeconstructManager.registerMeltingRecipes(name);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Cache item:
 
-        // TODO: CHECK CODE
+        Logger.logInfo("Caching item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "' and path '" + path + "'");
         items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
         itemPaths.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), path);
+
         Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "' and path '" + path + "'");
     }
 
@@ -1078,6 +1088,11 @@ public class ItemManager {
 
     // Get the rarity of an item.
     public static ItemRarity getItemRarity(UUID uniqueId) {
+        if(uniqueId==null) {
+            Logger.logError("The given UUID is null for this item. Returning");
+            return ItemRarity.STANDARD;
+        }
+
         if(getYamlConfiguration(uniqueId)!=null) {
             if(getYamlConfiguration(uniqueId).contains("rarity")) {
                 return ItemRarity.valueOf(getYamlConfiguration(uniqueId).getString("rarity").toUpperCase(Locale.ROOT));
@@ -1114,6 +1129,11 @@ public class ItemManager {
 
     public static ItemSubcategory getItemSubcategory(UUID uniqueId) {
         YamlConfiguration yamlConfiguration = ItemManager.getYamlConfiguration(uniqueId);
+        if(yamlConfiguration==null) {
+            Logger.logError("Found null yamlconfiguration for the item of uuid: " + uniqueId);
+            Logger.logError("Item name: " + getItemName(uniqueId));
+            Logger.logError("Item map: " + MineshaftApi.getInstance().getItemManagerInstance().items.toString());
+        }
         if(yamlConfiguration.contains("subcategory")) {
             return getItemSubcategory(yamlConfiguration.getString("subcategory"));
         } else {
@@ -1183,6 +1203,11 @@ public class ItemManager {
 
     public static YamlConfiguration getYamlConfiguration(String fileName) {
         // TODO: Get path
+        if(fileName==null) {
+            Logger.logError("Found null filename when loading item!");
+            return null;
+        }
+//        if(!fileName.contains(".yml") || !fileName.contains(".yaml")) fileName += ".yml";
         return getYamlConfiguration(MineshaftApi.getItemPath(), fileName);
     }
 

@@ -34,6 +34,7 @@ public enum HardcodedRecipe {
     LEGGINGS_SIMPLE(CraftingBookCategory.EQUIPMENT),
     BOOTS_SIMPLE(CraftingBookCategory.EQUIPMENT),
     ;
+
     private final CraftingBookCategory category;
 
     HardcodedRecipe(CraftingBookCategory category) {

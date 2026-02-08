@@ -18,83 +18,73 @@
 
 package com.mineshaft.mineshaftapi.dependency.lead_wires;
 
-import com.mineshaft.mineshaftapi.util.LocationUtil;
-import me.saharnooby.plugins.leadwires.LeadWires;
-import me.saharnooby.plugins.leadwires.api.LeadWiresAPI;
-import me.saharnooby.plugins.leadwires.wire.Wire;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.UUID;
-
+@Deprecated(forRemoval = true)
 public class LeadWireManager {
-
-    public static LeadWiresAPI getApi() {
-        return LeadWires.getApi();
-    }
-
-    public static Wire getWire(UUID uuid) {
-        return getApi().getWires().get(uuid);
-    }
-
-    public static boolean wireHasEndAtLocation(UUID uuid, Location loc) {
-        return getWire(uuid).getWorld().equals(loc.getWorld().getName()) && ( getRoundedEndA(uuid).equals(LocationUtil.getRoundedLocation(loc)) || getRoundedEndB(uuid).equals(LocationUtil.getRoundedLocation(loc)));
-    }
-
-    public static Vector getOtherEnd(UUID uuid, Location loc) {
-        if(wireHasEndAtLocation(uuid, loc)) {
-            if(getRoundedEndA(uuid).equals(LocationUtil.getRoundedLocation(loc))) {
-                return getRoundedEndB(uuid);
-            } else {
-                return getRoundedEndA(uuid);
-            }
-        }
-        return null;
-    }
-
-    public static Location getOtherEndAsLocation(UUID uuid, Location loc) {
-        if(getOtherEnd(uuid, loc)==null || Bukkit.getWorld(getWire(uuid).getWorld())==null) return null;
-        return getOtherEnd(uuid, loc).toLocation(Bukkit.getWorld(getWire(uuid).getWorld()));
-    }
-
-    public static ArrayList<Vector> findCableEnds(UUID uuid, Location loc) {
-        ArrayList<Vector> cableEnds = new ArrayList<>();
-        // TODO: Find cable ends
-        return cableEnds;
-    }
-
-    public static ArrayList<UUID> findConnectorsAtPoint(UUID uuid, Location loc) {
-        ArrayList<UUID> connectors = new ArrayList<>();
-        for(UUID element : getApi().getWires().keySet()) {
-            if(!element.equals(uuid) && wireHasEndAtLocation(element, loc)) {
-                connectors.add(element);
-            }
-        }
-        return connectors;
-    }
-
-    public static ArrayList<UUID> findConnectorsAtOtherEnd(UUID uuid, Location loc) {
-        return findConnectorsAtPoint(uuid, getOtherEndAsLocation(uuid, loc));
-    }
-
-    public static ArrayList<UUID> getWires(Location loc) {
-        ArrayList<UUID> wires = new ArrayList<>();
-        for(UUID element : getApi().getWires().keySet()) {
-            if(wireHasEndAtLocation(element, loc)) {
-                wires.add(element);
-            }
-        }
-        return wires;
-    }
-
-    public static Vector getRoundedEndA(UUID uuid) {
-        return new Vector(getWire(uuid).getA().getBlockX(),getWire(uuid).getA().getBlockY(),getWire(uuid).getA().getBlockZ());
-    }
-
-    public static Vector getRoundedEndB(UUID uuid) {
-        return new Vector(getWire(uuid).getB().getBlockX(),getWire(uuid).getB().getBlockY(),getWire(uuid).getB().getBlockZ());
-    }
+//
+//    public static LeadWiresAPI getApi() {
+//        return LeadWires.getApi();
+//    }
+//
+//    public static Wire getWire(UUID uuid) {
+//        return getApi().getWires().get(uuid);
+//    }
+//
+//    public static boolean wireHasEndAtLocation(UUID uuid, Location loc) {
+//        return getWire(uuid).getWorld().equals(loc.getWorld().getName()) && ( getRoundedEndA(uuid).equals(LocationUtil.getRoundedLocation(loc)) || getRoundedEndB(uuid).equals(LocationUtil.getRoundedLocation(loc)));
+//    }
+//
+//    public static Vector getOtherEnd(UUID uuid, Location loc) {
+//        if(wireHasEndAtLocation(uuid, loc)) {
+//            if(getRoundedEndA(uuid).equals(LocationUtil.getRoundedLocation(loc))) {
+//                return getRoundedEndB(uuid);
+//            } else {
+//                return getRoundedEndA(uuid);
+//            }
+//        }
+//        return null;
+//    }
+//
+//    public static Location getOtherEndAsLocation(UUID uuid, Location loc) {
+//        if(getOtherEnd(uuid, loc)==null || Bukkit.getWorld(getWire(uuid).getWorld())==null) return null;
+//        return getOtherEnd(uuid, loc).toLocation(Bukkit.getWorld(getWire(uuid).getWorld()));
+//    }
+//
+//    public static ArrayList<Vector> findCableEnds(UUID uuid, Location loc) {
+//        ArrayList<Vector> cableEnds = new ArrayList<>();
+//        // TODO: Find cable ends
+//        return cableEnds;
+//    }
+//
+//    public static ArrayList<UUID> findConnectorsAtPoint(UUID uuid, Location loc) {
+//        ArrayList<UUID> connectors = new ArrayList<>();
+//        for(UUID element : getApi().getWires().keySet()) {
+//            if(!element.equals(uuid) && wireHasEndAtLocation(element, loc)) {
+//                connectors.add(element);
+//            }
+//        }
+//        return connectors;
+//    }
+//
+//    public static ArrayList<UUID> findConnectorsAtOtherEnd(UUID uuid, Location loc) {
+//        return findConnectorsAtPoint(uuid, getOtherEndAsLocation(uuid, loc));
+//    }
+//
+//    public static ArrayList<UUID> getWires(Location loc) {
+//        ArrayList<UUID> wires = new ArrayList<>();
+//        for(UUID element : getApi().getWires().keySet()) {
+//            if(wireHasEndAtLocation(element, loc)) {
+//                wires.add(element);
+//            }
+//        }
+//        return wires;
+//    }
+//
+//    public static Vector getRoundedEndA(UUID uuid) {
+//        return new Vector(getWire(uuid).getA().getBlockX(),getWire(uuid).getA().getBlockY(),getWire(uuid).getA().getBlockZ());
+//    }
+//
+//    public static Vector getRoundedEndB(UUID uuid) {
+//        return new Vector(getWire(uuid).getB().getBlockX(),getWire(uuid).getB().getBlockY(),getWire(uuid).getB().getBlockZ());
+//    }
 
 }

@@ -18,28 +18,31 @@
 
 package com.mineshaft.mineshaftapi.manager.item.fields;
 
+import lombok.Getter;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 
+@Getter
 public enum ItemRarity {
 
-    STANDARD(ChatColor.WHITE.toString(),ChatColor.GRAY.toString(), ""),
-    COMMON(ChatColor.WHITE.toString(), ChatColor.GRAY.toString(), "Common"),
-    UNCOMMON(ChatColor.GREEN.toString(),ChatColor.DARK_GREEN.toString(), "Uncommon"),
-    RARE(ChatColor.BLUE.toString(), ChatColor.DARK_AQUA.toString(), "Rare"),
-    EXOTIC(ChatColor.DARK_PURPLE.toString(),ChatColor.DARK_PURPLE.toString(), "Exotic"),
-    LEGENDARY(ChatColor.GOLD.toString(),ChatColor.GOLD.toString(), "Legendary");
+    STANDARD(NamedTextColor.WHITE, ChatColor.WHITE.toString(),ChatColor.GRAY.toString(), ""),
+    COMMON(NamedTextColor.WHITE, ChatColor.WHITE.toString(), ChatColor.GRAY.toString(), "Common"),
+    UNCOMMON(NamedTextColor.GREEN, ChatColor.GREEN.toString(),ChatColor.DARK_GREEN.toString(), "Uncommon"),
+    RARE(NamedTextColor.BLUE, ChatColor.BLUE.toString(), ChatColor.DARK_AQUA.toString(), "Rare"),
+    EXOTIC(NamedTextColor.DARK_PURPLE, ChatColor.DARK_PURPLE.toString(),ChatColor.DARK_PURPLE.toString(), "Exotic"),
+    LEGENDARY(NamedTextColor.GOLD, ChatColor.GOLD.toString(),ChatColor.GOLD.toString(), "Legendary");
 
     private final String colourCode;
     private final String name;
     private final String secondaryColourCode;
+    private final TextColor textColour;
 
-    ItemRarity(String colourCode, String secondaryColourCode, String name) {
+    ItemRarity(TextColor colour, String colourCode, String secondaryColourCode, String name) {
+        this.textColour=colour;
         this.colourCode = colourCode;
         this.secondaryColourCode=secondaryColourCode;
         this.name = name;
     }
 
-    public String getName() {return name;}
-    public String getColourCode() {return colourCode;}
-    public String getSecondaryColourCode() {return secondaryColourCode;}
 }

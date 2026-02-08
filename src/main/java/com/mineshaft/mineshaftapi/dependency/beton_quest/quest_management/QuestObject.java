@@ -20,8 +20,10 @@ package com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management;
 
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
+import io.papermc.paper.configuration.serializer.ComponentSerializer;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.betonquest.betonquest.conversation.ChatConvIO;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -56,8 +58,10 @@ public class QuestObject {
     public ItemStack getItem() {
         ItemStack itemStack = new ItemStack(Material.PAPER);
         ItemMeta itemMeta = itemStack.getItemMeta();
+
         itemMeta.setDisplayName(status.getColour() + name);
         itemMeta.setLore(Collections.singletonList(ChatColor.GRAY + description));
+        itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 }

@@ -36,6 +36,8 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -60,6 +62,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemManager {
+
+    private static int maximumIterationConstant = 1;
 
     HashMap<UUID, String> items = new HashMap<>();
     HashMap<UUID, String> itemPaths = new HashMap<>();
@@ -103,8 +107,8 @@ public class ItemManager {
     public void initialiseFilesInDirectory(String path, String dirName, int iteration) {
         File folder = new File(path + File.separator + dirName);
 
-        if(iteration>99) {
-            Logger.logWarning("Went into subfolder in directory \""+path+"\\"+dirName+"\" more than 99 times. Returning to avoid infinite loop.");
+        if(iteration>=maximumIterationConstant) {
+            Logger.logWarning("Went into subfolder in directory \""+path+"\\"+dirName+"\" a greater number of times than the maximum number (" + maximumIterationConstant + ") times. Returning to avoid infinite loop.");
             return;
         }
 
@@ -355,8 +359,6 @@ public class ItemManager {
             maxAmmunition = ItemAmmunitionManager.getMaxAmmunition(UUID.fromString(uuid));
             ammunitionTypes = ItemAmmunitionManager.getAmmunitionTypes(UUID.fromString(uuid));
         }
-
-        meta.setDisplayName(rarity.getColourCode() + displayName);
 
         // GENERATE LORE:
         ArrayList<String> lore = LoreManager.getLore(UUID.fromString(uuid));
@@ -643,6 +645,9 @@ public class ItemManager {
         // set item meta. no meta modification after here!!!!!!!
         item.setItemMeta(meta);
 
+        // Set the name
+        item.setData(DataComponentTypes.ITEM_NAME,Component.translatable(displayName).color(rarity.getTextColour()));
+
         /**
          * NBT Features
          */
@@ -895,6 +900,11 @@ public class ItemManager {
             //System.out.println("section: " + key);
 
             String yamlStatPath = yamlPath + key;
+
+            if(!yamlConfiguration.contains(yamlStatPath)) {
+                // The value cannot be found. Continue.
+                continue;
+            }
 
             double value = yamlConfiguration.getDouble(yamlStatPath);
             ItemStats statKey = ItemStats.valueOf(key.toUpperCase(Locale.ROOT));

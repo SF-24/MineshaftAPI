@@ -18,7 +18,7 @@ enable-sidebar: false
 send-exp-actionbar: true
 
 # Whether the item rarity description will be italic
-italic-item-rarity: true
+italic-item-rarity: false
 
 # ----------------------------------------CONSTANTS----------------------------------------
 

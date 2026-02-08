@@ -31,7 +31,7 @@ import java.util.List;
 
 public class MineshaftTabCompleter implements TabCompleter {
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if(args.length==1) {
             return StringUtil.copyPartialMatches(args[0],List.of("reload","fix_handler","event","events"),new ArrayList<>());
         } else if(args.length==2) {

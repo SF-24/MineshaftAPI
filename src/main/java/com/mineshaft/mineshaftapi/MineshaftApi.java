@@ -22,7 +22,6 @@ import com.mineshaft.mineshaftapi.command.*;
 import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.KeyListener;
 import com.mineshaft.mineshaftapi.dependency.VaultDependency;
-import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
 import com.mineshaft.mineshaftapi.dependency.world_guard.RegionManager;
 import com.mineshaft.mineshaftapi.listener.*;
 import com.mineshaft.mineshaftapi.manager.config.ConfigManager;

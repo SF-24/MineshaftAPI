@@ -124,7 +124,7 @@ public class LoreManager {
             }
         } else if(stat.equals(ItemStats.ARMOUR_CLASS)) {
             if(arg>0) {
-                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + " + DEX" + ChatColor.WHITE + "(" + arg + ")";
+                return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + " + DEX" + ChatColor.WHITE + " (" + arg + ")";
             } else if(arg<0) {
                 return ChatColor.GRAY + TextFormatter.convertStringToName(stat.name().toLowerCase(Locale.ROOT)) + ": " + stat.getColour() + NumericFormatter.formatNumberAdvanced(value) + ChatColor.DARK_GREEN + " + DEX";
             }

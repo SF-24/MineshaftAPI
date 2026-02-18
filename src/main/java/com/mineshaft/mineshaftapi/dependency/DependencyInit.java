@@ -36,6 +36,7 @@ public class DependencyInit {
 
     public void initialiseDependencies() {
         if(hasBetonQuest()) {
+            Logger.logInfo("Enabling BetonQuest integration");
             BetonQuestLoggerFactory loggerFactory = MineshaftApi.getInstance().getServer().getServicesManager().load(BetonQuestLoggerFactory.class);
             PrimaryServerThreadData data = new PrimaryServerThreadData(Bukkit.getServer(), Bukkit.getScheduler(), BetonQuest.getInstance());
 
@@ -44,32 +45,40 @@ public class DependencyInit {
             BetonQuest.getInstance().getQuestRegistries().event().register("remquest", new BetonRemoveQuestEventFactory(loggerFactory, data));
 
         } else {
-            Logger.logWarning("BetonQuest is not enabled. Plugin compatibility features have been disabled.");
+            Logger.logInfo("BetonQuest is not enabled. Plugin compatibility features have been disabled.");
         }
         if (hasPlaceholderAPI()) {
             // Register placeholders
+            Logger.logInfo("Enabling PlaceholderAPI hooks");
             new MineshaftPlaceholderExpansion(MineshaftApi.getInstance()).register();
         } else {
             // Log warning
-            Logger.logWarning("PlaceholderAPI is not installed. While this plugin is not required, however some functionality will be disabled");
+            Logger.logInfo("PlaceholderAPI is not installed. While this plugin is not required, however some functionality will be disabled");
         }
         if (MineshaftApi.getInstance().getConfigManager().useVault() && hasVault()) {
+            Logger.logInfo("Enabling vault integration");
             vaultDependency = new VaultDependency();
         } else {
             if (MineshaftApi.getInstance().getConfigManager().disableDependencyWarnings() || !MineshaftApi.getInstance().getConfigManager().useVault()) {
                 Logger.logInfo("Vault has been disabled in the config. Due to this, some functionality and compatibility features will be disabled");
             } else {
                 // Log warning
-                Logger.logWarning("Vault is not installed. While this plugin is not required, some functionality and compatibility features will be disabled");
+                Logger.logInfo("Vault is not installed. While this plugin is not required, some functionality and compatibility features will be disabled");
             }
         }
-        if (DependencyInit.hasMythicMobs()) {
+        if(hasMythicMobs()) {
             // Register placeholders
-            Logger.logInfo("Loaded MythicMobs integration");
+            Logger.logInfo("Loading MythicMobs integration");
             Bukkit.getPluginManager().registerEvents(new MythicListener(), MineshaftApi.getInstance());
         } else {
             // Log warning
-            Logger.logWarning("MythicMobs is not installed. Integration has not been enabled");
+            Logger.logInfo("MythicMobs is not installed. Integration has not been enabled");
+        }
+        if(hasCraftEngine()) {
+            // TODO: Register
+            Logger.logInfo("Enabling CraftEngine integration. WIP!");
+        } else {
+            Logger.logInfo("Craft engine has not bee installed. The integration will not be enabled.");
         }
     }
 
@@ -97,8 +106,8 @@ public class DependencyInit {
         return Bukkit.getPluginManager().getPlugin("WorldGuard") != null || Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
     }
 
-    public static boolean hasLeadWires() {
-        return Bukkit.getPluginManager().getPlugin("LeadWires") != null || Bukkit.getPluginManager().isPluginEnabled("LeadWires");
+    public static boolean hasCraftEngine() {
+        return Bukkit.getPluginManager().getPlugin("CraftEngine") != null || Bukkit.getPluginManager().isPluginEnabled("CraftEngine");
     }
 
     public VaultDependency getVault() {return vaultDependency;}

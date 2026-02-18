@@ -180,9 +180,11 @@ public class ItemManager {
     public static UUID getItemIdFromItem(ItemStack item) {
         final UUID[] uuid = {null};
 
-        NBT.get(item, nbt -> {
-            uuid[0] = UUID.fromString(nbt.getString("uuid"));
-        });
+        try {
+            NBT.get(item, nbt -> {
+                uuid[0] = UUID.fromString(nbt.getString("uuid"));
+            });
+        } catch (IllegalArgumentException ignored) {} // Ignore the stack trace
         return uuid[0];
     }
 

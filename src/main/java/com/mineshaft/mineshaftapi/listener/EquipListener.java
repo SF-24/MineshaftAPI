@@ -37,11 +37,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class EquipListener implements Listener {
-    public final List<InventoryType> inventoryTypes = List.of(InventoryType.PLAYER, InventoryType.CHEST);
+    public final List<InventoryType> inventoryTypes = List.of(InventoryType.PLAYER, InventoryType.CHEST, InventoryType.CRAFTING);
 
     @EventHandler
     private void onInventoryClick(InventoryClickEvent e) {
-        if(!inventoryTypes.contains(e.getInventory().getType())) return;
+        System.out.println("CLICK TYPE: " + e.getInventory().getType());
+
+//        if(!inventoryTypes.contains(e.getInventory().getType())) return;
         try {
             Logger.logInfo("current: " + Objects.requireNonNull(e.getCurrentItem()).getType());
             Logger.logInfo("cursor: " + Objects.requireNonNull(e.getCursor()).getType());
@@ -56,22 +58,26 @@ public class EquipListener implements Listener {
         } catch (Exception npe) {
             Logger.logDebug("Could not execute interact debug.");
         }
-        if (e.getInventory().getHolder() != null && e.getView().getType().equals(InventoryType.PLAYER)) {
+
+        // If the player clicks in the inventory slots
+        if (e.getInventory().getHolder() != null && e.getView().getType().equals(InventoryType.CRAFTING)) {
             if(e.getClick().equals(ClickType.NUMBER_KEY)) {
                 e.setCancelled(true);
-            } else if (e.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
+                // TODO: Make better logic
+
+            // IF ARMOUR IS PLACED:
+            } else if (e.getAction().equals(InventoryAction.PLACE_ALL) && e.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
                 // if player clicks on armour slot
-                ItemStack cursor = e.getCursor();
                 if (ArmourEquipManager.tryEquip((Player) e.getWhoClicked(), e.getCursor())) e.setCancelled(true);
-                JsonPlayerBridge.getTempArmourClass((Player) e.getWhoClicked());
-            } else if (e.getClick().equals(ClickType.SHIFT_LEFT) || e.getClick().equals(ClickType.SHIFT_RIGHT)) {
+                // TODO: Reload armour class
+
+                // IF THE PLAYER SHIFT CLICKS
+            } else if (e.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) &&(e.getClick().equals(ClickType.SHIFT_LEFT) || e.getClick().equals(ClickType.SHIFT_RIGHT))) {
                 // if player shift clicks to equip armour
-                //if(!hasEquippedItem((Player) e.getWhoClicked(),e.getCurrentItem()) && isArmour(e.getCurrentItem())) {
                 if(ArmourEquipManager.tryEquip((Player) e.getWhoClicked(),e.getCurrentItem())) { //ArmourEquipManager.tryEquip((Player) e.getWhoClicked(),e.getCurrentItem())) {
                     e.setCancelled(true);
-                    //e.setCancelled(ArmourEquipManager.tryEquip((Player) e.getWhoClicked(), e.getCurrentItem()));
                 }
-                JsonPlayerBridge.getTempArmourClass((Player) e.getWhoClicked());
+                // TODO: Reload armour class
 
                 // If the player swaps with the hotbar slot to equip armour
             } else if(e.getAction().equals(InventoryAction.HOTBAR_SWAP) /*&& e.getSlotType().equals(InventoryType.SlotType.ARMOR)*/) {
@@ -79,8 +85,7 @@ public class EquipListener implements Listener {
                 if(isArmour(e.getWhoClicked().getInventory().getItem(e.getHotbarButton()))) {
                     e.setCancelled(ArmourEquipManager.tryEquip((Player) e.getWhoClicked(), e.getWhoClicked().getInventory().getItem(e.getHotbarButton())));
                 }
-                JsonPlayerBridge.getTempArmourClass((Player) e.getWhoClicked());
-
+                // TODO: Reload armour class
             }
         }
 

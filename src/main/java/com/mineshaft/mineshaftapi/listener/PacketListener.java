@@ -93,6 +93,10 @@ public class PacketListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        ChannelPipeline pipeline = ((CraftPlayer)e.getPlayer()).getHandle().connection.connection.channel.pipeline();
+        if (pipeline.get("Mineshaft_"+e.getPlayer().getName()) != null) {
+            pipeline.remove("Mineshaft_"+e.getPlayer().getName()); // or just skip adding if you prefer
+        }
 //        try {
 //            stop(e.getPlayer());
 //        } catch (Exception ignored) {}

@@ -30,6 +30,8 @@ import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.crafting.GlobalRecipeCache;
 import com.mineshaft.mineshaftapi.manager.item.crafting.RecipeRegistrar;
+import com.mineshaft.mineshaftapi.manager.location.WarpJsonClass;
+import com.mineshaft.mineshaftapi.manager.location.WarpJsonManager;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.ActionManager;
@@ -140,6 +142,8 @@ public final class MineshaftApi extends JavaPlugin {
         getCommand("getitem").setExecutor(new GetItemCommand());
         getCommand("getitem").setTabCompleter(new GetItemTabCompleter());
         getCommand("heal").setExecutor(new HealCommand());
+        getCommand("warp").setExecutor(new WarpCommand());
+        getCommand("warp").setTabCompleter(new WarpTabCompleter());
 
         // Initialise registrar
         recipeRegistrar = new RecipeRegistrar("mineshaft");
@@ -157,6 +161,7 @@ public final class MineshaftApi extends JavaPlugin {
         // Initialise plugin dependencies
         dependencyInit.initialiseDependencies();
 
+        (new WarpJsonManager()).loadData();
     }
 
     @Override

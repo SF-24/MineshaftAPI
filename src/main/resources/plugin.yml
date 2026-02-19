@@ -27,6 +27,9 @@ commands:
   getitem:
     description: Give yourself an item of your choice
     permission: mineshaft.debug.items
+  warp:
+    description: Modify warps
+    permission: mineshaft.debug.warp
 permissions:
   mineshaft.player:
     default: true
@@ -51,3 +54,9 @@ permissions:
   mineshaft.debug.players:
     default: op
     description: Allows to modify player data
+  mineshaft.debug.warp.modify:
+    default: op
+    description: Allows to create and remove teleportation locations
+  mineshaft.debug.warp.teleport:
+    default: op
+    description: Allows to instantly teleport to certain locations

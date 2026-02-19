@@ -214,6 +214,7 @@ public final class MineshaftApi extends JavaPlugin {
 
     public static void reloadItems() {
         MineshaftApi.getInstance().itemManager.initialiseItems();
+        MineshaftApi.getInstance().itemManager.initialiseItemRecipes();
     }
 
     public static void reloadEvents() {

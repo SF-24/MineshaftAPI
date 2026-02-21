@@ -21,13 +21,12 @@ package com.mineshaft.mineshaftapi.manager.location;
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.util.Logger;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
+import com.mineshaft.mineshaftapi.util.save_data.SaveLocation;
 import org.bukkit.Location;
+
 import java.io.*;
 import java.util.HashMap;
-import java.util.UUID;
+import java.util.Map;
 
 public class WarpJsonManager {
 
@@ -41,12 +40,7 @@ public class WarpJsonManager {
     }
 
     private void initiateFile() {
-
-        File file = new File(MineshaftApi.getPluginPath(), "warp_data.json");
-
-        if(!file.exists()) {
-            makeNewFile(file);
-        }
+        getFile();
     }
 
     // gets player data json file
@@ -111,12 +105,14 @@ public class WarpJsonManager {
     //loads player json data file
     public WarpJsonClass loadData() {
         File file = getFile();
+
         Gson gson = new Gson();
         Reader reader = null;
 
         try {
             reader = new FileReader(file);
         } catch (FileNotFoundException e) {
+            Logger.logError("Cannot create reader for warp data file");
             e.printStackTrace();
         }
 
@@ -126,29 +122,24 @@ public class WarpJsonManager {
         }
 
         WarpJsonClass wdc = gson.fromJson(reader, WarpJsonClass.class);
+
         if(wdc==null) {
-            Logger.logError("ERROR! WarpJsonClass is null");
+            Logger.logError("ERROR! WarpJsonClass is null for file: " + file.getPath());
         }
 
         assert wdc != null;
         return wdc;
     }
 
-    public void saveFile(WarpJsonClass data, UUID uuid) {
-        Player player = Bukkit.getPlayer(uuid);
-        assert player != null;
-        writeData(data, getFile());
-    }
-
     public void saveFile(WarpJsonClass data) {
         writeData(data, getFile());
     }
 
-    public HashMap<String, Location> getWarps() {
+    public Map<String, SaveLocation> getWarps() {
         return loadData().getWarps();
     }
 
-    public void setWarps(HashMap<String, Location> newWarps) {
+    public void setWarps(HashMap<String, SaveLocation> newWarps) {
         WarpJsonClass warpJsonClass = loadData();
         warpJsonClass.setWarps(newWarps);
         saveFile(warpJsonClass);

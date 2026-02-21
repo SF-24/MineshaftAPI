@@ -18,10 +18,10 @@
 
 package com.mineshaft.mineshaftapi.manager.location;
 
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
+import com.mineshaft.mineshaftapi.util.save_data.SaveLocation;
 import org.bukkit.Location;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class WarpManager {
 
@@ -35,13 +35,13 @@ public class WarpManager {
         warpJsonManager.removeWarp(name);
     }
 
-    public static HashMap<String, Location> getWarps() {
+    public static Map<String, SaveLocation> getWarps() {
         return new WarpJsonManager().getWarps();
     }
 
     public static Location getWarp(String name) {
         if(getWarps().containsKey(name)) {
-            return getWarps().get(name);
+            return getWarps().get(name).getLocation();
         }
         return null;
     }

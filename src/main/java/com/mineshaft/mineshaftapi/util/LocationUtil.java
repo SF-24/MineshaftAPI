@@ -27,4 +27,6 @@ public class LocationUtil {
         return new Vector(location.getBlockX(),location.getBlockY(),location.getBlockZ());
     }
 
+
+
 }

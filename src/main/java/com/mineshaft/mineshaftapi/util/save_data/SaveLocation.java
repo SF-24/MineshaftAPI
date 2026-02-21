@@ -16,25 +16,37 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.location;
+package com.mineshaft.mineshaftapi.util.save_data;
 
-import com.mineshaft.mineshaftapi.util.save_data.SaveLocation;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import java.util.HashMap;
-
 @Getter @Setter
-public class WarpJsonClass {
+public class SaveLocation {
 
-    protected HashMap<String, SaveLocation> warps = new HashMap<>();
+    private final String worldName;
+    double x;
+    double y;
+    double z;
+    float pitch;
+    float yaw;
 
-    public void addWarp(String name, Location location) {
-        warps.put(name,SaveLocation.fromLocation(location));
+    SaveLocation(double x, double y, double z, float pitch, float yaw, String worldName) {
+        this.x=x;
+        this.y=y;
+        this.z=z;
+        this.pitch=pitch;
+        this.yaw=yaw;
+        this.worldName=worldName;
     }
 
-    public void removeWarp(String name) {
-        warps.remove(name);
+    public Location getLocation() {
+        return new Location(Bukkit.getWorld(worldName),x,y,z,pitch,yaw);
+    }
+
+    public static SaveLocation fromLocation(Location location) {
+        return new SaveLocation(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw(), location.getWorld().getName());
     }
 }

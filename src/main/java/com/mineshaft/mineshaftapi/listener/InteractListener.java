@@ -65,11 +65,11 @@ public class InteractListener implements Listener {
         }
 
         // Remove a custom block if it is clicked
-        if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-            if(JsonBlockCacheBridge.getBlock(e.getClickedBlock().getLocation())!=null) {
-                JsonBlockCacheBridge.removeBlock(e.getClickedBlock().getLocation());
-            }
-        }
+//        if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+//            if(JsonBlockCacheBridge.getBlock(e.getClickedBlock().getLocation())!=null) {
+//                JsonBlockCacheBridge.removeBlock(e.getClickedBlock().getLocation());
+//            }
+//        }
 
         // CHECK IF ITEM EVENT IS CANCELLED
         if (

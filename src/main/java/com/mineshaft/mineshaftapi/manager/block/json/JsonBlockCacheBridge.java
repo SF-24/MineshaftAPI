@@ -23,23 +23,23 @@ import org.bukkit.Location;
 import java.util.ArrayList;
 
 public class JsonBlockCacheBridge {
-
-    public static JsonBlockCacheManager getInstance(String world) {return new JsonBlockCacheManager(world);}
-
-    public static ArrayList<BlockClass> getBlockCache(String world) {
-        return getInstance(world).getBlockCache();
-    }
-
-    public static void cacheBlock(BlockClass blockClass) {
-        getInstance(blockClass.getLocation().getWorld().getName()).cacheBlock(blockClass);
-    }
-
-    public static void removeBlock(Location location) {
-        getInstance(location.getWorld().getName()).removeBlock(location);
-    }
-
-    public static BlockClass getBlock(Location location) {
-        return getInstance(location.getWorld().getName()).getBlock(location);
-    }
+//
+//    public static JsonBlockCacheManager getInstance(String world) {return new JsonBlockCacheManager(world);}
+//
+//    public static ArrayList<BlockClass> getBlockCache(String world) {
+//        return getInstance(world).getBlockCache();
+//    }
+//
+//    public static void cacheBlock(BlockClass blockClass) {
+//        getInstance(blockClass.getLocation().getWorld().getName()).cacheBlock(blockClass);
+//    }
+//
+//    public static void removeBlock(Location location) {
+//        getInstance(location.getWorld().getName()).removeBlock(location);
+//    }
+//
+//    public static BlockClass getBlock(Location location) {
+//        return getInstance(location.getWorld().getName()).getBlock(location);
+//    }
 
 }

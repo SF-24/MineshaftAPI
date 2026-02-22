@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025. Sebastian Frynas
+ * Copyright (c) 2025-2026. Sebastian Frynas
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Affero General Public License as
@@ -16,8 +16,9 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.util;
+package com.mineshaft.mineshaftapi.util.ui;
 
+import com.mineshaft.mineshaftapi.util.Logger;
 import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.inventory.ItemStack;
 

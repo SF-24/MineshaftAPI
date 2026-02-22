@@ -994,7 +994,11 @@ Regardless of the target, this event is triggered on the caster.
 
 ## BetonQuest
 
-Description coming soon...
+Better description coming soon...<br>
+Events:
+- add_quest
+- rem_quest
+- mineshaft_xp
 
 ## PlaceholderAPI
 
@@ -1029,3 +1033,88 @@ Examples:
 `/mineshaft reload item` and `/mineshaft reload items` reloads custom items
 `/mineshaft reload event` and `/mineshaft reload events` reloads events
 `/mineshaft reload config` and `/mineshaft reload configs` reloads the configuration
+
+# Developer API
+
+## Storing and loading JSON data
+
+### Custom JSONs:
+
+_Please note: imports have been skipped in the following examples_
+
+<br>
+The JSON data class should extend JsonSaveObject.
+Example:
+
+```Java
+public class JsonHousePointClass extends JsonSaveObject {
+
+    protected HashMap<House, Integer> housePoints = new HashMap<>();
+
+    public JsonHousePointClass() {
+        for(House house : House.values()) {
+            if(house!=House.NONE&&!housePoints.keySet().contains(house)) {
+                housePoints.put(house,0);
+            }
+        }
+    }
+
+    public void setHousePoints(House house, int points) {
+        if(house!=House.NONE) housePoints.put(house,points);
+    }
+
+    public int getHousePoints(House house) {
+        if(house==House.NONE||!housePoints.containsKey(house)) return 0;
+        return housePoints.get(house);
+    }
+}
+
+```
+<br>
+The JSON manager class should extend GenericJsonManager as follows:
+
+```Java
+public class JsonHousePointManager extends GenericJsonManager {
+
+    // Overridden methods in the abstract parent class
+
+    @Override
+    public Class<?> getSaveClass() {
+        return JsonHousePointClass.class;
+    }
+
+    @Override
+    public String getFileName() {
+        return "house_points";
+    }
+
+    @Override
+    public String getPath() {
+        return MineshaftApi.getPluginDataPath();
+    }
+
+    // Edits and saves data
+    public void setHousePoints(House house, int points) {
+        JsonHousePointClass data = (JsonHousePointClass) getData();
+        data.setHousePoints(house,points);
+        saveFile(data);
+    }
+
+    // Loads data
+    public int getHousePoints(House house) {
+        return ((JsonHousePointClass) getData()).getHousePoints(house);
+    }
+}
+```
+<br>
+A json manager class instance is then placed in the main class, for the rest of the plugin to access:
+
+```Java
+private static final JsonHousePointManager housePointManager = new JsonHousePointManager();
+
+public JsonHousePointManager getHousePointManager() {
+    return this.housePointManager;
+}
+```
+<br>
+This allows to save and load custom JSON files easily.

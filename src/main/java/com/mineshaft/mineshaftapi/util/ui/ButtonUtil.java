@@ -18,7 +18,6 @@
 
 package com.mineshaft.mineshaftapi.util.ui;
 
-import com.mineshaft.mineshaftapi.util.UIUtil;
 import com.mineshaft.mineshaftapi.util.formatter.TextFormatter;
 import com.mineshaft.mineshaftapi.util.maths.Direction2D;
 import org.bukkit.ChatColor;

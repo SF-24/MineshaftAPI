@@ -24,7 +24,7 @@ import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
 import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemSheatheManager;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
-import com.mineshaft.mineshaftapi.util.ItemUtil;
+import com.mineshaft.mineshaftapi.util.item.ItemUtil;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.SoundCategory;

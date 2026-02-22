@@ -31,8 +31,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class QuestObject {
@@ -60,7 +62,10 @@ public class QuestObject {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         itemMeta.setDisplayName(status.getColour() + name);
-        itemMeta.setLore(Collections.singletonList(ChatColor.GRAY + description));
+        List<String> lore = Arrays.asList(description.split("\\s*,\\s*"));
+        itemMeta.setLore(
+            lore.stream().map(element -> ChatColor.GRAY+element).toList()
+        );
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }

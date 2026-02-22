@@ -40,9 +40,9 @@ public class DependencyInit {
             BetonQuestLoggerFactory loggerFactory = MineshaftApi.getInstance().getServer().getServicesManager().load(BetonQuestLoggerFactory.class);
             PrimaryServerThreadData data = new PrimaryServerThreadData(Bukkit.getServer(), Bukkit.getScheduler(), BetonQuest.getInstance());
 
-            BetonQuest.getInstance().getQuestRegistries().event().register("mineshaftxp", new BetonExperienceEventFactory(loggerFactory,data));
-            BetonQuest.getInstance().getQuestRegistries().event().register("addquest", new BetonDisplayQuestEventFactory(loggerFactory, data));
-            BetonQuest.getInstance().getQuestRegistries().event().register("remquest", new BetonRemoveQuestEventFactory(loggerFactory, data));
+            BetonQuest.getInstance().getQuestRegistries().event().register("mineshaft_xp", new BetonExperienceEventFactory(loggerFactory,data));
+            BetonQuest.getInstance().getQuestRegistries().event().register("add_quest", new BetonDisplayQuestEventFactory(loggerFactory, data));
+            BetonQuest.getInstance().getQuestRegistries().event().register("rem_quest", new BetonRemoveQuestEventFactory(loggerFactory, data));
 
         } else {
             Logger.logInfo("BetonQuest is not enabled. Plugin compatibility features have been disabled.");

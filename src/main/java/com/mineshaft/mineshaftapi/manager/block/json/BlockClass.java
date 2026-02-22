@@ -18,7 +18,7 @@
 
 package com.mineshaft.mineshaftapi.manager.block.json;
 
-import com.mineshaft.mineshaftapi.util.ItemUtil;
+import com.mineshaft.mineshaftapi.util.item.ItemUtil;
 import com.mineshaft.mineshaftapi.util.display.DisplayUtil;
 import lombok.Getter;
 import lombok.Setter;

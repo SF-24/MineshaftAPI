@@ -20,7 +20,7 @@ package com.mineshaft.mineshaftapi.manager.event.event_subclass;
 
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
-import com.mineshaft.mineshaftapi.util.ItemUtil;
+import com.mineshaft.mineshaftapi.util.item.ItemUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

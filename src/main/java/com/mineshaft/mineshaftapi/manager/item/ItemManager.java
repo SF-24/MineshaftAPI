@@ -29,7 +29,7 @@ import com.mineshaft.mineshaftapi.manager.item.fields.*;
 import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.mineshaft.mineshaftapi.util.ToolRuleExtended;
+import com.mineshaft.mineshaftapi.util.item.ToolRuleExtended;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
 import io.papermc.paper.datacomponent.DataComponentTypes;

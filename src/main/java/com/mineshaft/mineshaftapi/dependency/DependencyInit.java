@@ -19,14 +19,9 @@
 package com.mineshaft.mineshaftapi.dependency;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonDisplayQuestEventFactory;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonExperienceEventFactory;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonRemoveQuestEventFactory;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestDependencyInit;
 import com.mineshaft.mineshaftapi.dependency.mythic_mob.MythicListener;
 import com.mineshaft.mineshaftapi.util.Logger;
-import org.betonquest.betonquest.BetonQuest;
-import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
-import org.betonquest.betonquest.api.quest.PrimaryServerThreadData;
 import org.bukkit.Bukkit;
 
 public class DependencyInit {
@@ -36,28 +31,34 @@ public class DependencyInit {
 
     public void initialiseDependencies() {
         if(hasBetonQuest()) {
-            Logger.logInfo("Enabling BetonQuest integration");
-            BetonQuestLoggerFactory loggerFactory = MineshaftApi.getInstance().getServer().getServicesManager().load(BetonQuestLoggerFactory.class);
-            PrimaryServerThreadData data = new PrimaryServerThreadData(Bukkit.getServer(), Bukkit.getScheduler(), BetonQuest.getInstance());
-
-            BetonQuest.getInstance().getQuestRegistries().event().register("mineshaft_xp", new BetonExperienceEventFactory(loggerFactory,data));
-            BetonQuest.getInstance().getQuestRegistries().event().register("add_quest", new BetonDisplayQuestEventFactory(loggerFactory, data));
-            BetonQuest.getInstance().getQuestRegistries().event().register("rem_quest", new BetonRemoveQuestEventFactory(loggerFactory, data));
-
+            try {
+                Logger.logInfo("Enabling BetonQuest integration");
+                BetonQuestDependencyInit.init();
+            } catch(Exception ignored) {
+                Logger.logError("Failed to load BetonQuest integration");
+            }
         } else {
             Logger.logInfo("BetonQuest is not enabled. Plugin compatibility features have been disabled.");
         }
         if (hasPlaceholderAPI()) {
             // Register placeholders
             Logger.logInfo("Enabling PlaceholderAPI hooks");
+            try {
             new MineshaftPlaceholderExpansion(MineshaftApi.getInstance()).register();
+            } catch(Exception ignored) {
+                Logger.logError("Failed to load PlaceholderAPI integration");
+            }
         } else {
             // Log warning
             Logger.logInfo("PlaceholderAPI is not installed. While this plugin is not required, however some functionality will be disabled");
         }
         if (MineshaftApi.getInstance().getConfigManager().useVault() && hasVault()) {
             Logger.logInfo("Enabling vault integration");
+            try {
             vaultDependency = new VaultDependency();
+            } catch(Exception ignored) {
+                Logger.logError("Failed to load Vault integration");
+            }
         } else {
             if (MineshaftApi.getInstance().getConfigManager().disableDependencyWarnings() || !MineshaftApi.getInstance().getConfigManager().useVault()) {
                 Logger.logInfo("Vault has been disabled in the config. Due to this, some functionality and compatibility features will be disabled");
@@ -69,14 +70,22 @@ public class DependencyInit {
         if(hasMythicMobs()) {
             // Register placeholders
             Logger.logInfo("Loading MythicMobs integration");
+            try {
             Bukkit.getPluginManager().registerEvents(new MythicListener(), MineshaftApi.getInstance());
+            } catch(Exception ignored) {
+                Logger.logError("Failed to load MythicMobs integration");
+            }
         } else {
             // Log warning
             Logger.logInfo("MythicMobs is not installed. Integration has not been enabled");
         }
         if(hasCraftEngine()) {
-            // TODO: Register
-            Logger.logInfo("Enabling CraftEngine integration. WIP!");
+            try {
+                Logger.logInfo("Enabling CraftEngine integration. WIP!");
+                // TODO: Register
+            } catch(Exception ignored) {
+                Logger.logError("Failed to load CraftEngine integration");
+            }
         } else {
             Logger.logInfo("Craft engine has not bee installed. The integration will not be enabled.");
         }

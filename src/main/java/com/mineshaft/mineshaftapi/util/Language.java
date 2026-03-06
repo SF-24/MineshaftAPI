@@ -18,9 +18,35 @@
 
 package com.mineshaft.mineshaftapi.util;
 
+import lombok.Getter;
+
 public enum Language {
 
-    POLISH,
-    SPANISH,
-    ENGLISH
+    POLISH("pl"),
+    SPANISH("es"),
+    ENGLISH("en");
+
+    @Getter
+    private final String simplifiedCode;
+
+    Language(String simplifiedCode) {
+        this.simplifiedCode=simplifiedCode;
+    }
+
+    public static Language getLanguage(String language) {
+        switch (language) {
+            case "en" -> {
+                return ENGLISH;
+            }
+            case "es" -> {
+                return SPANISH;
+            }
+            case "pl" -> {
+                return POLISH;
+            }
+            default -> {
+                return ENGLISH; // Language does not exist
+            }
+        }
+    }
 }

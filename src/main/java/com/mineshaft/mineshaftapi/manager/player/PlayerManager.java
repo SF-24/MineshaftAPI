@@ -26,11 +26,16 @@ public class PlayerManager {
         for(Player player : MineshaftApi.getInstance().getServer().getOnlinePlayers()) {
             MineshaftApi.getInstance().getPacketListener().stop(player);
 
-            switch (MineshaftApi.getLanguage(player)) {
-                case ENGLISH:
+            switch (MineshaftApi.getMineshaftLanguage(player)) {
+                case ENGLISH,SPANISH:
                     player.kickPlayer("Server is reloading or has stopped");
+                    break;
                 case POLISH:
                     player.kickPlayer("Serwer został wyłączony lub jest przeładowywany");
+                    break;
+                default:
+                    player.kickPlayer("Server is reloading or has stopped");
+                    break;
             }
         }
     }

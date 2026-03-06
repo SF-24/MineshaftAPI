@@ -30,7 +30,6 @@ import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.crafting.GlobalRecipeCache;
 import com.mineshaft.mineshaftapi.manager.item.crafting.RecipeRegistrar;
-import com.mineshaft.mineshaftapi.manager.location.WarpJsonClass;
 import com.mineshaft.mineshaftapi.manager.location.WarpJsonManager;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
@@ -39,6 +38,7 @@ import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
 import com.mineshaft.mineshaftapi.util.Language;
 import com.mineshaft.mineshaftapi.util.Logger;
 import lombok.Getter;
+import org.apache.commons.codec.language.bm.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -47,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 
@@ -183,8 +184,12 @@ public final class MineshaftApi extends JavaPlugin {
         }
     }
 
-    public static Language getLanguage(Player player) {
-        return Language.ENGLISH;
+    public static String getLanguage(Player player) {
+        return player.locale().getLanguage();
+    }
+
+    public static Language getMineshaftLanguage(Player player) {
+        return Language.getLanguage(player.locale().getLanguage());
     }
 
     public static Language getDebugLanguage() {return Language.ENGLISH;}

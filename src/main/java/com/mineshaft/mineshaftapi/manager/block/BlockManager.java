@@ -23,8 +23,9 @@ import org.bukkit.Material;
 public class BlockManager {
 
     public static boolean isInteractable(Material material) {
-        return material.name().contains("DOOR") ||
-                (material.name()).contains("GATE") ||
+        return
+                material.name().contains("door") ||
+                (material.name()).contains("gate") ||
                 (material.name()).contains("chest") ||
                 (material.name()).contains("barrel") ||
                 (material.name()).contains("smoker") ||
@@ -45,7 +46,16 @@ public class BlockManager {
                 (material.name()).contains("note_block") ||
                 (material.name()).contains("anvil") ||
                 (material.name()).contains("grindstone") ||
-                (material.name()).contains("stonecutter");
+                (material.name()).contains("stonecutter") ||
+                material.name().contains("decorated_pot") ||
+                material.name().contains("chiseled_bookshelf") ||
+                material.name().contains("crafter");
+    }
+
+    public static boolean isSemiInteractable(Material material) {
+        return
+        material.name().contains("flower_pot") ||
+        isInteractable(material);
     }
 
 }

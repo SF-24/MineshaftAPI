@@ -114,9 +114,9 @@ public class DependencyInit {
     public static boolean hasBqClass() {
         try {
             Class.forName("org.betonquest.betonquest.api.quest.PrimaryServerThreadData");
-            return true;
-        } catch (ClassNotFoundException ignored) {
             return false;
+        } catch (ClassNotFoundException ignored) {
+            return true;
         }
     }
 

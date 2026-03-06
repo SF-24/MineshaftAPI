@@ -24,18 +24,15 @@ import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonExperienceE
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonRemoveQuestEventFactory;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
-import org.betonquest.betonquest.api.quest.PrimaryServerThreadData;
-import org.bukkit.Bukkit;
 
 public class BetonQuestDependencyInit {
 
     public static void init() {
         BetonQuestLoggerFactory loggerFactory = MineshaftApi.getInstance().getServer().getServicesManager().load(BetonQuestLoggerFactory.class);
-        PrimaryServerThreadData data = new PrimaryServerThreadData(Bukkit.getServer(), Bukkit.getScheduler(), BetonQuest.getInstance());
 
-        BetonQuest.getInstance().getQuestRegistries().event().register("mineshaft_xp", new BetonExperienceEventFactory(loggerFactory, data));
-        BetonQuest.getInstance().getQuestRegistries().event().register("add_quest", new BetonDisplayQuestEventFactory(loggerFactory, data));
-        BetonQuest.getInstance().getQuestRegistries().event().register("rem_quest", new BetonRemoveQuestEventFactory(loggerFactory, data));
+        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("mineshaft_xp", new BetonExperienceEventFactory(loggerFactory));
+        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("add_quest", new BetonDisplayQuestEventFactory(loggerFactory));
+        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("rem_quest", new BetonRemoveQuestEventFactory(loggerFactory));
 
     }
 

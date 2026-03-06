@@ -26,9 +26,6 @@ import org.bukkit.plugin.ServicePriority;
 
 public class VaultDependency {
 
-
-    private static Economy econ = null;
-
     public VaultDependency() {
         if(!setupEconomy()) {
             Logger.logError("Could not load Vault, even though it is enabled. Stack trace: Line 37, VaultDependency.java, MineshaftAPI. NullPointerException - rsp == null");

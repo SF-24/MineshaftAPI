@@ -104,19 +104,28 @@ public class DependencyInit {
     }
 
     public static boolean hasMythicMobs() {
-        return Bukkit.getPluginManager().getPlugin("MythicMobs") != null || Bukkit.getPluginManager().isPluginEnabled("MythicMobs");
+        return Bukkit.getPluginManager().getPlugin("MythicMobs") != null && Bukkit.getPluginManager().isPluginEnabled("MythicMobs");
     }
 
     public static boolean hasBetonQuest() {
-        return Bukkit.getPluginManager().getPlugin("BetonQuest") != null || Bukkit.getPluginManager().isPluginEnabled("BetonQuest");
+        return Bukkit.getPluginManager().getPlugin("BetonQuest") != null && Bukkit.getPluginManager().isPluginEnabled("BetonQuest") && hasBqClass();
+    }
+
+    public static boolean hasBqClass() {
+        try {
+            Class.forName("org.betonquest.betonquest.api.quest.PrimaryServerThreadData");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 
     public static boolean hasWorldGuard() {
-        return Bukkit.getPluginManager().getPlugin("WorldGuard") != null || Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
+        return Bukkit.getPluginManager().getPlugin("WorldGuard") != null && Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
     }
 
     public static boolean hasCraftEngine() {
-        return Bukkit.getPluginManager().getPlugin("CraftEngine") != null || Bukkit.getPluginManager().isPluginEnabled("CraftEngine");
+        return Bukkit.getPluginManager().getPlugin("CraftEngine") != null && Bukkit.getPluginManager().isPluginEnabled("CraftEngine");
     }
 
     public VaultDependency getVault() {return vaultDependency;}

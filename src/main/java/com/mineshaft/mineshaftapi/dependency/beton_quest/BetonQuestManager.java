@@ -22,10 +22,12 @@ import com.mineshaft.mineshaftapi.dependency.DependencyInit;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.BetonEventObject;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.QuestException;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.betonquest.betonquest.api.identifier.ActionIdentifier;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
-import org.betonquest.betonquest.api.quest.QuestException;
-import org.betonquest.betonquest.api.quest.event.EventID;
+import org.betonquest.betonquest.api.quest.action.PlayerAction;
+import org.betonquest.betonquest.id.action.ActionIdentifierFactory;
 import org.bukkit.entity.Player;
 
 public class BetonQuestManager {
@@ -39,7 +41,8 @@ public class BetonQuestManager {
         if(!DependencyInit.hasBetonQuest()) return;
         final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
         try {
-            BetonQuest.getInstance().getQuestTypeApi().event(playerProfile,new EventID(BetonQuest.getInstance().getQuestPackageManager(),questPackage,event));
+            // TODO: Check for errors
+            BetonQuest.getInstance().getBetonQuestApi().actions().manager().run(playerProfile, new ActionIdentifierFactory(BetonQuest.getInstance().getQuestPackageManager()).parseIdentifier(questPackage,event));
         } catch (QuestException e) {
             Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
         }
@@ -54,7 +57,7 @@ public class BetonQuestManager {
         if(!DependencyInit.hasBetonQuest() || getPackage(questPackage) == null) return;
         final OnlineProfile playerProfile = BetonQuest.getInstance().getProfileProvider().getProfile(player);
         try {
-            BetonQuest.getInstance().getQuestTypeApi().event(playerProfile,new EventID(BetonQuest.getInstance().getQuestPackageManager(),getPackage(questPackage),event));
+            BetonQuest.getInstance().getBetonQuestApi().actions().manager().run(playerProfile,new ActionIdentifierFactory(BetonQuest.getInstance().getQuestPackageManager()).parseIdentifier(getPackage(questPackage),event));
         } catch (QuestException e) {
             Logger.logError("Could not execute BetonQuest event with name: " + event + " of package " + questPackage);
         }

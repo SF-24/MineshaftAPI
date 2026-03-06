@@ -19,18 +19,18 @@
 package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import org.betonquest.betonquest.api.QuestException;
+import org.betonquest.betonquest.api.instruction.Argument;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
-import org.betonquest.betonquest.api.quest.QuestException;
-import org.betonquest.betonquest.api.quest.event.online.OnlineEvent;
-import org.betonquest.betonquest.api.instruction.variable.Variable;
+import org.betonquest.betonquest.api.quest.action.OnlineAction;
 
-public class BetonExperienceEvent implements OnlineEvent {
+public class BetonExperienceEvent implements OnlineAction {
     /**
      * The amount of exp to apply.
      */
-    private final Variable<Number> amount;
+    private final Argument<Number> amount;
 
-    public BetonExperienceEvent(final Variable<Number> amount) {
+    public BetonExperienceEvent(final Argument<Number> amount) {
         this.amount = amount;
     }
 

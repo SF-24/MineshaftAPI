@@ -21,23 +21,23 @@ package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import org.betonquest.betonquest.api.QuestException;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
-import org.betonquest.betonquest.api.instruction.variable.Variable;
+import org.betonquest.betonquest.api.instruction.Argument;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
-import org.betonquest.betonquest.api.quest.QuestException;
-import org.betonquest.betonquest.api.quest.event.online.OnlineEvent;
+import org.betonquest.betonquest.api.quest.action.OnlineAction;
 
 import java.util.List;
 
-public class BetonDisplayQuestEvent implements OnlineEvent {
-    final Variable<String> id;
-    final Variable<String> name;
-    final Variable<String> description;
-    final Variable<List<String>> objectives;
-    final Variable<String> cancelEvent;
+public class BetonDisplayQuestEvent implements OnlineAction {
+    final Argument<String> id;
+    final Argument<String> name;
+    final Argument<String> description;
+    final Argument<String> objectives;
+    final Argument<String> cancelEvent;
     final QuestPackage questPackage;
 
-    public BetonDisplayQuestEvent(Variable<String> id, Variable<String> name, Variable<String> description, Variable<List<String>> objectives, Variable<String> cancelEvent, QuestPackage questPackage) {
+    public BetonDisplayQuestEvent(Argument<String> id, Argument<String> name, Argument<String> description, Argument<String> objectives, Argument<String> cancelEvent, QuestPackage questPackage) {
         this.id = id;
         this.name=name;
         this.description=description;
@@ -48,7 +48,7 @@ public class BetonDisplayQuestEvent implements OnlineEvent {
 
     @Override
     public void execute(final OnlineProfile profile) throws QuestException {
-        QuestObject questObject = new QuestObject(name.getValue(profile), description.getValue(profile), objectives.getValue(profile), new QuestEventsObject(questPackage, cancelEvent.getValue(profile)));
+        QuestObject questObject = new QuestObject(name.getValue(profile), description.getValue(profile), List.of(objectives.getValue(profile)), new QuestEventsObject(questPackage, cancelEvent.getValue(profile)));
         JsonPlayerBridge.addQuest(profile.getPlayer(), id.getValue(profile), questObject);
     }
 }

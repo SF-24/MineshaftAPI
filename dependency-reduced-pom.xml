@@ -102,13 +102,9 @@
       <url>https://jitpack.io</url>
     </repository>
     <repository>
-      <id>betonquest-repo</id>
-      <url>https://nexus.betonquest.org/repository/betonquest/</url>
-    </repository>
-    <repository>
-      <id>magmaguy-repo-releases</id>
-      <name>MagmaGuy's Repository</name>
-      <url>https://repo.magmaguy.com/releases</url>
+      <id>betonquest-betonquest</id>
+      <name>BetonQuest</name>
+      <url>https://repo.betonquest.org/betonquest</url>
     </repository>
     <repository>
       <id>sk89q-repo</id>

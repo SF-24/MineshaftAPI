@@ -18,21 +18,16 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 
-import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
-import org.betonquest.betonquest.api.config.quest.QuestPackage;
-import org.betonquest.betonquest.api.instruction.variable.Variable;
+import org.betonquest.betonquest.api.QuestException;
+import org.betonquest.betonquest.api.instruction.Argument;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
-import org.betonquest.betonquest.api.quest.QuestException;
-import org.betonquest.betonquest.api.quest.event.online.OnlineEvent;
+import org.betonquest.betonquest.api.quest.action.OnlineAction;
 
-import java.util.List;
+public class BetonRemoveQuestEvent implements OnlineAction {
+    final Argument<String> id;
 
-public class BetonRemoveQuestEvent implements OnlineEvent {
-    final Variable<String> id;
-
-    public BetonRemoveQuestEvent(Variable<String> id) {
+    public BetonRemoveQuestEvent(Argument<String> id) {
         this.id = id;
     }
 

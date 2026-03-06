@@ -18,37 +18,30 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 
+import org.betonquest.betonquest.api.QuestException;
+import org.betonquest.betonquest.api.instruction.Argument;
 import org.betonquest.betonquest.api.instruction.Instruction;
-import org.betonquest.betonquest.api.instruction.argument.Argument;
-import org.betonquest.betonquest.api.instruction.variable.Variable;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
-import org.betonquest.betonquest.api.quest.PrimaryServerThreadData;
-import org.betonquest.betonquest.api.quest.QuestException;
-import org.betonquest.betonquest.api.quest.event.PlayerEvent;
-import org.betonquest.betonquest.api.quest.event.PlayerEventFactory;
-import org.betonquest.betonquest.api.quest.event.online.OnlineEventAdapter;
-import org.betonquest.betonquest.api.quest.event.thread.PrimaryServerThreadEvent;
+import org.betonquest.betonquest.api.quest.action.OnlineActionAdapter;
+import org.betonquest.betonquest.api.quest.action.PlayerAction;
+import org.betonquest.betonquest.api.quest.action.PlayerActionFactory;
 
-public class BetonRemoveQuestEventFactory implements PlayerEventFactory {
+public class BetonRemoveQuestEventFactory implements PlayerActionFactory {
 
     private final BetonQuestLoggerFactory loggerFactory;
-    private final PrimaryServerThreadData data;
 
-    public BetonRemoveQuestEventFactory(final BetonQuestLoggerFactory loggerFactory, PrimaryServerThreadData data) {
+    public BetonRemoveQuestEventFactory(final BetonQuestLoggerFactory loggerFactory) {
         this.loggerFactory = loggerFactory;
-        this.data=data;
     }
 
 
     @Override
-    public PlayerEvent parsePlayer(Instruction instruction) throws QuestException {
-        final Variable<String> id = instruction.get(Argument.STRING);
+    public PlayerAction parsePlayer(Instruction instruction) throws QuestException {
+        final Argument<String> id = instruction.string().get("id").orElse(null);
 
-        return new PrimaryServerThreadEvent(new OnlineEventAdapter(
-                new BetonRemoveQuestEvent(id),
-                loggerFactory.create(BetonRemoveQuestEvent.class),
-                instruction.getPackage()
-        ), data);
+        return new OnlineActionAdapter(
+                new BetonRemoveQuestEvent(id)
+        );
     }
 }
 

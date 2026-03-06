@@ -38,7 +38,6 @@ import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
 import com.mineshaft.mineshaftapi.util.Language;
 import com.mineshaft.mineshaftapi.util.Logger;
 import lombok.Getter;
-import org.apache.commons.codec.language.bm.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -47,7 +46,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 

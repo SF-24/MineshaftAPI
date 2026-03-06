@@ -113,6 +113,10 @@
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+<!--        <repository>-->
+<!--            <id>hangar</id>-->
+<!--            <url>https://hangar.papermc.io/repository/maven-public/</url>-->
+<!--        </repository>-->
         <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
@@ -137,14 +141,19 @@
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <id>betonquest-repo</id>
-            <url>https://nexus.betonquest.org/repository/betonquest/</url>
+            <id>betonquest-betonquest</id>
+            <name>BetonQuest</name>
+            <url>https://repo.betonquest.org/betonquest</url>
         </repository>
-        <repository>
-            <id>magmaguy-repo-releases</id>
-            <name>MagmaGuy's Repository</name>
-            <url>https://repo.magmaguy.com/releases</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>betonquest-repo</id>-->
+<!--            <url>https://repo.betonquest.org/repository/betonquest/</url>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>magmaguy-repo-releases</id>-->
+<!--            <name>MagmaGuy's Repository</name>-->
+<!--            <url>https://repo.magmaguy.com/releases</url>-->
+<!--        </repository>-->
         <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>

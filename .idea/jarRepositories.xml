@@ -37,19 +37,29 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="betonquest-betonquest" />
+      <option name="name" value="BetonQuest" />
+      <option name="url" value="https://repo.betonquest.org/betonquest" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Maven Central Repository" />
       <option name="url" value="https://repo1.maven.org/maven2/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="magmaguy-repo-releases" />
-      <option name="name" value="MagmaGuy's Repository" />
-      <option name="url" value="https://repo.magmaguy.com/releases" />
+      <option name="id" value="hangar" />
+      <option name="name" value="hangar" />
+      <option name="url" value="https://hangar.papermc.io/repository/maven-public/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="sk89q-repo" />
       <option name="name" value="sk89q-repo" />
       <option name="url" value="https://maven.enginehub.org/repo/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="magmaguy-repo-releases" />
+      <option name="name" value="MagmaGuy's Repository" />
+      <option name="url" value="https://repo.magmaguy.com/releases" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="papermc" />

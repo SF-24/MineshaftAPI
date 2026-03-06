@@ -18,47 +18,38 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 
+import org.betonquest.betonquest.api.QuestException;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.betonquest.betonquest.api.instruction.Argument;
 import org.betonquest.betonquest.api.instruction.Instruction;
-import org.betonquest.betonquest.api.instruction.argument.Argument;
-import org.betonquest.betonquest.api.instruction.variable.Variable;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
-import org.betonquest.betonquest.api.quest.QuestException;
-import org.betonquest.betonquest.api.quest.event.PlayerEvent;
-import org.betonquest.betonquest.api.quest.event.PlayerEventFactory;
-import org.betonquest.betonquest.api.quest.event.online.OnlineEventAdapter;
-import org.betonquest.betonquest.api.quest.PrimaryServerThreadData;
-import org.betonquest.betonquest.api.quest.event.thread.PrimaryServerThreadEvent;
+import org.betonquest.betonquest.api.quest.action.OnlineActionAdapter;
+import org.betonquest.betonquest.api.quest.action.PlayerAction;
+import org.betonquest.betonquest.api.quest.action.PlayerActionFactory;
 
-import java.util.List;
-
-public class BetonDisplayQuestEventFactory implements PlayerEventFactory {
+public class BetonDisplayQuestEventFactory implements PlayerActionFactory {
 
     private final BetonQuestLoggerFactory loggerFactory;
-    private final PrimaryServerThreadData data;
 
-    public BetonDisplayQuestEventFactory(final BetonQuestLoggerFactory loggerFactory, PrimaryServerThreadData data) {
+    public BetonDisplayQuestEventFactory(final BetonQuestLoggerFactory loggerFactory) {
         this.loggerFactory = loggerFactory;
-        this.data=data;
     }
 
 
     @Override
-    public PlayerEvent parsePlayer(Instruction instruction) throws QuestException {
+    public PlayerAction parsePlayer(Instruction instruction) throws QuestException {
 
-        final Variable<String> id = instruction.get(Argument.STRING);
-        final Variable<String> name = instruction.get(Argument.STRING);
-        final Variable<String> description = instruction.get(Argument.STRING);
-        final Variable<String> cancelEvent = instruction.get(Argument.STRING);
-        final Variable<List<String>> objectivesBase = instruction.getList(Argument.STRING);
+        final Argument<String> id = instruction.string().get("id").orElse(null);
+        final Argument<String> name = instruction.string().get("name").orElse(null);
+        final Argument<String> description = instruction.string().get("description").orElse(null);
+        final Argument<String> cancelEvent = instruction.string().get("cancelEvent").orElse(null);
+        final Argument<String> objectives = instruction.string().get("objectives").orElse(null);
 
         QuestPackage questPackage = instruction.getPackage();
 
-        return new PrimaryServerThreadEvent(new OnlineEventAdapter(
-                new BetonDisplayQuestEvent(id, name, description, objectivesBase, cancelEvent, questPackage),
-                loggerFactory.create(BetonExperienceEvent.class),
-                instruction.getPackage()
-        ), data);
+        return new OnlineActionAdapter(
+                new BetonDisplayQuestEvent(id, name, description, objectives, cancelEvent, questPackage)
+        );
     }
 }
 

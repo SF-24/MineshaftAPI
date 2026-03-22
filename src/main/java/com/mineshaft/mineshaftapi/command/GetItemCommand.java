@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftapi.command;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManagerAccessUtility;
 import com.mineshaft.mineshaftapi.util.save_data.DirUtil;
 import com.mineshaft.mineshaftapi.util.Logger;
@@ -57,7 +58,7 @@ public class GetItemCommand implements CommandExecutor {
 
             // Error in try/catch
             try {
-                ItemStack itemStack = MineshaftApi.getInstance().getItemManagerInstance().getItem(path,item);
+                ItemStack itemStack = MineshaftApi.getInstance().getItemManagerInstance().getItem(ItemManager.getItemDefinition(item));
                 if(args.length==2) {
                     try {
                         int amount = Integer.parseInt(args[1]);
@@ -111,7 +112,7 @@ public class GetItemCommand implements CommandExecutor {
 
     protected void sendItemList(Player player) {
         player.sendMessage(ChatColor.GOLD + "Showing item list:");
-        for(String name : MineshaftApi.getInstance().getItemManagerInstance().getItemList().values().stream().sorted().toList()) {
+        for(String name : MineshaftApi.getInstance().getItemManagerInstance().getItemNameList().values().stream().sorted().toList()) {
             player.sendMessage(" " + ChatColor.BLUE + name);
         }
     }

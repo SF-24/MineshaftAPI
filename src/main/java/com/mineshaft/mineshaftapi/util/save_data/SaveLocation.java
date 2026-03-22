@@ -33,7 +33,7 @@ public class SaveLocation {
     float pitch;
     float yaw;
 
-    SaveLocation(double x, double y, double z, float pitch, float yaw, String worldName) {
+    SaveLocation(double x, double y, double z, float yaw, float pitch, String worldName) {
         this.x=x;
         this.y=y;
         this.z=z;
@@ -43,10 +43,10 @@ public class SaveLocation {
     }
 
     public Location getLocation() {
-        return new Location(Bukkit.getWorld(worldName),x,y,z,pitch,yaw);
+        return new Location(Bukkit.getWorld(worldName),x,y,z,yaw,pitch);
     }
 
     public static SaveLocation fromLocation(Location location) {
-        return new SaveLocation(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw(), location.getWorld().getName());
+        return new SaveLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), location.getWorld().getName());
     }
 }

@@ -21,7 +21,6 @@ package com.mineshaft.mineshaftapi.listener;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.events.MineshaftUseItemEvent;
 import com.mineshaft.mineshaftapi.manager.block.BlockManager;
-import com.mineshaft.mineshaftapi.manager.block.json.JsonBlockCacheBridge;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
 import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
@@ -92,7 +91,7 @@ public class InteractListener implements Listener {
         //
         // GET EVENTS AND TRIGGER HARDCODED EVENTS
         //
-        ArrayList<String> events = ItemManager.getInteractEventsFromItem(ItemManager.getItemNameFromItem(item), clickType);
+        ArrayList<String> events = ItemManager.getInteractEventsFromItem(ItemManager.getItemIdFromItem(item), clickType);
 
         // TRIGGER DETECTABLE EVENT FOR CHILD PLUGINS
         MineshaftUseItemEvent event = com.mineshaft.mineshaftapi.manager.event.EventHandler.callMineshaftUseItemEvent(player, uniqueId, item, events, clickType);
@@ -173,8 +172,7 @@ public class InteractListener implements Listener {
 
         // Get the events
 
-        String name = ItemManager.getItemName(uniqueId);
-        ArrayList<String> events = ItemManager.getInteractEventsFromItem(name, ActionType.OFFHAND_SWAP);
+        ArrayList<String> events = ItemManager.getInteractEventsFromItem(uniqueId, ActionType.OFFHAND_SWAP);
 
         // Do not cancel if there are no specified events to execute.
         if(events==null||events.isEmpty()) return;

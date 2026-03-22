@@ -20,25 +20,66 @@ package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
+import com.mineshaft.mineshaftapi.manager.item.ClientItemManager;
 import com.mineshaft.mineshaftapi.manager.player.PlayerAttackManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import io.netty.channel.*;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.network.protocol.game.ClientboundSetCursorItemPacket;
+import net.minecraft.network.protocol.game.ClientboundSetPlayerInventoryPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.world.item.AirItem;
+import net.minecraft.world.level.ItemLike;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PacketListener implements Listener {
 
     public void inject(Player player) {
         ChannelDuplexHandler channelHandler = new ChannelDuplexHandler() {
             @Override
-            public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-                super.write(ctx, msg, promise);
+            public void write(ChannelHandlerContext ctx, Object packet, ChannelPromise promise) throws Exception {
+                // Override client-bound item packets
+//                if(packet instanceof ClientboundSetCursorItemPacket && ClientItemManager.isParsable(((ClientboundSetCursorItemPacket) packet).contents().getBukkitStack())) {
+//                    try {
+//                        ItemStack parsed = ClientItemManager.parseItem(((ClientboundSetCursorItemPacket) packet).contents().getBukkitStack());
+//                        if(parsed.getType()!=Material.AIR) {
+//                            packet = new ClientboundSetCursorItemPacket(
+//                                    ((CraftItemStack) parsed).handle
+//                            );
+//                        }
+//                    } catch (Exception ignored) {
+//                        packet = new ClientboundSetCursorItemPacket(
+//                            new net.minecraft.world.item.ItemStack(AirItem.byId(0))
+//                        );
+//                    }
+                if(packet instanceof ClientboundSetPlayerInventoryPacket && ClientItemManager.isParsable(((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack())) {
+                    try {
+                        ItemStack parsed = ClientItemManager.parseItem(((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack());
+                        packet = new ClientboundSetPlayerInventoryPacket(
+                                ((ClientboundSetPlayerInventoryPacket) packet).slot(), ((CraftItemStack) parsed).handle
+                        );
+                    } catch (Exception ignored) {}
+                } else if(packet instanceof ClientboundContainerSetSlotPacket && ClientItemManager.isParsable(((ClientboundContainerSetSlotPacket) packet).getItem().getBukkitStack())) {
+                    try {
+                        ItemStack parsed = ClientItemManager.parseItem(((ClientboundContainerSetSlotPacket) packet).getItem().getBukkitStack());
+                        packet = new ClientboundContainerSetSlotPacket(
+                                ((ClientboundContainerSetSlotPacket) packet).getContainerId(),
+                                ((ClientboundContainerSetSlotPacket) packet).getStateId(),
+                                ((ClientboundContainerSetSlotPacket) packet).getSlot(),
+                                ((CraftItemStack) parsed).handle
+                        );
+                    } catch (Exception ignored) {}
+                }
+                super.write(ctx, packet, promise);
             }
 
             @Override
@@ -71,8 +112,8 @@ public class PacketListener implements Listener {
                             Bukkit.getScheduler().runTaskLater(MineshaftApi.getInstance(), ()-> PlayerAttackManager.makeAttack(player),1/99);
                         }
                     }
-                }
 
+                }
                 super.channelRead(ctx, packet);
             }
         };

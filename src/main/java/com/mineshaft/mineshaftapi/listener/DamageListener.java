@@ -70,7 +70,7 @@ public class DamageListener implements Listener {
 
         // Testing for sheathed weapons, e.g. lightsabers or flick daggers.
         if(e instanceof EntityDamageByEntityEvent entityDamageByEntityEvent && (entityDamageByEntityEvent.getDamager() instanceof HumanEntity entity)) {
-            if(ItemUtil.isSheathed(entity.getInventory().getItemInMainHand())) {
+            if(entity.getInventory().getItemInMainHand().getType()!=Material.AIR && ItemUtil.isSheathed(entity.getInventory().getItemInMainHand())) {
                 e.setDamage(1.0d);
             }
         }

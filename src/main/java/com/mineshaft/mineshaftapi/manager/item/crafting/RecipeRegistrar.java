@@ -323,6 +323,13 @@ public class RecipeRegistrar implements Listener {
     @EventHandler
     void joinEvent(PlayerJoinEvent e) {
         giveRecipes(e.getPlayer());
+        Bukkit.getScheduler().runTaskLater(MineshaftApi.getInstance(),()->{
+            for(int i = 0; i<40; i++) {
+                ItemStack item = e.getPlayer().getInventory().getItem(i);
+                e.getPlayer().getInventory().setItem(i,new ItemStack(Material.AIR));
+                e.getPlayer().getInventory().setItem(i,item);
+            }
+        },10);
     }
 
     @EventHandler

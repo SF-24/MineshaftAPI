@@ -31,7 +31,9 @@ public enum ItemRarity {
     UNCOMMON(NamedTextColor.GREEN, ChatColor.GREEN.toString(),ChatColor.DARK_GREEN.toString(), "Uncommon"),
     RARE(NamedTextColor.BLUE, ChatColor.BLUE.toString(), ChatColor.DARK_AQUA.toString(), "Rare"),
     EXOTIC(NamedTextColor.DARK_PURPLE, ChatColor.DARK_PURPLE.toString(),ChatColor.DARK_PURPLE.toString(), "Exotic"),
-    LEGENDARY(NamedTextColor.GOLD, ChatColor.GOLD.toString(),ChatColor.GOLD.toString(), "Legendary");
+    EPIC(NamedTextColor.DARK_PURPLE, ChatColor.DARK_PURPLE.toString(),ChatColor.DARK_PURPLE.toString(), "Exotic"),
+    LEGENDARY(NamedTextColor.GOLD, ChatColor.GOLD.toString(),ChatColor.GOLD.toString(), "Legendary"),
+    MYTHIC(NamedTextColor.RED, ChatColor.RED.toString(),ChatColor.RED.toString(), "Legendary");
 
     private final String colourCode;
     private final String name;

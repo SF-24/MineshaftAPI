@@ -148,11 +148,11 @@ public class ItemUtil {
         if(uniqueId==null || !MineshaftApi.getInstance().getItemManagerInstance().isValidUUID(uniqueId)) {
             return false;
         }
-        if(ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK)==null) {
+        if(ItemManager.getInteractEventsFromItem(uniqueId, ActionType.RIGHT_CLICK)==null) {
             return false;
         }
 
-        return Objects.requireNonNull(ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK)).contains("wand");
+        return Objects.requireNonNull(ItemManager.getInteractEventsFromItem(uniqueId, ActionType.RIGHT_CLICK)).contains("wand");
     }
 
     public static ItemStack getDefaultItem(Material material, int customModelData, String name) {

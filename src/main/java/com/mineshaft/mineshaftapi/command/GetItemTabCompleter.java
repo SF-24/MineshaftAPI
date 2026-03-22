@@ -33,7 +33,7 @@ public class GetItemTabCompleter implements TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if(args.length==1) {
-            return StringUtil.copyPartialMatches(args[0], MineshaftApi.getInstance().getItemManagerInstance().getItemList().values(),new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[0], MineshaftApi.getInstance().getItemManagerInstance().getItemNameList().values(),new ArrayList<>());
         }
         return null;
     }

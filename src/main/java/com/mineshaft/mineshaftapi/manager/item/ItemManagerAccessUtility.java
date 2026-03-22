@@ -55,7 +55,7 @@ public class ItemManagerAccessUtility {
         ArrayList<ArrayList<ItemStack>> itemList = new ArrayList<>();
 
         ArrayList<ItemStack> pageList = new ArrayList<>();
-        for(String name : MineshaftApi.getInstance().getItemManagerInstance().getItemList().values()) {
+        for(String name : MineshaftApi.getInstance().getItemManagerInstance().getItemNameList().values()) {
             pageList.add(MineshaftApi.getInstance().getItemManagerInstance().getItem(name));
             if(pageSize>0 && pageList.size()>=pageSize) {
                 itemList.add(pageList);

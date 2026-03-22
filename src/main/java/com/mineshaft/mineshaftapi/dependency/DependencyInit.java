@@ -108,10 +108,10 @@ public class DependencyInit {
     }
 
     public static boolean hasBetonQuest() {
-        return Bukkit.getPluginManager().getPlugin("BetonQuest") != null && Bukkit.getPluginManager().isPluginEnabled("BetonQuest") && hasBqClass();
+        return Bukkit.getPluginManager().getPlugin("BetonQuest") != null && Bukkit.getPluginManager().isPluginEnabled("BetonQuest") && isNewBqVersion();
     }
 
-    public static boolean hasBqClass() {
+    public static boolean isNewBqVersion() {
         try {
             Class.forName("org.betonquest.betonquest.api.quest.PrimaryServerThreadData");
             return false;

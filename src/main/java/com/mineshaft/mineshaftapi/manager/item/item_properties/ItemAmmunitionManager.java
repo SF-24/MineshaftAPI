@@ -21,20 +21,16 @@ package com.mineshaft.mineshaftapi.manager.item.item_properties;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.LoreManager;
-import com.mineshaft.mineshaftapi.util.Logger;
 import de.tr7zw.changeme.nbtapi.NBT;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,19 +39,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ItemAmmunitionManager {
 
 
-    public static int getMaximumAmmunitionCount(String name) {
+    public static int getMaximumAmmunitionCount(UUID uniqueId) {
+        return getMaximumAmmunitionCount(ItemManager.getItemDefinition(uniqueId));
+    }
+
+    public static int getMaximumAmmunitionCount(ConfigurationSection yamlConfiguration) {
 
         int maxShots = 0;
-
-        File fileYaml = new File(ItemManager.getPath(name), name + ".yml");
-
-        // return null if file does not exist
-        if (!fileYaml.exists()) {
-            Logger.logError("FILE NOT FOUND ERROR!!!!!!!");
-            return 0;
-        }
-
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 
         if(yamlConfiguration.contains("ammunition.shot_count")) {
             maxShots=yamlConfiguration.getInt("ammunition.shot_count");
@@ -65,32 +55,26 @@ public class ItemAmmunitionManager {
             // get parent data
             String parent = yamlConfiguration.getString("parent");
             if(parent!=null && !parent.equalsIgnoreCase("null")) {
-                maxShots=getMaximumAmmunitionCount(parent);
+                maxShots=getMaximumAmmunitionCount(ItemManager.getItemDefinition(parent));
             }
         }
         return maxShots;
     }
 
-    public static ArrayList<String> getAmmunitionTypes(String name) {
+    public static ArrayList<String> getAmmunitionTypes(UUID uniqueId) {
+        return getAmmunitionTypes(ItemManager.getItemDefinition(uniqueId));
+    }
+
+    public static ArrayList<String> getAmmunitionTypes(ConfigurationSection yamlConfiguration) {
 
         ArrayList<String> ammunitionTypes = new ArrayList<>();
-
-        File fileYaml = new File(ItemManager.getPath(name), name + ".yml");
-
-        // return null if file does not exist
-        if (!fileYaml.exists()) {
-            Logger.logError("FILE NOT FOUND ERROR!!!!!!!");
-            return new ArrayList<>();
-        }
-
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 
         // Whether the item has a parent item
         // TODO: fix this code
 
         String parent = yamlConfiguration.getString("parent");
         if(parent!=null && !parent.equalsIgnoreCase("null")) {
-            List<String> parentAmmunitionTypes = getAmmunitionTypes(parent);
+            List<String> parentAmmunitionTypes = getAmmunitionTypes(ItemManager.getItemDefinition(parent));
             ammunitionTypes.addAll(parentAmmunitionTypes);
         }
 
@@ -131,15 +115,15 @@ public class ItemAmmunitionManager {
         // Check the inventory for ammunition
 
         // Update the ammunition count
-        if(getAmmunitionInInventory(player,getAmmunitionTypes(ItemManager.getItemNameFromItem(itemStack)))!=null) {
-            if(getAmmunition(itemStack)==getMaximumAmmunitionCount(ItemManager.getItemNameFromItem(itemStack))) {
+        if(getAmmunitionInInventory(player,getAmmunitionTypes(ItemManager.getItemIdFromItem(itemStack)))!=null) {
+            if(getAmmunition(itemStack)==getMaximumAmmunitionCount(ItemManager.getItemIdFromItem(itemStack))) {
                 player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(getAmmunitionType(itemStack)));
             }
 
             // TODO: Add ammunition stash
-            String ammunitionType = getAmmunitionInInventory(player,getAmmunitionTypes(ItemManager.getItemNameFromItem(itemStack)));
+            String ammunitionType = getAmmunitionInInventory(player,getAmmunitionTypes(ItemManager.getItemIdFromItem(itemStack)));
             takeAmmunition(player, ammunitionType);
-            setAmmunition(itemStack,ammunitionType,getMaximumAmmunitionCount(ItemManager.getItemNameFromItem(itemStack)));
+            setAmmunition(itemStack,ammunitionType,getMaximumAmmunitionCount(ItemManager.getItemIdFromItem(itemStack)));
         } else {
             player.sendActionBar(Component.text("Not enough ammunition", NamedTextColor.RED));
         }
@@ -152,12 +136,12 @@ public class ItemAmmunitionManager {
         if(lore!=null) {
             for (int line = 0; line < lore.size(); line++) {
                 if (lore.get(line).contains("Ammunition:")) {
-                    lore.set(line, LoreManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
+                    lore.set(line, LoreManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount(ItemManager.getItemIdFromItem(itemStack))));
                 }
             }
         } else {
             lore = new ArrayList<>();
-            lore.add(LoreManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount(ItemManager.getItemName(ItemManager.getItemIdFromItem(itemStack)))));
+            lore.add(LoreManager.getAmmunitionString(Math.max(ammunitionCount, 0), getMaximumAmmunitionCount((ItemManager.getItemIdFromItem(itemStack)))));
         }
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
@@ -185,7 +169,7 @@ public class ItemAmmunitionManager {
     }
 
     public static boolean canShoot(ItemStack itemStack) {
-        return getMaximumAmmunitionCount(ItemManager.getItemNameFromItem(itemStack))==0||getAmmunition(itemStack)>0;
+        return getMaximumAmmunitionCount(ItemManager.getUuid(ItemManager.getItemNameFromItem(itemStack)))==0||getAmmunition(itemStack)>0;
     }
 
     public static ItemStack consumeAmmunition(ItemStack itemStack) {
@@ -196,26 +180,18 @@ public class ItemAmmunitionManager {
     }
 
     public static int getMaxAmmunition(UUID uniqueId) {
-        for(String field : ItemManager.getYamlConfiguration(uniqueId).getConfigurationSection("ammunition").getKeys(false)) {
+    return getMaxAmmunition(ItemManager.getItemDefinition(uniqueId));
+    }
+
+    public static int getMaxAmmunition(ConfigurationSection yamlConfiguration) {
+        for(String field : yamlConfiguration.getConfigurationSection("ammunition").getKeys(false)) {
             switch(field) {
                 case "shot_count","shots" -> {
-                    return ItemManager.getYamlConfiguration(uniqueId).getInt("ammunition."+field);
+                    return yamlConfiguration.getInt("ammunition."+field);
                 }
             }
         }
         return 0;
     }
-
-    public static @NotNull List<String> getAmmunitionTypes(UUID uniqueId) {
-        for(String field : ItemManager.getYamlConfiguration(uniqueId).getConfigurationSection("ammunition").getKeys(false)) {
-            switch(field) {
-                case "ammunition_types","ammo_types","ammunition_type","ammo_type" -> {
-                    return ItemManager.getYamlConfiguration(uniqueId).getStringList("ammunition."+field);
-                }
-            }
-        }
-        return Collections.emptyList();
-    }
-
 
 }

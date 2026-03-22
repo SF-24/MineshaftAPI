@@ -12,13 +12,38 @@ disable-dependency-warnings: false
 enable-cooldown-animation: true
 
 # Whether the sidebar is enabled
+# It's a discontinued legacy feature.
 enable-sidebar: false
+sidebar-location-display: Hub
 
 # Whether the player is sent an actionbar upon receiving exp
 send-exp-actionbar: true
 
-# Whether the item rarity description will be italic
+# Item rarity description formatting
 italic-item-rarity: false
+bold-item-rarity: false
+capitalised-item-rarity: false
+white-common-item-rarity: false
+
+# The default item rarity.
+# Choose from: Standard, Common, Uncommon, Rare, Exotic, Epic, Legendary, Mythic.
+# Custom registration will come soon
+# Standard will not show as a description below the item name
+
+default-custom-item-rarity: STANDARD
+vanilla-item-rarity: STANDARD
+vanilla-item-overrides:
+# Example:
+# vanilla-item-overrides:
+#   diamond: uncommon
+#   diamond_sword: uncommon
+#   ender_pearl: rare
+vanilla-item-subcategories:
+# Example:
+# vanilla-item-subcategories:
+# diamond_sword: sword
+# diamond_axe: axe
+# bow: bow
 
 # ----------------------------------------CONSTANTS----------------------------------------
 
@@ -29,8 +54,12 @@ armour-constant: 16
 # ----------------------------------------CURRENCY----------------------------------------
 
 # Singular and plural form of the currency name
+# Support mini-message
 currency-singular: Credit
 currency-plural: Credits
+
+# Uses "named text colour"
+currency-colour: Green
 
 # ----------------------------------------CRAFTING----------------------------------------
 

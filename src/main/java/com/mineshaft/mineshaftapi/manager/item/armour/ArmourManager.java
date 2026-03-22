@@ -19,6 +19,8 @@
 package com.mineshaft.mineshaftapi.manager.item.armour;
 
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -26,22 +28,30 @@ import java.util.UUID;
 public class ArmourManager {
 
     public static ArmourType getArmourType(UUID uniqueId) {
-        if (ItemManager.getYamlConfiguration(uniqueId).contains("armour.type")) {
-            return ArmourType.valueOf(ItemManager.getYamlConfiguration(uniqueId).getString("armour.type"));
-        } else if (ItemManager.getYamlConfiguration(uniqueId).contains("armor.type")) {
-            return ArmourType.valueOf(ItemManager.getYamlConfiguration(uniqueId).getString("armor.type"));
+        return getArmourType(ItemManager.getItemDefinition(uniqueId));
+    }
+
+    public static ArmourType getArmourType(ConfigurationSection yamlConfiguration) {
+        if (yamlConfiguration.contains("armour.type")) {
+            return ArmourType.valueOf(yamlConfiguration.getString("armour.type"));
+        } else if (yamlConfiguration.contains("armor.type")) {
+            return ArmourType.valueOf(yamlConfiguration.getString("armor.type"));
         } else {
             return ArmourType.NONE;
         }
     }
 
-    // Get armour resistances
     public static ArrayList<ArmourResistanceTypes> getArmourResistances(UUID uniqueId) {
+        return getArmourResistances(ItemManager.getItemDefinition(uniqueId));
+    }
+
+    // Get armour resistances
+    public static ArrayList<ArmourResistanceTypes> getArmourResistances(ConfigurationSection yamlConfiguration) {
         ArrayList<ArmourResistanceTypes> resistances = new ArrayList<>();
-        for(String resistance : ItemManager.getYamlConfiguration(uniqueId).getStringList("armour.resistances")) {
+        for(String resistance : yamlConfiguration.getStringList("armour.resistances")) {
             resistances.add(ArmourResistanceTypes.valueOf(resistance.toUpperCase()));
         }
-        if(ItemManager.getYamlConfiguration(uniqueId).contains("armour.cold_protection")) {
+        if(yamlConfiguration.contains("armour.cold_protection")) {
             resistances.add(ArmourResistanceTypes.COLD_PROTECTION);
         }
         return resistances;

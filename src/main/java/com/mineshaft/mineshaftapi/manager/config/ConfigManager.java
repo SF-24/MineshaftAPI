@@ -19,14 +19,23 @@
 package com.mineshaft.mineshaftapi.manager.config;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.util.Logger;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class ConfigManager {
+
+    MiniMessage mm = MiniMessage.miniMessage();
 
     public ConfigManager(MineshaftApi mineshaftApi) {
         mineshaftApi.getConfig().options().copyDefaults();;
@@ -94,6 +103,82 @@ public class ConfigManager {
 
     public boolean useItalicItemRarity() {
         return getConfig().getBoolean("italic-item-rarity");
+    }
+
+    public boolean useBoldItemRarity() {return getConfig().getBoolean("bold-item-rarity");}
+    public boolean useCapitalisedItemRarity() {return getConfig().getBoolean("capitalised-item-rarity");}
+    public boolean useWhiteCommonItemRarity() {return getConfig().getBoolean("white-common-item-rarity");}
+
+    public ItemRarity getDefaultCustomItemRarity() {
+        if(getConfig().getString("default-custom-item-rarity")==null) return ItemRarity.STANDARD;
+        return ItemRarity.valueOf(Objects.requireNonNull(getConfig().getString("default-custom-item-rarity")).toUpperCase());
+    }
+
+    public ItemRarity getVanillaItemRarity() {
+        if(getConfig().getString("vanilla-item-rarity")==null) return ItemRarity.STANDARD;
+        return ItemRarity.valueOf(Objects.requireNonNull(getConfig().getString("vanilla-item-rarity")).toUpperCase());
+    }
+
+    // Returns custom rarities for vanilla items.
+    public Map<Material,ItemRarity> getVanillaItemRarityOverrides() {
+        Map<Material, ItemRarity> itemRarityOverrides = new HashMap<>();
+        // Loop through the materials
+        if(getConfig().getConfigurationSection("vanilla-item-subcategories")==null) return itemRarityOverrides;
+        try {
+            for (String key : getConfig().getConfigurationSection("vanilla-item-overrides").getKeys(false)) {
+                if (key == null && (getConfig().getString("vanilla-item-overrides." + key) != null)) continue;
+                // Add the override to a map
+                itemRarityOverrides.put(
+                        Material.valueOf(key.toUpperCase()),
+                        ItemRarity.valueOf(getConfig().getString("vanilla-item-overrides." + key).toUpperCase())
+                );
+            }
+        } catch (Exception ignored) {return itemRarityOverrides;}
+        return itemRarityOverrides;
+    }
+
+    // Returns custom subcategories for vanilla items.
+    public Map<Material, ItemSubcategory> getVanillaItemSubcategoryOverrides() {
+        Map<Material, ItemSubcategory> itemSubcategoryOverrides = new HashMap<>();
+        // Loop through the materials
+        if(getConfig().getConfigurationSection("vanilla-item-subcategories")==null) return itemSubcategoryOverrides;
+        try {
+            for (String key : getConfig().getConfigurationSection("vanilla-item-subcategories").getKeys(false)) {
+                if (key == null) continue;
+                // Add the override to a map
+                itemSubcategoryOverrides.put(
+                        Material.valueOf(key.toUpperCase()),
+                        ItemSubcategory.valueOf(getConfig().getString("vanilla-item-subcategories." + key))
+                );
+            }
+        } catch (Exception ignored) {return itemSubcategoryOverrides;}
+        return itemSubcategoryOverrides;
+    }
+
+    // Get singular and plural currency names and colour
+    public @NotNull Component getCurrencyNameSingular() {
+        if(getConfig().getString("currency-name-singular")==null) return Component.text("Credit");
+        return mm.deserialize(getConfig().getString("currency-name-singular"));
+    }
+
+    public @NotNull Component getCurrencyNamePlural() {
+        if(getConfig().getString("currency-name-plural")==null) return Component.text("Credits");
+        return mm.deserialize(getConfig().getString("currency-name-plural"));
+    }
+
+    public @NotNull NamedTextColor getCurrencyNameFormatting() {
+        if(getConfig().getString("currency-colour")==null) return NamedTextColor.GREEN;
+        return NamedTextColor.NAMES.value(getConfig().getString("currency-colour"));
+    }
+
+    public String getCurrencyNameSingularString() {
+        if(getConfig().getString("currency-name-singular")==null) return ("Credit");
+        return mm.stripTags(getConfig().getString("currency-name-singular"));
+    }
+
+    public String getCurrencyNamePluralString() {
+        if(getConfig().getString("currency-name-plural")==null) return ("Credits");
+        return mm.stripTags(getConfig().getString("currency-name-plural"));
     }
 
     public boolean enableItemCooldownAnimation() {

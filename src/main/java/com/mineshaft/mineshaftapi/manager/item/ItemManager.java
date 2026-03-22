@@ -23,6 +23,7 @@ import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
 import com.mineshaft.mineshaftapi.manager.item.armour.ArmourManager;
 import com.mineshaft.mineshaftapi.manager.item.armour.ArmourResistanceTypes;
 import com.mineshaft.mineshaftapi.manager.item.armour.ArmourType;
+import com.mineshaft.mineshaftapi.manager.item.cache.CachedItem;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemDeconstructManager;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRecipeManager;
 import com.mineshaft.mineshaftapi.manager.item.fields.*;
@@ -40,6 +41,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
@@ -64,27 +66,54 @@ public class ItemManager {
 
     private static int maximumIterationConstant = 1;
 
-    HashMap<UUID, String> items = new HashMap<>();
-    HashMap<UUID, String> itemPaths = new HashMap<>();
-    HashMap<UUID, List<String>> cachedEvents = new HashMap<>();
+    HashMap<UUID, CachedItem> items = new HashMap<>();
+    HashMap<String, ArrayList<UUID>> itemPackages = new HashMap<>();
+//    HashMap<UUID, List<String>> cachedEvents = new HashMap<>();
 
     public boolean isValidUUID(UUID uuid) {
         return items.containsKey(uuid);
     }
 
-    public HashMap<UUID, String> getItemList() {
+    // Get an item list
+    public HashMap<UUID, CachedItem> getItemList() {
         return items;
     }
 
-    public HashMap<UUID, String> getItemPathList() {
-        return itemPaths;
+    // Get a list of item names
+    public HashMap<UUID, String> getItemNameList() {
+        HashMap<UUID, String> returnMap = new HashMap<>();
+        for(UUID itemId : items.keySet()) {
+            returnMap.put(itemId, items.get(itemId).getName());
+        }
+        return returnMap;
     }
 
+    // Check if an item is a duplicate
+    public boolean itemNameExists(String itemPackage, String item) {
+        return getItemNameList().containsValue(item);
+    }
+
+    // get the default item saving path
     private static final String defaultPath = MineshaftApi.getItemPath();
 
+    // Cache an item
+    public void cacheItem(UUID itemId, String folder, CachedItem item) {
+        if (itemPackages.containsKey(folder)) {
+            ArrayList<UUID> items = itemPackages.get(folder);
+            items.add(itemId);
+            itemPackages.put(folder, items);
+        } else {
+            ArrayList<UUID> items = new ArrayList<>();
+            items.add(itemId);
+            itemPackages.put(folder,items);
+        }
+        items.put(itemId,item);
+    }
+
+    // Load an item
     public void initialiseItems() {
         items.clear();
-        itemPaths.clear();
+        itemPackages.clear();
 
         File folder = getFolder();
 
@@ -92,18 +121,20 @@ public class ItemManager {
             createDemoItem();
         }
 
+        // Iterate
         for (File file : Objects.requireNonNull(folder.listFiles())) {
             if(!file.isDirectory()) {
-                initialiseItem(defaultPath,file.getName());
+                initialiseItem(null,defaultPath,file.getName());
             } else {
                 initialiseFilesInDirectory(defaultPath, file.getName(), 0);
             }
         }
     }
 
+    // Load recipes for items
     public void initialiseItemRecipes() {
         for(UUID uniqueId : items.keySet()) {
-            String name = items.get(uniqueId);
+            String name = items.get(uniqueId).getName();
 
             try {
                 // Register item crafting recipe, if exists.
@@ -120,25 +151,26 @@ public class ItemManager {
     // Initialises files in a given directory
     // iteration is used to avoid an infinite loop
     public void initialiseFilesInDirectory(String path, String dirName, int iteration) {
-        File folder = new File(path + File.separator + dirName);
+        path = path + File.separator + dirName;
+        File folder = new File(path);
 
         if(iteration>=maximumIterationConstant) {
-            Logger.logWarning("Went into subfolder in directory \""+path+"\\"+dirName+"\" a greater number of times than the maximum number (" + maximumIterationConstant + ") times. Returning to avoid infinite loop.");
+            Logger.logWarning("Went into subfolder in directory \""+path+"\" a greater number of times than the maximum number (" + maximumIterationConstant + ") times. Returning to avoid infinite loop.");
             return;
         }
 
         for(File file : Objects.requireNonNull(folder.listFiles())) {
             if(file.isDirectory()) {
-                initialiseFilesInDirectory(path+File.separator+dirName, file.getName(), iteration++);
+                initialiseFilesInDirectory(path, file.getName(), iteration++);
             } else {
                 // Initialise files in the directory
-                initialiseItem(path,file.getName());
+                initialiseItem(file.getParentFile().getName(),path,file.getName());
             }
         }
     }
 
-    public void initialiseItem(String path, String fileName) {
-        if(items.containsValue(fileName)) {
+    public void initialiseItem(String filePackage, String path, String fileName) {
+        if(itemNameExists(filePackage,fileName)) {
             Logger.logWarning("Conflicting item names: '" + fileName + "'. This may result in errors due to items containing the same name. This may be fixed in a future release.");
         }
 
@@ -152,29 +184,26 @@ public class ItemManager {
             yamlConfiguration.set("id", UUID.randomUUID().toString());
             try {
                 yamlConfiguration.save(fileYaml);
+                Logger.logInfo("Saved file: " + path + "/" + fileName + ".yml");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
         if(items.containsKey(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))))) {
             Logger.logError("Duplicate id detected for items: " + fileName + " and " + items.get(UUID.fromString(yamlConfiguration.getString("id"))));
+            Logger.logError("Aborting loading item: '" + name + ".yml' in package: '" + filePackage + "'");
+            return;
         }
 
         // Cache item:
-        items.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), name);
-        itemPaths.put(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))), path);
-        Logger.logInfo("Initialised item '" + name + "' with UUID '" + yamlConfiguration.getString("id") + "' and path '" + path + "'");
-    }
+        cacheItem(UUID.fromString(Objects.requireNonNull(yamlConfiguration.getString("id"))),filePackage,new CachedItem(name, filePackage, yamlConfiguration));
 
-    public static String getItemPath(UUID uuid) {
-        if(!MineshaftApi.getInstance().getItemManagerInstance().itemPaths.containsKey(uuid) || MineshaftApi.getInstance().getItemManagerInstance().itemPaths.get(uuid).isBlank()) {
-            return MineshaftApi.getItemPath();
-        }
-        return MineshaftApi.getInstance().getItemManagerInstance().itemPaths.get(uuid);
+        Logger.logInfo("Initialised item ' " + filePackage + ":" + name + "', " /* + "UUID '" + yamlConfiguration.getString("id") + "'"*/);
     }
 
     public static String getItemName(UUID uuid) {
-        return MineshaftApi.getInstance().getItemManagerInstance().items.get(uuid);
+        return MineshaftApi.getInstance().getItemManagerInstance().items.get(uuid).getName();
     }
 
     public static UUID getItemIdFromItem(ItemStack item) {
@@ -196,47 +225,37 @@ public class ItemManager {
         return null;
     }
 
-    public ItemStack getItem(String itemName) {
-        MineshaftApi.getInstance();
-        return getItem(MineshaftApi.getItemPath(), itemName);
+    public ItemStack getItem(String name) {
+        return getItem(getUuid(name));
+    }
+
+    public ItemStack getItem(UUID uuid) {
+        return getItem(getItemDefinition(uuid));
     }
 
     @SuppressWarnings({"deprecation","removal"})
-    public ItemStack getItem(String dir, String itemName) {
-        File fileYaml = new File(dir, itemName + ".yml");
-
-        // return null if file does not exist
-        if (!fileYaml.exists()) {
-            Logger.logError("Attempted to load null item: " + itemName + ".yml in directory: " + dir);
-            return null;
-        }
-
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
-
-        if(yamlConfiguration==null) {
-            Logger.logError("Loaded null YamlConfiguration for file " + dir + "/" + fileYaml.getName());
-            return null;
-        }
+    public ItemStack getItem(ConfigurationSection yamlConfiguration) {
 
         // Whether the item has a parent item
         boolean hasParent = false;
 
         // Get uuid and run a null uuid check
         // If the uuid is null, something has gone very wrong with the plugin.
-        String uuid = yamlConfiguration.getString("id");
+        UUID uuid = UUID.fromString(yamlConfiguration.getString("id"));
+        String internalName = items.get(uuid).getName();
         if(uuid==null) {
-            Logger.logError("Invalid null uuid for item " + itemName);
+            Logger.logError("Invalid null uuid for item " + internalName);
             return new ItemStack(Material.AIR);
         }
         ItemStack item = new ItemStack(Material.BARRIER);
 
         // Rarity
-        ItemRarity rarity = getItemRarity(UUID.fromString(uuid));
+        ItemRarity rarity = getItemRarity(uuid);
 
         String itemDisplay = "Item";
         String parentItemDisplay = null;
 
-        ItemSubcategory subcategory = getItemSubcategory(UUID.fromString(uuid));
+        ItemSubcategory subcategory = getItemSubcategory(uuid);
 
         if (yamlConfiguration.contains("parent")) {
             String parentName = yamlConfiguration.getString("parent");
@@ -259,10 +278,10 @@ public class ItemManager {
                 item = new ItemStack(Material.valueOf(yamlConfiguration.getString("material").toUpperCase()));
             } catch (Exception e) {
                 if (!hasParent) {
-                    Logger.logError("ERROR! Could not load item '" + itemName + "' invalid material");
+                    Logger.logError("ERROR! Could not load item '" + internalName + "' invalid material");
                     return null;
                 }
-                Logger.logWarning("ERROR! Could not load material for item: '" + itemName + "'. Invalid material. Using parent item material instead");
+                Logger.logWarning("ERROR! Could not load material for item: '" + internalName + "'. Invalid material. Using parent item material instead");
             }
         }
 
@@ -343,7 +362,7 @@ public class ItemManager {
         boolean coldProtect = false;
 
         if (category == ItemCategory.ARMOUR_HELMET || category == ItemCategory.ARMOUR_BOOTS || category == ItemCategory.ARMOUR_CHESTPLATE || category == ItemCategory.ARMOUR_LEGGINGS) {
-            armourType = ArmourManager.getArmourType(UUID.fromString(uuid));
+            armourType = ArmourManager.getArmourType(uuid);
             if(yamlConfiguration.contains("armour.cold_protection")) {
                 coldProtect=yamlConfiguration.getBoolean("armour.cold_protection");
             }
@@ -364,13 +383,13 @@ public class ItemManager {
 
         List<String> ammunitionTypes = Collections.emptyList();
         int maxAmmunition = 0;
-        if(useAmmunition(UUID.fromString(uuid))) {
-            maxAmmunition = ItemAmmunitionManager.getMaxAmmunition(UUID.fromString(uuid));
-            ammunitionTypes = ItemAmmunitionManager.getAmmunitionTypes(UUID.fromString(uuid));
+        if(useAmmunition(uuid)) {
+            maxAmmunition = ItemAmmunitionManager.getMaxAmmunition(uuid);
+            ammunitionTypes = ItemAmmunitionManager.getAmmunitionTypes(uuid);
         }
 
         // GENERATE LORE:
-        ArrayList<String> lore = LoreManager.getLore(UUID.fromString(uuid));
+        ArrayList<String> lore = LoreManager.getLore(uuid);
 
 //        if(!rarity.equals(ItemRarity.STANDARD) || !armourType.equals(ArmourType.NONE) || coldProtect || !subcategory.getPropertyList().isEmpty()) {
 //            lore.add("");
@@ -388,10 +407,10 @@ public class ItemManager {
         // Load file stats, append to lore and add them to the item
 
         // Get standard and ranged item statistics
-        HashMap<ItemStats, Double> statMap = getStatMap(itemName, statsString);
+        HashMap<ItemStats, Double> statMap = getStatMap(yamlConfiguration, statsString);
         // TODO: Add in 1.21.5 when update comes out
         //HashMap<WeaponStats, Double> weaponStatMap = getWeaponStatMap(itemName, statsString);
-        HashMap<RangedItemStats, Double> rangedStatMap = getRangedStatMap(itemName, rangedStatsString);
+        HashMap<RangedItemStats, Double> rangedStatMap = getRangedStatMap(yamlConfiguration, rangedStatsString);
 
         EquipmentSlot slot = null;
 
@@ -497,7 +516,7 @@ public class ItemManager {
                     meta.setTool(toolComponent);
                 }
             } catch (NullPointerException e) {
-                Logger.logError("Error. Could not load tool properties for " + itemName);
+                Logger.logError("Error. Could not load tool properties for " + internalName);
             }
         }
 
@@ -678,13 +697,13 @@ public class ItemManager {
         // final variant meta above here. No more after this.
 
         // Apply NBT tag with item
-        final ArrayList<ArmourResistanceTypes> armourResistanceTypes = ArmourManager.getArmourResistances(UUID.fromString(uuid));
+        final ArrayList<ArmourResistanceTypes> armourResistanceTypes = ArmourManager.getArmourResistances(uuid);
         final boolean finalColdProtect = coldProtect;
         ItemSubcategory finalSubcategory1 = subcategory;
         int finalMaxAmmunition = maxAmmunition;
         List<String> finalAmmunitionTypes = ammunitionTypes;
         NBT.modify(item, nbt -> {
-            nbt.setString("uuid", uuid);
+            nbt.setString("uuid", uuid.toString());
             if(!armourType.equals(ArmourType.NONE)) {
                 nbt.setString("ArmourType",armourType.name().toLowerCase());
             }
@@ -828,16 +847,16 @@ public class ItemManager {
          * Custom hardcoded properties
          * */
 
-        if(getInteractEventsFromItem(itemName,ActionType.RIGHT_CLICK).contains("parry")) {
+        if(getInteractEventsFromItem(uuid,ActionType.RIGHT_CLICK).contains("parry")) {
             Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.BLOCK).build();
             item.setData(DataComponentTypes.CONSUMABLE, consumable);
-        } else if(getInteractEventsFromItem(itemName,ActionType.RIGHT_CLICK).contains("power_attack")) {
+        } else if(getInteractEventsFromItem(uuid,ActionType.RIGHT_CLICK).contains("power_attack")) {
             Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.SPEAR).build();
             item.setData(DataComponentTypes.CONSUMABLE, consumable);
-        } else if(getInteractEventsFromItem(itemName, ActionType.RIGHT_CLICK).contains("smoke_pipe") || getInteractEventsFromItem(itemName, ActionType.RIGHT_CLICK).contains("instrument")) {
+        } else if(getInteractEventsFromItem(uuid, ActionType.RIGHT_CLICK).contains("smoke_pipe") || getInteractEventsFromItem(uuid, ActionType.RIGHT_CLICK).contains("instrument")) {
             Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.TOOT_HORN).build();
             item.setData(DataComponentTypes.CONSUMABLE, consumable);
-        } else if(getInteractEventsFromItem(itemName, ActionType.RIGHT_CLICK).contains("throw")) {
+        } else if(getInteractEventsFromItem(uuid, ActionType.RIGHT_CLICK).contains("throw")) {
             Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.SPEAR).build();
             item.setData(DataComponentTypes.CONSUMABLE, consumable);
         }
@@ -889,13 +908,10 @@ public class ItemManager {
         }
     }
 
-    protected static HashMap<ItemStats, Double> getStatMap(String name, String statPath) {
+    protected static HashMap<ItemStats, Double> getStatMap(ConfigurationSection yamlConfiguration, String statPath) {
         //System.out.println("getting statmap");
 
         HashMap<ItemStats, Double> statMap = new HashMap<>();
-
-        File fileYaml = getFileYaml(name);
-        @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
 
         if (!yamlConfiguration.contains(statPath)) {
 //            Logger.logError("could not find " + statPath + " in: " + path + "/" + name + ".yml");
@@ -952,12 +968,13 @@ public class ItemManager {
     }
 
     protected HashMap<WeaponStats, Double> getWeaponStatMap(String name, String statPath) {
+        return getWeaponStatMap(getItemDefinition(name),statPath);
+    }
+
+    protected HashMap<WeaponStats, Double> getWeaponStatMap(ConfigurationSection yamlConfiguration, String statPath) {
         //System.out.println("getting statmap");
 
         HashMap<WeaponStats, Double> statMap = new HashMap<>();
-
-        File fileYaml = getFileYaml(name);
-        @NotNull YamlConfiguration yamlConfiguration = getYamlConfiguration(fileYaml);
 
         if (!yamlConfiguration.contains(statPath)) {
 //            Logger.logError("could not find " + statPath + " in: " + path + "/" + name + ".yml");
@@ -983,10 +1000,8 @@ public class ItemManager {
     }
 
 
-    protected static HashMap<RangedItemStats, Double> getRangedStatMap(String name, String rangedStatPath) {
+    protected static HashMap<RangedItemStats, Double> getRangedStatMap(ConfigurationSection yamlConfiguration, String rangedStatPath) {
         HashMap<RangedItemStats, Double> statMap = new HashMap<>();
-
-        YamlConfiguration yamlConfiguration = getYamlConfiguration(name);
 
         if (yamlConfiguration==null || !yamlConfiguration.contains(rangedStatPath)) {
             return statMap;
@@ -1072,31 +1087,29 @@ public class ItemManager {
     }
 
     public static ItemCategory getItemCategory(UUID uuid) {
-        File fileYaml = new File(getItemPath(uuid), getItemName(uuid) + ".yml");
+        return getItemCategory(MineshaftApi.getInstance().getItemManagerInstance().getItemDefinition(uuid));
+    }
 
-        // return null if file does not exist
-        if (!fileYaml.exists()) return null;
-
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
-
+    public static ItemCategory getItemCategory(ConfigurationSection yamlConfiguration) {
         if(yamlConfiguration.contains("item_category")&&yamlConfiguration.getString("item_category")!=null) {
             return ItemCategory.valueOf(yamlConfiguration.getString("item_category").toUpperCase(Locale.ROOT));
         }
         return ItemCategory.ITEM_GENERIC;
     }
 
-    // Get the rarity of an item.
     public static ItemRarity getItemRarity(UUID uniqueId) {
-        if(uniqueId==null) {
+        return getItemRarity(ItemManager.getItemDefinition(uniqueId));
+    }
+
+    // Get the rarity of an item.
+    public static ItemRarity getItemRarity(ConfigurationSection yamlConfiguration) {
+        if(yamlConfiguration==null) {
             Logger.logError("The given UUID is null for this item. Returning");
-            return ItemRarity.STANDARD;
+            return MineshaftApi.getInstance().getConfigManager().getDefaultCustomItemRarity();
         }
 
-        if(getYamlConfiguration(uniqueId)!=null) {
-            if(getYamlConfiguration(uniqueId).contains("rarity")) {
-                return ItemRarity.valueOf(getYamlConfiguration(uniqueId).getString("rarity").toUpperCase(Locale.ROOT));
-            } else if(getParentYamlConfiguration(uniqueId)!=null) {
-            }
+        if (yamlConfiguration.contains("rarity")) {
+            return ItemRarity.valueOf(yamlConfiguration.getString("rarity").toUpperCase(Locale.ROOT));
         }
         return ItemRarity.STANDARD;
 
@@ -1127,11 +1140,13 @@ public class ItemManager {
     }
 
     public static ItemSubcategory getItemSubcategory(UUID uniqueId) {
-        YamlConfiguration yamlConfiguration = ItemManager.getYamlConfiguration(uniqueId);
+        return getItemSubcategory(ItemManager.getItemDefinition(uniqueId));
+    }
+
+    public static ItemSubcategory getItemSubcategory(ConfigurationSection yamlConfiguration) {
         if(yamlConfiguration==null) {
-            Logger.logError("Found null yamlconfiguration for the item of uuid: " + uniqueId);
-            Logger.logError("Item name: " + getItemName(uniqueId));
-            Logger.logError("Item map: " + MineshaftApi.getInstance().getItemManagerInstance().items.toString());
+            Logger.logError("Found null item YAML!");
+            return ItemSubcategory.DEFAULT;
         }
         if(yamlConfiguration.contains("subcategory")) {
             return getItemSubcategory(yamlConfiguration.getString("subcategory"));
@@ -1139,7 +1154,7 @@ public class ItemManager {
             if (yamlConfiguration.contains("parent")) {
                 String parentName = yamlConfiguration.getString("parent");
                 if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
-                    YamlConfiguration parentYamlConfiguration = ItemManager.getYamlConfiguration(parentName);
+                    ConfigurationSection parentYamlConfiguration = ItemManager.getItemDefinition(getUuid(parentName));
                     if (parentYamlConfiguration!=null) {
                         if (parentYamlConfiguration.getString("subcategory") != null) {
                             return getItemSubcategory(parentYamlConfiguration.getString("subcategory"));
@@ -1154,14 +1169,13 @@ public class ItemManager {
         return ItemSubcategory.DEFAULT;
     }
 
-    public static @NotNull String getItemSubcategoryOverride(UUID uniqueId) {
-        YamlConfiguration yamlConfiguration = ItemManager.getYamlConfiguration(uniqueId);
+    public static @NotNull String getItemSubcategoryOverride(ConfigurationSection yamlConfiguration) {
         if(yamlConfiguration.contains("subcategory_override")&&yamlConfiguration.getString("subcategory_override")!=null&&!yamlConfiguration.getStringList("subcategory_override").isEmpty()) {
             return (yamlConfiguration.getString("subcategory_override")).toLowerCase();
         } else if (yamlConfiguration.contains("parent")) {
             String parentName = yamlConfiguration.getString("parent");
             if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
-                YamlConfiguration parentYamlConfiguration = ItemManager.getYamlConfiguration(parentName);
+                ConfigurationSection parentYamlConfiguration = ItemManager.getItemDefinition(parentName);
                 if (parentYamlConfiguration!=null) {
                     if (parentYamlConfiguration.contains("subcategory") && parentYamlConfiguration.getString("subcategory_override")!=null && !parentYamlConfiguration.getString("subcategory_override").isEmpty()) {
                         return (parentYamlConfiguration.getString("subcategory_override")).toLowerCase();
@@ -1169,61 +1183,65 @@ public class ItemManager {
                 }
             }
         }
-        return getItemSubcategory(uniqueId).name().toLowerCase();
+        return getItemSubcategory(yamlConfiguration).name().toLowerCase();
     }
 
-
-    public static YamlConfiguration getYamlConfiguration(UUID uniqueId) {
-        return getYamlConfiguration(getItemName(uniqueId));
+    public static ConfigurationSection getParentYamlConfiguration(UUID uniqueId) {
+        return getParentYamlConfiguration(ItemManager.getItemDefinition(uniqueId));
     }
 
-    public static YamlConfiguration getParentYamlConfiguration(UUID uniqueId) {
-        if (getYamlConfiguration(uniqueId).contains("parent")) {
-            if (getYamlConfiguration(uniqueId).getString("parent") != null && !(getYamlConfiguration(uniqueId).getString("parent").equalsIgnoreCase("null")) && !(getYamlConfiguration(uniqueId).getString("parent").equalsIgnoreCase("nil"))) {
-                return getYamlConfiguration(getYamlConfiguration(uniqueId).getString("parent"));
+    public static ConfigurationSection getParentYamlConfiguration(ConfigurationSection yamlConfiguration) {
+        if (yamlConfiguration.contains("parent")) {
+            if (yamlConfiguration.getString("parent") != null && !(yamlConfiguration.getString("parent").equalsIgnoreCase("null")) && !(yamlConfiguration.getString("parent").equalsIgnoreCase("nil"))) {
+                return getItemDefinition(yamlConfiguration.getString("parent"));
             }
         }
         return null;
     }
 
-    public static @Nullable String getParentName(UUID uniqueId) {
-        if (getYamlConfiguration(uniqueId).contains("parent")) {
-            if (getYamlConfiguration(uniqueId).getString("parent") != null && !(getYamlConfiguration(uniqueId).getString("parent").equalsIgnoreCase("null")) && !(getYamlConfiguration(uniqueId).getString("parent").equalsIgnoreCase("nil"))) {
-                return (getYamlConfiguration(uniqueId).getString("parent"));
+    public static @Nullable String getParentName(ConfigurationSection yamlConfiguration) {
+        if (yamlConfiguration.contains("parent")) {
+            if (yamlConfiguration.getString("parent") != null && !(yamlConfiguration.getString("parent").equalsIgnoreCase("null")) && !(yamlConfiguration.getString("parent").equalsIgnoreCase("nil"))) {
+                return (yamlConfiguration.getString("parent"));
             }
         }
         return null;
     }
 
     public static UUID getUuid(String name) {
-        if(getYamlConfiguration(name).contains("id")) return null;
-        return UUID.fromString(getYamlConfiguration(name).getString("id"));
+        for(UUID uuid : MineshaftApi.getInstance().getItemManagerInstance().getItemNameList().keySet()) {
+            if(MineshaftApi.getInstance().getItemManagerInstance().getItemNameList().get(uuid).equals(name)) {
+                return uuid;
+            }
+        }
+        return null;
     }
 
-    public static YamlConfiguration getYamlConfiguration(String fileName) {
-        // TODO: Get path
-        if(fileName==null) {
-            Logger.logError("Found null filename when loading item!");
-            return null;
-        }
-//        if(!fileName.contains(".yml") || !fileName.contains(".yaml")) fileName += ".yml";
-        return getYamlConfiguration(MineshaftApi.getItemPath(), fileName);
-    }
-
-
-    public static YamlConfiguration getYamlConfiguration(String path, String itemName) {
-        if(itemName==null || itemName.isEmpty() || itemName.contains("null")) return null;
-        if(path.isBlank()) {
-            Logger.logWarning("Found empty path for file " + itemName + ".yml, using default path" );
-            path=MineshaftApi.getItemPath();
-        }
-        File fileYaml = new File(path, itemName+".yml");
-        if(!fileYaml.exists()) {
-            Logger.logError("Tried to load non-existent file: " + path + "/" + fileYaml.getName());
-            return null;
-        }
-        return YamlConfiguration.loadConfiguration(fileYaml);
-    }
+//    @Deprecated
+//    public static YamlConfiguration getYamlConfiguration(String fileName) {
+//        // TODO: Get path
+//        if(fileName==null) {
+//            Logger.logError("Found null filename when loading item!");
+//            return null;
+//        }
+////        if(!fileName.contains(".yml") || !fileName.contains(".yaml")) fileName += ".yml";
+//        return getYamlConfiguration(MineshaftApi.getItemPath(), fileName);
+//    }
+//
+//    @Deprecated
+//    public static YamlConfiguration getYamlConfiguration(String path, String itemName) {
+//        if(itemName==null || itemName.isEmpty() || itemName.contains("null")) return null;
+//        if(path.isBlank()) {
+//            Logger.logWarning("Found empty path for file " + itemName + ".yml, using default path" );
+//            path=MineshaftApi.getItemPath();
+//        }
+//        File fileYaml = new File(path, itemName+".yml");
+//        if(!fileYaml.exists()) {
+//            Logger.logError("Tried to load non-existent file: " + path + "/" + fileYaml.getName());
+//            return null;
+//        }
+//        return YamlConfiguration.loadConfiguration(fileYaml);
+//    }
 
     public static List<String> getItemPropertiesAsString(ItemStack item) {
         if(item==null) return Collections.emptyList();
@@ -1279,20 +1297,13 @@ public class ItemManager {
         return ItemCategory.ITEM_GENERIC;
     }
 
-    public static ArrayList<String> getInteractEventsFromItem(String name, ActionType actionType) {
+    public static ArrayList<String> getInteractEventsFromItem(UUID uniqueId, ActionType actionType) {
+        return getInteractEventsFromItem(getItemDefinition(uniqueId),actionType);
+    }
+
+    public static ArrayList<String> getInteractEventsFromItem(ConfigurationSection yamlConfiguration, ActionType actionType) {
 
         ArrayList<String> interactEvents = new ArrayList<>();
-
-        // TODO: Get the path
-        File fileYaml = new File(getPath(name), name + ".yml");
-
-        // return null if file does not exist
-        if (!fileYaml.exists()) {
-            Logger.logError("FILE NOT FOUND ERROR! For file: " + fileYaml.getPath());
-            return null;
-        }
-
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileYaml);
 
         // Whether the item has a parent item
         // TODO: fix this code
@@ -1300,7 +1311,7 @@ public class ItemManager {
         if(yamlConfiguration.contains("parent")) {
             String parent = yamlConfiguration.getString("parent");
             if (parent != null && !parent.equalsIgnoreCase("null") && !parent.equalsIgnoreCase("nil")) {
-                List<String> parentEvents = getInteractEventsFromItem(parent, actionType);
+                List<String> parentEvents = getInteractEventsFromItem(getUuid(parent), actionType);
                 interactEvents.addAll(parentEvents);
             }
         }
@@ -1322,12 +1333,12 @@ public class ItemManager {
         return folder;
     }
 
-    public static File getFileYaml(String name) {
-        return new File(getPath(name), name + ".yml");
+    public static ConfigurationSection getItemDefinition(UUID uuid) {
+        return MineshaftApi.getInstance().getItemManagerInstance().getItemList().get(uuid).getYamlSetup();
     }
 
-    public static String getPath(String name) {
-        return getItemPath(getUuid(name));
+    public static ConfigurationSection getItemDefinition(String name) {
+        return getItemDefinition(getUuid(name));
     }
 
     public static @NotNull YamlConfiguration getYamlConfiguration(File fileYaml) {
@@ -1345,8 +1356,12 @@ public class ItemManager {
     }
 
     public static boolean useAmmunition(UUID uniqueId) {
-        if(ItemManager.getItemCategory(uniqueId) == ItemCategory.WEAPON_RANGED) {
-            return(getYamlConfiguration(uniqueId).contains("ammunition"))&& ItemAmmunitionManager.getMaxAmmunition(uniqueId)>0;
+        return useAmmunition(ItemManager.getItemDefinition(uniqueId));
+    }
+
+    public static boolean useAmmunition(ConfigurationSection yamlConfiguration) {
+        if(ItemManager.getItemCategory(yamlConfiguration) == ItemCategory.WEAPON_RANGED) {
+            return(yamlConfiguration.contains("ammunition"))&& ItemAmmunitionManager.getMaxAmmunition(yamlConfiguration)>0;
         }
         return false;
     }

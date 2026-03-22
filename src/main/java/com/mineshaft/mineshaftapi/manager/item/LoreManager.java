@@ -32,7 +32,6 @@ import com.mineshaft.mineshaftapi.util.formatter.NumericFormatter;
 import com.mineshaft.mineshaftapi.util.formatter.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -142,17 +141,27 @@ public class LoreManager {
     }
 
     public static String getRarityString(UUID uniqueId) {
-        if(ItemManager.getItemRarity(uniqueId)==ItemRarity.STANDARD) return null;
+        return getRarityString(ItemManager.getItemRarity(uniqueId),getItemSubcategoryDisplay(uniqueId));
+    }
+
+    public static String getRarityString(ItemRarity itemRarity, String itemSubcategory) {
+        if(itemRarity==ItemRarity.STANDARD) return null;
+        String formatting = "";
         if (MineshaftApi.getInstance().getConfigManager().useItalicItemRarity()) {
-            String italic = ChatColor.ITALIC.toString();
-            return(ItemManager.getItemRarity(uniqueId).getSecondaryColourCode() + italic + ItemManager.getItemRarity(uniqueId).getName() + " " + getItemSubcategoryDisplay(uniqueId));
+            formatting += ChatColor.ITALIC.toString();
+        }
+        if (MineshaftApi.getInstance().getConfigManager().useBoldItemRarity()) {
+            formatting += ChatColor.BOLD.toString();
+        }
+        if (MineshaftApi.getInstance().getConfigManager().useCapitalisedItemRarity()) {
+            return(itemRarity.getColourCode() + formatting + itemRarity.getName() + " " + itemSubcategory);
         } else {
-            return(ItemManager.getItemRarity(uniqueId).getSecondaryColourCode() + ItemManager.getItemRarity(uniqueId).getName() + " " + getItemSubcategoryDisplay(uniqueId));
+            return(itemRarity.getColourCode() + formatting + itemRarity.getName().toUpperCase() + " " + itemSubcategory);
         }
     }
 
+
     public static String getItemSubcategoryDisplay(UUID uniqueId) {
-        // TODO: parent item display check
         if (ItemManager.getItemRarity(uniqueId) != ItemRarity.STANDARD) {
             // OLD CODE
 //            if (category.equals(ItemCategory.WEAPON_MELEE) || category.equals(ItemCategory.WEAPON_RANGED)) {
@@ -178,9 +187,20 @@ public class LoreManager {
 //            }
 
             if (ItemManager.getItemSubcategory(uniqueId) != null && !ItemManager.getItemSubcategory(uniqueId).equals(ItemSubcategory.DEFAULT)) {
-                return TextFormatter.convertStringToName(ItemManager.getItemSubcategoryOverride(uniqueId));
-            } else if(ItemManager.getItemSubcategory(ItemManager.getParentName(uniqueId)) != null) {
-                return TextFormatter.convertStringToName(ItemManager.getItemSubcategoryOverride(ItemManager.getUuid(ItemManager.getParentName(uniqueId))));
+                return TextFormatter.convertStringToName(ItemManager.getItemSubcategoryOverride(ItemManager.getItemDefinition(uniqueId)));
+            } else if(ItemManager.getItemSubcategory(ItemManager.getParentName(ItemManager.getItemDefinition(uniqueId))) != null) {
+                return TextFormatter.convertStringToName(ItemManager.getItemSubcategoryOverride(ItemManager.getItemDefinition(ItemManager.getUuid(ItemManager.getParentName(ItemManager.getItemDefinition(uniqueId))))));
+            }
+        }
+        return "";
+    }
+        // TODO: parent item display check
+
+        public static String getItemSubcategoryDisplay(ItemRarity itemRarity, ItemSubcategory itemSubcategory) {
+        // TODO: parent item display check
+        if (itemRarity != ItemRarity.STANDARD) {
+            if (itemSubcategory != null && !itemSubcategory.equals(ItemSubcategory.DEFAULT)) {
+                return TextFormatter.convertStringToName(itemSubcategory.name().toLowerCase());
             }
         }
         return "";
@@ -226,7 +246,7 @@ public class LoreManager {
         ArrayList<String> lore = new ArrayList<>();
         HashMap<ItemStats, Double> statMap;
         if(itemStack==null || itemStack.getType()==Material.AIR) {
-            statMap=ItemManager.getStatMap(ItemManager.getItemName(uniqueId), "stats.");
+            statMap=ItemManager.getStatMap(ItemManager.getItemDefinition(uniqueId), "stats.");
         } else {
             statMap=ItemManager.getItemStatMap(itemStack);
         }
@@ -248,7 +268,7 @@ public class LoreManager {
                     // Display armour class.
                     if (stat.equals(ItemStats.ARMOUR_CLASS) && statMap.get(stat)!=0) {
                         lore.add(LoreManager.getStatString(stat, statMap.get(stat), ItemManager.getItemCategory(uniqueId), (int) Math.floor(
-                                ItemManager.getStatMap(ItemManager.getItemName(uniqueId),"stats.").get(ItemStats.MAXIMUM_ADDED_DEX_MODIFIER)
+                                ItemManager.getStatMap(ItemManager.getItemDefinition(uniqueId),"stats.").get(ItemStats.MAXIMUM_ADDED_DEX_MODIFIER)
                         )));
                     } else if(statMap.get(stat)!=0) {
                         lore.add(LoreManager.getStatString(stat, statMap.get(stat), ItemManager.getItemCategory(uniqueId), 0));
@@ -264,7 +284,7 @@ public class LoreManager {
         HashMap<RangedItemStats, Double> statMap;
 
         if(itemStack==null || itemStack.getType()==Material.AIR) {
-            statMap=ItemManager.getRangedStatMap(ItemManager.getItemName(uniqueId), "ranged_stats.");
+            statMap=ItemManager.getRangedStatMap(ItemManager.getItemDefinition(uniqueId), "ranged_stats.");
         } else {
             statMap=ItemManager.getRangedItemStatMap(itemStack);
         }

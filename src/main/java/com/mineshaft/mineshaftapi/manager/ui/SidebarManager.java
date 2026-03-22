@@ -18,8 +18,11 @@
 
 package com.mineshaft.mineshaftapi.manager.ui;
 
+import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.config.ConfigManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.formatter.NumericFormatter;
+import com.mineshaft.mineshaftapi.util.formatter.ParseColour;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -41,12 +44,13 @@ public class SidebarManager {
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         obj.setDisplayName(ChatColor.YELLOW.toString() + ChatColor.BOLD + "MINESHAFT");
 
-        String coinsLang = "Credits";
+        String coinsLang = MineshaftApi.getInstance().getConfigManager().getCurrencyNameSingularString();
 
         int coins = JsonPlayerBridge.getCoins(player);
-        String location = "Bespin";
+        String location = MineshaftApi.getInstance().getConfigManager().getConfig().getString("sidebar-location-display");
 
         String objective = null;
+        // Todo: change
         if(objective==null) objective = "";
 
         String dateToString = new SimpleDateFormat("dd/MM/yy").format(Calendar.getInstance().getTime());
@@ -59,8 +63,8 @@ public class SidebarManager {
         Team currentDate = board.registerNewTeam("current_date");
 
         coinsTeam.addEntry(ChatColor.GOLD.toString());
-        coinsTeam.setPrefix(ChatColor.WHITE.toString() + " " + coinsLang + ": ");
-        coinsTeam.setSuffix(ChatColor.GREEN+NumericFormatter.formatNumberAdvanced(coins));
+        coinsTeam.setPrefix(ChatColor.WHITE + " " + coinsLang + ": ");
+        coinsTeam.setSuffix(ParseColour.getChatColour(MineshaftApi.getInstance().getConfigManager().getCurrencyNameFormatting()) +NumericFormatter.formatNumberAdvanced(coins));
 
         locationTeam.addEntry(ChatColor.DARK_PURPLE.toString());
         locationTeam.setPrefix(ChatColor.WHITE + " ⏣ ");

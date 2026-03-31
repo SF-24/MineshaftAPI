@@ -41,9 +41,9 @@ public class EquipListener implements Listener {
 
     @EventHandler
     private void onInventoryClick(InventoryClickEvent e) {
-        System.out.println("CLICK TYPE: " + e.getInventory().getType());
-
-//        if(!inventoryTypes.contains(e.getInventory().getType())) return;
+//        System.out.println("CLICK TYPE: " + e.getInventory().getType());
+//
+        if(!inventoryTypes.contains(e.getInventory().getType())) return;
         try {
             Logger.logInfo("current: " + Objects.requireNonNull(e.getCurrentItem()).getType());
             Logger.logInfo("cursor: " + Objects.requireNonNull(e.getCursor()).getType());

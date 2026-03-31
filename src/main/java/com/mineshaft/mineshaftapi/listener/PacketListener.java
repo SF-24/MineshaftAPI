@@ -25,13 +25,9 @@ import com.mineshaft.mineshaftapi.manager.player.PlayerAttackManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import io.netty.channel.*;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.network.protocol.game.ClientboundSetCursorItemPacket;
 import net.minecraft.network.protocol.game.ClientboundSetPlayerInventoryPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
-import net.minecraft.world.item.AirItem;
-import net.minecraft.world.level.ItemLike;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -61,13 +57,17 @@ public class PacketListener implements Listener {
 //                            new net.minecraft.world.item.ItemStack(AirItem.byId(0))
 //                        );
 //                    }
+                Object initial = packet;
                 if(packet instanceof ClientboundSetPlayerInventoryPacket && ClientItemManager.isParsable(((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack())) {
                     try {
                         ItemStack parsed = ClientItemManager.parseItem(((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack());
                         packet = new ClientboundSetPlayerInventoryPacket(
                                 ((ClientboundSetPlayerInventoryPacket) packet).slot(), ((CraftItemStack) parsed).handle
                         );
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                        super.write(ctx, initial, promise);
+
+                    }
                 } else if(packet instanceof ClientboundContainerSetSlotPacket && ClientItemManager.isParsable(((ClientboundContainerSetSlotPacket) packet).getItem().getBukkitStack())) {
                     try {
                         ItemStack parsed = ClientItemManager.parseItem(((ClientboundContainerSetSlotPacket) packet).getItem().getBukkitStack());
@@ -77,7 +77,9 @@ public class PacketListener implements Listener {
                                 ((ClientboundContainerSetSlotPacket) packet).getSlot(),
                                 ((CraftItemStack) parsed).handle
                         );
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                        super.write(ctx, initial, promise);
+                    }
                 }
                 super.write(ctx, packet, promise);
             }

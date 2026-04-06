@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftapi.listener;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.ui.SidebarManager;
+import com.mineshaft.mineshaftapi.util.Logger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -33,6 +34,7 @@ public class PlayerListener implements Listener {
     public void PlayerJoinEvent(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         e.getPlayer().sendMessage(Component.text("This server uses the plugin MineshaftApi by https://github.com/SF-24", NamedTextColor.GOLD));
+        e.getPlayer().sendMessage("joined with lang: " + MineshaftApi.getMineshaftLanguage(player).name());
 
         // If sidebar is enabled, show it
         if(MineshaftApi.getInstance().getConfigManager().getSidebarEnabled()) {

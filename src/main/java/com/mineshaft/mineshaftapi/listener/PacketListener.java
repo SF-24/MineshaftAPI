@@ -57,7 +57,7 @@ public class PacketListener implements Listener {
 //                            new net.minecraft.world.item.ItemStack(AirItem.byId(0))
 //                        );
 //                    }
-                Object initial = packet;
+//                Object initial = packet;
                 if(packet instanceof ClientboundSetPlayerInventoryPacket && ClientItemManager.isParsable(MineshaftApi.getMineshaftLanguage(player),((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack())) {
                     try {
                         ItemStack parsed = ClientItemManager.parseItem(MineshaftApi.getMineshaftLanguage(player),((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack());
@@ -65,7 +65,7 @@ public class PacketListener implements Listener {
                                 ((ClientboundSetPlayerInventoryPacket) packet).slot(), ((CraftItemStack) parsed).handle
                         );
                     } catch (Exception ignored) {
-                        super.write(ctx, initial, promise);
+                        super.write(ctx, packet, promise);
 
                     }
                 } else if(packet instanceof ClientboundContainerSetSlotPacket && ClientItemManager.isParsable(MineshaftApi.getMineshaftLanguage(player),((ClientboundContainerSetSlotPacket) packet).getItem().getBukkitStack())) {
@@ -78,7 +78,7 @@ public class PacketListener implements Listener {
                                 ((CraftItemStack) parsed).handle
                         );
                     } catch (Exception ignored) {
-                        super.write(ctx, initial, promise);
+                        super.write(ctx, packet, promise);
                     }
                 }
                 super.write(ctx, packet, promise);

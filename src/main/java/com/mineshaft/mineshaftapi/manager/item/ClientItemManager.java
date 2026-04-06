@@ -22,27 +22,63 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.util.Language;
+import com.mineshaft.mineshaftapi.util.Logger;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.translation.Translatable;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
+import java.util.Objects;
 
 public class ClientItemManager {
 
     public static String formatName(String name) {
-        return ChatColor.stripColor(name.trim().replace(" ","-").toLowerCase());
+//        Logger.logDebug("Formatting name: " + name);
+        return name.trim().replace(" ","-").toLowerCase();
     }
 
+    public static boolean hasNameTranslation(Language language, ItemStack itemStack) {
+        return getNameTranslation(language, itemStack) != null;
+    }
+
+
     public static String getNameTranslation(Language language, ItemStack itemStack) {
-        return itemStack.getItemMeta() != null ?getNameTranslation(language,formatName(itemStack.getItemMeta().getDisplayName())):null;
+        if(itemStack.hasItemMeta()) {
+//            Logger.logInfo("Getting name translation: " + language + " " + getTranslationKey(itemStack));
+
+            if(itemStack.getItemMeta().displayName()!=null) {
+//                Logger.logInfo("Found display name: " + Objects.requireNonNull(itemStack.getItemMeta().displayName()).toString());
+            }
+        } else {
+//            Logger.logInfo("Null stuff found.");
+        }
+        return (itemStack.getItemMeta() != null) ?getNameTranslation(language,getTranslationKey(itemStack)):null;
+    }
+
+    public static String getTranslationKey(ItemStack itemStack) {
+        if(itemStack == null || itemStack.getItemMeta() == null) {
+            return null;
+        }
+        if(itemStack.displayName() instanceof TranslatableComponent translatable && !translatable.args().isEmpty()) {
+            return formatName(PlainTextComponentSerializer.plainText().serialize(
+                    ((TranslatableComponent)itemStack.displayName()).args().getFirst()
+            ));
+        }
+        return formatName(PlainTextComponentSerializer.plainText().serialize(itemStack.displayName()));
     }
 
     public static Component getSerialisedTranslation(Language language, ItemStack itemStack) {
         if(getNameTranslation(language,itemStack)==null) return null;
+
         return MiniMessage.miniMessage().deserialize(getNameTranslation(language,itemStack));
     }
 
@@ -51,7 +87,8 @@ public class ClientItemManager {
     }
 
     public static boolean isParsable(Language language, ItemStack itemStack) {
-        return itemStack.getType()!=Material.AIR && getNameTranslation(language,itemStack) != null || (MineshaftApi.getInstance().getConfigManager().getVanillaItemRarity() != ItemRarity.STANDARD && ((itemStack.getItemMeta() == null || itemStack.getItemMeta().getLore() == null) && getMaterialItemRarity(itemStack.getType()) != ItemRarity.STANDARD));
+        return (itemStack.getType()!=Material.AIR && hasNameTranslation(language,itemStack)) ||
+                (MineshaftApi.getInstance().getConfigManager().getVanillaItemRarity() != ItemRarity.STANDARD && ((itemStack.getItemMeta() == null || itemStack.getItemMeta().getLore() == null) && getMaterialItemRarity(itemStack.getType()) != ItemRarity.STANDARD));
     }
 
     public static ItemRarity getMaterialItemRarity(Material material) {
@@ -75,13 +112,27 @@ public class ClientItemManager {
             if(itemRarity!=ItemRarity.STANDARD && itemMeta!=null) {
                 itemMeta.setLore(Collections.singletonList(LoreManager.getRarityString(itemRarity, LoreManager.getItemSubcategoryDisplay(itemRarity,getMaterialItemSubcategory(itemStack.getType())))));
             }
+            itemStack.setItemMeta(itemMeta);
         }
-        if(itemMeta != null && itemMeta.displayName()!=null) {
-            Component translation = getSerialisedTranslation(language, itemStack);
-            if(translation!=null && itemMeta.displayName().color()!=null && translation!=null) translation.colorIfAbsent(itemMeta.displayName().color());
-            itemMeta.displayName(translation);
+        if(itemMeta != null && itemMeta.getDisplayName()!=null) {
+            // If translation exists
+            if(hasNameTranslation(language,itemStack)) {
+                // Get the translation
+                Component translation = getSerialisedTranslation(language, itemStack);
+                if(translation!=null) {
+                    // Apply the previous colour
+//                    if (itemMeta.customName().color() != null && translation != null) translation.colorIfAbsent(itemMeta.customName().color());
+                    // If it doesn't work, set it to white
+                    translation = translation.colorIfAbsent(itemStack.displayName().color());
+                    translation = translation.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+                    itemMeta.displayName(translation);
+                    itemStack.setItemMeta(itemMeta);
+                    Logger.logInfo("Translated name: " + translation);
+                } else {
+                    Logger.logWarning("Null translation component!");
+                }
+            }
         }
-        itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 

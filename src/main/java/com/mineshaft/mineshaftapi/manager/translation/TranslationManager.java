@@ -119,14 +119,17 @@ public class TranslationManager {
             if(langKey==null) continue;
             if(section.getString(langKey)!=null&&!section.getString(langKey).isEmpty()) {
                 cacheItemNameTranslation(language, langKey, section.getString(langKey));
+                Logger.logDebug("cached: " + langKey + "->" +  section.getString(langKey) + " for " + language.name());
             }
         }
     }
 
     public void cacheItemNameTranslation(Language language, String originalName, String translatedName) {
-        HashMap<String,String> translations = translatedItemNames.get(language.getSimplifiedCode());
-        if (translations == null) {
-            translations = new HashMap<>();
+        HashMap<String,String> translations;
+        if(translatedItemNames.containsKey(language.getSimplifiedCode())) {
+            translations=translatedItemNames.get(language.getSimplifiedCode());
+        } else {
+            translations=new HashMap<>();
         }
         translations.put(originalName, translatedName);
         translatedItemNames.put(language.getSimplifiedCode(), translations);
@@ -137,6 +140,8 @@ public class TranslationManager {
     }
 
     public String getItemNameTranslation(Language language, String originalName) {
+//        Logger.logInfo("Parsing item name translation: " + originalName);
+
         if(translatedItemNames.get(language.getSimplifiedCode()) !=null && translatedItemNames.get(language.getSimplifiedCode()).containsKey(originalName)) {
             return translatedItemNames.get(language.getSimplifiedCode()).get(originalName);
         }

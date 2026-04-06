@@ -70,6 +70,13 @@ public class MineshaftCommand implements CommandExecutor {
                         MineshaftApi.reloadItems();
                         sender.sendMessage(ChatColor.AQUA + "Custom items have been reloaded");
                         break;
+                    case "translation":
+                    case "translations":
+                    case "lang":
+                        // reload translations only
+                        MineshaftApi.reloadTranslations();
+                        sender.sendMessage(ChatColor.AQUA + "Language translations have been reloaded");
+                        break;
                     case "events":
                     case "event":
 

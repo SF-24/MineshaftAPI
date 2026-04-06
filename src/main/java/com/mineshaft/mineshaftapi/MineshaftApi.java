@@ -35,6 +35,7 @@ import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.PlayerManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.ActionManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.CooldownManager;
+import com.mineshaft.mineshaftapi.manager.translation.TranslationManager;
 import com.mineshaft.mineshaftapi.util.Language;
 import com.mineshaft.mineshaftapi.util.Logger;
 import lombok.Getter;
@@ -67,6 +68,8 @@ public final class MineshaftApi extends JavaPlugin {
     HashMap<String,AbilityType> abilities = new HashMap<>();
 
     // Managers, some including caches
+    @Getter
+    TranslationManager translationManager;
     @Getter
     ConfigManager configManager = new ConfigManager(this);
     @Getter
@@ -120,6 +123,9 @@ public final class MineshaftApi extends JavaPlugin {
         /*
         * End of dependency loading.
         * */
+
+        // Load the translation manager:
+        translationManager = new TranslationManager();
 
         // Register listeners
         packetListener=new PacketListener();
@@ -210,6 +216,8 @@ public final class MineshaftApi extends JavaPlugin {
 
     public static String getItemPath() {return getPluginFolder() + File.separator + "Items"; }
 
+    public static String getTranslationPath() {return getPluginFolder() + File.separator + "Translations"; }
+
     public static String getEventPath() {return getPluginFolder() + File.separator + "Events"; }
 
     public ItemManager getItemManagerInstance() {return itemManager;}
@@ -225,6 +233,10 @@ public final class MineshaftApi extends JavaPlugin {
         MineshaftApi.getInstance().itemManager.initialiseItemRecipes();
     }
 
+    public static void reloadTranslations() {
+        MineshaftApi.getInstance().translationManager.initialiseTranslations();
+    }
+
     public static void reloadEvents() {
         MineshaftApi.getInstance().eventManager.initialiseEvents();
     }
@@ -232,6 +244,7 @@ public final class MineshaftApi extends JavaPlugin {
     public static void reloadPlugin() {
         reloadItems();
         reloadEvents();
+        reloadTranslations();
         reloadConfigs();
     }
 

@@ -873,6 +873,20 @@ limit_vertical_knockback: true
 
 ### ***TODO: more coming soon***
 
+# Translation Keys
+
+Currently only item names can be translated. Spaces in the item name are replaced with hyphens (`-`), trailing and starting spaces are trimmed and the name is converted to lowercase.<br>><br>
+For example, `Iron Longsword`, `iron longsword` and `Iron LongSword` will have the key `iron-longsword`, while `Iron Long-Sword` will have the key `iron-long-sword`.<br><br>
+All item names with the given display name will be translated. Please note that legacy colour codes count as part of the name unless they prefix it.<br><br>
+Example:
+```yaml
+language: pl
+items:
+  iron-longsword: Żelazny Miecz Długi
+  bronze-pickaxe: Brązowy Kilof
+  lighstaber: Miecz Świetlny
+```
+
 # Configuration
 
 Functionality of the plugin can be modified via the `config.yml` file in the plugin folder. The currency name parameter does not yet work.
@@ -1026,11 +1040,12 @@ A plugin based off the old RpgPlugin. Contains multiple features like character 
 The plugin can be reloaded via the `/mineshaft` command, which is automatically available to operators.
 
 Usage:
-`/mineshaft reload [all|items|events|configs]`
+`/mineshaft reload [all|items|events|translations|configs]`
 
 Examples:
 `/mineshaft reload` and `/mineshaft reload all` reloads the whole plugin
 `/mineshaft reload item` and `/mineshaft reload items` reloads custom items
+`/mineshaft reload translation`, `/mineshaft reload translations` and `/mineshaft reload lang` reloads language translation files
 `/mineshaft reload event` and `/mineshaft reload events` reloads events
 `/mineshaft reload config` and `/mineshaft reload configs` reloads the configuration
 

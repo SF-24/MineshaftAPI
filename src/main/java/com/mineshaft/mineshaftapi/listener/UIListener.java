@@ -57,22 +57,22 @@ public class UIListener implements Listener {
 //                }
 //            });
 //        }{
-////            NBT.get(e.getCurrentItem(), nbt -> {
-////                switch (nbt.getString("clickAction")) {
-////                    case "close":
-////                    case "closeView":
-////                        e.setCancelled(true);
-////                        e.getWhoClicked().closeInventory();
-////                        break;
-////                    case "cancel":
-////                    case "immutable":
-////                        e.setCancelled(true);
-////                        break;
-////                    default:
-////                        break;
-////                }
-////            });
-////
+//            NBT.get(e.getCurrentItem(), nbt -> {
+//                switch (nbt.getString("clickAction")) {
+//                    case "close":
+//                    case "closeView":
+//                        e.setCancelled(true);
+//                        e.getWhoClicked().closeInventory();
+//                        break;
+//                    case "cancel":
+//                    case "immutable":
+//                        e.setCancelled(true);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            });
+
 
         if (ChatColor.translateAlternateColorCodes('&', title).equalsIgnoreCase(ChatColor.BLACK + "Menu")) {
             e.setCancelled(true);

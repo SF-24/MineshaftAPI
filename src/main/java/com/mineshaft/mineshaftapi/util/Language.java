@@ -35,13 +35,13 @@ public enum Language {
 
     public static Language getLanguage(String language) {
         switch (language) {
-            case "en" -> {
+            case "en","english","eng","ingles","ang","angielski" -> {
                 return ENGLISH;
             }
-            case "es" -> {
+            case "es","spanish","esp","sp","espanol","hiszpanski","hiszpański","hiszp","hisp" -> {
                 return SPANISH;
             }
-            case "pl" -> {
+            case "pl","polish","pol","polski","polaco" -> {
                 return POLISH;
             }
             default -> {

@@ -58,9 +58,9 @@ public class PacketListener implements Listener {
 //                        );
 //                    }
                 Object initial = packet;
-                if(packet instanceof ClientboundSetPlayerInventoryPacket && ClientItemManager.isParsable(((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack())) {
+                if(packet instanceof ClientboundSetPlayerInventoryPacket && ClientItemManager.isParsable(MineshaftApi.getMineshaftLanguage(player),((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack())) {
                     try {
-                        ItemStack parsed = ClientItemManager.parseItem(((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack());
+                        ItemStack parsed = ClientItemManager.parseItem(MineshaftApi.getMineshaftLanguage(player),((ClientboundSetPlayerInventoryPacket) packet).contents().getBukkitStack());
                         packet = new ClientboundSetPlayerInventoryPacket(
                                 ((ClientboundSetPlayerInventoryPacket) packet).slot(), ((CraftItemStack) parsed).handle
                         );
@@ -68,9 +68,9 @@ public class PacketListener implements Listener {
                         super.write(ctx, initial, promise);
 
                     }
-                } else if(packet instanceof ClientboundContainerSetSlotPacket && ClientItemManager.isParsable(((ClientboundContainerSetSlotPacket) packet).getItem().getBukkitStack())) {
+                } else if(packet instanceof ClientboundContainerSetSlotPacket && ClientItemManager.isParsable(MineshaftApi.getMineshaftLanguage(player),((ClientboundContainerSetSlotPacket) packet).getItem().getBukkitStack())) {
                     try {
-                        ItemStack parsed = ClientItemManager.parseItem(((ClientboundContainerSetSlotPacket) packet).getItem().getBukkitStack());
+                        ItemStack parsed = ClientItemManager.parseItem(MineshaftApi.getMineshaftLanguage(player),((ClientboundContainerSetSlotPacket) packet).getItem().getBukkitStack());
                         packet = new ClientboundContainerSetSlotPacket(
                                 ((ClientboundContainerSetSlotPacket) packet).getContainerId(),
                                 ((ClientboundContainerSetSlotPacket) packet).getStateId(),

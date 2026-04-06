@@ -28,7 +28,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerWandEvent extends Event {
 
-
     public PlayerWandEvent(EventType type) {
         super(type);
     }

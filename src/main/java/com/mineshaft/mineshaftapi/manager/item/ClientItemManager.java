@@ -114,7 +114,7 @@ public class ClientItemManager {
             }
             itemStack.setItemMeta(itemMeta);
         }
-        if(itemMeta != null && itemMeta.getDisplayName()!=null) {
+        if(itemMeta != null && itemMeta.displayName()!=null) {
             // If translation exists
             if(hasNameTranslation(language,itemStack)) {
                 // Get the translation

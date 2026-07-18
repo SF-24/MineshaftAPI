@@ -91,10 +91,13 @@ public class PacketListener implements Listener {
                     if(((ServerboundPlayerActionPacket) packet).getAction().equals(ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM)) {
                         Logger.logDebug("Packet intercepted!");
 
+                        // Cancel blocking
                         MineshaftApi.getInstance().getActionManager().removePlayerBlocking(player.getUniqueId());
+                        // If the item has started pulling the weapon back.
                         if(MineshaftApi.getInstance().getActionManager().isPlayerPowerAttack(player.getUniqueId())) {
                             // Execute a power attack
                             PendingAbilities pendingAbilities = MineshaftApi.getInstance().getPendingAbilities(player.getUniqueId());
+                            // Type set when the item is started to draw
                             switch (MineshaftApi.getInstance().getActionManager().getPlayerPowerAttackType(player.getUniqueId())) {
                                 case POWER_ATTACK_LIGHT -> pendingAbilities.addStrongAttackAbility(1.75,1.75,"entity.dragon_fireball.explode",true);
                                 case POWER_ATTACK -> pendingAbilities.addStrongAttackAbility(2.25,2.25,"entity.dragon_fireball.explode",true);
@@ -102,15 +105,18 @@ public class PacketListener implements Listener {
                                 default -> Logger.logWarning("Cannot identify power attack type for player");
                             }
 
+                            // Remove pending abilities, to clean yp.
                             Bukkit.getScheduler().runTaskLaterAsynchronously(MineshaftApi.getInstance(),()->{
                                 MineshaftApi.getInstance().removePendingAility(player.getUniqueId(), PendingAbilities.PendingAbilityType.STRONG_ATTACK);
                             },5);
 
                             Logger.logDebug(pendingAbilities.getPendingAbilities().toString());
 
+                            // Cleaning up.
                             MineshaftApi.getInstance().setPendingAbilities(player.getUniqueId(), pendingAbilities);
                             MineshaftApi.getInstance().getActionManager().removePlayerPowerAttack(player.getUniqueId());
 
+                            // Execute the attack.
                             Bukkit.getScheduler().runTaskLater(MineshaftApi.getInstance(), ()-> PlayerAttackManager.makeAttack(player),1/99);
                         }
                     }

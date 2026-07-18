@@ -91,7 +91,6 @@ public class ActionManager {
         // send item cooldown animation
         if(MineshaftApi.getInstance().getConfigManager().enableItemCooldownAnimation()) {
             int cooldownTicks = 4; // 1/5 of a second
-            PacketUtil.sendCooldown(player, player.getInventory().getItemInMainHand(),cooldownTicks);
 
             switch (type) {
                 case BLOCKING,THROW,SMOKING_PIPE -> cooldownTicks = 4;
@@ -116,6 +115,7 @@ public class ActionManager {
 //            MineshaftApi.getInstance().getServer().getScheduler().runTask(MineshaftApi.getInstance(), () -> {
 //                player.setCooldown(player.getInventory().getItemInMainHand().getType(), cooldownTicks);
 //            });
+            PacketUtil.sendCooldown(player, player.getInventory().getItemInMainHand(),cooldownTicks);
         }
     }
 

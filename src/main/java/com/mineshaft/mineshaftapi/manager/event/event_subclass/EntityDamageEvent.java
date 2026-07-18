@@ -22,13 +22,14 @@ import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 public class EntityDamageEvent extends Event {
 
     public double damage = 5;
-    public DamageSource source = DamageSource.builder(DamageType.GENERIC).build();
+    public DamageSource source = null;
     public Entity damager = null;
 
     public EntityDamageEvent(EventType type) {
@@ -36,15 +37,17 @@ public class EntityDamageEvent extends Event {
     }
 
     public void setDamageType(DamageType type) {
-        source = DamageSource.builder(type).build();
+        this.source = DamageSource.builder(type).build();
     }
 
     public void damageEntity(Entity entity) {
         if(entity instanceof LivingEntity) {
-            if(damager!=null) {
+            if(damager!=null && source!=null) {
+                source = DamageSource.builder(source.getDamageType()).withCausingEntity(damager).build();
+            } else if(damager!=null) {
                 ((LivingEntity) entity).damage(damage, entity);
             } else if(source!=null) {
-                ((LivingEntity) entity).damage(damage, source);
+                ((Damageable) entity).damage(damage,source);
             } else {
                 ((LivingEntity) entity).damage(damage);
             }

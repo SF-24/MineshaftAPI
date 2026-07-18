@@ -42,7 +42,7 @@ public class HeadUtil {
 
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         byte[] encodedData = Base64.encodeBase64(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes());
-        profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
+        profile.properties().put("textures", new Property("textures", new String(encodedData)));
         Field profileField = null;
         try {
             profileField = meta.getClass().getDeclaredField("profile");
@@ -69,9 +69,8 @@ public class HeadUtil {
 
         GameProfile profile = new GameProfile(UUID.randomUUID(), "");
         byte[] encodedData = Base64.encodeBase64(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes());
-        profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
-        ResolvableProfile resolvableProfile = new ResolvableProfile(profile);
-        skullBlockEntity.setOwner(resolvableProfile);
+        profile.properties().put("textures", new Property("textures", new String(encodedData)));
+        skullBlockEntity.owner= ResolvableProfile.createResolved(profile);
     }
 
 

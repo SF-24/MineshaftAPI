@@ -23,7 +23,10 @@ import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonDisplayQues
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonExperienceEventFactory;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonRemoveQuestEventFactory;
 import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.api.BetonQuestApi;
+import org.betonquest.betonquest.api.BetonQuestApiService;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
+import org.bukkit.Bukkit;
 
 public class BetonQuestDependencyInit {
 
@@ -34,6 +37,9 @@ public class BetonQuestDependencyInit {
         BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("add_quest", new BetonDisplayQuestEventFactory(loggerFactory));
         BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("rem_quest", new BetonRemoveQuestEventFactory(loggerFactory));
 
+        BetonQuestManager.questApiService = Bukkit.getServer().getServicesManager().load(BetonQuestApiService.class);
+        assert BetonQuestManager.questApiService != null;
+        BetonQuestManager.betonQuestApi = BetonQuestManager.questApiService.api(MineshaftApi.getInstance());
     }
 
 }

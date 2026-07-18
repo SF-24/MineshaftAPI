@@ -19,11 +19,13 @@
 package com.mineshaft.mineshaftapi.manager.ui.notification;
 
 import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import net.minecraft.advancements.*;
+import net.minecraft.core.ClientAsset;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -45,17 +47,17 @@ public class NotificationSender {
 
     public static void sendDiscoveryTitle(Player player, String category, String name) {
         sendTitle(player,"§f§lCODEX UPDATED", "§8" + category + ": §3" + name, 1,2.5,1);
-        player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 0.75F);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1.0F, 0.75F);
     }
 
     public static void sendAdvancement(Player player, String id, Advancement advancement, boolean add) {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
         List<AdvancementHolder> advancements = new ArrayList<>();
-        Set<ResourceLocation> removedAdvancements = new HashSet<>();
-        Map<ResourceLocation, AdvancementProgress> progress = new HashMap<>();
+        Set<Identifier> removedAdvancements = new HashSet<>();
+        Map<Identifier, AdvancementProgress> progress = new HashMap<>();
 
-        ResourceLocation resourceLocation = ResourceLocation.parse(id);
+        Identifier resourceLocation = Identifier.parse(id);
 
         //Populate Lists
         if(add) {
@@ -66,7 +68,7 @@ public class NotificationSender {
         }
 
         //Create Packet
-        ClientboundUpdateAdvancementsPacket packet = new ClientboundUpdateAdvancementsPacket(false, advancements, removedAdvancements, progress);
+        ClientboundUpdateAdvancementsPacket packet = new ClientboundUpdateAdvancementsPacket(false, advancements, removedAdvancements, progress, true);
     }
 
     public static void sendToastPopup(Player player, String key, Advancement advancement) {
@@ -74,7 +76,7 @@ public class NotificationSender {
         sendAdvancement(player, key, advancement,false);
     }
 
-    public static Advancement buildAdvancement(String key, ItemStack displayItem, String title, String description, ResourceLocation background, AdvancementType type, boolean showToast) {
+    public static Advancement buildAdvancement(String key, ItemStack displayItem, String title, String description, ClientAsset.ResourceTexture background, AdvancementType type, boolean showToast) {
         net.minecraft.world.item.ItemStack itemStack = net.minecraft.world.item.ItemStack.fromBukkitCopy(displayItem);
         DisplayInfo displayInfo = new DisplayInfo(itemStack,
                 net.minecraft.network.chat.Component.literal(title),

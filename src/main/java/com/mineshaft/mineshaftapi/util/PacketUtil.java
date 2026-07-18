@@ -20,7 +20,7 @@ package com.mineshaft.mineshaftapi.util;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -31,7 +31,7 @@ public class PacketUtil {
 
     public static void sendCooldown(Player player, ItemStack item, int cooldownTicks) {
         Item nmsItem = ((CraftItemStack) item).handle.getItem();
-        ResourceLocation cooldownGroup = BuiltInRegistries.ITEM.getKey(nmsItem);
+        Identifier cooldownGroup = BuiltInRegistries.ITEM.getKey(nmsItem);
         ((CraftPlayer) player).getHandle().connection.send(new ClientboundCooldownPacket(cooldownGroup, (cooldownTicks)));
     }
 

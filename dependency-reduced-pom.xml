@@ -18,15 +18,7 @@
       <plugin>
         <groupId>ca.bkaw</groupId>
         <artifactId>paper-nms-maven-plugin</artifactId>
-        <version>1.4.7</version>
-        <executions>
-          <execution>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>remap</goal>
-            </goals>
-          </execution>
-        </executions>
+        <version>1.5</version>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -140,13 +132,13 @@
     <dependency>
       <groupId>ca.bkaw</groupId>
       <artifactId>paper-nms</artifactId>
-      <version>1.21.4-SNAPSHOT</version>
+      <version>1.21.11-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.lumine</groupId>
       <artifactId>Mythic-Dist</artifactId>
-      <version>5.11.2</version>
+      <version>5.12.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -166,7 +158,7 @@
     <dependency>
       <groupId>org.betonquest</groupId>
       <artifactId>betonquest</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>3.0.2</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

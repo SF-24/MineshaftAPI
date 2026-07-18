@@ -24,9 +24,9 @@ import com.mineshaft.mineshaftapi.manager.event.fields.EventType;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
-import com.mineshaft.mineshaftapi.util.formatter.ColourFormatter;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.MechanicUtil;
+import com.mineshaft.mineshaftapi.util.formatter.ColourFormatter;
 import com.mineshaft.mineshaftapi.util.maths.PlanarVectorBounds;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
@@ -127,7 +127,11 @@ public class EventLoader {
                     beamEvent.setParticleCount(section.getInt(key));
                     break;
                 case "particle_type":
-                    beamEvent.setParticleType(Particle.valueOf(section.getString(key).toUpperCase()));
+                    if(section.getString(key) == null || section.getString(key).equalsIgnoreCase("null")  || section.getString(key).equalsIgnoreCase("none") || section.getString(key).equalsIgnoreCase("nil")) {
+                        beamEvent.setParticleType(null);
+                    } else {
+                        beamEvent.setParticleType(Particle.valueOf(section.getString(key).toUpperCase()));
+                    }
                     break;
                 case "fly_distance":
                     beamEvent.setFlyDistance(section.getInt(key));

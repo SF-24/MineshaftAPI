@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftapi.listener;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.core.BlockPos;
@@ -55,14 +56,14 @@ public class KillListener implements Listener {
 
         // Get player data
         CraftPlayer craftPlayer=(CraftPlayer)player.getPlayer();
-        Property texture = (Property) craftPlayer.getProfile().getProperties().get("texture").toArray()[0];
+        Property texture = (Property) craftPlayer.getProfile().properties().get("texture").toArray()[0];
         UUID uuid;
         GameProfile gameProfile = new GameProfile(UUID.randomUUID(), player.getName());
-        gameProfile.getProperties().put("textures",new Property(texture.value(), texture.signature()));
+        gameProfile.properties().put("textures",new Property(texture.value(), texture.signature()));
 
         CraftServer craftServer = (CraftServer)Bukkit.getServer();
         MinecraftServer server = craftServer.getServer().getConnection().getServer();
-        ServerLevel level = craftPlayer.getHandle().serverLevel();
+        ServerLevel level = craftPlayer.getHandle().level();
 
         // Create corpse entity
         ServerPlayer corpse = new ServerPlayer(server,level, gameProfile, null);

@@ -25,13 +25,7 @@ import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryProperty;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.PacketUtil;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.protocol.game.ClientboundCooldownPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.Item;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -93,7 +87,7 @@ public class ActionManager {
             int cooldownTicks = 4; // 1/5 of a second
 
             switch (type) {
-                case BLOCKING,THROW,SMOKING_PIPE -> cooldownTicks = 4;
+                case BLOCKING,THROW,SMOKING_PIPE -> cooldownTicks = 4; // TODO:
                 case POWER_ATTACK -> {
                     cooldownActions.put(player.getUniqueId(), type);
                     cooldownTicks = 20;

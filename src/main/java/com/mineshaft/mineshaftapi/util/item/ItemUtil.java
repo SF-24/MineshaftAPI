@@ -50,8 +50,8 @@ public class ItemUtil {
 
     // Dye colour components
 
-    public static DyedItemColor getDyedItemColour(Color colour, boolean showInTooltip) {
-        return DyedItemColor.dyedItemColor().color(colour).showInTooltip(showInTooltip).build();
+    public static DyedItemColor getDyedItemColour(Color colour) {
+        return DyedItemColor.dyedItemColor().color(colour)/*.showInTooltip(showInTooltip)*/.build();
     }
 
     public static void addDyedItemColourComponent(ItemStack itemStack,DyedItemColor component) {
@@ -60,8 +60,8 @@ public class ItemUtil {
 
     // Armour trims
 
-    public static ItemArmorTrim getArmourTrim(TrimMaterial trimMaterial, TrimPattern trimPattern, boolean showInTooltip) {
-        return ItemArmorTrim.itemArmorTrim(new ArmorTrim(trimMaterial, trimPattern), showInTooltip);
+    public static ItemArmorTrim getArmourTrim(TrimMaterial trimMaterial, TrimPattern trimPattern) {
+        return ItemArmorTrim.itemArmorTrim(new ArmorTrim(trimMaterial, trimPattern)).build();
     }
 
     public static void addArmourTrim(ItemStack itemStack, ItemArmorTrim component) {

@@ -168,12 +168,13 @@ public class LaserRunnable extends BukkitRunnable {
             //PARTICLE
 
             if(event.getParticleCount()>-1) {
-                if (event.getParticleType().equals(Particle.DUST)) {
+                if (event.getParticleType()!=null && event.getParticleType().equals(Particle.DUST)) {
                     loc.getWorld().spawnParticle(Particle.DUST, loc, 0, 0.2, 0, 0, 5, new Particle.DustOptions(event.getColour(), event.getSize()), true);
                     loc.getWorld().spawnParticle(Particle.DUST, loc, 0, 0.2, 0, 0, 5, new Particle.DustOptions(event.getColour(), event.getSize()), true);
-                } else {
+                } else if(event.getParticleType()!=null) {
                     loc.getWorld().spawnParticle(event.getParticleType(), loc, event.getParticleCount(), 0, 0 ,0, 0);
                 }
+                // Otherwise spawn no particles.
             } else {
                 Bukkit.getServer().getOnlinePlayers().iterator().next().sendMessage("no particles");
             }

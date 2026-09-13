@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025. Sebastian Frynas
+ * Copyright (c) 2026. Sebastian Frynas
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Affero General Public License as
@@ -16,22 +16,21 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.armour;
+package com.mineshaft.mineshaftapi.manager.item.item_components.handlers;
 
-import lombok.Getter;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
+public abstract class ComponentHandler {
 
-@Getter
-public enum ArmourResistanceTypes {
-    COLD_PROTECTION("Cold Protection", "cold_protection"),
-    FIRE_PROTECTION("Fire Protection", "fire_protection"),
+    ConfigurationSection yamlConfiguration;
 
-    ;
-    final String display,nbt;
-    ArmourResistanceTypes(String display, String nbt) {
-        this.display=display;
-        this.nbt=nbt;
+    public ComponentHandler(ConfigurationSection yamlConfiguration) {
+        this.yamlConfiguration=yamlConfiguration;
     }
 
+    public abstract void handlePropertyPreMeta(ItemMeta itemMeta);
+
+    public abstract void handlePropertyPostMeta(ItemStack itemStack);
 }

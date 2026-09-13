@@ -67,6 +67,11 @@
       <option name="url" value="https://repo.papermc.io/repository/maven-public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="codemc-creatorfromhell" />
+      <option name="name" value="codemc-creatorfromhell" />
+      <option name="url" value="https://repo.codemc.io/repository/creatorfromhell/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="tcoded-releases" />
       <option name="name" value="tcoded-releases" />
       <option name="url" value="https://repo.tcoded.com/releases" />

@@ -16,34 +16,12 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.fields;
+package com.mineshaft.mineshaftapi.manager.item.configuration_fields;
 
-public enum ItemCategory {
+public enum ItemProperties {
 
-    SLOT_ITEM,
-
-    WEAPON_MELEE,
-    WEAPON_RANGED,
-
-    ARMOUR_HELMET,
-    ARMOUR_CHESTPLATE,
-    ARMOUR_LEGGINGS,
-    ARMOUR_BOOTS,
-
-    TOOL_AXE,
-    TOOL_PICKAXE,
-    TOOL_SHOVEL,
-    TOOL_HOE,
-    TOOL_MISC,
-
-    CASTING_WAND,
-    CASTING_STAFF,
-
-    ITEM_CONSUMABLE,
-    ITEM_GENERIC,
-
-    AMMUNITION,
-
-    OTHER
+    FINESSE,
+    LIGHT,
+    HEAVY,
 
 }

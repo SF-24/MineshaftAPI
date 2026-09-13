@@ -20,7 +20,7 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.util.Logger;
-import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.nbtapi.NBT;
 import jdk.jfr.Description;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

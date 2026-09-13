@@ -16,25 +16,34 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.armour;
+package com.mineshaft.mineshaftapi.manager.item.configuration_fields;
 
-public enum ArmourType {
+public enum ItemCategory {
 
-    NONE("",0),
-    CLOTHES("Clothes", 0),
-    LIGHT_ARMOUR("Light Armour", 0),
-    MEDIUM_ARMOUR("Medium Armour", 10),
-    HEAVY_ARMOUR("Heavy Armour", 13),;
+    SLOT_ITEM,
 
-    private final String name;
-    private final int strRequirement;
+    WEAPON_MELEE,
+    WEAPON_RANGED,
 
-    ArmourType(String name, int strRequirement) {
-        this.name=name;
-        this.strRequirement=strRequirement;
-    }
+    ARMOUR_HELMET,
+    ARMOUR_CHESTPLATE,
+    ARMOUR_LEGGINGS,
+    ARMOUR_BOOTS,
 
-    public String getName() { return name;}
-    public int getStrRequirement() { return strRequirement;}
+    TOOL_AXE,
+    TOOL_PICKAXE,
+    TOOL_SHOVEL,
+    TOOL_HOE,
+    TOOL_MISC,
+
+    CASTING_WAND,
+    CASTING_STAFF,
+
+    ITEM_CONSUMABLE,
+    ITEM_GENERIC,
+
+    AMMUNITION,
+
+    OTHER
 
 }

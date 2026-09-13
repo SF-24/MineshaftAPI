@@ -16,12 +16,12 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.item_slots;
+package com.mineshaft.mineshaftapi.manager.item.item_components.modifier_slots;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.util.Logger;
-import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +38,7 @@ public class SlotManager {
 
         // Gets the YAML configurations, used to read the file
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(
-                new File(MineshaftApi.getInstance().getItemPath(), ItemManager.getItemName(uniqueId))
+                new File(MineshaftApi.getItemPath(), ItemManager.getItemName(uniqueId))
         );
 
         // If the section does not exist, return

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025. Sebastian Frynas
+ * Copyright (c) 2026. Sebastian Frynas
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Affero General Public License as
@@ -16,35 +16,18 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.ui.item_shop;
+package com.mineshaft.mineshaftapi.manager.item.item_components.custom_property_classes;
 
-import de.tr7zw.nbtapi.NBT;
+import net.momirealms.craftengine.core.item.CustomItem;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemReader {
+public abstract class CustomItemComponent {
 
-    public ItemType getType(ItemStack item) {
-        NBT.get(item, nbt -> {
-            return nbt.getEnum("category", ItemType.class);
-        });
-        return null;
+    public CustomItemComponent() {
+
     }
 
-    public Integer getRawPrice(ItemStack item) {
-        NBT.get(item, nbt -> {
-            return nbt.getInteger("price");
-        });
-        return null;
-    }
+    public abstract void applyPropertyToItemPostItemMeta(ItemStack itemStack);
 
-    public String getItemName(ItemStack item) {
-        NBT.get(item, nbt -> {
-            return nbt.getString("itemName");
-        });
-        return null;
-    }
-
-    public Integer getPrice(ItemStack item) {
-        return getRawPrice(item);
-    }
+    public abstract CustomItemComponent fromItem(ItemStack itemStack);
 }

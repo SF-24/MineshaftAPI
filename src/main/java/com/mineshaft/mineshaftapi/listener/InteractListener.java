@@ -23,7 +23,7 @@ import com.mineshaft.mineshaftapi.events.MineshaftUseItemEvent;
 import com.mineshaft.mineshaftapi.manager.block.BlockManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.RangedItemStats;
-import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
+import com.mineshaft.mineshaftapi.manager.item.item_components.ItemAmmunitionManager;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.PacketUtil;
@@ -121,7 +121,7 @@ public class InteractListener implements Listener {
 
         boolean cannotFire = (MineshaftApi.getInstance().getCooldownManager().hasCooldown(player.getUniqueId(), uniqueId));
 
-        if (cannotFire||!ItemAmmunitionManager.canShoot(item)) {
+        if (cannotFire||!ItemAmmunitionManager.canShootWeapon(item)) {
             return;
         }
 

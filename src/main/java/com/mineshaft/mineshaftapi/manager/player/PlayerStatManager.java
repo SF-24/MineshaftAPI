@@ -20,7 +20,7 @@ package com.mineshaft.mineshaftapi.manager.player;
 
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
+import com.mineshaft.mineshaftapi.manager.item.configuration_fields.ItemCategory;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.entity.Player;
 

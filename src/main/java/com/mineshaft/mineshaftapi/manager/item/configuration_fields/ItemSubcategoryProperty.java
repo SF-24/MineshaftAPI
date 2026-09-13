@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.fields;
+package com.mineshaft.mineshaftapi.manager.item.configuration_fields;
 
 public enum ItemSubcategoryProperty {
 

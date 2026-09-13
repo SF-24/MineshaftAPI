@@ -24,7 +24,7 @@ import com.mineshaft.mineshaftapi.manager.entity.armour_class.ArmourManager;
 import com.mineshaft.mineshaftapi.manager.event.PendingAbilities;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryProperty;
+import com.mineshaft.mineshaftapi.manager.item.configuration_fields.ItemSubcategoryProperty;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.combat.BlockingType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;

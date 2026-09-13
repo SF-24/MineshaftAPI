@@ -16,13 +16,25 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.item_slots;
+package com.mineshaft.mineshaftapi.manager.item.item_components.armour;
 
-public enum ComponentType {
+public enum ArmourType {
 
-    DYE,
-    ARMOUR_TRIM,
-    CUSTOM_MODEL_DATA,
-    EQUIPPABLE,
+    NONE("",0),
+    CLOTHES("Clothes", 0),
+    LIGHT_ARMOUR("Light Armour", 0),
+    MEDIUM_ARMOUR("Medium Armour", 10),
+    HEAVY_ARMOUR("Heavy Armour", 13),;
+
+    private final String name;
+    private final int strRequirement;
+
+    ArmourType(String name, int strRequirement) {
+        this.name=name;
+        this.strRequirement=strRequirement;
+    }
+
+    public String getName() { return name;}
+    public int getStrRequirement() { return strRequirement;}
 
 }

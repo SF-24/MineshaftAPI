@@ -19,7 +19,7 @@
 package com.mineshaft.mineshaftapi.util.ui;
 
 import com.mineshaft.mineshaftapi.util.Logger;
-import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

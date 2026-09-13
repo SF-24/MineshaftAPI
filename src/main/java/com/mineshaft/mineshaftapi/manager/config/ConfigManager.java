@@ -19,8 +19,8 @@
 package com.mineshaft.mineshaftapi.manager.config;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
+import com.mineshaft.mineshaftapi.manager.item.configuration_fields.ItemRarity;
+import com.mineshaft.mineshaftapi.manager.item.configuration_fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.util.Logger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

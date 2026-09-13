@@ -16,9 +16,9 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.item_properties;
+package com.mineshaft.mineshaftapi.manager.item.item_components;
 
-import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 

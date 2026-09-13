@@ -16,24 +16,13 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.fields;
+package com.mineshaft.mineshaftapi.manager.item.item_components.modifier_slots;
 
-public enum ItemSubcategoryType {
+public enum ComponentType {
 
-    // MORE COMING SOON....
-
-    NONE,
-
-    WAND,
-    CONSUMABLE,
-    TOOL,
-    ARMOUR,
-    WEAPON_SIMPLE,
-    WEAPON_MARTIAL,
-    WEAPON_LIGHT,
-    WEAPON_VIBROWEAPON,
-    WEAPON_BLASTER,
-    WEAPON_GENERIC
-    ;
+    DYE,
+    ARMOUR_TRIM,
+    CUSTOM_MODEL_DATA,
+    EQUIPPABLE,
 
 }

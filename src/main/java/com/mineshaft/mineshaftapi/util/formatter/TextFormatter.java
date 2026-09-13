@@ -18,8 +18,6 @@
 
 package com.mineshaft.mineshaftapi.util.formatter;
 
-import org.apache.commons.lang.WordUtils;
-
 public class TextFormatter {
 
     public static String capitaliseString(String string) {

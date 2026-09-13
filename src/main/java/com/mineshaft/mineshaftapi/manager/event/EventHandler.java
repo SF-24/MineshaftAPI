@@ -21,8 +21,8 @@ package com.mineshaft.mineshaftapi.manager.event;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.events.MineshaftUseItemEvent;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
-import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
-import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemSheatheManager;
+import com.mineshaft.mineshaftapi.manager.item.item_components.ItemAmmunitionManager;
+import com.mineshaft.mineshaftapi.manager.item.item_components.ItemSheatheManager;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.item.ItemUtil;
 import com.mineshaft.mineshaftapi.util.Logger;
@@ -107,9 +107,9 @@ public class EventHandler {
                     e.setCancelled(true);
                     player.playSound(player.getLocation(), "minecraft:block.stone_button.click_on", SoundCategory.PLAYERS, 1.0f, 1.0f);
                     if (slot == (EquipmentSlot.OFF_HAND)) {
-                        player.getInventory().setItemInOffHand(ItemAmmunitionManager.reloadItem(player, item));
+                        player.getInventory().setItemInOffHand(ItemAmmunitionManager.reloadAmmunitionForItem(player, item));
                     } else {
-                        player.getInventory().setItemInMainHand(ItemAmmunitionManager.reloadItem(player, item));
+                        player.getInventory().setItemInMainHand(ItemAmmunitionManager.reloadAmmunitionForItem(player, item));
                     }
                     return true;
                 }

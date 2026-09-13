@@ -20,40 +20,20 @@ package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.VariableTypeEnum;
-import com.mineshaft.mineshaftapi.manager.item.armour.ArmourManager;
-import com.mineshaft.mineshaftapi.manager.item.armour.ArmourResistanceTypes;
-import com.mineshaft.mineshaftapi.manager.item.armour.ArmourType;
 import com.mineshaft.mineshaftapi.manager.item.cache.CachedItem;
+import com.mineshaft.mineshaftapi.manager.item.configuration_fields.*;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemDeconstructManager;
 import com.mineshaft.mineshaftapi.manager.item.crafting.ItemRecipeManager;
-import com.mineshaft.mineshaftapi.manager.item.fields.*;
-import com.mineshaft.mineshaftapi.manager.item.item_properties.ItemAmmunitionManager;
+import com.mineshaft.mineshaftapi.manager.item.item_components.ItemAmmunitionManager;
+import com.mineshaft.mineshaftapi.manager.item.item_components.LoreManager;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.mineshaft.mineshaftapi.util.item.ToolRuleExtended;
-import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.Consumable;
-import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
-import io.papermc.paper.datacomponent.item.consumable.ItemUseAnimation;
-import net.kyori.adventure.text.Component;
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.components.EquippableComponent;
-import org.bukkit.inventory.meta.components.FoodComponent;
-import org.bukkit.inventory.meta.components.ToolComponent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,7 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemManager {
 
-    private static int maximumIterationConstant = 1;
+    private static int getMaximumIterationConstant() {return 1;};
 
     HashMap<UUID, CachedItem> items = new HashMap<>();
     HashMap<String, ArrayList<UUID>> itemPackages = new HashMap<>();
@@ -154,8 +134,8 @@ public class ItemManager {
         path = path + File.separator + dirName;
         File folder = new File(path);
 
-        if(iteration>=maximumIterationConstant) {
-            Logger.logWarning("Went into subfolder in directory \""+path+"\" a greater number of times than the maximum number (" + maximumIterationConstant + ") times. Returning to avoid infinite loop.");
+        if(iteration>=getMaximumIterationConstant()) {
+            Logger.logWarning("Went into subfolder in directory \""+path+"\" a greater number of times than the maximum number (" + getMaximumIterationConstant() + ") times. Returning to avoid infinite loop.");
             return;
         }
 
@@ -230,638 +210,9 @@ public class ItemManager {
     }
 
     public ItemStack getItem(UUID uuid) {
-        return getItem(getItemDefinition(uuid));
-    }
-
-    @SuppressWarnings({"deprecation","removal"})
-    public ItemStack getItem(ConfigurationSection yamlConfiguration) {
-
-        // Whether the item has a parent item
-        boolean hasParent = false;
-
-        // Get uuid and run a null uuid check
-        // If the uuid is null, something has gone very wrong with the plugin.
-        UUID uuid = UUID.fromString(yamlConfiguration.getString("id"));
-        String internalName = items.get(uuid).getName();
-        if(uuid==null) {
-            Logger.logError("Invalid null uuid for item " + internalName);
-            return new ItemStack(Material.AIR);
-        }
-        ItemStack item = new ItemStack(Material.BARRIER);
-
-        // Rarity
-        ItemRarity rarity = getItemRarity(uuid);
-
-        String itemDisplay = "Item";
-        String parentItemDisplay = null;
-
-        ItemSubcategory subcategory = getItemSubcategory(uuid);
-
-        if (yamlConfiguration.contains("parent")) {
-            String parentName = yamlConfiguration.getString("parent");
-            if (parentName != null && !parentName.equalsIgnoreCase("null") && !parentName.equalsIgnoreCase("nil")) {
-                item = getItem(parentName);
-                hasParent = true;
-//                File parent = new File(path, itemName + ".yml");
-//                if (parent.exists()) {
-//                    YamlConfiguration parentYaml = YamlConfiguration.loadConfiguration(parent);
-//                    if (parentYaml.getString("subcategory") != null) {
-//                        parentItemDisplay = TextFormatter.convertStringToName(parentYaml.getString("subcategory"));
-//                        subcategory = getItemSubcategory(parentYaml.getString("subcategory"));
-//                    }
-//                }
-            }
-        }
-
-        if (yamlConfiguration.contains("material")) {
-            try {
-                item = new ItemStack(Material.valueOf(yamlConfiguration.getString("material").toUpperCase()));
-            } catch (Exception e) {
-                if (!hasParent) {
-                    Logger.logError("ERROR! Could not load item '" + internalName + "' invalid material");
-                    return null;
-                }
-                Logger.logWarning("ERROR! Could not load material for item: '" + internalName + "'. Invalid material. Using parent item material instead");
-            }
-        }
-
-        // ItemMeta variable
-        ItemMeta meta = item.getItemMeta();
-
-        // Temporarily unused - will be used for stuff like AH sorting, item abilities, etc.
-        ItemCategory category = ItemCategory.ITEM_GENERIC;
-
-
-        // Item display name
-        String displayName = "Custom Item";
-
-        // Item stat values
-        double maximum_dex_modifier = 0;
-        double defence = 0;
-        double speed = 0;
-        double ranged_damage = 0;
-
-        int durability = 0;
-
-        int r = -1;
-        int g = -1;
-        int b = -1;
-
-        String statsString = "stats";
-        String rangedStatsString = "ranged_stats";
-
-        boolean hideAttributes = true;
-
-        final ArmourType armourType;
-
-        List<String> itemProperties = new ArrayList<>();
-
-        for (String field : yamlConfiguration.getKeys(false)) {
-            switch (field) {
-                case "item_properties":
-                    itemProperties=yamlConfiguration.getStringList("item_properties");
-                case "item_category":
-                    category = ItemCategory.valueOf(yamlConfiguration.getString("item_category").toUpperCase(Locale.ROOT));
-                    break;
-                case "custom_model_data":
-                    meta.setCustomModelData(yamlConfiguration.getInt("custom_model_data"));
-                    break;
-                case "tooltip_style":
-                    meta.setTooltipStyle(NamespacedKey.minecraft(yamlConfiguration.getString("tooltip_style")));
-                    break;
-                case "item_model":
-                    // TODO: FIX
-                    meta.setItemModel(NamespacedKey.minecraft(yamlConfiguration.getString("item_model")));
-                    break;
-                case "name":
-                    displayName = yamlConfiguration.getString("name");
-                    break;
-                // Initialise stats
-                case "stats":
-                    statsString = "stats";
-                    break;
-                case "attributes":
-                    statsString = "attributes";
-                    break;
-                case "modifiers":
-                    statsString = "modifiers";
-                    break;
-                case "durability":
-                    meta.setMaxStackSize(1);
-                    durability = yamlConfiguration.getInt("durability");
-                case "stack_size":
-                    meta.setMaxStackSize(yamlConfiguration.getInt("stack_size"));
-                case "enchantment_glint":
-                    meta.setEnchantmentGlintOverride(yamlConfiguration.getBoolean("enchantment_glint"));
-                case "hide_attributes":
-                    hideAttributes = yamlConfiguration.getBoolean("hide_attributes");
-                default:
-            }
-        }
-
-        boolean coldProtect = false;
-
-        if (category == ItemCategory.ARMOUR_HELMET || category == ItemCategory.ARMOUR_BOOTS || category == ItemCategory.ARMOUR_CHESTPLATE || category == ItemCategory.ARMOUR_LEGGINGS) {
-            armourType = ArmourManager.getArmourType(uuid);
-            if(yamlConfiguration.contains("armour.cold_protection")) {
-                coldProtect=yamlConfiguration.getBoolean("armour.cold_protection");
-            }
-            if (yamlConfiguration.contains("armour.colour")) {
-                if (yamlConfiguration.contains("armour.colour.g")) {
-                    g = yamlConfiguration.getInt("armour.colour.g");
-                }
-                if (yamlConfiguration.contains("armour.colour.r")) {
-                    r = yamlConfiguration.getInt("armour.colour.r");
-                }
-                if (yamlConfiguration.contains("armour.colour.b")) {
-                    b = yamlConfiguration.getInt("armour.colour.b");
-                }
-            }
-        } else {
-            armourType = ArmourType.NONE;
-        }
-
-        List<String> ammunitionTypes = Collections.emptyList();
-        int maxAmmunition = 0;
-        if(useAmmunition(uuid)) {
-            maxAmmunition = ItemAmmunitionManager.getMaxAmmunition(uuid);
-            ammunitionTypes = ItemAmmunitionManager.getAmmunitionTypes(uuid);
-        }
-
-        // GENERATE LORE:
-        ArrayList<String> lore = LoreManager.getLore(uuid);
-
-//        if(!rarity.equals(ItemRarity.STANDARD) || !armourType.equals(ArmourType.NONE) || coldProtect || !subcategory.getPropertyList().isEmpty()) {
-//            lore.add("");
-//        }
-
-
-//        else {
-//            if(coldProtect) {
-//                lore.add(ChatColor.GRAY + "Frost Protection");
-//                lore.add("");
-//            }
-//        }
-
-
-        // Load file stats, append to lore and add them to the item
-
-        // Get standard and ranged item statistics
-        HashMap<ItemStats, Double> statMap = getStatMap(yamlConfiguration, statsString);
-        // TODO: Add in 1.21.5 when update comes out
-        //HashMap<WeaponStats, Double> weaponStatMap = getWeaponStatMap(itemName, statsString);
-        HashMap<RangedItemStats, Double> rangedStatMap = getRangedStatMap(yamlConfiguration, rangedStatsString);
-
-        EquipmentSlot slot = null;
-
-        switch (category) {
-
-            case WEAPON_MELEE:
-                slot = EquipmentSlot.HAND;
-                break;
-            case WEAPON_RANGED:
-                slot = EquipmentSlot.HAND;
-                break;
-            case ARMOUR_HELMET:
-                slot = EquipmentSlot.HEAD;
-                break;
-            case ARMOUR_CHESTPLATE:
-                slot = EquipmentSlot.CHEST;
-                break;
-            case ARMOUR_LEGGINGS:
-                slot = EquipmentSlot.LEGS;
-                break;
-            case ARMOUR_BOOTS:
-                slot = EquipmentSlot.FEET;
-                break;
-            case TOOL_AXE:
-            case TOOL_PICKAXE:
-            case TOOL_SHOVEL:
-            case TOOL_HOE:
-                slot = EquipmentSlot.HAND;
-                break;
-            case ITEM_CONSUMABLE:
-                slot = null;
-
-                FoodComponent component = new ItemStack(Material.APPLE).getItemMeta().getFood();
-
-                String path = "food.";
-
-                for (String field : yamlConfiguration.getConfigurationSection("food").getKeys(false)) {
-                    switch (field) {
-                        case "saturation":
-                            component.setSaturation((float) yamlConfiguration.getDouble(path + "saturation"));
-                        case "nutrition":
-                            component.setNutrition(yamlConfiguration.getInt(path + "nutrition"));
-                        case "always_edible":
-                            component.setCanAlwaysEat(yamlConfiguration.getBoolean(path + "always_edible"));
-//                        case "eat_seconds":
-//                            component.setEatSeconds((float) yamlConfiguration.getDouble(path + "eat_seconds"));
-                    }
-                }
-
-                meta.setFood(component);
-                break;
-            case OTHER:
-            case AMMUNITION:
-            case ITEM_GENERIC:
-                slot = null;
-                break;
-        }
-
-        if(yamlConfiguration.contains("tool")) {
-            try {
-                ToolComponent toolComponent = meta.getTool();
-                for (String field : yamlConfiguration.getConfigurationSection("tool").getKeys(false)) {
-                    switch (field) {
-                        case "damage_per_block":
-                            toolComponent.setDamagePerBlock(yamlConfiguration.getInt("damage_per_block"));
-                        case "mining_speed":
-                            toolComponent.setDefaultMiningSpeed((float) yamlConfiguration.getDouble("mining_speed"));
-                        case "block_rules":
-                            for(ToolComponent.ToolRule rule : toolComponent.getRules()) {
-                                toolComponent.removeRule(rule);
-                            }
-
-                            for (String key : yamlConfiguration.getConfigurationSection("block_list").getKeys(false)) {
-                                String tempPath = "tool." + field + "." + "block_list." + key;
-                                // Each block rule
-                                List<ToolComponent.ToolRule> rules = List.of();
-                                for(String f : yamlConfiguration.getConfigurationSection(tempPath).getKeys(false)) {
-                                    ToolComponent.ToolRule toolRule = new ToolRuleExtended();
-
-                                    // Get block rule parameters
-                                    Tag<Tag> tag = Bukkit.getTag("minecraft",NamespacedKey.fromString(f.toUpperCase()),Tag.class);
-                                    @NotNull Set<Tag> mat = tag.getValues();
-                                    List<Material> materials = Collections.EMPTY_LIST;
-                                    mat.stream().map(t -> Material.valueOf(String.valueOf(t))).forEach(materials::add);
-                                    toolRule.setBlocks(materials);
-
-                                    if(yamlConfiguration.contains(tempPath + "." + f + ".blocks")) {
-
-                                    }
-                                    if(yamlConfiguration.contains(tempPath + "." + f + ".correct_for_drops")) {
-                                        toolRule.setCorrectForDrops(yamlConfiguration.getBoolean((tempPath + "." + f + ".correct_for_drops")));
-                                    }
-                                    if(yamlConfiguration.contains(tempPath + "." + f + ".mining_speed")) {
-                                        toolRule.setSpeed((float) yamlConfiguration.getDouble(tempPath + "." + f + ".mining_speed"));
-                                    }
-                                    rules.add(toolRule);
-                                }
-                                toolComponent.setRules(rules);
-                            }
-                        case "tool_type":
-
-                    }
-                    meta.setTool(toolComponent);
-                }
-            } catch (NullPointerException e) {
-                Logger.logError("Error. Could not load tool properties for " + internalName);
-            }
-        }
-
-
-//        int lowestPriority = 100;
-//        int highestPriority= 0;
-
-        for (ItemStats stat : statMap.keySet()) {
-            double value = statMap.get(stat);
-
-            // If an item has an attack speed modifier, the attack speed is 4 + the modifier.
-
-            if (stat.equals(ItemStats.ATTACK_SPEED)) {
-                value = -1 * (4 - value);
-            }
-
-
-            AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER);
-            if (slot != null) {
-                attributeModifier = new AttributeModifier(UUID.randomUUID(), UUID.randomUUID().toString(), value, AttributeModifier.Operation.ADD_NUMBER, slot);
-            }
-            if(stat.equals(ItemStats.DAMAGE)) {
-                attributeModifier = new AttributeModifier(UUID.randomUUID().toString(), value-1, AttributeModifier.Operation.ADD_NUMBER);
-                if (slot != null) {
-                    attributeModifier = new AttributeModifier(UUID.randomUUID(), UUID.randomUUID().toString(), value-1, AttributeModifier.Operation.ADD_NUMBER, slot);
-                }
-            }
-
-            switch (stat) {
-                case DAMAGE:
-                    meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, attributeModifier);
-                    break;
-                case MAXIMUM_ADDED_DEX_MODIFIER:
-                    // For use with MineshaftRpg only
-                    // Does nothing on its own
-                    maximum_dex_modifier = value;
-                    break;
-                case ARMOUR:
-                    meta.addAttributeModifier(Attribute.ARMOR, attributeModifier);
-                    break;
-                case ARMOUR_CLASS:
-                    defence = value;
-                    break;
-                case SPEED:
-                    speed = value;
-                    break;
-                case RANGED_DAMAGE:
-                    ranged_damage = value;
-                    break;
-                case HEALTH:
-                    meta.addAttributeModifier(Attribute.MAX_HEALTH, attributeModifier);
-                    break;
-                case ATTACK_REACH:
-                    meta.addAttributeModifier(Attribute.ENTITY_INTERACTION_RANGE, attributeModifier);
-                    break;
-                case MINING_REACH:
-                    meta.addAttributeModifier(Attribute.BLOCK_INTERACTION_RANGE, attributeModifier);
-                    break;
-                case REACH:
-                    meta.addAttributeModifier(Attribute.ENTITY_INTERACTION_RANGE, attributeModifier);
-                    meta.addAttributeModifier(Attribute.BLOCK_INTERACTION_RANGE, attributeModifier);
-                    break;
-                case ATTACK_SPEED:
-                    meta.addAttributeModifier(Attribute.ATTACK_SPEED, attributeModifier);
-                    break;
-                case ATTACK_KNOCKBACK:
-                    meta.addAttributeModifier(Attribute.ATTACK_KNOCKBACK, attributeModifier);
-                    break;
-                case SNEAKING_SPEED:
-                    meta.addAttributeModifier(Attribute.SNEAKING_SPEED, attributeModifier);
-                    break;
-                case MINING_SPEED:
-                    meta.addAttributeModifier(Attribute.BLOCK_BREAK_SPEED, attributeModifier);
-                    break;
-                default:
-            }
-        }
-
-//        if(lowestPriority<0) lowestPriority=0;
-//
-//        for(int i = lowestPriority; i<=highestPriority; i++) {
-//            for(ItemStats stat : statMap.keySet()) {
-//                if (i == stat.getPriority()) {
-//                    hasStats = true;
-//                    if (stat.equals(ItemStats.ARMOUR_CLASS) && statMap.get(stat)!=0) {
-//                        lore.add(LoreManager.getStatString(stat, statMap.get(stat), category, (int) maximum_dex_modifier));
-//
-//                    } else if(statMap.get(stat)!=0) {
-//                        lore.add(LoreManager.getStatString(stat, statMap.get(stat), category, 0));
-//                    }
-//                }
-//            }
-//        }
-
-//        if(!rangedStatMap.isEmpty()) {
-//            lore.add("");
-//        }
-
-        // get ranged stat strings
-//        Logger.logInfo(rangedStatMap.toString());
-//        for(int i = lowestPriority; i<=highestPriority; i++) {
-//            for(RangedItemStats stat : rangedStatMap.keySet()) {
-//                if (i == stat.getPriority() && statMap.get(stat)!=null) {
-//                    lore.add(LoreManager.getRangedStatString(stat, statMap.get(stat)));
-//                }
-//            }
-//        }
-
-//        if(maxAmmunition>0) {
-//            lore.add(LoreManager.getAmmunitionString(maxAmmunition,maxAmmunition));
-//        }
-
-        // Hide attributes
-        if (hideAttributes) {
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        }
-        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-        meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
-        meta.addItemFlags(ItemFlag.HIDE_DYE);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-
-        meta.setLore(lore);
-
-        /**
-         * Custom equipment
-         */
-
-        if(slot!=null && yamlConfiguration.contains("armour")) {
-            EquippableComponent equippableComponent = meta.getEquippable();
-            if(equippableComponent==null) {equippableComponent=new ItemStack(Material.IRON_CHESTPLATE).getItemMeta().getEquippable();}
-
-            equippableComponent.setSlot(slot);
-            for(String key : yamlConfiguration.getConfigurationSection("armour").getKeys(false)) {
-                String path = "armour."+key;
-                switch (key) {
-                    case "equip_sound":
-                        equippableComponent.setEquipSound(Sound.valueOf(yamlConfiguration.getString(path)));
-                        break;
-                    case "model":
-                        equippableComponent.setModel(NamespacedKey.minecraft(yamlConfiguration.getString(path)));
-                        break;
-                    case "damage_on_hurt":
-                        equippableComponent.setDamageOnHurt(yamlConfiguration.getBoolean(path));
-                        break;
-                    default:
-                        break;
-                }
-            }
-            meta.setEquippable(equippableComponent);
-        }
-
-        // IMPORTANT!
-        // set item meta. no meta modification after here!!!!!!!
-        item.setItemMeta(meta);
-
-        // Set the name
-        item.setData(DataComponentTypes.ITEM_NAME,Component.translatable(displayName).color(rarity.getTextColour()));
-
-        /**
-         * NBT Features
-         */
-
-        if(meta instanceof LeatherArmorMeta) {
-            LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) item.getItemMeta();
-            if(g>=0 || r>=0 || b>=0) {
-                leatherArmorMeta.setColor(Color.fromRGB(Math.max(r, 0), Math.max(g, 0),Math.max(b,0)));
-            }
-            item.setItemMeta(leatherArmorMeta);
-        }
-
-        if (durability > 0) {
-            Damageable damageableMeta = (Damageable) item.getItemMeta();
-            damageableMeta.setMaxDamage(durability);
-            item.setItemMeta(damageableMeta);
-        }
-
-        // final variant meta above here. No more after this.
-
-        // Apply NBT tag with item
-        final ArrayList<ArmourResistanceTypes> armourResistanceTypes = ArmourManager.getArmourResistances(uuid);
-        final boolean finalColdProtect = coldProtect;
-        ItemSubcategory finalSubcategory1 = subcategory;
-        int finalMaxAmmunition = maxAmmunition;
-        List<String> finalAmmunitionTypes = ammunitionTypes;
-        NBT.modify(item, nbt -> {
-            nbt.setString("uuid", uuid.toString());
-            if(!armourType.equals(ArmourType.NONE)) {
-                nbt.setString("ArmourType",armourType.name().toLowerCase());
-            }
-
-            for(ArmourResistanceTypes element : armourResistanceTypes) {
-                nbt.setBoolean(element.name().toLowerCase(), true);
-            }
-            nbt.setBoolean("ColdProtection", finalColdProtect);
-
-            if(finalMaxAmmunition>0) {
-                nbt.setInteger("ammunition", finalMaxAmmunition);
-                if(finalAmmunitionTypes.contains("ammunition_power_cell")) {
-                    nbt.setString("ammunition_type", "ammunition_power_cell");
-                } else {
-                    nbt.setString("ammunition_type", finalAmmunitionTypes.get(0));
-                }
-            }
-
-            // Extendable weapon mechanics
-            if(yamlConfiguration.contains("extendable")) {
-                nbt.setBoolean("is_sheathed",true);
-                nbt.setInteger("custom_model_data", Objects.requireNonNullElse(yamlConfiguration.getInt("custom_model_data"),0));
-
-                for(String field : yamlConfiguration.getConfigurationSection("extendable").getKeys(false)) {
-                    switch (field) {
-                        case "custom_model_data" -> nbt.setInteger("open_custom_model_data", yamlConfiguration.getInt("extendable.custom_model_data"));
-                        // TODO: Add more customisation
-                    }
-                }
-            }
-
-        });
-
-        // Custom stats.
-        if (speed != 0) {
-            setItemNbtStat(item, ItemStats.SPEED, speed);
-        }
-        if (defence != 0) {
-            setItemNbtStat(item, ItemStats.ARMOUR_CLASS, defence);
-        }
-        if (maximum_dex_modifier != 0) {
-            setItemNbtStat(item, ItemStats.MAXIMUM_ADDED_DEX_MODIFIER, maximum_dex_modifier);
-        }
-        if(ranged_damage!=0) {
-            setItemNbtStat(item, ItemStats.RANGED_DAMAGE, ranged_damage);
-        }
-
-        for(RangedItemStats stat : rangedStatMap.keySet()) {
-            setItemNbtRangedStat(item, stat, rangedStatMap.get(stat));
-        }
-
-        // Set rarity tag
-        NBT.modify(item, nbt -> {
-            nbt.setString("rarity", rarity.toString());
-        });
-
-        if(yamlConfiguration.contains("consumable")) {
-            String path = "consumable.";
-            ArrayList<ConsumeEffect> effects = new ArrayList<>();
-            HashMap<PotionEffect, Float> potionEffects = new HashMap<>();
-            ItemUseAnimation animation = ItemUseAnimation.EAT;
-            float eatSeconds = 1.0f;
-            boolean consumeParticles = true;
-            for (String key : yamlConfiguration.getConfigurationSection("consumable").getKeys(false)) {
-                switch (key) {
-                    case "consume_seconds":
-                        eatSeconds = (float) yamlConfiguration.getDouble(path + "eat_seconds");
-                        break;
-                    case "animation":
-                        animation = ItemUseAnimation.valueOf(yamlConfiguration.getString(path + "animation"));
-                        break;
-                    case "has_consume_particles":
-                        consumeParticles = yamlConfiguration.getBoolean("has_consume_particles");
-                        break;
-                    case "consume_sound":
-                        // TODO: Add consume sound
-                        break;
-                    case "potion_effects":
-                        for (String effectName : yamlConfiguration.getConfigurationSection(path + "potion_effects").getKeys(false)) {
-                            if(effectName.equalsIgnoreCase("clear")) {
-                                effects.add(ConsumeEffect.clearAllStatusEffects());
-                            }
-                            String tempPath = path + "potion_effects." + effectName + ".";
-                            PotionEffectType potionEffectType = PotionEffectType.getByName(effectName.toUpperCase());
-                            int duration = 20 * 60;
-                            int amplifier = 0;
-                            float effectProbability = 1.0f;
-                            boolean ambient = false;
-                            boolean particles = false;
-                            boolean icon = true;
-                            for (String parameter : yamlConfiguration.getConfigurationSection(path + "potion_effects." + effectName).getKeys(false)) {
-                                switch (parameter) {
-                                    case "probability":
-                                        effectProbability = (float) yamlConfiguration.getDouble(tempPath + "probability");
-                                        break;
-                                    case "duration":
-                                        duration = yamlConfiguration.getInt(tempPath + "duration");
-                                    case "amplifier":
-                                        amplifier = yamlConfiguration.getInt(tempPath + "amplifier");
-                                    case "ambient":
-                                        ambient = yamlConfiguration.getBoolean(tempPath + "ambient");
-                                    case "particles":
-                                        particles = yamlConfiguration.getBoolean(tempPath + "particles");
-                                    case "icon":
-                                        icon = yamlConfiguration.getBoolean(tempPath + "icon");
-                                }
-                            }
-                            potionEffects.put(new PotionEffect(potionEffectType,duration,amplifier,ambient,particles,icon),effectProbability);
-                        }
-                        for(PotionEffect eff : potionEffects.keySet()) {
-                            effects.add(ConsumeEffect.applyStatusEffects(Collections.singletonList(eff),potionEffects.get(eff)));
-                        }
-
-                    default:
-                        break;
-                }
-            }
-
-            // Add consumable
-            Consumable consumable = Consumable.consumable().consumeSeconds(eatSeconds).hasConsumeParticles(consumeParticles).animation(animation).build();
-            consumable.consumeEffects().addAll(effects);
-            item.setData(DataComponentTypes.CONSUMABLE, consumable);
-        }
-
-
-        // Other properties
-        final String rareString = rarity.name().toLowerCase();
-
-        String finalSubcategory = subcategory.name().toLowerCase();
-        List<String> finalItemProperties1 = itemProperties;
-        NBT.modify(item, nbt -> {
-            nbt.setString("rarity", rareString);
-            nbt.setString("subcategory", finalSubcategory);
-
-            // create the item property list
-            ReadWriteNBTList<String> propertyList = nbt.getStringList("item_properties");
-            propertyList.addAll(finalItemProperties1);
-        });
-
-        /**
-         * Custom hardcoded properties
-         * */
-
-        if(getInteractEventsFromItem(uuid,ActionType.RIGHT_CLICK).contains("parry")) {
-            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.BLOCK).build();
-            item.setData(DataComponentTypes.CONSUMABLE, consumable);
-        } else if(getInteractEventsFromItem(uuid,ActionType.RIGHT_CLICK).contains("power_attack")) {
-            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.SPEAR).build();
-            item.setData(DataComponentTypes.CONSUMABLE, consumable);
-        } else if(getInteractEventsFromItem(uuid, ActionType.RIGHT_CLICK).contains("smoke_pipe") || getInteractEventsFromItem(uuid, ActionType.RIGHT_CLICK).contains("instrument")) {
-            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.TOOT_HORN).build();
-            item.setData(DataComponentTypes.CONSUMABLE, consumable);
-        } else if(getInteractEventsFromItem(uuid, ActionType.RIGHT_CLICK).contains("throw")) {
-            Consumable consumable = Consumable.consumable().consumeSeconds(72000).hasConsumeParticles(false).animation(ItemUseAnimation.SPEAR).build();
-            item.setData(DataComponentTypes.CONSUMABLE, consumable);
-        }
-
-        return item;
+        return ItemBuilder.getItem(
+                items.get(uuid).getName(),
+                getItemDefinition(uuid));
     }
 
     // Generate the default item
@@ -908,7 +259,7 @@ public class ItemManager {
         }
     }
 
-    protected static HashMap<ItemStats, Double> getStatMap(ConfigurationSection yamlConfiguration, String statPath) {
+    public static HashMap<ItemStats, Double> getStatMap(ConfigurationSection yamlConfiguration, String statPath) {
         //System.out.println("getting statmap");
 
         HashMap<ItemStats, Double> statMap = new HashMap<>();
@@ -941,7 +292,7 @@ public class ItemManager {
         return statMap;
     }
 
-    protected static HashMap<ItemStats, Double> getItemStatMap(ItemStack itemStack) {
+    public static HashMap<ItemStats, Double> getItemStatMap(ItemStack itemStack) {
         //System.out.println("getting statmap");
 
         HashMap<ItemStats, Double> statMap = new HashMap<>();
@@ -954,7 +305,7 @@ public class ItemManager {
         return statMap;
     }
 
-    protected static HashMap<RangedItemStats, Double> getRangedItemStatMap(ItemStack itemStack) {
+    public static HashMap<RangedItemStats, Double> getRangedItemStatMap(ItemStack itemStack) {
         //System.out.println("getting statmap");
 
         HashMap<RangedItemStats, Double> statMap = new HashMap<>();
@@ -999,8 +350,7 @@ public class ItemManager {
         return statMap;
     }
 
-
-    protected static HashMap<RangedItemStats, Double> getRangedStatMap(ConfigurationSection yamlConfiguration, String rangedStatPath) {
+    public static HashMap<RangedItemStats, Double> getRangedStatMap(ConfigurationSection yamlConfiguration, String rangedStatPath) {
         HashMap<RangedItemStats, Double> statMap = new HashMap<>();
 
         if (yamlConfiguration==null || !yamlConfiguration.contains(rangedStatPath)) {
@@ -1023,24 +373,24 @@ public class ItemManager {
         return statMap;
     }
 
-    protected static void setItemNbtStat(ItemStack stack, ItemStats stat, double value) {
+    public static void setCustomItemAttribute(ItemStack stack, ItemStats stat, double value) {
         NBT.modify(stack, nbt -> {
             nbt.setDouble("stat." + stat.name().toLowerCase(Locale.ROOT), value);
         });
     }
 
-    protected static void setItemNbtRangedStat(ItemStack stack, RangedItemStats stat, double value) {
+    public static void setCustomItemAttribute(ItemStack stack, RangedItemStats stat, double value) {
         NBT.modify(stack, nbt -> {
             nbt.setDouble("ranged_stat." + stat.getName().toLowerCase(Locale.ROOT), value);
         });
     }
 
     public static double getMaximumDexterityModifier(ItemStack stack) {
-       if(stack==null) {
+       if(stack==null || stack.getType()==Material.AIR || stack.getAmount()==0 || stack.isEmpty()) {
            return -9999;
        }
         final double[] value = {0};
-        NBT.get(stack, nbt -> {
+        de.tr7zw.nbtapi.NBT.get(stack, nbt -> {
             if (!nbt.hasNBTData()) {
                 value[0] = -8888;
             } else {
@@ -1361,7 +711,7 @@ public class ItemManager {
 
     public static boolean useAmmunition(ConfigurationSection yamlConfiguration) {
         if(ItemManager.getItemCategory(yamlConfiguration) == ItemCategory.WEAPON_RANGED) {
-            return(yamlConfiguration.contains("ammunition"))&& ItemAmmunitionManager.getMaxAmmunition(yamlConfiguration)>0;
+            return(yamlConfiguration.contains("ammunition"))&& ItemAmmunitionManager.getMaximumAmmunitionCapacityInWeapon(yamlConfiguration)>0;
         }
         return false;
     }
@@ -1369,7 +719,7 @@ public class ItemManager {
     public static void updateItem(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         // TODO: Update the properties from the equipped sockets
-        item.setLore(LoreManager.getLore(getItemIdFromItem(item),item));
+        item.setLore(LoreManager.getItemLoreArrayList(getItemIdFromItem(item),item));
         item.setItemMeta(meta);
     }
 

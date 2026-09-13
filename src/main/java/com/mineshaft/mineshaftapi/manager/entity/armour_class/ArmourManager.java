@@ -18,7 +18,7 @@
 
 package com.mineshaft.mineshaftapi.manager.entity.armour_class;
 
-import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.entity.Entity;
 
 public class ArmourManager {

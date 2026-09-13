@@ -19,8 +19,8 @@
 package com.mineshaft.mineshaftapi.events;
 
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemCategory;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
+import com.mineshaft.mineshaftapi.manager.item.configuration_fields.ItemCategory;
+import com.mineshaft.mineshaftapi.manager.item.configuration_fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import lombok.Getter;
 import org.bukkit.entity.Player;

@@ -16,12 +16,24 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.item.fields;
+package com.mineshaft.mineshaftapi.manager.item.configuration_fields;
 
-public enum ItemProperties {
+public enum ItemSubcategoryType {
 
-    FINESSE,
-    LIGHT,
-    HEAVY,
+    // MORE COMING SOON....
+
+    NONE,
+
+    WAND,
+    CONSUMABLE,
+    TOOL,
+    ARMOUR,
+    WEAPON_SIMPLE,
+    WEAPON_MARTIAL,
+    WEAPON_LIGHT,
+    WEAPON_VIBROWEAPON,
+    WEAPON_BLASTER,
+    WEAPON_GENERIC
+    ;
 
 }

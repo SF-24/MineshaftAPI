@@ -28,6 +28,7 @@ import com.mineshaft.mineshaftapi.manager.item.crafting.RecipeKey;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
+import com.mineshaft.mineshaftapi.util.Logger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -250,7 +251,11 @@ public class JsonPlayerBridge {
     }
 
     public static void loadInventory(Player player) {
-        getJsonInstance(player).getInventory(player);
+        try {
+            getJsonInstance(player).getInventory(player);
+        } catch (Exception ignored) {
+            Logger.logError("Could not load inventory for player " + player.displayName());
+        }
     }
 
     public static void loadLocation(Player player) {

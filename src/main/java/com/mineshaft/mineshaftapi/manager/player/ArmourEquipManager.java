@@ -18,9 +18,9 @@
 
 package com.mineshaft.mineshaftapi.manager.player;
 
-import com.mineshaft.mineshaftapi.manager.item.armour.ArmourType;
+import com.mineshaft.mineshaftapi.manager.item.item_components.armour.ArmourType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
-import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.nbtapi.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

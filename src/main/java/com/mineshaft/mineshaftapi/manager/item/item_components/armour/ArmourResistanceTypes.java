@@ -16,35 +16,20 @@
  *
  */
 
-package com.mineshaft.mineshaftapi.manager.ui.item_shop;
+package com.mineshaft.mineshaftapi.manager.item.item_components.armour;
 
-import de.tr7zw.nbtapi.NBT;
-import org.bukkit.inventory.ItemStack;
+import lombok.Getter;
 
-public class ItemReader {
+@Getter
+public enum ArmourResistanceTypes {
+    COLD_PROTECTION("Cold Protection", "cold_protection"),
+    FIRE_PROTECTION("Fire Protection", "fire_protection"),
 
-    public ItemType getType(ItemStack item) {
-        NBT.get(item, nbt -> {
-            return nbt.getEnum("category", ItemType.class);
-        });
-        return null;
+    ;
+    final String display,nbt;
+    ArmourResistanceTypes(String display, String nbt) {
+        this.display=display;
+        this.nbt=nbt;
     }
 
-    public Integer getRawPrice(ItemStack item) {
-        NBT.get(item, nbt -> {
-            return nbt.getInteger("price");
-        });
-        return null;
-    }
-
-    public String getItemName(ItemStack item) {
-        NBT.get(item, nbt -> {
-            return nbt.getString("itemName");
-        });
-        return null;
-    }
-
-    public Integer getPrice(ItemStack item) {
-        return getRawPrice(item);
-    }
 }

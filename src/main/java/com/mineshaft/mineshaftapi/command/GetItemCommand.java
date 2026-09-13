@@ -52,13 +52,13 @@ public class GetItemCommand implements CommandExecutor {
                 path=MineshaftApi.getItemPath();
             }
 
-            String item = DirUtil.getFileFromFilePath(args[0]);
-            player.sendMessage("Giving item " + item + " in directory " + path.replace(File.separator,"|"));
-            Logger.logWarning("Giving item " + item + " in directory " + path.replace(File.separator,"|"));
+            String itemName = DirUtil.getFileFromFilePath(args[0]);
+            player.sendMessage("Giving item " + itemName + " in directory " + path.replace(File.separator,"|"));
+            Logger.logWarning("Giving item " + itemName + " in directory " + path.replace(File.separator,"|"));
 
             // Error in try/catch
             try {
-                ItemStack itemStack = MineshaftApi.getInstance().getItemManagerInstance().getItem(ItemManager.getItemDefinition(item));
+                ItemStack itemStack = MineshaftApi.getInstance().getItemManagerInstance().getItem(itemName);
                 if(args.length==2) {
                     try {
                         int amount = Integer.parseInt(args[1]);

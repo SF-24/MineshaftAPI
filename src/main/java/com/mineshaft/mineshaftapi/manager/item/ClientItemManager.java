@@ -19,8 +19,9 @@
 package com.mineshaft.mineshaftapi.manager.item;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemRarity;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
+import com.mineshaft.mineshaftapi.manager.item.configuration_fields.ItemRarity;
+import com.mineshaft.mineshaftapi.manager.item.configuration_fields.ItemSubcategory;
+import com.mineshaft.mineshaftapi.manager.item.item_components.LoreManager;
 import com.mineshaft.mineshaftapi.util.Language;
 import com.mineshaft.mineshaftapi.util.Logger;
 import net.kyori.adventure.text.Component;
@@ -35,6 +36,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Collections;
 
 public class ClientItemManager {
+
+    // TODO: Clean up
 
     public static String formatName(String name) {
 //        Logger.logDebug("Formatting name: " + name);
@@ -105,7 +108,8 @@ public class ClientItemManager {
         if (itemMeta==null || itemMeta.getLore() == null || itemMeta.getLore().isEmpty()) {
             ItemRarity itemRarity = getMaterialItemRarity(itemStack.getType());
             if(itemRarity!=ItemRarity.STANDARD && itemMeta!=null) {
-                itemMeta.setLore(Collections.singletonList(LoreManager.getRarityString(itemRarity, LoreManager.getItemSubcategoryDisplay(itemRarity,getMaterialItemSubcategory(itemStack.getType())))));
+                // Dynamically get the lore.
+                itemMeta.setLore(Collections.singletonList(LoreManager.LoreSection.getRarityLoreLine(itemRarity, LoreManager.LoreSection.getItemSubcategoryDisplayedName(itemRarity,getMaterialItemSubcategory(itemStack.getType())))));
             }
             itemStack.setItemMeta(itemMeta);
         }

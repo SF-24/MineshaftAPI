@@ -455,11 +455,15 @@ potion_effects:
 
 ```yaml
 armour:
+  model: leather
   type: MEDIUM_ARMOUR
   colour:
     r: 255
     g: 255
     b: 255
+  resistances:
+    - cold_protection
+    - fire_protection
 ```
 
 | Value             | Name            | Description                                                           |     Data Type |                    Notes |
@@ -470,6 +474,7 @@ armour:
 | `model`           | Model           | The armour model                                                      |        String |                          |
 | `damage_on_hurt`  | Damage on hurt  | Whether the armour durability is lowered when the player takes damage |       Boolean |                          |
 | `cold_protection` | Cold Protection | Coming soon...                                                        |       Boolean |                          |
+| `resistances`     | Resistances     | List of resistances to which the armor makes the wearer resistant     |       Boolean |                          |
 
 
 #### Armour Types (WIP)

@@ -57,13 +57,13 @@ public class BetonDisplayQuestEvent implements OnlineAction {
         if(this.id!=null) id=this.id.getValue(profile);
         if(this.name!=null) name=this.name.getValue(profile);
         if(this.description!=null) description=this.description.getValue(profile);
-//        if(this.objectives!=null) {
-//            try {
-//                objectives = this.objectives.getValue(profile);
-//            } catch (Exception e) {
-//                Logger.logError("Error! this.objectives = null, in BetonDisplayQuestEvent:64");
-//            }
-//        }
+        if(this.objectives!=null) {
+            try {
+                objectives = this.objectives.getValue(profile);
+            } catch (Exception e) {
+                Logger.logError("Error! this.objectives = null, in BetonDisplayQuestEvent:64");
+            }
+        }
         if(this.cancelEvent!=null) cancelEvent=this.cancelEvent.getValue(profile);
         if(objectives==null) {
             QuestObject questObject = new QuestObject(name,description,List.of(), new QuestEventsObject(questPackage, cancelEvent));

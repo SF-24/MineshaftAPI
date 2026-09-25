@@ -23,7 +23,6 @@ import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonDisplayQues
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonExperienceEventFactory;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonRemoveQuestEventFactory;
 import org.betonquest.betonquest.BetonQuest;
-import org.betonquest.betonquest.api.BetonQuestApi;
 import org.betonquest.betonquest.api.BetonQuestApiService;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.bukkit.Bukkit;

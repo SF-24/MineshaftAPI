@@ -44,9 +44,15 @@ public class QuestObject {
     private final QuestEventsObject eventObject;
 
     public QuestObject(String name, String description, List<String> objectives, QuestEventsObject eventObject) {
-        this.name=name;
-        this.description=description;
-        this.objectives=objectives;
+        if(name!=null && !name.isEmpty()) {
+            this.name = name;
+        }
+        if(description!=null && !description.isEmpty()) {
+            this.description=description;
+        }
+        if(objectives!=null && !objectives.isEmpty()) {
+            this.objectives=objectives;
+        }
         this.eventObject=eventObject;
     }
 

@@ -60,14 +60,13 @@ public class JsonQuestManager {
 
     // gets player data json file
     public static File getFile(Player player, String profile) {
-        String id = "quest_data";
-
         String path = ProfileManager.getProfilePathOfPlayer(player.getUniqueId(),profile);
-        File file = new File(path,id + ".json");
+        File file = new File(path, "quest_data.json");
 
         if(!file.exists()) {
             makeNewFile(file);
         }
+
         return file;
     }
 

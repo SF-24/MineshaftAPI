@@ -454,23 +454,23 @@ public class JsonPlayerManager {
      * Quests
      * */
 
-    public void addQuest(Player player, QuestObject questObject) {
-        PlayerDataClass data = loadData(player);
-        data.addQuest(questObject);
-        saveFile(data);
-    }
-
-    public boolean removeQuest(Player player, String questName) {
-        PlayerDataClass data = loadData(player);
-        boolean value = data.removeQuest(questName);
-        saveFile(data);
-        return value;
-    }
-
-    public ArrayList<QuestObject> getQuests(Player player) {
-        PlayerDataClass data = loadData(player);
-        return data.getQuests();
-    }
+//    public void addQuest(Player player, QuestObject questObject) {
+//        PlayerDataClass data = loadData(player);
+//        data.addQuest(questObject);
+//        saveFile(data);
+//    }
+//
+//    public boolean removeQuest(Player player, String questName) {
+//        PlayerDataClass data = loadData(player);
+//        boolean value = data.removeQuest(questName);
+//        saveFile(data);
+//        return value;
+//    }
+//
+//    public ArrayList<QuestObject> getQuests(Player player) {
+//        PlayerDataClass data = loadData(player);
+//        return data.getQuests();
+//    }
 
     /**
      * Inventory

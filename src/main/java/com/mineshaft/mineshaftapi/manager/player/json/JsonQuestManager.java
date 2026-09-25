@@ -49,7 +49,6 @@ public class JsonQuestManager {
     }
 
     private void initiateFile(UUID uuid, String profile) throws Exception {
-
         String path = ProfileManager.getProfilePathOfPlayer(uuid,profile);
         File file = new File(path, "quest_data.json");
 

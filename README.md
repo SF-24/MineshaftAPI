@@ -1019,6 +1019,15 @@ Events:
 - rem_quest
 - mineshaft_xp
 
+Examples:
+```yaml
+actions:
+  addQuestTracker: "add_quest id:traderQuest1 name:Trader Quest 1 description:Deliver the package to the Post Office at the end of the road."
+  removeQuestTracker: "rem_quest id:traderQuest1"
+```
+<br>
+More detailed description coming soon.
+
 ## PlaceholderAPI
 
 | Placeholder    | Description                                     | Data Type |

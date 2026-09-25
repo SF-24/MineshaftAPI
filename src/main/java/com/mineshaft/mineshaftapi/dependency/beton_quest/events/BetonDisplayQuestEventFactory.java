@@ -23,9 +23,11 @@ import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.api.instruction.Argument;
 import org.betonquest.betonquest.api.instruction.Instruction;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
+import org.betonquest.betonquest.api.profile.Profile;
 import org.betonquest.betonquest.api.quest.action.OnlineActionAdapter;
 import org.betonquest.betonquest.api.quest.action.PlayerAction;
 import org.betonquest.betonquest.api.quest.action.PlayerActionFactory;
+import org.jetbrains.annotations.Nullable;
 
 public class BetonDisplayQuestEventFactory implements PlayerActionFactory {
 
@@ -40,8 +42,8 @@ public class BetonDisplayQuestEventFactory implements PlayerActionFactory {
     public PlayerAction parsePlayer(Instruction instruction) throws QuestException {
 
         final Argument<String> id = instruction.string().get("id").orElse(null);
-        final Argument<String> name = instruction.string().get("name").orElse(null);
-        final Argument<String> description = instruction.string().get("description").orElse(null);
+        final Argument<String> name = instruction.string().get("name").orElse(profile -> "Untitled quest.");
+        final Argument<String> description = instruction.string().get("description").orElse(profile -> "Placeholder. No description.");
         final Argument<String> cancelEvent = instruction.string().get("cancelEvent").orElse(null);
         final Argument<String> objectives = instruction.string().get("objectives").orElse(null);
 

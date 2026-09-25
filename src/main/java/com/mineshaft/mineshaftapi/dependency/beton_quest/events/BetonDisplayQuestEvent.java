@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestEventsObject;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.betonquest.betonquest.api.QuestException;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.api.instruction.Argument;
@@ -48,7 +49,28 @@ public class BetonDisplayQuestEvent implements OnlineAction {
 
     @Override
     public void execute(final OnlineProfile profile) throws QuestException {
-        QuestObject questObject = new QuestObject(name.getValue(profile), description.getValue(profile), List.of(objectives.getValue(profile)), new QuestEventsObject(questPackage, cancelEvent.getValue(profile)));
-        JsonPlayerBridge.addQuest(profile.getPlayer(), id.getValue(profile), questObject);
+        String id = null;
+        String name = null;
+        String description = null;
+        String objectives = null;
+        String cancelEvent = null;
+        if(this.id!=null) id=this.id.getValue(profile);
+        if(this.name!=null) name=this.name.getValue(profile);
+        if(this.description!=null) description=this.description.getValue(profile);
+//        if(this.objectives!=null) {
+//            try {
+//                objectives = this.objectives.getValue(profile);
+//            } catch (Exception e) {
+//                Logger.logError("Error! this.objectives = null, in BetonDisplayQuestEvent:64");
+//            }
+//        }
+        if(this.cancelEvent!=null) cancelEvent=this.cancelEvent.getValue(profile);
+        if(objectives==null) {
+            QuestObject questObject = new QuestObject(name,description,List.of(), new QuestEventsObject(questPackage, cancelEvent));
+            JsonPlayerBridge.addQuest(profile.getPlayer(), id, questObject);
+        } else {
+            QuestObject questObject = new QuestObject(name,description,List.of(objectives), new QuestEventsObject(questPackage, cancelEvent));
+            JsonPlayerBridge.addQuest(profile.getPlayer(), id, questObject);
+        }
     }
 }

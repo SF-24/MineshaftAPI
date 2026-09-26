@@ -207,6 +207,10 @@ public class JsonPlayerBridge {
         getQuestInstance(player).addQuest(id,questObject);
     }
 
+    public static void setQuestStatus(Player player, String id, QuestStatus questStatus) {
+        getQuestInstance(player).setQuestStatus(id,questStatus);
+    }
+
     public static void removeQuest(Player player, String questId) {
         getQuestInstance(player).removeQuest(questId);
     }

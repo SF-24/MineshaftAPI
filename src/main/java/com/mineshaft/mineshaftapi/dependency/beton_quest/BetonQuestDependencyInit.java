@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftapi.dependency.beton_quest;
 
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonCompleteQuestEventFactory;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonDisplayQuestEventFactory;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonExperienceEventFactory;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.events.BetonRemoveQuestEventFactory;
@@ -32,9 +33,10 @@ public class BetonQuestDependencyInit {
     public static void init() {
         BetonQuestLoggerFactory loggerFactory = MineshaftApi.getInstance().getServer().getServicesManager().load(BetonQuestLoggerFactory.class);
 
-        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("mineshaft_xp", new BetonExperienceEventFactory(loggerFactory));
-        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("add_quest", new BetonDisplayQuestEventFactory(loggerFactory));
-        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("rem_quest", new BetonRemoveQuestEventFactory(loggerFactory));
+        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("mineshaft_xp", new BetonExperienceEventFactory());
+        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("add_quest", new BetonDisplayQuestEventFactory());
+        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("rem_quest", new BetonRemoveQuestEventFactory());
+        BetonQuest.getInstance().getBetonQuestApi().actions().registry().register("complete_quest", new BetonCompleteQuestEventFactory());
 
         BetonQuestManager.questApiService = Bukkit.getServer().getServicesManager().load(BetonQuestApiService.class);
         assert BetonQuestManager.questApiService != null;

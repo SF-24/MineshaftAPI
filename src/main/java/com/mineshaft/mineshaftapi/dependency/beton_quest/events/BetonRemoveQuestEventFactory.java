@@ -27,14 +27,6 @@ import org.betonquest.betonquest.api.quest.action.PlayerAction;
 import org.betonquest.betonquest.api.quest.action.PlayerActionFactory;
 
 public class BetonRemoveQuestEventFactory implements PlayerActionFactory {
-
-    private final BetonQuestLoggerFactory loggerFactory;
-
-    public BetonRemoveQuestEventFactory(final BetonQuestLoggerFactory loggerFactory) {
-        this.loggerFactory = loggerFactory;
-    }
-
-
     @Override
     public PlayerAction parsePlayer(Instruction instruction) throws QuestException {
         final Argument<String> id = instruction.string().get("id").orElse(null);

@@ -26,15 +26,16 @@ import org.betonquest.betonquest.api.quest.action.OnlineActionAdapter;
 import org.betonquest.betonquest.api.quest.action.PlayerAction;
 import org.betonquest.betonquest.api.quest.action.PlayerActionFactory;
 
-public class BetonExperienceEventFactory implements PlayerActionFactory {
+public class BetonCompleteQuestEventFactory implements PlayerActionFactory {
+
+
     @Override
     public PlayerAction parsePlayer(Instruction instruction) throws QuestException {
-        final Argument<Number> amount = instruction.number().get("amount").orElse(null);
-        if (amount == null) {
-            throw new QuestException("Missing amount!");
-        }
+        final Argument<String> id = instruction.string().get("id").orElse(null);
+
         return new OnlineActionAdapter(
-                new BetonExperienceEvent(amount)
+                new BetonCompleteQuestEvent(id)
         );
     }
 }
+

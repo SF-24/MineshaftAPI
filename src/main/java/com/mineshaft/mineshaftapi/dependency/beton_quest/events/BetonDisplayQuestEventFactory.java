@@ -31,13 +31,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class BetonDisplayQuestEventFactory implements PlayerActionFactory {
 
-    private final BetonQuestLoggerFactory loggerFactory;
-
-    public BetonDisplayQuestEventFactory(final BetonQuestLoggerFactory loggerFactory) {
-        this.loggerFactory = loggerFactory;
-    }
-
-
     @Override
     public PlayerAction parsePlayer(Instruction instruction) throws QuestException {
 

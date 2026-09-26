@@ -1013,7 +1013,6 @@ Regardless of the target, this event is triggered on the caster.
 
 ## BetonQuest
 
-Better description coming soon...<br>
 Events:
 - add_quest
 - rem_quest
@@ -1026,7 +1025,48 @@ actions:
   removeQuestTracker: "rem_quest id:traderQuest1"
 ```
 <br>
-More detailed description coming soon.
+
+### Add Mineshaft experience event
+```yaml
+actions:
+  addTenXp: "mineshaft_xp amount:10"
+```
+
+Gives the player experience used currently by the MineshaftRpg plugin.<br>
+If MineshaftRpg is not installed, the value is updated in the data, but does nothing.
+
+### Add quest event
+
+```yaml
+actions:
+  startMushroomGathering: "add_quest id:gatherMushrooms name:Gather Mushrooms description: Gather some mushrooms for the old lady down the road to get paid. cancelEvents:questCancel"
+```
+
+| Parameter     | Description                                                                                                                                                     | Data Type |
+|:--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------|
+| `id`          | The id of the quest in the journal, used for removing, renaming and completing the quest in the journal                                                         | String    |
+| `name`        | The display name in the journal                                                                                                                                 | String    |
+| `description` | The description string in the journal                                                                                                                           | String    |
+| `cancelEvent` | The event that triggers when the quest is cancelled in the journal. Quest cancelling coming soon in MineshaftRpg...                                             | String    |
+| `objectives`  | The objectives tracked in the journals (e.g. stage or mob kills - currently only 1 is supported). Leaving empty prevents any tracked objectives being displayed | String    |
+
+### Remove quest event
+
+```yaml
+actions:
+  failNewQuest: "rem_quest id:aNewQuest"
+```
+
+Currently only uses the quest id (set when the quest was added to the journal) of the quest.
+
+### Complete quest event
+
+```yaml
+actions:
+  completeKingQuest: "complete_quest id:kingQuest"
+```
+
+Marks the quest as complete in the quest journal. Only takes the quest id parameter (specified in the add quest event).
 
 ## PlaceholderAPI
 

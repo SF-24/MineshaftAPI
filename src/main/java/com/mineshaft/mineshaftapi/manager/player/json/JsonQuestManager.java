@@ -180,6 +180,20 @@ public class JsonQuestManager {
         saveFile(data);
     }
 
+    public void setQuestStatus(String id, QuestStatus questStatus) {
+        QuestDataClass data = loadData(player);
+        if(!data.getQuests().containsKey(id)) {
+            Logger.logWarning("Attempted to complete unrecognised quest: " + id);
+            return;
+        }
+        // Update the quest
+        QuestObject questObject = data.getQuest(id);
+        questObject.setStatus(questStatus);
+        data.addQuest(id,questObject);
+
+        saveFile(data);
+    }
+
     public HashMap<String, QuestObject> getQuests() {
         QuestDataClass data = loadData(player);
         return data.getQuests();

@@ -18,23 +18,22 @@
 
 package com.mineshaft.mineshaftapi.dependency.beton_quest.events;
 
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestStatus;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.betonquest.betonquest.api.QuestException;
 import org.betonquest.betonquest.api.instruction.Argument;
-import org.betonquest.betonquest.api.instruction.Instruction;
-import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
-import org.betonquest.betonquest.api.quest.action.OnlineActionAdapter;
-import org.betonquest.betonquest.api.quest.action.PlayerAction;
-import org.betonquest.betonquest.api.quest.action.PlayerActionFactory;
+import org.betonquest.betonquest.api.profile.OnlineProfile;
+import org.betonquest.betonquest.api.quest.action.OnlineAction;
 
-public class BetonExperienceEventFactory implements PlayerActionFactory {
+public class BetonCompleteQuestEvent implements OnlineAction {
+    final Argument<String> id;
+
+    public BetonCompleteQuestEvent(Argument<String> id) {
+        this.id = id;
+    }
+
     @Override
-    public PlayerAction parsePlayer(Instruction instruction) throws QuestException {
-        final Argument<Number> amount = instruction.number().get("amount").orElse(null);
-        if (amount == null) {
-            throw new QuestException("Missing amount!");
-        }
-        return new OnlineActionAdapter(
-                new BetonExperienceEvent(amount)
-        );
+    public void execute(final OnlineProfile profile) throws QuestException {
+        JsonPlayerBridge.setQuestStatus(profile.getPlayer(), id.getValue(profile), QuestStatus.COMPLETE);
     }
 }
